@@ -9,13 +9,13 @@
     <ProjectGuid>{746F649A-E6D3-4C89-915A-D070155581C1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Codartis.NsCop.CodeIssueProvider</RootNamespace>
-    <AssemblyName>NsCop.CodeIssueProvider</AssemblyName>
+    <RootNamespace>Codartis.NsDepCop.CodeIssueProvider</RootNamespace>
+    <AssemblyName>NsDepCop.CodeIssueProvider</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
-    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
-    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <VSSDKTargetPlatformRegRootSuffix>Roslyn</VSSDKTargetPlatformRegRootSuffix>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <FileUpgradeFlags>
@@ -51,7 +51,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
-    <CopyVsixExtensionLocation>C:\Users\Vizu\AppData\Local\Microsoft\VisualStudio\11.0Exp\Extensions\Codartis\NsCop.CodeIssueProvider\1.0</CopyVsixExtensionLocation>
+    <CopyVsixExtensionLocation>C:\Users\Vizu\AppData\Local\Microsoft\VisualStudio\11.0Exp\Extensions\Codartis\NsDepCop.CodeIssueProvider\1.0</CopyVsixExtensionLocation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -107,7 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NsCopCodeIssueProvider.cs" />
+    <Compile Include="NsDepCopCodeIssueProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -133,9 +133,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NsCop.Core\NsCop.Core.csproj">
+    <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">
       <Project>{bc26589e-79b0-4f55-b64d-db11534d3476}</Project>
-      <Name>NsCop.Core</Name>
+      <Name>NsDepCop.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

@@ -2,7 +2,7 @@
 using Roslyn.Compilers.CSharp;
 using System.Linq;
 
-namespace Codartis.NsCop.Core
+namespace Codartis.NsDepCop.Core
 {
     /// <summary>
     /// Static helper class that implements the dependency analysis logic.
@@ -16,7 +16,7 @@ namespace Codartis.NsCop.Core
         /// <param name="semanticModel">The semantic model of the current document.</param>
         /// <param name="config">Tool configuration info. Contains the allowed dependencies.</param>
         /// <returns>A DependencyViolation object if a violation is found. Null otherwise.</returns>
-        public static DependencyViolation ProcessSyntaxNode(CommonSyntaxNode node, ISemanticModel semanticModel, NsCopConfig config)
+        public static DependencyViolation ProcessSyntaxNode(CommonSyntaxNode node, ISemanticModel semanticModel, NsDepCopConfig config)
         {
             // Determine the type of the symbol represented by the current syntex node.
             var referencedType = semanticModel.GetTypeInfo(node).Type;

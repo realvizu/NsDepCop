@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsCop.MsBuildTask", "NsCop.MsBuildTask\NsCop.MsBuildTask.csproj", "{2ACFCACC-FC7D-4192-9B9F-C916784D93B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.MsBuildTask", "NsDepCop.MsBuildTask\NsDepCop.MsBuildTask.csproj", "{2ACFCACC-FC7D-4192-9B9F-C916784D93B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsCop.Core", "NsCop.Core\NsCop.Core.csproj", "{BC26589E-79B0-4F55-B64D-DB11534D3476}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Core", "NsDepCop.Core\NsDepCop.Core.csproj", "{BC26589E-79B0-4F55-B64D-DB11534D3476}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsCop.CodeIssueProvider", "NsCop.CodeIssueProvider\NsCop.CodeIssueProvider.csproj", "{746F649A-E6D3-4C89-915A-D070155581C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.CodeIssueProvider", "NsDepCop.CodeIssueProvider\NsDepCop.CodeIssueProvider.csproj", "{746F649A-E6D3-4C89-915A-D070155581C1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AB1A4FF5-D372-416A-9986-6C3548F78B3B}"
 	ProjectSection(SolutionItems) = preProject
-		config.nscop = config.nscop
+		config.nsdepcop = config.nsdepcop
 	EndProjectSection
 EndProject
 Global
@@ -18,15 +18,15 @@ Global
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = NsCop.CodeIssueProvider\\NsCop.CodeIssueProvider.csproj
-		SccProjectName1 = NsCop.CodeIssueProvider
-		SccLocalPath1 = NsCop.CodeIssueProvider
-		SccProjectUniqueName2 = NsCop.Core\\NsCop.Core.csproj
-		SccProjectName2 = NsCop.Core
-		SccLocalPath2 = NsCop.Core
-		SccProjectUniqueName3 = NsCop.MsBuildTask\\NsCop.MsBuildTask.csproj
-		SccProjectName3 = NsCop.MsBuildTask
-		SccLocalPath3 = NsCop.MsBuildTask
+		SccProjectUniqueName1 = NsDepCop.CodeIssueProvider\\NsDepCop.CodeIssueProvider.csproj
+		SccProjectName1 = NsDepCop.CodeIssueProvider
+		SccLocalPath1 = NsDepCop.CodeIssueProvider
+		SccProjectUniqueName2 = NsDepCop.Core\\NsDepCop.Core.csproj
+		SccProjectName2 = NsDepCop.Core
+		SccLocalPath2 = NsDepCop.Core
+		SccProjectUniqueName3 = NsDepCop.MsBuildTask\\NsDepCop.MsBuildTask.csproj
+		SccProjectName3 = NsDepCop.MsBuildTask
+		SccLocalPath3 = NsDepCop.MsBuildTask
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

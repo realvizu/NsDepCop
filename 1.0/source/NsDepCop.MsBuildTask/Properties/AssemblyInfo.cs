@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NsCop.Core")]
-[assembly: AssemblyDescription("The core library of the NsCop tool.")]
+[assembly: AssemblyTitle("NsDepCop.MsBuildTask")]
+[assembly: AssemblyDescription("Custom MsBuild task that runs the NsDepCop tool as part of the build process.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Codartis")]
-[assembly: AssemblyProduct("NsCop")]
+[assembly: AssemblyProduct("NsDepCop")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("be90e2f2-d0c4-4745-83a4-81727dbd7a6e")]
+[assembly: Guid("b8b21b12-66cc-4334-8508-2bfc927058bd")]
 
 // Version information for an assembly consists of the following four values:
 //

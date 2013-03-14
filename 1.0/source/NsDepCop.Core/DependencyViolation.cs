@@ -1,6 +1,6 @@
 ﻿using Roslyn.Compilers.Common;
 
-namespace Codartis.NsCop.Core
+namespace Codartis.NsDepCop.Core
 {
     /// <summary>
     /// Represents the info that describes a namespace dependency violation.

@@ -6,20 +6,20 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Codartis.NsCop.Core
+namespace Codartis.NsDepCop.Core
 {
     /// <summary>
-    /// Represents the configuration of the NsCop tool.
+    /// Represents the configuration of the tool.
     /// </summary>
-    public class NsCopConfig
+    public class NsDepCopConfig
     {
         /// <summary>
-        /// A value indicating whether NsCop analysis is enabled.
+        /// A value indicating whether analysis is enabled.
         /// </summary>
         public bool IsEnabled { get; private set; }
 
         /// <summary>
-        /// A value representing the severity of an NsCop issue.
+        /// A value representing the severity of an issue.
         /// </summary>
         public CodeIssueKind CodeIssueKind { get; private set; }
 
@@ -33,7 +33,7 @@ namespace Codartis.NsCop.Core
         /// Initializes a new instance with default values.
         /// </summary>
         /// <remarks>The analysis is disabled by default.</remarks>
-        public NsCopConfig()
+        public NsDepCopConfig()
         {
             IsEnabled = Constants.DEFAULT_IS_ENABLED_VALUE;
             CodeIssueKind = Constants.DEFAULT_CODE_ISSUE_KIND;
@@ -43,7 +43,7 @@ namespace Codartis.NsCop.Core
         /// <summary>
         /// Initializes a new instance with default values and a collection of dependencies.
         /// </summary>
-        public NsCopConfig(IEnumerable<Dependency> allowedDependencies)
+        public NsDepCopConfig(IEnumerable<Dependency> allowedDependencies)
             : this()
         {
             allowedDependencies.EmptyIfNull().ToList()
@@ -53,7 +53,7 @@ namespace Codartis.NsCop.Core
         /// <summary>
         /// Initializes a new instance from a config file.
         /// </summary>
-        public NsCopConfig(string configFilePath)
+        public NsDepCopConfig(string configFilePath)
             : this()
         {
             LoadConfigFromFile(configFilePath);
@@ -104,7 +104,7 @@ namespace Codartis.NsCop.Core
             result.Add("*");
 
             // Roslyn represents the global namespace like this: "<global namespace>".
-            // NsCop represents it like this: "."
+            // This tool represents it like this: "."
             if (namespaceName.StartsWith("<"))
             {
                 // If the namespace is the global namespace then substitute it with '.'
@@ -143,18 +143,18 @@ namespace Codartis.NsCop.Core
         /// <param name="configFilePath">The config file with full path.</param>
         private void LoadConfigFromFile(string configFilePath)
         {
-            // If no config file then NsCop is switched off for the given project 
+            // If no config file then analysis is switched off for the given project 
             // (by the default IsEnabled value which is false).
             if (!File.Exists(configFilePath))
                 return;
 
-            // Validate that it's an xml document and the root node is NsCopConfig.
+            // Validate that it's an xml document and the root node is NsDepCopConfig.
             var configXml = XDocument.Load(configFilePath);
-            if (configXml == null || configXml.Element("NsCopConfig") == null)
-                throw new Exception(string.Format("Error in NsCop config file '{0}', NsCopConfig root element not found.", configFilePath));
+            if (configXml == null || configXml.Element("NsDepCopConfig") == null)
+                throw new Exception(string.Format("Error in NsDepCop config file '{0}', NsDepCopConfig root element not found.", configFilePath));
 
             // Parse IsEnabled attribute, if exists.
-            var isEnabledAttribute = configXml.Element("NsCopConfig").Attribute("IsEnabled");
+            var isEnabledAttribute = configXml.Element("NsDepCopConfig").Attribute("IsEnabled");
             if (isEnabledAttribute != null)
             {
                 bool isEnabled;
@@ -170,7 +170,7 @@ namespace Codartis.NsCop.Core
             }
 
             // Parse CodeIssueKind attribute, if exists.
-            var codeIssueKindAttribute = configXml.Element("NsCopConfig").Attribute("CodeIssueKind");
+            var codeIssueKindAttribute = configXml.Element("NsDepCopConfig").Attribute("CodeIssueKind");
             if (codeIssueKindAttribute != null)
             {
                 CodeIssueKind codeIssueKind;
@@ -186,7 +186,7 @@ namespace Codartis.NsCop.Core
             }
 
             // Parse Allowed elements.
-            foreach (var xElement in configXml.Element("NsCopConfig").Elements("Allowed"))
+            foreach (var xElement in configXml.Element("NsDepCopConfig").Elements("Allowed"))
             {
                 var xAttributeFrom = xElement.Attribute("From");
                 if (xAttributeFrom == null || xAttributeFrom.Value == null)

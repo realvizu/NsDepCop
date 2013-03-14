@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NsCop.CodeIssue")]
-[assembly: AssemblyDescription("Visual Studio extension that runs the NsCop tool on the source code loaded into the editor. Requires Roslyn.")]
+[assembly: AssemblyTitle("NsDepCop.CodeIssueProvider")]
+[assembly: AssemblyDescription("Visual Studio extension that runs the NsDepCop tool on the source code loaded into the editor. Requires Roslyn.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Codartis")]
-[assembly: AssemblyProduct("NsCop")]
+[assembly: AssemblyProduct("NsDepCop")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

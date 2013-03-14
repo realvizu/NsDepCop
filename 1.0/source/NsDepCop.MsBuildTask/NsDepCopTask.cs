@@ -1,4 +1,4 @@
-﻿using Codartis.NsCop.Core;
+﻿using Codartis.NsDepCop.Core;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Roslyn.Compilers.CSharp;
@@ -8,13 +8,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace Codartis.NsCop.MsBuildTask
+namespace Codartis.NsDepCop.MsBuildTask
 {
     /// <summary>
     /// Implements a custom MsBuild task that performs namespace dependency analysis 
     /// and reports disallowed dependencies.
     /// </summary>
-    public class NsCopTask : Task 
+    public class NsDepCopTask : Task 
     {
         /// <summary>
         /// MsBuild task item list that contains the name and full path 
@@ -43,7 +43,7 @@ namespace Codartis.NsCop.MsBuildTask
         /// <returns>True if the run was successful. False if it failed.</returns>
         public override bool Execute()
         {
-            Debug.WriteLine("NsCopTask.Execute started...", Constants.TOOL_NAME);
+            Debug.WriteLine("Execute started...", Constants.TOOL_NAME);
 
             try
             {
@@ -60,17 +60,17 @@ namespace Codartis.NsCop.MsBuildTask
                 // No config file means no analysis.
                 if (!File.Exists(configFileName))
                 {
-                    Log.LogMessage(MessageImportance.High, "NsCop: No config file found, analysis skipped.");
+                    Log.LogMessage(MessageImportance.High, Constants.TOOL_NAME + ": No config file found, analysis skipped.");
                     return true;
                 }
 
                 // Read the config.
-                var config = new NsCopConfig(configFileName);
+                var config = new NsDepCopConfig(configFileName);
 
                 // If analysis is switched off in the config file, then bail out.
                 if (!config.IsEnabled)
                 {
-                    Log.LogMessage(MessageImportance.High, "NsCop: Analysis is disabled in the nscop config file.");
+                    Log.LogMessage(MessageImportance.High, Constants.TOOL_NAME + ": Analysis is disabled in the nsdepcop config file.");
                     return true;
                 }
 
@@ -82,21 +82,21 @@ namespace Codartis.NsCop.MsBuildTask
                 Debug.WriteLine(string.Format("  ProjectParametersAsString='{0}'", projectParametersAsString), Constants.TOOL_NAME);
 
                 // Create the Roslyn workspace and select the project (there can be only on project).
-                var workspace = Workspace.LoadProjectFromCommandLineArguments("NsCopTaskProject", "C#", 
+                var workspace = Workspace.LoadProjectFromCommandLineArguments("NsDepCopTaskProject", "C#", 
                     projectParametersAsString, BaseDirectory.ItemSpec);
                 var project = workspace.CurrentSolution.Projects.First();
                 
                 // Analyse all documents in the project.
                 foreach (var document in project.Documents)
                 {
-                    Log.LogMessage("NsCop: Analysing document: '{0}'.", document.FilePath);
+                    Log.LogMessage(Constants.TOOL_NAME + ": Analysing document: '{0}'.", document.FilePath);
 
-                    var nsCopSyntaxWalker = new NsCopSyntaxWalker(document.GetSemanticModel(), config);
-                    nsCopSyntaxWalker.Visit(document.GetSyntaxRoot() as SyntaxNode);
+                    var syntaxWalker = new NsDepCopSyntaxWalker(document.GetSemanticModel(), config);
+                    syntaxWalker.Visit(document.GetSyntaxRoot() as SyntaxNode);
 
                     // Log the result of the analysis.
                     var issuesReported = 0;
-                    foreach (var dependencyViolation in nsCopSyntaxWalker.DependencyViolations)
+                    foreach (var dependencyViolation in syntaxWalker.DependencyViolations)
                     {
                         var message = dependencyViolation.ToString();
                         var lineSpan = document.GetSyntaxTree().GetLineSpan(dependencyViolation.SyntaxNode.Span, true);
@@ -104,24 +104,24 @@ namespace Codartis.NsCop.MsBuildTask
                         switch (config.CodeIssueKind)
                         {
                             case (Roslyn.Services.CodeIssueKind.Error):
-                                BuildEngine.LogErrorEvent(new BuildErrorEventArgs(null, Constants.CODE_NSCOP_ISSUE, lineSpan.Path, 
+                                BuildEngine.LogErrorEvent(new BuildErrorEventArgs(null, Constants.CODE_ISSUE, lineSpan.Path, 
                                     lineSpan.StartLinePosition.Line+1, lineSpan.StartLinePosition.Character+1, 
                                     lineSpan.EndLinePosition.Line+1, lineSpan.EndLinePosition.Character+1,
-                                    message, Constants.CODE_NSCOP_ISSUE, Constants.TOOL_NAME));
+                                    message, Constants.CODE_ISSUE, Constants.TOOL_NAME));
                                 break;
 
                             case (Roslyn.Services.CodeIssueKind.Warning):
-                                BuildEngine.LogWarningEvent(new BuildWarningEventArgs(null, Constants.CODE_NSCOP_ISSUE, lineSpan.Path,
+                                BuildEngine.LogWarningEvent(new BuildWarningEventArgs(null, Constants.CODE_ISSUE, lineSpan.Path,
                                     lineSpan.StartLinePosition.Line + 1, lineSpan.StartLinePosition.Character + 1,
                                     lineSpan.EndLinePosition.Line + 1, lineSpan.EndLinePosition.Character + 1,
-                                    message, Constants.CODE_NSCOP_ISSUE, Constants.TOOL_NAME));
+                                    message, Constants.CODE_ISSUE, Constants.TOOL_NAME));
                                 break;
 
                             default:
-                                BuildEngine.LogMessageEvent(new BuildMessageEventArgs(null, Constants.CODE_NSCOP_ISSUE, lineSpan.Path,
+                                BuildEngine.LogMessageEvent(new BuildMessageEventArgs(null, Constants.CODE_ISSUE, lineSpan.Path,
                                     lineSpan.StartLinePosition.Line + 1, lineSpan.StartLinePosition.Character + 1,
                                     lineSpan.EndLinePosition.Line + 1, lineSpan.EndLinePosition.Character + 1,
-                                    message, Constants.CODE_NSCOP_ISSUE, Constants.TOOL_NAME, MessageImportance.High));
+                                    message, Constants.CODE_ISSUE, Constants.TOOL_NAME, MessageImportance.High));
                                 break;
                         }
 
@@ -131,7 +131,7 @@ namespace Codartis.NsCop.MsBuildTask
                         if (issuesReported == Constants.MAX_ISSUE_REPORTED)
                         {
                             BuildEngine.LogWarningEvent(new BuildWarningEventArgs(null, Constants.CODE_TOO_MANY_ISSUES, null, 0, 0, 0, 0,
-                                "Too many NsCop issues, analysis was stopped.", Constants.CODE_TOO_MANY_ISSUES, Constants.TOOL_NAME));
+                                "Too many NsDepCop issues, analysis was stopped.", Constants.CODE_TOO_MANY_ISSUES, Constants.TOOL_NAME));
                             return true;
                         }
                     }
@@ -139,7 +139,7 @@ namespace Codartis.NsCop.MsBuildTask
             }
             catch (Exception e)
             {
-                Log.LogError("NsCop: {0}", e);
+                Log.LogError(Constants.TOOL_NAME + ": {0}", e);
                 return false;
             }
 

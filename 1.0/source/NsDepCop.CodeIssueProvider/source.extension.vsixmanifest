@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Vsix Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
-  <Identifier Id="NsCop.CodeIssueProvider..cbaf7bb9-5543-4476-9eee-f83a9233fa41">
-    <Name>NsCop.CodeIssueProvider</Name>
+  <Identifier Id="NsDepCop.CodeIssueProvider..cbaf7bb9-5543-4476-9eee-f83a9233fa41">
+    <Name>NsDepCop.CodeIssueProvider</Name>
     <Author>Codartis</Author>
     <Version>1.0</Version>
     <Description xml:space="preserve">Analyses source code and reports namespace dependency issues based on user defined dependency rules. Requires Microsoft Roslyn CTP (oct.2012) to run.</Description>

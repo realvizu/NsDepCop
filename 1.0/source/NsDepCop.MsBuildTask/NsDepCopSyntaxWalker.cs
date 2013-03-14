@@ -1,16 +1,16 @@
-﻿using Codartis.NsCop.Core;
+﻿using Codartis.NsDepCop.Core;
 using Roslyn.Compilers.Common;
 using Roslyn.Compilers.CSharp;
 using System;
 using System.Collections.Generic;
 
-namespace Codartis.NsCop.MsBuildTask
+namespace Codartis.NsDepCop.MsBuildTask
 {
     /// <summary>
     /// Implements a syntax walker that traverses the syntax tree 
     /// and invokes the analysis logic for every eligible node.
     /// </summary>
-    public class NsCopSyntaxWalker : SyntaxWalker
+    public class NsDepCopSyntaxWalker : SyntaxWalker
     {
         /// <summary>
         /// The semantic model of the current document.
@@ -20,7 +20,7 @@ namespace Codartis.NsCop.MsBuildTask
         /// <summary>
         /// The configuration of the tool. Containes the dependency rules.
         /// </summary>
-        private NsCopConfig _config;
+        private NsDepCopConfig _config;
 
         /// <summary>
         /// The collection of dependency violations that the syntax walker found.
@@ -32,7 +32,7 @@ namespace Codartis.NsCop.MsBuildTask
         /// </summary>
         /// <param name="semanticModel">The semantic model for the document.</param>
         /// <param name="config">The configuration of the tool.</param>
-        public NsCopSyntaxWalker(ISemanticModel semanticModel, NsCopConfig config)
+        public NsDepCopSyntaxWalker(ISemanticModel semanticModel, NsDepCopConfig config)
         {
             if (semanticModel == null)
                 throw new ArgumentNullException("semanticModel");

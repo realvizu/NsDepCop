@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 
-namespace Codartis.NsCop.Core
+namespace Codartis.NsDepCop.Core
 {
     /// <summary>
     /// Represents a dependency between 2 namespaces.

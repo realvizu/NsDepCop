@@ -1,4 +1,4 @@
-using Codartis.NsCop.Core;
+using Codartis.NsDepCop.Core;
 using Roslyn.Compilers;
 using Roslyn.Compilers.Common;
 using Roslyn.Compilers.CSharp;
@@ -9,12 +9,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
-namespace Codartis.NsCop.CodeIssueProvider
+namespace Codartis.NsDepCop.CodeIssueProvider
 {
-    [ExportCodeIssueProvider("NsCop.CodeIssueProvider", LanguageNames.CSharp)]
-    class NsCopCodeIssueProvider : ICodeIssueProvider
+    [ExportCodeIssueProvider("NsDepCop.CodeIssueProvider", LanguageNames.CSharp)]
+    class NsDepCopCodeIssueProvider : ICodeIssueProvider
     {
-        private NsCopConfig _config;
+        private NsDepCopConfig _config;
         private string _configPath;
         private bool _configFileExists;
         private DateTime _configLastReadUtc;
@@ -54,7 +54,7 @@ namespace Codartis.NsCop.CodeIssueProvider
             if (_config == null || File.GetLastWriteTimeUtc(_configPath) > _configLastReadUtc)
             {
                 _configLastReadUtc = DateTime.UtcNow;
-                _config = new NsCopConfig(_configPath);
+                _config = new NsDepCopConfig(_configPath);
             }
 
             // If analysis is switched off in the config file, then bail out.
