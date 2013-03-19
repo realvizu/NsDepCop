@@ -51,7 +51,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
-    <CopyVsixExtensionLocation>C:\Users\Vizu\AppData\Local\Microsoft\VisualStudio\11.0Exp\Extensions\Codartis\NsDepCop.CodeIssueProvider\1.0</CopyVsixExtensionLocation>
+    <CopyVsixExtensionLocation>C:\Users\Vizu\AppData\Local\Microsoft\VisualStudio\11.0\Extensions\Codartis\NsDepCop.CodeIssueProvider\1.0</CopyVsixExtensionLocation>
+    <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -108,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NsDepCopCodeIssueProvider.cs" />
+    <Compile Include="ConfigHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

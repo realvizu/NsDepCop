@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="5325A783-496F-435A-8F93-1AAA0453ABCE" Name="NsDepCop" Language="1033" Version="1.0.0.0" Manufacturer="Codartis" UpgradeCode="56a21729-da73-4571-82e2-ecf4bb5caf7a">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of NsDepCop is already installed." />
+    
+    <Media Id="1" Cabinet="NsDepCop.cab" EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="Feature_MsBuildTask" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="NsDepCop" />
+      </Directory>
+    </Directory>
+
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="Component_MsBuildTask" Guid="BA43D9D3-685E-49F6-B9E4-198D7BFEDDB5">
+        <File Source="$(var.NsDepCop.MsBuildTask.TargetPath)"   />
+      </Component>
+      <Component Id="Component_Core" Guid="498660D0-F175-4D51-9BE7-23A0492A56F7">
+        <File Source="$(var.NsDepCop.Core.TargetPath)" />
+      </Component>
+    </ComponentGroup>
+
+    <UIRef Id="WixUI_Minimal" />
+  </Product>
+</Wix>
