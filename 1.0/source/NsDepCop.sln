@@ -14,9 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "NsDepCop.Setup", "NsDepCop.Setup\NsDepCop.Setup.wixproj", "{5298F6D3-02F9-4791-9679-24C6C7B88C54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Setup.CustomActions", "NsDepCop.Setup.CustomActions\NsDepCop.Setup.CustomActions.csproj", "{E8DEF64A-8EAB-4023-8F0E-23E2D9580596}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
 		SccLocalPath0 = .
@@ -32,6 +34,9 @@ Global
 		SccProjectUniqueName4 = NsDepCop.Setup\\NsDepCop.Setup.wixproj
 		SccProjectName4 = NsDepCop.Setup
 		SccLocalPath4 = NsDepCop.Setup
+		SccProjectUniqueName5 = NsDepCop.Setup.CustomActions\\NsDepCop.Setup.CustomActions.csproj
+		SccProjectName5 = NsDepCop.Setup.CustomActions
+		SccLocalPath5 = NsDepCop.Setup.CustomActions
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +87,16 @@ Global
 		{5298F6D3-02F9-4791-9679-24C6C7B88C54}.Release|Mixed Platforms.Build.0 = Release|x86
 		{5298F6D3-02F9-4791-9679-24C6C7B88C54}.Release|x86.ActiveCfg = Release|x86
 		{5298F6D3-02F9-4791-9679-24C6C7B88C54}.Release|x86.Build.0 = Release|x86
+		{E8DEF64A-8EAB-4023-8F0E-23E2D9580596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8DEF64A-8EAB-4023-8F0E-23E2D9580596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8DEF64A-8EAB-4023-8F0E-23E2D9580596}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E8DEF64A-8EAB-4023-8F0E-23E2D9580596}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E8DEF64A-8EAB-4023-8F0E-23E2D9580596}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E8DEF64A-8EAB-4023-8F0E-23E2D9580596}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8DEF64A-8EAB-4023-8F0E-23E2D9580596}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8DEF64A-8EAB-4023-8F0E-23E2D9580596}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E8DEF64A-8EAB-4023-8F0E-23E2D9580596}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E8DEF64A-8EAB-4023-8F0E-23E2D9580596}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

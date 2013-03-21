@@ -1,0 +1,1 @@
+msiexec /i bin\debug\NsDepCop.msi /l*v installLog.txt

@@ -1,31 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="5325A783-496F-435A-8F93-1AAA0453ABCE" Name="NsDepCop" Language="1033" Version="1.0.0.0" Manufacturer="Codartis" UpgradeCode="56a21729-da73-4571-82e2-ecf4bb5caf7a">
-    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 
-    <MajorUpgrade DowngradeErrorMessage="A newer version of NsDepCop is already installed." />
+  <Product Id="5325A783-496F-435A-8F93-1AAA0453ABCE"
+           UpgradeCode="56a21729-da73-4571-82e2-ecf4bb5caf7a"
+           Name="NsDepCop - Namespace dependency checker tool for C#"
+           Manufacturer="Codartis"
+           Language="1033"
+           Version="!(bind.assemblyVersion.File_NsDepCop.MsBuildTask.dll)" >
     
-    <Media Id="1" Cabinet="NsDepCop.cab" EmbedCab="yes" />
+    <Package InstallerVersion="200" 
+             InstallScope="perMachine"
+             Compressed="yes"
+             InstallPrivileges="elevated" />
 
-    <Feature Id="ProductFeature" Title="Feature_MsBuildTask" Level="1">
-      <ComponentGroupRef Id="ProductComponents" />
+    <Media Id="1" 
+           Cabinet="NsDepCop.cab" 
+           EmbedCab="yes" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
+
+    <Binary Id="NsDepCop.Setup.CustomActions"
+            SourceFile="$(var.NsDepCop.Setup.CustomActions.TargetDir)\$(var.NsDepCop.Setup.CustomActions.TargetName).CA.dll" />
+
+    <CustomAction Id="AddNsDepCopTaskToTargetsFile"
+                  BinaryKey="NsDepCop.Setup.CustomActions"
+                  DllEntry="AddNsDepCopTaskToTargetsFile"
+                  Execute="deferred"
+                  Return="check" />
+
+    <CustomAction Id="RemoveNsDepCopTaskFromTargetsFile"
+                  BinaryKey="NsDepCop.Setup.CustomActions"
+                  DllEntry="RemoveNsDepCopTaskFromTargetsFile"
+                  Execute="deferred"
+                  Return="ignore" />
+
+    <InstallExecuteSequence>
+      <Custom Action="AddNsDepCopTaskToTargetsFile" After="InstallFiles">
+        <![CDATA[
+          REMOVE <> "ALL"
+        ]]>
+      </Custom>
+      <Custom Action="RemoveNsDepCopTaskFromTargetsFile" After="RemoveFiles">
+        REMOVE = "ALL"
+      </Custom>
+    </InstallExecuteSequence>
+    
+    <Feature Id="Feature_MsBuildTask" Title="NsDepCop MsBuildTask" Level="1">
+      <ComponentGroupRef Id="ComponentGroup_MsBuildTask" />
     </Feature>
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="NsDepCop" />
+        <Directory Id="Folder_MsBuild" Name="MSBuild">
+          <Directory Id="Folder_MsBuildVersion" Name="v4.0"/>
+        </Directory>
       </Directory>
     </Directory>
 
-    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-      <Component Id="Component_MsBuildTask" Guid="BA43D9D3-685E-49F6-B9E4-198D7BFEDDB5">
-        <File Source="$(var.NsDepCop.MsBuildTask.TargetPath)"   />
+    <ComponentGroup Id="ComponentGroup_MsBuildTask" 
+                    Directory="Folder_MsBuildVersion">
+      <Component Id="Component_NsDepCop.MsBuildTask.dll" 
+                 Guid="BA43D9D3-685E-49F6-B9E4-198D7BFEDDB5">
+        <File Id="File_NsDepCop.MsBuildTask.dll"
+              Source="$(var.NsDepCop.MsBuildTask.TargetPath)" 
+              Assembly=".net"
+              AssemblyApplication="File_NsDepCop.MsBuildTask.dll"
+              KeyPath="yes"  />
       </Component>
-      <Component Id="Component_Core" Guid="498660D0-F175-4D51-9BE7-23A0492A56F7">
-        <File Source="$(var.NsDepCop.Core.TargetPath)" />
+      <Component Id="Component_NsDepCop.Core.dll" 
+                 Guid="498660D0-F175-4D51-9BE7-23A0492A56F7">
+        <File Id="File_NsDepCop.Core.dll" 
+              Source="$(var.NsDepCop.Core.TargetPath)"
+              KeyPath="yes" />
       </Component>
     </ComponentGroup>
 
     <UIRef Id="WixUI_Minimal" />
+    
   </Product>
+  
 </Wix>
