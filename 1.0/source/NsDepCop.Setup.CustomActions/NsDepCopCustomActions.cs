@@ -6,16 +6,32 @@ using Microsoft.Deployment.WindowsInstaller;
 
 namespace Codartis.NsDepCop.Setup.CustomActions
 {
+    /// <summary>
+    /// This class implements custom install/uninstall actions.
+    /// </summary>
     public static class NsDepCopCustomActions
     {
+        /// <summary>
+        /// Modifies an MSBuild targets file to insert the NsDepCop custom action into the C# projects's build workflow.
+        /// </summary>
+        /// <param name="session">Windows installer context object.</param>
+        /// <returns>
+        /// ActionResult.Success if successful. 
+        /// ActionResult.Failure if failed. 
+        /// ActionResult.NotExecuted if the msbuild file could not be safely modified because 'BuildDependsOn' had custom content.
+        /// In this case the msbuild file must be edited manually (add 'NsDepCop' to 'BuildDependsOn').
+        /// </returns>
+        /// <remarks>
+        /// The full path of the MsBuild targets file to be modified must be given in CustomActionData["MSBUILDFILETOMODIFY"].
+        /// </remarks>
         [CustomAction]
-        public static ActionResult AddNsDepCopTaskToTargetsFile(Session session)
+        public static ActionResult AddNsDepCopToMsBuildWorkflow(Session session)
         {
             ActionResult result = ActionResult.Success;
 
             try
             {
-                var filename = session.CustomActionData["TARGETSFILEPATH"];
+                var filename = session.CustomActionData["MSBUILDFILETOMODIFY"];
                 if (string.IsNullOrWhiteSpace(filename))
                     return ActionResult.Failure;
 
@@ -40,14 +56,27 @@ namespace Codartis.NsDepCop.Setup.CustomActions
             return result;
         }
 
+        /// <summary>
+        /// Modifies an MSBuild targets file to remove the NsDepCop custom action from the C# projects's build workflow.
+        /// </summary>
+        /// <param name="session">Windows installer context object.</param>
+        /// <returns>
+        /// ActionResult.Success if successful. 
+        /// ActionResult.Failure if failed. 
+        /// ActionResult.NotExecuted if the msbuild file could not be safely modified because 'BuildDependsOn' had custom content.
+        /// In this case the msbuild file must be edited manually (remove 'NsDepCop' from 'BuildDependsOn').
+        /// </returns>
+        /// <remarks>
+        /// The full path of the MsBuild targets file to be modified must be given in CustomActionData["MSBUILDFILETOMODIFY"].
+        /// </remarks>
         [CustomAction]
-        public static ActionResult RemoveNsDepCopTaskFromTargetsFile(Session session)
+        public static ActionResult RemoveNsDepCopFromMsBuildWorkflow(Session session)
         {
             ActionResult result = ActionResult.Success;
 
             try
             {
-                var filename = session.CustomActionData["TARGETSFILEPATH"];
+                var filename = session.CustomActionData["MSBUILDFILETOMODIFY"];
                 if (string.IsNullOrWhiteSpace(filename))
                     return ActionResult.Failure;
 
@@ -76,6 +105,12 @@ namespace Codartis.NsDepCop.Setup.CustomActions
             return result;
         }
 
+        /// <summary>
+        /// Load a file into an XDocument. If the file does not exists then creates an empty msbuild project document.
+        /// </summary>
+        /// <param name="filename">The file to be loaded.</param>
+        /// <param name="session">Windows installer context object (for logging).</param>
+        /// <returns>An XDocument object.</returns>
         private static XDocument LoadOrCreateXDocument(string filename, Session session)
         {
             XDocument xDocument = null;
@@ -99,6 +134,14 @@ namespace Codartis.NsDepCop.Setup.CustomActions
             return xDocument;
         }
 
+        /// <summary>
+        /// Adds the BuildDependsOn property group to an msbuild project document and sets NsDepCop as the last action.
+        /// If the property group already exists and contains NsDepCop then does nothing.
+        /// If the property group already exists without NsDepCop then the modification fails.
+        /// </summary>
+        /// <param name="xDocument">An msbuild project document.</param>
+        /// <param name="session">Windows installer context object (for logging).</param>
+        /// <returns>True if the modification was successful or unnecessary. False if the modification failed.</returns>
         private static bool AddBuildDependsOnPropertyGroup(XDocument xDocument, Session session)
         {
             var root = xDocument.Root;
@@ -132,6 +175,14 @@ namespace Codartis.NsDepCop.Setup.CustomActions
             return true;
         }
 
+        /// <summary>
+        /// Removes the BuildDependsOn property group from an msbuild project document if it contains no other content than what setup created.
+        /// If the property group is missing then does nothing.
+        /// If the property group exists with other than the setup-created content then the modification fails.
+        /// </summary>
+        /// <param name="xDocument">An msbuild project document.</param>
+        /// <param name="session">Windows installer context object (for logging).</param>
+        /// <returns>True if the modification was successful or unnecessary. False if the modification failed.</returns>
         private static bool RemoveBuildDependsOnPropertyGroup(XDocument xDocument, Session session)
         {
             var root = xDocument.Root;
@@ -159,6 +210,11 @@ namespace Codartis.NsDepCop.Setup.CustomActions
             return true;
         }
 
+        /// <summary>
+        /// Adds a UsingTask element defining the NsDepCop task to the msbuild project document.
+        /// </summary>
+        /// <param name="xDocument">An msbuild project document.</param>
+        /// <param name="session">Windows installer context object (for logging).</param>
         private static void AddUsingTaskElement(XDocument xDocument, Session session)
         {
             var root = xDocument.Root;
@@ -179,6 +235,11 @@ namespace Codartis.NsDepCop.Setup.CustomActions
             }
         }
 
+        /// <summary>
+        /// Removes the UsingTask element defining the NsDepCop task from the msbuild project.
+        /// </summary>
+        /// <param name="xDocument">An msbuild project document.</param>
+        /// <param name="session">Windows installer context object (for logging).</param>
         private static void RemoveUsingTaskElement(XDocument xDocument, Session session)
         {
             var root = xDocument.Root;
@@ -197,6 +258,11 @@ namespace Codartis.NsDepCop.Setup.CustomActions
             }
         }
 
+        /// <summary>
+        /// Adds the NsDepCop target element to the msbuild project document.
+        /// </summary>
+        /// <param name="xDocument">An msbuild project document.</param>
+        /// <param name="session">Windows installer context object (for logging).</param>
         private static void AddNsDepCopTarget(XDocument xDocument, Session session)
         {
             var root = xDocument.Root;
@@ -222,6 +288,11 @@ namespace Codartis.NsDepCop.Setup.CustomActions
             }
         }
 
+        /// <summary>
+        /// Removes the NsDepCop target element from the msbuild project document.
+        /// </summary>
+        /// <param name="xDocument">An msbuild project document.</param>
+        /// <param name="session">Windows installer context object (for logging).</param>
         private static void RemoveNsDepCopTarget(XDocument xDocument, Session session)
         {
             var root = xDocument.Root;

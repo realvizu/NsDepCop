@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        
+        <Feature Id="Feature_MsBuildTask"
+                 Title="Integrate NsDepCop with MSBuild"
+                 Description="Installs NsDepCop as a custom MSBuild task and inserts it into the C# project build workflow as the last step before the 'Build' target."
+                 Level="1"
+                 InstallDefault="local"
+                 TypicalDefault="install"
+                 AllowAdvertise="no">
+            <ComponentGroupRef Id="ComponentGroup_MsBuildTask" />
+        </Feature>
+
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="Folder_MsBuild" Name="MSBuild">
+                    <Directory Id="Folder_MsBuildVersion" Name="v4.0"/>
+                </Directory>
+            </Directory>
+        </Directory>
+
+        <ComponentGroup Id="ComponentGroup_MsBuildTask"
+                        Directory="Folder_MsBuildVersion">
+            
+            <Component Id="Component_NsDepCop.MsBuildTask.dll"
+                       Guid="BA43D9D3-685E-49F6-B9E4-198D7BFEDDB5">
+                <File Id="File_NsDepCop.MsBuildTask.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetPath)"
+                      Assembly=".net"
+                      AssemblyApplication="File_NsDepCop.MsBuildTask.dll"
+                      KeyPath="yes"  />
+            </Component>
+            
+            <Component Id="Component_NsDepCop.Core.dll"
+                       Guid="498660D0-F175-4D51-9BE7-23A0492A56F7">
+                <File Id="File_NsDepCop.Core.dll"
+                      Source="$(var.NsDepCop.Core.TargetPath)"
+                      KeyPath="yes" />
+            </Component>
+            
+        </ComponentGroup>
+
+    </Fragment>
+</Wix>

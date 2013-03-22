@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <FeatureGroup Id="FeatureGroup_Prerequisites"/>
+        
+        <PropertyRef Id="NETFRAMEWORK40FULL"/>
+        <Condition Message='This setup requires .NET Framework 4.0 (full) installed.'>
+            <![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+        </Condition>
+
+        <Property Id="ROSLYN_INSTALLED_VERSION">
+            <RegistrySearch Id="RegSearch_Roslyn"
+                            Type="raw"
+                            Root="HKLM"
+                            Key='Software\Classes\Installer\Products\EBC4B2C91F61DD04CBBF08BC11D290D2'
+                            Name='Version' />
+        </Property>
+        <Condition Message="This setup requires 'Microsoft Roslyn CTP - September 2012' to be installed.">
+            <![CDATA[Installed OR ROSLYN_INSTALLED_VERSION="#16929194"]]>
+        </Condition>
+        
+    </Fragment>
+</Wix>

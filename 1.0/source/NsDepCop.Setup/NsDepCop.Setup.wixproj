@@ -26,7 +26,11 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CustomActions.wxs" />
+    <Compile Include="Feature_MSBuildTask.wxs" />
+    <Compile Include="Prerequisites.wxs" />
     <Compile Include="Product.wxs" />
+    <Compile Include="UI.wxs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">

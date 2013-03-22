@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+
+        <FeatureGroup Id="FeatureGroup_CustomActions"/>
+        
+        <Binary Id="CustomActions"
+                SourceFile="$(var.NsDepCop.Setup.CustomActions.TargetDir)\$(var.NsDepCop.Setup.CustomActions.TargetName).CA.dll" />
+
+        <CustomAction Id="AddNsDepCopToMsBuildWorkflow"
+                      BinaryKey="CustomActions"
+                      DllEntry="AddNsDepCopToMsBuildWorkflow"
+                      Execute="deferred"
+                      Return="check" />
+
+        <CustomAction Id="SetData_AddNsDepCopToMsBuildWorkflow"
+                      Return="check"
+                      Property="AddNsDepCopToMsBuildWorkflow"
+                      Value="MSBUILDFILETOMODIFY=[Folder_MsBuildVersion]Custom.After.Microsoft.CSharp.targets" />
+
+        <CustomAction Id="RemoveNsDepCopFromMsBuildWorkflow"
+                      BinaryKey="CustomActions"
+                      DllEntry="RemoveNsDepCopFromMsBuildWorkflow"
+                      Execute="deferred"
+                      Return="ignore" />
+
+        <CustomAction Id="SetData_RemoveNsDepCopFromMsBuildWorkflow"
+                      Return="check"
+                      Property="RemoveNsDepCopFromMsBuildWorkflow"
+                      Value="MSBUILDFILETOMODIFY=[Folder_MsBuildVersion]Custom.After.Microsoft.CSharp.targets" />
+
+        <InstallExecuteSequence>
+            <Custom Action="AddNsDepCopToMsBuildWorkflow" After="InstallFiles"><![CDATA[REMOVE <> "ALL"]]></Custom>
+            <Custom Action="SetData_AddNsDepCopToMsBuildWorkflow" Before="AddNsDepCopToMsBuildWorkflow"/>
+
+            <Custom Action="RemoveNsDepCopFromMsBuildWorkflow" After="RemoveFiles">REMOVE = "ALL"</Custom>
+            <Custom Action="SetData_RemoveNsDepCopFromMsBuildWorkflow" Before="RemoveNsDepCopFromMsBuildWorkflow"/>
+        </InstallExecuteSequence>
+
+    </Fragment>
+</Wix>
