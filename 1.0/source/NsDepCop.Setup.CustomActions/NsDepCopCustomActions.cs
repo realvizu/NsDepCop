@@ -38,7 +38,18 @@ namespace Codartis.NsDepCop.Setup.CustomActions
                 var xDocument = LoadOrCreateXDocument(filename, session);
 
                 if (!AddBuildDependsOnPropertyGroup(xDocument, session))
+                {
+                    var record = new Record
+                    {
+                        FormatString = string.Format(
+                            "Setup is unable to add NsDepCop target to the C# build workflow, " +
+                            "because of custom content in {0}\n" +
+                            "You have to add it manually. See the readme file for more info. " +
+                            "Setup continues.", filename)
+                    };
+                    session.Message(InstallMessage.Warning, record);
                     result = ActionResult.NotExecuted;
+                }
 
                 AddUsingTaskElement(xDocument, session);
 
@@ -87,7 +98,18 @@ namespace Codartis.NsDepCop.Setup.CustomActions
                 var xDocument = XDocument.Load(filename);
 
                 if (!RemoveBuildDependsOnPropertyGroup(xDocument, session))
+                {
+                    var record = new Record
+                    {
+                        FormatString = string.Format(
+                            "Setup is unable to remove NsDepCop target from the C# build workflow, " +
+                            "because of custom content in {0}\n" +
+                            "You have to remove it manually. See the readme file for more info. " +
+                            "Setup continues.", filename)
+                    };
+                    session.Message(InstallMessage.Warning, record);
                     result = ActionResult.NotExecuted;
+                }
 
                 RemoveUsingTaskElement(xDocument, session);
 
@@ -156,23 +178,19 @@ namespace Codartis.NsDepCop.Setup.CustomActions
                 xDocument.Root.AddFirst(propertyGroupElement);
                 var buildDependsOnElement = new XElement(ns + "BuildDependsOn", "$(BuildDependsOn);NsDepCop");
                 propertyGroupElement.Add(buildDependsOnElement);
+
+                return true;
             }
-            else
+
+            if (existingBuildDependsOnElement.Value != null &&
+                existingBuildDependsOnElement.Value.Contains("NsDepCop"))
             {
-                session.Log("PropertyGroup/BuildDependOn elements already exist.");
-
-                if (existingBuildDependsOnElement.Value.Contains("NsDepCop"))
-                {
-                    session.Log("PropertyGroup/BuildDependOn already contains NsDepCop target.");
-                }
-                else
-                {
-                    session.Log("PropertyGroup/BuildDependOn already exists with unknown content; must be modified manually.");
-                    return false;
-                }
+                session.Log("PropertyGroup/BuildDependOn already contains NsDepCop target.");
+                return true;
             }
 
-            return true;
+            session.Log("PropertyGroup/BuildDependOn already exists with custom content. Must be modified manually.");
+            return false;
         }
 
         /// <summary>
@@ -191,23 +209,26 @@ namespace Codartis.NsDepCop.Setup.CustomActions
             var existingBuildDependsOnElement = root.Elements(ns + "PropertyGroup").Elements(ns + "BuildDependsOn").FirstOrDefault();
             if (existingBuildDependsOnElement == null)
             {
-                session.Log("PropertyGroup/BuildDependOn elements not found.");
-            }
-            else
-            {
-                if (existingBuildDependsOnElement.Value == "$(BuildDependsOn);NsDepCop")
-                {
-                    session.Log("Removing PropertyGroup/BuildDependOn elements.");
-                    existingBuildDependsOnElement.Parent.Remove();
-                }
-                else
-                {
-                    session.Log("PropertyGroup/BuildDependOn exists with customized content; must be removed manually.");
-                    return false;
-                }
+                session.Log("PropertyGroup/BuildDependOn elements not found. Nothing to do.");
+                return true;
             }
 
-            return true;
+            if (existingBuildDependsOnElement.Value == null ||
+                !existingBuildDependsOnElement.Value.Contains("NsDepCop"))
+            {
+                session.Log("PropertyGroup/BuildDependOn does not contain NsDepCop. Leaving it as is.");
+                return true;
+            }
+
+            if (existingBuildDependsOnElement.Value == "$(BuildDependsOn);NsDepCop")
+            {
+                session.Log("Removing PropertyGroup/BuildDependOn elements.");
+                existingBuildDependsOnElement.Parent.Remove();
+                return true;
+            }
+
+            session.Log("PropertyGroup/BuildDependOn exists with customized content. Must be removed manually.");
+            return false;
         }
 
         /// <summary>
