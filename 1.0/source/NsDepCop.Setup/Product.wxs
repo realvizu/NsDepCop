@@ -19,6 +19,22 @@
 
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
 
+    <PropertyRef Id="NETFRAMEWORK40FULL"/>
+    <Condition Message='This setup requires .NET Framework 4.0 (full) installed.'>
+      <![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+    </Condition>
+
+    <Property Id="ROSLYN_INSTALLED_VERSION">
+      <RegistrySearch Id="RegSearch_Roslyn" 
+                      Type="raw" 
+                      Root="HKLM" 
+                      Key='Software\Classes\Installer\Products\EBC4B2C91F61DD04CBBF08BC11D290D2' 
+                      Name='Version' />
+    </Property>
+    <Condition Message="This setup requires 'Microsoft Roslyn CTP - September 2012' to be installed.">
+      <![CDATA[Installed OR ROSLYN_INSTALLED_VERSION="#16929194"]]>
+    </Condition>
+
     <Binary Id="NsDepCop.Setup.CustomActions"
             SourceFile="$(var.NsDepCop.Setup.CustomActions.TargetDir)\$(var.NsDepCop.Setup.CustomActions.TargetName).CA.dll" />
 
@@ -28,21 +44,28 @@
                   Execute="deferred"
                   Return="check" />
 
+    <CustomAction Id="SetData_AddNsDepCopTaskToTargetsFile"
+                  Return="check"
+                  Property="AddNsDepCopTaskToTargetsFile"
+                  Value="TARGETSFILEPATH=[Folder_MsBuildVersion]Custom.After.Microsoft.CSharp.targets" />
+
     <CustomAction Id="RemoveNsDepCopTaskFromTargetsFile"
                   BinaryKey="NsDepCop.Setup.CustomActions"
                   DllEntry="RemoveNsDepCopTaskFromTargetsFile"
                   Execute="deferred"
                   Return="ignore" />
 
+    <CustomAction Id="SetData_RemoveNsDepCopTaskFromTargetsFile" 
+                  Return="check"
+                  Property="RemoveNsDepCopTaskFromTargetsFile"
+                  Value="TARGETSFILEPATH=[Folder_MsBuildVersion]Custom.After.Microsoft.CSharp.targets" />
+
     <InstallExecuteSequence>
-      <Custom Action="AddNsDepCopTaskToTargetsFile" After="InstallFiles">
-        <![CDATA[
-          REMOVE <> "ALL"
-        ]]>
-      </Custom>
-      <Custom Action="RemoveNsDepCopTaskFromTargetsFile" After="RemoveFiles">
-        REMOVE = "ALL"
-      </Custom>
+      <Custom Action="AddNsDepCopTaskToTargetsFile" After="InstallFiles"><![CDATA[REMOVE <> "ALL"]]></Custom>
+      <Custom Action="SetData_AddNsDepCopTaskToTargetsFile" Before="AddNsDepCopTaskToTargetsFile"/>
+
+      <Custom Action="RemoveNsDepCopTaskFromTargetsFile" After="RemoveFiles">REMOVE = "ALL"</Custom>
+      <Custom Action="SetData_RemoveNsDepCopTaskFromTargetsFile" Before="RemoveNsDepCopTaskFromTargetsFile"/>
     </InstallExecuteSequence>
     
     <Feature Id="Feature_MsBuildTask" Title="NsDepCop MsBuildTask" Level="1">

@@ -15,7 +15,9 @@ namespace Codartis.NsDepCop.Setup.CustomActions
 
             try
             {
-                var filename = @"C:\Program Files (x86)\MSBuild\v4.0\Custom.After.Microsoft.CSharp.targets";
+                var filename = session.CustomActionData["TARGETSFILEPATH"];
+                if (string.IsNullOrWhiteSpace(filename))
+                    return ActionResult.Failure;
 
                 var xDocument = LoadOrCreateXDocument(filename, session);
 
@@ -45,7 +47,9 @@ namespace Codartis.NsDepCop.Setup.CustomActions
 
             try
             {
-                var filename = @"C:\Program Files (x86)\MSBuild\v4.0\Custom.After.Microsoft.CSharp.targets";
+                var filename = session.CustomActionData["TARGETSFILEPATH"];
+                if (string.IsNullOrWhiteSpace(filename))
+                    return ActionResult.Failure;
 
                 if (!File.Exists(filename))
                     return result;
