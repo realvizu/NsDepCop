@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="NsDepCop.ItemTemplatePackage..5741a44e-b45f-4c3d-864a-ab5ec855435e" Version="1.0" Language="en-US" Publisher="Codartis" />
+        <Identity Id="NsDepCop.ItemTemplatePackage..5741a44e-b45f-4c3d-864a-ab5ec855435e" Version="1.0.0.0" Language="en-US" Publisher="Codartis" />
         <DisplayName>NsDepCop Item Templates</DisplayName>
         <Description xml:space="preserve">Visual Studio package for NsDepCop item templates.</Description>
     </Metadata>
