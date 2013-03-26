@@ -1,4 +1,0 @@
-<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning">
-	<Allowed From="*" To="System.*" />
-	<Allowed From="*" To="." />
-</NsDepCopConfig>

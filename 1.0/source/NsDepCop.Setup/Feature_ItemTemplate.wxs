@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:vse="http://schemas.microsoft.com/wix/VSExtension">
+    <Fragment>
+        
+        <Feature Id="Feature_ItemTemplate" 
+                 Title="NsDepCop config file template"
+                 Description="Adds an NsDepCop config file template to Visual Studio 2012."
+                 Level="1"                 
+                 InstallDefault="local"
+                 TypicalDefault="install"
+                 AllowAdvertise="no">
+            <ComponentGroupRef Id="ComponentGroup_ItemTemplate" />
+        </Feature>
+
+        <ComponentGroup Id="ComponentGroup_ItemTemplate" 
+                        Directory="TARGETDIR">
+            <Component Id="Component_NsDepCop.ItemTemplatePackage.vsix"
+                       Guid="{51B9BC6B-D069-4225-B6C7-801D546FEA21}">
+                <File Id="File_NsDepCop.ItemTemplatePackage.vsix"
+                      Source="$(var.NsDepCop.ItemTemplatePackage.TargetDir)\$(var.NsDepCop.ItemTemplatePackage.TargetName).vsix"
+                      KeyPath="yes">
+                    <vse:VsixPackage PackageId="NsDepCop.ItemTemplatePackage..5741a44e-b45f-4c3d-864a-ab5ec855435e"
+                                     Vital="no"
+                                     Permanent="no"/>
+                </File>
+            </Component>
+        </ComponentGroup>
+    
+    </Fragment>
+</Wix>
