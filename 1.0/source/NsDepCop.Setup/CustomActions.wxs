@@ -11,7 +11,8 @@
                       BinaryKey="CustomActions"
                       DllEntry="AddNsDepCopToMsBuildWorkflow"
                       Execute="deferred"
-                      Return="check" />
+                      Return="check"
+                      Impersonate="no"/>
 
         <CustomAction Id="SetData_AddNsDepCopToMsBuildWorkflow"
                       Return="check"
@@ -22,7 +23,8 @@
                       BinaryKey="CustomActions"
                       DllEntry="RemoveNsDepCopFromMsBuildWorkflow"
                       Execute="deferred"
-                      Return="ignore" />
+                      Return="ignore"
+                      Impersonate="no"/>
 
         <CustomAction Id="SetData_RemoveNsDepCopFromMsBuildWorkflow"
                       Return="check"
