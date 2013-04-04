@@ -119,6 +119,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="config.nsdepcop" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
