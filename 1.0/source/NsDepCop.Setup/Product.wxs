@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-    <Product Id="5325A783-496F-435A-8F93-1AAA0453ABCE"
+    <Product Id="29F08BE2-7FDE-4232-81D3-16DBB252551D"
              UpgradeCode="56a21729-da73-4571-82e2-ecf4bb5caf7a"
-             Name="NsDepCop - Namespace dependency checker tool for C#"
+             Name="NsDepCop - Namespace dependency checker tool for C# (v!(bind.assemblyVersion.File_NsDepCop.MsBuildTask.dll))"
              Manufacturer="Codartis"
              Language="1033"
              Version="!(bind.assemblyVersion.File_NsDepCop.MsBuildTask.dll)" >
@@ -17,13 +17,17 @@
                Cabinet="NsDepCop.cab"
                EmbedCab="yes" />
 
-        <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
+        <MajorUpgrade AllowDowngrades="no" 
+                      DowngradeErrorMessage="A newer version is already installed." />
+
+        <Directory Id="TARGETDIR" Name="SourceDir"/>
 
         <UIRef Id="WixUI_NsDepCop" />
+        <FeatureGroupRef Id="FeatureGroup_Prerequisites"/>
+        <FeatureGroupRef Id="FeatureGroup_CustomActions"/>
         <FeatureRef Id="Feature_MsBuildTask" />
         <FeatureRef Id="Feature_ItemTemplate" />
-        <FeatureGroupRef Id="FeatureGroup_CustomActions"/>
-        <FeatureGroupRef Id="FeatureGroup_Prerequisites"/>
+        <FeatureRef Id="Feature_CodeIssueProvider"/>
 
     </Product>
     

@@ -1,12 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+<PackageManifest Version="2.0.0" 
+                 xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" 
+                 xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="NsDepCop.ItemTemplatePackage..5741a44e-b45f-4c3d-864a-ab5ec855435e" Version="1.0.0.0" Language="en-US" Publisher="Codartis" />
+        <Identity Id="NsDepCop.ItemTemplatePackage..5741a44e-b45f-4c3d-864a-ab5ec855435e" 
+                  Version="1.0.1.0" 
+                  Language="en-US" 
+                  Publisher="Codartis" />
         <DisplayName>NsDepCop Item Templates</DisplayName>
         <Description xml:space="preserve">Visual Studio package for NsDepCop item templates.</Description>
+        <MoreInfo>http://nsdepcop.codeplex.com</MoreInfo>
+        <GettingStartedGuide>https://nsdepcop.codeplex.com/wikipage?title=Getting%20Started</GettingStartedGuide>
     </Metadata>
-    <Installation AllUsers="true">
-        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[11.0,12.0)" />
+    <Installation AllUsers="true" InstalledByMsi="false">
+        <InstallationTarget Version="[11.0,12.0)" Id="Microsoft.VisualStudio.Pro" />
         <InstallationTarget Version="[11.0,12.0)" Id="Microsoft.VisualStudio.Premium" />
         <InstallationTarget Version="[11.0,12.0)" Id="Microsoft.VisualStudio.Ultimate" />
     </Installation>
@@ -14,6 +21,11 @@
         <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.5" />
     </Dependencies>
     <Assets>
-        <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="NsDepCop.ItemTemplate" d:TargetPath="|NsDepCop.ItemTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+        <Asset Type="Microsoft.VisualStudio.ItemTemplate" 
+               d:Source="Project" 
+               d:ProjectName="NsDepCop.ItemTemplate" 
+               d:TargetPath="|NsDepCop.ItemTemplate;TemplateProjectOutputGroup|" 
+               Path="ItemTemplates" 
+               d:VsixSubPath="ItemTemplates" />
     </Assets>
 </PackageManifest>

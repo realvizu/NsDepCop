@@ -4,8 +4,8 @@
     <Fragment>
         
         <Feature Id="Feature_ItemTemplate" 
-                 Title="NsDepCop config file template"
-                 Description="Adds an NsDepCop config file template to Visual Studio 2012."
+                 Title="Config File Template (VSIX)"
+                 Description="Installs a Visual Studio 2012 extension that contains an NsDepCop config file template."
                  Level="1"                 
                  InstallDefault="local"
                  TypicalDefault="install"

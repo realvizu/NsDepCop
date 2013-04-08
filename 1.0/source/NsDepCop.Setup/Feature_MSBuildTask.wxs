@@ -12,13 +12,13 @@
             <ComponentGroupRef Id="ComponentGroup_MsBuildTask" />
         </Feature>
 
-        <Directory Id="TARGETDIR" Name="SourceDir">
+        <DirectoryRef Id="TARGETDIR">
             <Directory Id="ProgramFilesFolder">
                 <Directory Id="Folder_MsBuild" Name="MSBuild">
                     <Directory Id="Folder_MsBuildVersion" Name="v4.0"/>
                 </Directory>
             </Directory>
-        </Directory>
+        </DirectoryRef>
 
         <ComponentGroup Id="ComponentGroup_MsBuildTask"
                         Directory="Folder_MsBuildVersion">
