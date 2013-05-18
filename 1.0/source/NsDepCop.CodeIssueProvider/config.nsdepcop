@@ -3,4 +3,5 @@
     <Allowed From="Codartis.NsDepCop.CodeIssueProvider" To="System.*" />
     <Allowed From="Codartis.NsDepCop.CodeIssueProvider" To="Roslyn.*" />
     <Allowed From="Codartis.NsDepCop.CodeIssueProvider" To="Codartis.NsDepCop.Core" />
+    <Allowed From="Codartis.NsDepCop.CodeIssueProvider" To="Codartis.NsDepCop.Analyzer.Roslyn" />
 </NsDepCopConfig>

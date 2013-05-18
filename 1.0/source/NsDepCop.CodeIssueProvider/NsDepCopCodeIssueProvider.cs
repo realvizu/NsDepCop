@@ -1,3 +1,4 @@
+using Codartis.NsDepCop.Analyzer.Roslyn;
 using Codartis.NsDepCop.Core;
 using Roslyn.Compilers;
 using Roslyn.Compilers.Common;
@@ -6,6 +7,7 @@ using Roslyn.Services;
 using Roslyn.Services.Editor;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace Codartis.NsDepCop.CodeIssueProvider
@@ -36,13 +38,10 @@ namespace Codartis.NsDepCop.CodeIssueProvider
             get
             {
                 yield return typeof(IdentifierNameSyntax);
-                yield return typeof(InvocationExpressionSyntax);
-                yield return typeof(ElementAccessExpressionSyntax);
-                yield return typeof(QueryExpressionSyntax);
-                yield return typeof(PredefinedTypeSyntax);
-                yield return typeof(LiteralExpressionSyntax);
-                yield return typeof(NullableTypeSyntax);
+                yield return typeof(QualifiedNameSyntax);
                 yield return typeof(AliasQualifiedNameSyntax);
+                yield return typeof(GenericNameSyntax);
+                yield return typeof(InvocationExpressionSyntax);
             }
         }
 
@@ -57,6 +56,13 @@ namespace Codartis.NsDepCop.CodeIssueProvider
         {
             // If something is missing from the necessary input then bail out.
             if (node == null || document == null || document.Project == null || document.Project.FilePath == null)
+                yield break;
+
+            // If the node has one of the following parents then it was already analyzed, bail out.
+            if (node.Ancestors().Any(i =>
+                i is IdentifierNameSyntax ||
+                i is QualifiedNameSyntax ||
+                i is AliasQualifiedNameSyntax))
                 yield break;
 
             // The project file path is the key for finding the right NsDepCop config handler.
@@ -100,10 +106,10 @@ namespace Codartis.NsDepCop.CodeIssueProvider
 
             // Analyze this node and return CodeIssue if needed.
             var semanticModel = document.GetSemanticModel(cancellationToken);
-            var dependencyViolation = DependencyAnalyzer.ProcessSyntaxNode(node, semanticModel, config);
+            var dependencyViolation = SyntaxNodeAnalyzer.ProcessSyntaxNode(node, semanticModel, config);
             if (dependencyViolation != null)
             {
-                yield return new CodeIssue(config.CodeIssueKind, node.Span, dependencyViolation.ToString());
+                yield return new CodeIssue(config.IssueKind.ToCodeIssueKind(), node.Span, dependencyViolation.ToString());
             }
         }
 

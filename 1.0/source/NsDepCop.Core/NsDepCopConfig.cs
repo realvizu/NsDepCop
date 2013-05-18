@@ -1,5 +1,4 @@
-﻿using Roslyn.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -21,7 +20,7 @@ namespace Codartis.NsDepCop.Core
         /// <summary>
         /// A value representing the severity of an issue.
         /// </summary>
-        public CodeIssueKind CodeIssueKind { get; private set; }
+        public IssueKind IssueKind { get; private set; }
 
         /// <summary>
         /// A dictionary containing the allowed dependencies.
@@ -36,7 +35,7 @@ namespace Codartis.NsDepCop.Core
         public NsDepCopConfig()
         {
             IsEnabled = Constants.DEFAULT_IS_ENABLED_VALUE;
-            CodeIssueKind = Constants.DEFAULT_CODE_ISSUE_KIND;
+            IssueKind = Constants.DEFAULT_ISSUE_KIND;
             AllowedDependencies = new Dictionary<string, Dependency>();
         }
 
@@ -173,15 +172,15 @@ namespace Codartis.NsDepCop.Core
             var codeIssueKindAttribute = configXml.Element("NsDepCopConfig").Attribute("CodeIssueKind");
             if (codeIssueKindAttribute != null)
             {
-                CodeIssueKind codeIssueKind;
-                if (Enum.TryParse<CodeIssueKind>(codeIssueKindAttribute.Value, out codeIssueKind))
+                IssueKind codeIssueKind;
+                if (Enum.TryParse<IssueKind>(codeIssueKindAttribute.Value, out codeIssueKind))
                 {
-                    CodeIssueKind = codeIssueKind;
+                    IssueKind = codeIssueKind;
                 }
                 else
                 {
                     Debug.WriteLine(string.Format("Error parsing config file; CodeIssueKind attribute value '{0}'. Using default value:'{1}'.",
-                        codeIssueKindAttribute.Value, CodeIssueKind), Constants.TOOL_NAME);
+                        codeIssueKindAttribute.Value, IssueKind), Constants.TOOL_NAME);
                 }
             }
 

@@ -21,9 +21,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.ItemTemplate", "Ns
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.ItemTemplatePackage", "NsDepCop.ItemTemplatePackage\NsDepCop.ItemTemplatePackage.csproj", "{CB861040-886F-4D43-B328-ADE69D73FC1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Analyzer.Roslyn", "NsDepCop.Analyzer.Roslyn\NsDepCop.Analyzer.Roslyn.csproj", "{A3FE259C-B1E8-4682-BC34-524A65D450D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.MsBuildTask.Test", "NsDepCop.MsBuildTask.Test\NsDepCop.MsBuildTask.Test.csproj", "{D85464CB-59FA-4565-999C-F6603A063E84}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 8
+		SccNumberOfProjects = 10
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
 		SccLocalPath0 = .
@@ -48,6 +52,12 @@ Global
 		SccProjectUniqueName7 = NsDepCop.ItemTemplatePackage\\NsDepCop.ItemTemplatePackage.csproj
 		SccProjectName7 = NsDepCop.ItemTemplatePackage
 		SccLocalPath7 = NsDepCop.ItemTemplatePackage
+		SccProjectUniqueName8 = NsDepCop.Analyzer.Roslyn\\NsDepCop.Analyzer.Roslyn.csproj
+		SccProjectName8 = NsDepCop.Analyzer.Roslyn
+		SccLocalPath8 = NsDepCop.Analyzer.Roslyn
+		SccProjectUniqueName9 = NsDepCop.MsBuildTask.Test\\NsDepCop.MsBuildTask.Test.csproj
+		SccProjectName9 = NsDepCop.MsBuildTask.Test
+		SccLocalPath9 = NsDepCop.MsBuildTask.Test
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,6 +138,26 @@ Global
 		{CB861040-886F-4D43-B328-ADE69D73FC1C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CB861040-886F-4D43-B328-ADE69D73FC1C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CB861040-886F-4D43-B328-ADE69D73FC1C}.Release|x86.ActiveCfg = Release|Any CPU
+		{A3FE259C-B1E8-4682-BC34-524A65D450D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3FE259C-B1E8-4682-BC34-524A65D450D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3FE259C-B1E8-4682-BC34-524A65D450D6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A3FE259C-B1E8-4682-BC34-524A65D450D6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A3FE259C-B1E8-4682-BC34-524A65D450D6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A3FE259C-B1E8-4682-BC34-524A65D450D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3FE259C-B1E8-4682-BC34-524A65D450D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3FE259C-B1E8-4682-BC34-524A65D450D6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A3FE259C-B1E8-4682-BC34-524A65D450D6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A3FE259C-B1E8-4682-BC34-524A65D450D6}.Release|x86.ActiveCfg = Release|Any CPU
+		{D85464CB-59FA-4565-999C-F6603A063E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85464CB-59FA-4565-999C-F6603A063E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85464CB-59FA-4565-999C-F6603A063E84}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D85464CB-59FA-4565-999C-F6603A063E84}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D85464CB-59FA-4565-999C-F6603A063E84}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D85464CB-59FA-4565-999C-F6603A063E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85464CB-59FA-4565-999C-F6603A063E84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D85464CB-59FA-4565-999C-F6603A063E84}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D85464CB-59FA-4565-999C-F6603A063E84}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D85464CB-59FA-4565-999C-F6603A063E84}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

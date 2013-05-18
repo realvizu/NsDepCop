@@ -1,6 +1,4 @@
-﻿using Roslyn.Compilers.Common;
-
-namespace Codartis.NsDepCop.Core
+﻿namespace Codartis.NsDepCop.Core
 {
     /// <summary>
     /// Represents the info that describes a namespace dependency violation.
@@ -8,38 +6,34 @@ namespace Codartis.NsDepCop.Core
     public class DependencyViolation
     {
         /// <summary>
-        /// The syntax node where the violation was found.
-        /// </summary>
-        public CommonSyntaxNode SyntaxNode { get; private set; }
-
-        /// <summary>
         /// The illegal dependency. Contains the two namespaces.
         /// </summary>
         public Dependency IllegalDependency { get; private set; }
 
         /// <summary>
-        /// The symbol for the referencing type.
+        /// The name of the referencing type.
         /// </summary>
-        public ISymbol ReferencingType { get; private set; }
+        public string ReferencingTypeName { get; private set; }
 
         /// <summary>
-        /// The symbol for the referenced type.
+        /// The name of the referenced type.
         /// </summary>
-        public ISymbol ReferencedType { get; private set; }
+        public string ReferencedTypeName { get; private set; }
 
         /// <summary>
-        /// Initilaizes a new instance.
+        /// Specifies the source file and the start and end positions of the text that caused this dependency violation.
         /// </summary>
-        /// <param name="syntaxNode"></param>
-        /// <param name="illegalDependency"></param>
-        /// <param name="referencingType"></param>
-        /// <param name="referencedType"></param>
-        public DependencyViolation(CommonSyntaxNode syntaxNode, Dependency illegalDependency, ISymbol referencingType, ISymbol referencedType)
+        public SourceSegment SourceSegment { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance.
+        /// </summary>
+        public DependencyViolation(Dependency illegalDependency, string referencingTypeName, string referencedTypeName, SourceSegment sourceSegment)
         {
-            SyntaxNode = syntaxNode;
             IllegalDependency = illegalDependency;
-            ReferencingType = referencingType;
-            ReferencedType = referencedType;
+            ReferencingTypeName = referencingTypeName;
+            ReferencedTypeName = referencedTypeName;
+            SourceSegment = sourceSegment;
         }
 
         /// <summary>
@@ -51,9 +45,9 @@ namespace Codartis.NsDepCop.Core
             return string.Format("Illegal namespace reference: {0}->{1} (Symbol '{3}' in type '{2}' is type of '{4}'.)",
                 IllegalDependency.From,
                 IllegalDependency.To,
-                ReferencingType.ToDisplayString(),
-                SyntaxNode.ToString(),
-                ReferencedType.ToDisplayString());
+                ReferencingTypeName,
+                SourceSegment.Text,
+                ReferencedTypeName);
         }
     }
 }

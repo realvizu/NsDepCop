@@ -1,13 +1,13 @@
+using Codartis.NsDepCop.Core;
 using System;
 using System.IO;
-using Codartis.NsDepCop.Core;
 
 namespace Codartis.NsDepCop.CodeIssueProvider
 {
     /// <summary>
     /// Reads and stores NsDepConfig info for a given C# project.
     /// </summary>
-    class ConfigHandler
+    internal class ConfigHandler
     {
         private string _projectFilePath;
         private NsDepCopConfig _config;

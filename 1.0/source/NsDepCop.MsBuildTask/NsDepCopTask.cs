@@ -1,8 +1,6 @@
 ﻿using Codartis.NsDepCop.Core;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Roslyn.Compilers.CSharp;
-using Roslyn.Services;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -43,24 +41,19 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// <returns>True if the run was successful. False if it failed.</returns>
         public override bool Execute()
         {
-            Debug.WriteLine("Execute started...", Constants.TOOL_NAME);
-
             try
             {
-                // Dumping the incoming parameters to Debug output to help troubleshooting.
-                Debug.WriteLine(string.Format("  ReferencePath[{0}]", ReferencePath.Length), Constants.TOOL_NAME);
-                ReferencePath.ToList().ForEach(i => Debug.WriteLine(string.Format("    {0}", i.ItemSpec), Constants.TOOL_NAME));
-                Debug.WriteLine(string.Format("  Compile[{0}]", Compile.Length), Constants.TOOL_NAME);
-                Compile.ToList().ForEach(i => Debug.WriteLine(string.Format("    {0}", i.ItemSpec), Constants.TOOL_NAME));
-                Debug.WriteLine(string.Format("  BaseDirectory={0}", BaseDirectory.ItemSpec), Constants.TOOL_NAME);
+                Debug.WriteLine("Execute started...", Constants.TOOL_NAME);
+                DumpInputParametersToDebug();
 
                 // Find out the location of the config file.
                 var configFileName = Path.Combine(BaseDirectory.ItemSpec, Constants.DEFAULT_CONFIG_FILE_NAME);
-                
+
                 // No config file means no analysis.
                 if (!File.Exists(configFileName))
                 {
-                    Log.LogMessage(MessageImportance.High, Constants.TOOL_NAME + ": No config file found, analysis skipped.");
+                    LogHelper(IssueKind.Info, Constants.MSBUILD_CODE_NO_CONFIG_FILE, 
+                        Constants.TOOL_NAME + ": No config file found, analysis skipped.", null);
                     return true;
                 }
 
@@ -70,80 +63,98 @@ namespace Codartis.NsDepCop.MsBuildTask
                 // If analysis is switched off in the config file, then bail out.
                 if (!config.IsEnabled)
                 {
-                    Log.LogMessage(MessageImportance.High, Constants.TOOL_NAME + ": Analysis is disabled in the nsdepcop config file.");
+                    LogHelper(IssueKind.Info, Constants.MSBUILD_CODE_CONFIG_DISABLED, 
+                        Constants.TOOL_NAME + ": Analysis is disabled in the nsdepcop config file.", null);
                     return true;
                 }
 
-                // Build a "csc.exe command line"-like string 
-                // that contains the project parameters so Roslyn can build up a workspace.
-                string projectParametersAsString = string.Format("/reference:{0} {1}",
-                    ReferencePath.Select(i => i.ItemSpec).ToSingleString(",", "\"", "\""),
-                    Compile.Select(i => i.ItemSpec).ToSingleString(" ", "\"", "\""));
-                Debug.WriteLine(string.Format("  ProjectParametersAsString='{0}'", projectParametersAsString), Constants.TOOL_NAME);
+                // Run the analysis for the whole project.
+                var codeAnalyzer = new Codartis.NsDepCop.Analyzer.Roslyn.DependencyAnalyzer(config);
+                var dependencyViolations = codeAnalyzer.AnalyzeProject(
+                    BaseDirectory.ItemSpec, 
+                    Compile.ToList().Select(i => i.ItemSpec), 
+                    ReferencePath.ToList().Select(i => i.ItemSpec));
 
-                // Create the Roslyn workspace and select the project (there can be only on project).
-                var workspace = Workspace.LoadProjectFromCommandLineArguments("NsDepCopTaskProject", "C#", 
-                    projectParametersAsString, BaseDirectory.ItemSpec);
-                var project = workspace.CurrentSolution.Projects.First();
-                
-                // Analyse all documents in the project.
-                foreach (var document in project.Documents)
+                // Report issues to MSBuild.
+                var issuesReported = 0;
+                foreach (var dependencyViolation in dependencyViolations)
                 {
-                    Log.LogMessage(Constants.TOOL_NAME + ": Analysing document: '{0}'.", document.FilePath);
+                    LogHelper(config.IssueKind, Constants.MSBUILD_CODE_ISSUE, dependencyViolation.ToString(), dependencyViolation.SourceSegment);
+            
+                    issuesReported++;
 
-                    var syntaxWalker = new NsDepCopSyntaxWalker(document.GetSemanticModel(), config);
-                    syntaxWalker.Visit(document.GetSyntaxRoot() as SyntaxNode);
-
-                    // Log the result of the analysis.
-                    var issuesReported = 0;
-                    foreach (var dependencyViolation in syntaxWalker.DependencyViolations)
+                    // Too many issues stop the analysis.
+                    if (issuesReported == Constants.MAX_ISSUE_REPORTED_PER_PROJECT)
                     {
-                        var message = dependencyViolation.ToString();
-                        var lineSpan = document.GetSyntaxTree().GetLineSpan(dependencyViolation.SyntaxNode.Span, true);
-
-                        switch (config.CodeIssueKind)
-                        {
-                            case (Roslyn.Services.CodeIssueKind.Error):
-                                BuildEngine.LogErrorEvent(new BuildErrorEventArgs(null, Constants.CODE_ISSUE, lineSpan.Path, 
-                                    lineSpan.StartLinePosition.Line+1, lineSpan.StartLinePosition.Character+1, 
-                                    lineSpan.EndLinePosition.Line+1, lineSpan.EndLinePosition.Character+1,
-                                    message, Constants.CODE_ISSUE, Constants.TOOL_NAME));
-                                break;
-
-                            case (Roslyn.Services.CodeIssueKind.Warning):
-                                BuildEngine.LogWarningEvent(new BuildWarningEventArgs(null, Constants.CODE_ISSUE, lineSpan.Path,
-                                    lineSpan.StartLinePosition.Line + 1, lineSpan.StartLinePosition.Character + 1,
-                                    lineSpan.EndLinePosition.Line + 1, lineSpan.EndLinePosition.Character + 1,
-                                    message, Constants.CODE_ISSUE, Constants.TOOL_NAME));
-                                break;
-
-                            default:
-                                BuildEngine.LogMessageEvent(new BuildMessageEventArgs(null, Constants.CODE_ISSUE, lineSpan.Path,
-                                    lineSpan.StartLinePosition.Line + 1, lineSpan.StartLinePosition.Character + 1,
-                                    lineSpan.EndLinePosition.Line + 1, lineSpan.EndLinePosition.Character + 1,
-                                    message, Constants.CODE_ISSUE, Constants.TOOL_NAME, MessageImportance.High));
-                                break;
-                        }
-
-                        issuesReported++;
-
-                        // Too many issues stop the analysis.
-                        if (issuesReported == Constants.MAX_ISSUE_REPORTED)
-                        {
-                            BuildEngine.LogWarningEvent(new BuildWarningEventArgs(null, Constants.CODE_TOO_MANY_ISSUES, null, 0, 0, 0, 0,
-                                "Too many NsDepCop issues, analysis was stopped.", Constants.CODE_TOO_MANY_ISSUES, Constants.TOOL_NAME));
-                            return true;
-                        }
+                        LogHelper(IssueKind.Warning, Constants.MSBUILD_CODE_TOO_MANY_ISSUES, 
+                            "Too many NsDepCop issues, analysis was stopped.", null);
+                        return true;
                     }
                 }
             }
             catch (Exception e)
             {
-                Log.LogError(Constants.TOOL_NAME + ": {0}", e);
+                LogHelper(IssueKind.Error, Constants.MSBUILD_CODE_EXCEPTION, string.Format(Constants.TOOL_NAME + ": {0}", e), null);
                 return false;
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Dumps the incoming parameters to Debug output to help troubleshooting.
+        /// </summary>
+        private void DumpInputParametersToDebug()
+        {
+            Debug.WriteLine(string.Format("  ReferencePath[{0}]", ReferencePath.Length), Constants.TOOL_NAME);
+            ReferencePath.ToList().ForEach(i => Debug.WriteLine(string.Format("    {0}", i.ItemSpec), Constants.TOOL_NAME));
+            Debug.WriteLine(string.Format("  Compile[{0}]", Compile.Length), Constants.TOOL_NAME);
+            Compile.ToList().ForEach(i => Debug.WriteLine(string.Format("    {0}", i.ItemSpec), Constants.TOOL_NAME));
+            Debug.WriteLine(string.Format("  BaseDirectory={0}", BaseDirectory.ItemSpec), Constants.TOOL_NAME);
+        }
+
+        /// <summary>
+        /// Log an event to MSBuild.
+        /// </summary>
+        /// <param name="issueKind">Error/Warning/Info</param>
+        /// <param name="code">The string code of the event.</param>
+        /// <param name="message">The string message of the event.</param>
+        /// <param name="sourceSegment">The source segment that caused the event or null if not applicable.</param>
+        private void LogHelper(IssueKind issueKind, string code, string message, SourceSegment sourceSegment)
+        {
+            string path = null;
+            int startLine = 0;
+            int startColumn = 0;
+            int endLine = 0;
+            int endColumn = 0;
+
+            if (sourceSegment != null)
+            {
+                path = sourceSegment.Path;
+                startLine = sourceSegment.StartLine;
+                startColumn = sourceSegment.StartColumn;
+                endLine = sourceSegment.EndLine;
+                endColumn = sourceSegment.EndColumn;
+            }
+
+            switch (issueKind)
+            {
+                case (IssueKind.Error):
+                    BuildEngine.LogErrorEvent(new BuildErrorEventArgs(
+                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME));
+                    break;
+
+                case (IssueKind.Warning):
+                    BuildEngine.LogWarningEvent(new BuildWarningEventArgs(
+                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME));
+                    break;
+
+                default:
+                    BuildEngine.LogMessageEvent(new BuildMessageEventArgs(
+                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME,
+                        MessageImportance.High));
+                    break;
+            }
         }
     }
 }

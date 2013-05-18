@@ -52,7 +52,7 @@
     <WarningLevel>4</WarningLevel>
     <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
     <CopyVsixExtensionLocation>C:\Users\Vizu\AppData\Local\Microsoft\VisualStudio\11.0\Extensions\Codartis\NsDepCop.CodeIssueProvider\1.0</CopyVsixExtensionLocation>
-    <DeployExtension>False</DeployExtension>
+    <DeployExtension>True</DeployExtension>
     <CreateVsixContainer>True</CreateVsixContainer>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -143,6 +143,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NsDepCop.Analyzer.Roslyn\NsDepCop.Analyzer.Roslyn.csproj">
+      <Project>{a3fe259c-b1e8-4682-bc34-524a65d450d6}</Project>
+      <Name>NsDepCop.Analyzer.Roslyn</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">
       <Project>{bc26589e-79b0-4f55-b64d-db11534d3476}</Project>
       <Name>NsDepCop.Core</Name>
