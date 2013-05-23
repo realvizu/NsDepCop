@@ -52,15 +52,15 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
             // Analyse all documents in the project.
             foreach (var document in project.Documents)
             {
-                var syntaxWalker = new DependencyAnalyzerSyntaxWalker(document.GetSemanticModel(), _config);
-                syntaxWalker.Visit(document.GetSyntaxRoot() as SyntaxNode);
-                dependencyViolations.AddRange(syntaxWalker.DependencyViolations);
-
-                if (dependencyViolations.Count >= Constants.MAX_ISSUE_REPORTED_PER_PROJECT)
-                    break;
+                var syntaxVisitor = new DependencyAnalyzerSyntaxVisitor(document.GetSemanticModel(), _config);
+                var documentRootNode = document.GetSyntaxRoot() as SyntaxNode;
+                if (documentRootNode != null)
+                {
+                    var dependencyViolationsInDocument = syntaxVisitor.Visit(documentRootNode);
+                    foreach (var dependencyViolation in dependencyViolationsInDocument)
+                        yield return dependencyViolation;
+                }
             }
-
-            return dependencyViolations;
         }
     }
 }

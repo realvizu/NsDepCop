@@ -14,6 +14,12 @@ namespace Codartis.NsDepCop.MsBuildTask
     /// </summary>
     public class NsDepCopTask : Task 
     {
+        public const string MSBUILD_CODE_ISSUE = "NSDEPCOP01";
+        public const string MSBUILD_CODE_TOO_MANY_ISSUES = "NSDEPCOP02";
+        public const string MSBUILD_CODE_EXCEPTION = "NSDEPCOPEX";
+        public const string MSBUILD_CODE_NO_CONFIG_FILE = "NSDEPCOP03";
+        public const string MSBUILD_CODE_CONFIG_DISABLED = "NSDEPCOP04";
+
         /// <summary>
         /// MsBuild task item list that contains the name and full path 
         /// of the assemblies referenced in the current csproj.
@@ -52,7 +58,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                 // No config file means no analysis.
                 if (!File.Exists(configFileName))
                 {
-                    LogHelper(IssueKind.Info, Constants.MSBUILD_CODE_NO_CONFIG_FILE, 
+                    LogHelper(IssueKind.Info, MSBUILD_CODE_NO_CONFIG_FILE, 
                         Constants.TOOL_NAME + ": No config file found, analysis skipped.", null);
                     return true;
                 }
@@ -63,7 +69,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                 // If analysis is switched off in the config file, then bail out.
                 if (!config.IsEnabled)
                 {
-                    LogHelper(IssueKind.Info, Constants.MSBUILD_CODE_CONFIG_DISABLED, 
+                    LogHelper(IssueKind.Info, MSBUILD_CODE_CONFIG_DISABLED, 
                         Constants.TOOL_NAME + ": Analysis is disabled in the nsdepcop config file.", null);
                     return true;
                 }
@@ -79,14 +85,14 @@ namespace Codartis.NsDepCop.MsBuildTask
                 var issuesReported = 0;
                 foreach (var dependencyViolation in dependencyViolations)
                 {
-                    LogHelper(config.IssueKind, Constants.MSBUILD_CODE_ISSUE, dependencyViolation.ToString(), dependencyViolation.SourceSegment);
+                    LogHelper(config.IssueKind, MSBUILD_CODE_ISSUE, dependencyViolation.ToString(), dependencyViolation.SourceSegment);
             
                     issuesReported++;
 
                     // Too many issues stop the analysis.
-                    if (issuesReported == Constants.MAX_ISSUE_REPORTED_PER_PROJECT)
+                    if (issuesReported == config.MaxIssueCount)
                     {
-                        LogHelper(IssueKind.Warning, Constants.MSBUILD_CODE_TOO_MANY_ISSUES, 
+                        LogHelper(IssueKind.Warning, MSBUILD_CODE_TOO_MANY_ISSUES, 
                             "Too many NsDepCop issues, analysis was stopped.", null);
                         return true;
                     }
@@ -94,7 +100,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             }
             catch (Exception e)
             {
-                LogHelper(IssueKind.Error, Constants.MSBUILD_CODE_EXCEPTION, string.Format(Constants.TOOL_NAME + ": {0}", e), null);
+                LogHelper(IssueKind.Error, MSBUILD_CODE_EXCEPTION, string.Format(Constants.TOOL_NAME + ": {0}", e), null);
                 return false;
             }
 

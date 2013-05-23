@@ -21,7 +21,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_NoConfigFile()
         {
             var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_NoConfigFile",
-                new[] { new LogEntryParameters { IssueKind = IssueKind.Info, Code = Constants.MSBUILD_CODE_NO_CONFIG_FILE } });
+                new[] { new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_NO_CONFIG_FILE } });
 
             nsDepCopTask.Execute().ShouldBeTrue();
             nsDepCopTask.BuildEngine.VerifyAllExpectations();
@@ -31,7 +31,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_ConfigFileDisabled()
         {
             var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_ConfigDisabled",
-                new[] { new LogEntryParameters { IssueKind = IssueKind.Info, Code = Constants.MSBUILD_CODE_CONFIG_DISABLED } });
+                new[] { new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_CONFIG_DISABLED } });
 
             nsDepCopTask.Execute().ShouldBeTrue();
             nsDepCopTask.BuildEngine.VerifyAllExpectations();
@@ -69,7 +69,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = Constants.MSBUILD_CODE_ISSUE,
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -93,7 +93,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = Constants.MSBUILD_CODE_ISSUE,
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
                         Path = sourceFileName,
                         StartLine = 5,
                         StartColumn = 17,
@@ -117,7 +117,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = Constants.MSBUILD_CODE_ISSUE,
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -141,7 +141,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = Constants.MSBUILD_CODE_ISSUE,
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
                         Path = sourceFileName,
                         StartLine = 9,
                         StartColumn = 13,
@@ -165,7 +165,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = Constants.MSBUILD_CODE_ISSUE,
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
                         Path = sourceFileName,
                         StartLine = 9,
                         StartColumn = 37,
@@ -189,7 +189,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = Constants.MSBUILD_CODE_ISSUE,
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -213,7 +213,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = Constants.MSBUILD_CODE_ISSUE,
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 32,
@@ -237,7 +237,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = Constants.MSBUILD_CODE_ISSUE,
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -261,7 +261,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = Constants.MSBUILD_CODE_ISSUE,
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -278,9 +278,40 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_TooManyIssues()
         {
-            // TODO
-            // By making max issue count configurable?
-            // Merge MAX_ISSUE_REPORTED_PER_FILE and MAX_ISSUE_REPORTED_PER_PROJECT?
+            var sourceFileName = "TooManyIssues.cs";
+            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_TooManyIssues",
+                new[] 
+                {
+                    new LogEntryParameters
+                    { 
+                        IssueKind = IssueKind.Warning, 
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Path = sourceFileName,
+                        StartLine = 7,
+                        StartColumn = 17,
+                        EndLine = 7,
+                        EndColumn = 23
+                    },
+                    new LogEntryParameters
+                    { 
+                        IssueKind = IssueKind.Warning, 
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Path = sourceFileName,
+                        StartLine = 8,
+                        StartColumn = 17,
+                        EndLine = 8,
+                        EndColumn = 23
+                    },
+                    new LogEntryParameters
+                    { 
+                        IssueKind = IssueKind.Warning, 
+                        Code = NsDepCopTask.MSBUILD_CODE_TOO_MANY_ISSUES,
+                    },
+                },
+                new string[] { sourceFileName });
+
+            nsDepCopTask.Execute().ShouldBeTrue();
+            nsDepCopTask.BuildEngine.VerifyAllExpectations();
         }
 
         /// <summary>

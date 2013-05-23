@@ -12,6 +12,10 @@ namespace Codartis.NsDepCop.Core
     /// </summary>
     public class NsDepCopConfig
     {
+        private const bool DEFAULT_IS_ENABLED_VALUE = false;
+        private const IssueKind DEFAULT_ISSUE_KIND = IssueKind.Warning;
+        private const int DEFAULT_MAX_ISSUE_REPORTED = 100;
+
         /// <summary>
         /// A value indicating whether analysis is enabled.
         /// </summary>
@@ -21,6 +25,11 @@ namespace Codartis.NsDepCop.Core
         /// A value representing the severity of an issue.
         /// </summary>
         public IssueKind IssueKind { get; private set; }
+
+        /// <summary>
+        /// The max number of issues reported.
+        /// </summary>
+        public int MaxIssueCount { get; private set; }
 
         /// <summary>
         /// A dictionary containing the allowed dependencies.
@@ -34,8 +43,9 @@ namespace Codartis.NsDepCop.Core
         /// <remarks>The analysis is disabled by default.</remarks>
         public NsDepCopConfig()
         {
-            IsEnabled = Constants.DEFAULT_IS_ENABLED_VALUE;
-            IssueKind = Constants.DEFAULT_ISSUE_KIND;
+            IsEnabled = DEFAULT_IS_ENABLED_VALUE;
+            IssueKind = DEFAULT_ISSUE_KIND;
+            MaxIssueCount = DEFAULT_MAX_ISSUE_REPORTED;
             AllowedDependencies = new Dictionary<string, Dependency>();
         }
 
@@ -181,6 +191,22 @@ namespace Codartis.NsDepCop.Core
                 {
                     Debug.WriteLine(string.Format("Error parsing config file; CodeIssueKind attribute value '{0}'. Using default value:'{1}'.",
                         codeIssueKindAttribute.Value, IssueKind), Constants.TOOL_NAME);
+                }
+            }
+
+            // Parse MaxIssueCount attribute, if exists.
+            var maxIssueCountAttribute = configXml.Element("NsDepCopConfig").Attribute("MaxIssueCount");
+            if (maxIssueCountAttribute != null)
+            {
+                int maxIssueCount;
+                if (int.TryParse(maxIssueCountAttribute.Value, out maxIssueCount))
+                {
+                    MaxIssueCount = maxIssueCount;
+                }
+                else
+                {
+                    Debug.WriteLine(string.Format("Error parsing config file; MaxIssueCount attribute value '{0}'. Using default value:'{1}'.",
+                        maxIssueCountAttribute.Value, maxIssueCount), Constants.TOOL_NAME);
                 }
             }
 

@@ -55,7 +55,7 @@
     <Compile Include="IssueKindExtension.cs" />
     <Compile Include="IssueKindTranslator.cs" />
     <Compile Include="SyntaxNodeAnalyzer.cs" />
-    <Compile Include="DependencyAnalyzerSyntaxWalker.cs" />
+    <Compile Include="DependencyAnalyzerSyntaxVisitor.cs" />
     <Compile Include="DependencyAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

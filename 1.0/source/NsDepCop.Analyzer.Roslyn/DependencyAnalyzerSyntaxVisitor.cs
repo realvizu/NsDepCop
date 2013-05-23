@@ -7,10 +7,10 @@ using System.Collections.Generic;
 namespace Codartis.NsDepCop.Analyzer.Roslyn
 {
     /// <summary>
-    /// Implements a syntax walker that traverses the syntax tree 
+    /// Implements a syntax visitor that traverses the syntax tree 
     /// and invokes the dependency analysis logic for every eligible node.
     /// </summary>
-    public class DependencyAnalyzerSyntaxWalker : SyntaxWalker
+    public class DependencyAnalyzerSyntaxVisitor : SyntaxVisitor<List<DependencyViolation>>
     {
         /// <summary>
         /// The semantic model of the current document.
@@ -23,16 +23,16 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
         private NsDepCopConfig _config;
 
         /// <summary>
-        /// The collection of dependency violations that the syntax walker found.
+        /// The collection of dependency violations that the syntax visitor found.
         /// </summary>
-        public List<DependencyViolation> DependencyViolations { get; private set; }
+        private List<DependencyViolation> _dependencyViolations;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="semanticModel">The semantic model for the document.</param>
         /// <param name="config">The configuration of the tool.</param>
-        public DependencyAnalyzerSyntaxWalker(ISemanticModel semanticModel, NsDepCopConfig config)
+        public DependencyAnalyzerSyntaxVisitor(ISemanticModel semanticModel, NsDepCopConfig config)
         {
             if (semanticModel == null)
                 throw new ArgumentNullException("semanticModel");
@@ -42,40 +42,53 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
 
             _semanticModel = semanticModel;
             _config = config;
-
-            DependencyViolations = new List<DependencyViolation>();
+            _dependencyViolations = new List<DependencyViolation>();
         }
 
-        public override void VisitIdentifierName(IdentifierNameSyntax node)
+        /// <summary>
+        /// Visits all child nodes of a given node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public override List<DependencyViolation> DefaultVisit(SyntaxNode node)
         {
-            CheckNode(node);
-            // No need to call base, because it cannot have such child nodes that need to be checked.
+            foreach (var childNode in node.ChildNodes())
+            {
+                if (_dependencyViolations.Count < _config.MaxIssueCount)
+                    Visit(childNode);
+            }
+
+            return _dependencyViolations;
         }
 
-        public override void VisitQualifiedName(QualifiedNameSyntax node)
+        public override List<DependencyViolation> VisitIdentifierName(IdentifierNameSyntax node)
         {
-            CheckNode(node);
-            // No need to call base, because it cannot have such child nodes that need to be checked.
+            return CheckNode(node);
+            // No need to call DefaultVisit, because it cannot have such child nodes that need to be checked.
         }
 
-        public override void VisitAliasQualifiedName(AliasQualifiedNameSyntax node)
+        public override List<DependencyViolation> VisitQualifiedName(QualifiedNameSyntax node)
         {
-            CheckNode(node);
-            // No need to call base, because it cannot have such child nodes that need to be checked.
+            return CheckNode(node);
+            // No need to call DefaultVisit, because it cannot have such child nodes that need to be checked.
         }
 
-        public override void VisitGenericName(GenericNameSyntax node)
+        public override List<DependencyViolation> VisitAliasQualifiedName(AliasQualifiedNameSyntax node)
         {
-            CheckNode(node);
-            if (DependencyViolations.Count < Constants.MAX_ISSUE_REPORTED_PER_FILE)
-                base.VisitGenericName(node);
+            return CheckNode(node);
+            // No need to call DefaultVisit, because it cannot have such child nodes that need to be checked.
         }
 
-        public override void VisitInvocationExpression(InvocationExpressionSyntax node)
+        public override List<DependencyViolation> VisitGenericName(GenericNameSyntax node)
         {
             CheckNode(node);
-            if (DependencyViolations.Count < Constants.MAX_ISSUE_REPORTED_PER_FILE)
-                base.VisitInvocationExpression(node);
+            return DefaultVisit(node);
+        }
+
+        public override List<DependencyViolation> VisitInvocationExpression(InvocationExpressionSyntax node)
+        {
+            CheckNode(node);
+            return DefaultVisit(node);
         }
 
         // No need to check the following node types.
@@ -101,14 +114,13 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
         /// Performs the analysis on the given node and creates a dependency violation object if needed.
         /// </summary>
         /// <param name="node">A syntax node.</param>
-        private void CheckNode(SyntaxNode node)
+        private List<DependencyViolation> CheckNode(SyntaxNode node)
         {
-            if (DependencyViolations.Count >= Constants.MAX_ISSUE_REPORTED_PER_FILE)
-                return;
-
             var dependencyViolation = SyntaxNodeAnalyzer.ProcessSyntaxNode(node, _semanticModel, _config);
-            if (dependencyViolation != null)
-                DependencyViolations.Add(dependencyViolation);
+            if (dependencyViolation != null && _dependencyViolations.Count < _config.MaxIssueCount)
+                _dependencyViolations.Add(dependencyViolation);
+
+            return _dependencyViolations;
         }
     }
 }
