@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="x" CodeIssueKind="x" MaxIssueCount="x">
+    <UnexpectedElement/>
+    <Allowed/>
+    <Allowed From="" />
+    <Allowed From="A"/>
+    <Allowed From="A" To=" " />
+    <Allowed From="A" To="B" UnexpectedAttribute="x"/>
+</NsDepCopConfig>

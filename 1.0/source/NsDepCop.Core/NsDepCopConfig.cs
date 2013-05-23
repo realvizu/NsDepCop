@@ -12,9 +12,9 @@ namespace Codartis.NsDepCop.Core
     /// </summary>
     public class NsDepCopConfig
     {
-        private const bool DEFAULT_IS_ENABLED_VALUE = false;
-        private const IssueKind DEFAULT_ISSUE_KIND = IssueKind.Warning;
-        private const int DEFAULT_MAX_ISSUE_REPORTED = 100;
+        public const bool DEFAULT_IS_ENABLED_VALUE = false;
+        public const IssueKind DEFAULT_ISSUE_KIND = IssueKind.Warning;
+        public const int DEFAULT_MAX_ISSUE_REPORTED = 100;
 
         /// <summary>
         /// A value indicating whether analysis is enabled.
@@ -159,93 +159,112 @@ namespace Codartis.NsDepCop.Core
 
             // Validate that it's an xml document and the root node is NsDepCopConfig.
             var configXml = XDocument.Load(configFilePath);
-            if (configXml == null || configXml.Element("NsDepCopConfig") == null)
+            if (configXml == null)
+                throw new Exception(string.Format("Could not load NsDepCop config file '{0}'.", configFilePath));
+
+            var rootElement = configXml.Element("NsDepCopConfig");
+            if (rootElement == null)
                 throw new Exception(string.Format("Error in NsDepCop config file '{0}', NsDepCopConfig root element not found.", configFilePath));
 
-            // Parse IsEnabled attribute, if exists.
-            var isEnabledAttribute = configXml.Element("NsDepCopConfig").Attribute("IsEnabled");
-            if (isEnabledAttribute != null)
-            {
-                bool isEnabled;
-                if (bool.TryParse(isEnabledAttribute.Value, out isEnabled))
-                {
-                    IsEnabled = isEnabled;
-                }
-                else
-                {
-                    Debug.WriteLine(string.Format("Error parsing config file; IsEnabled attribute value '{0}'. Using default value:'{1}'.",
-                        isEnabledAttribute.Value, IsEnabled), Constants.TOOL_NAME);
-                }
-            }
-
-            // Parse CodeIssueKind attribute, if exists.
-            var codeIssueKindAttribute = configXml.Element("NsDepCopConfig").Attribute("CodeIssueKind");
-            if (codeIssueKindAttribute != null)
-            {
-                IssueKind codeIssueKind;
-                if (Enum.TryParse<IssueKind>(codeIssueKindAttribute.Value, out codeIssueKind))
-                {
-                    IssueKind = codeIssueKind;
-                }
-                else
-                {
-                    Debug.WriteLine(string.Format("Error parsing config file; CodeIssueKind attribute value '{0}'. Using default value:'{1}'.",
-                        codeIssueKindAttribute.Value, IssueKind), Constants.TOOL_NAME);
-                }
-            }
-
-            // Parse MaxIssueCount attribute, if exists.
-            var maxIssueCountAttribute = configXml.Element("NsDepCopConfig").Attribute("MaxIssueCount");
-            if (maxIssueCountAttribute != null)
-            {
-                int maxIssueCount;
-                if (int.TryParse(maxIssueCountAttribute.Value, out maxIssueCount))
-                {
-                    MaxIssueCount = maxIssueCount;
-                }
-                else
-                {
-                    Debug.WriteLine(string.Format("Error parsing config file; MaxIssueCount attribute value '{0}'. Using default value:'{1}'.",
-                        maxIssueCountAttribute.Value, maxIssueCount), Constants.TOOL_NAME);
-                }
-            }
+            // Parse attributes of the root node.
+            IsEnabled = ParseAttribute(rootElement.Attribute("IsEnabled"), bool.TryParse, DEFAULT_IS_ENABLED_VALUE);
+            IssueKind = ParseAttribute(rootElement.Attribute("CodeIssueKind"), Enum.TryParse<IssueKind>, DEFAULT_ISSUE_KIND);
+            MaxIssueCount = ParseAttribute(rootElement.Attribute("MaxIssueCount"), int.TryParse, DEFAULT_MAX_ISSUE_REPORTED);
 
             // Parse Allowed elements.
-            foreach (var xElement in configXml.Element("NsDepCopConfig").Elements("Allowed"))
+            foreach (var xElement in rootElement.Elements("Allowed"))
             {
-                var xAttributeFrom = xElement.Attribute("From");
-                if (xAttributeFrom == null || xAttributeFrom.Value == null)
-                {
-                    Debug.WriteLine(string.Format("Error parsing config file, missing From attribute on element '{0}'. Ignoring element.",
-                        xElement.Value), Constants.TOOL_NAME);
+                string fromValue = ValidateAttribute(xElement, "From");
+                if (fromValue == null)
                     continue;
-                }
-                var xAttributeFromValue = xAttributeFrom.Value.Trim();
-                if (xAttributeFromValue.Length == 0)
-                {
-                    Debug.WriteLine(string.Format("Error parsing config file, empty From attribute on element '{0}'. Ignoring element.",
-                        xElement.Value), Constants.TOOL_NAME);
-                    continue;
-                }
 
-                var xAttributeTo = xElement.Attribute("To");
-                if (xAttributeTo == null || xAttributeTo.Value == null)
-                {
-                    Debug.WriteLine(string.Format("Error parsing config file, missing To attribute on element '{0}'. Ignoring element.",
-                        xElement.Value), Constants.TOOL_NAME);
+                string toValue = ValidateAttribute(xElement, "To");
+                if (toValue == null)
                     continue;
-                }
-                var xAttributeToValue = xAttributeTo.Value.Trim();
-                if (xAttributeToValue.Length == 0)
-                {
-                    Debug.WriteLine(string.Format("Error parsing config file, empty To attribute on element '{0}'. Ignoring element.",
-                        xElement.Value), Constants.TOOL_NAME);
-                    continue;
-                }
 
-                var dependency = new Dependency(xAttributeFromValue, xAttributeToValue);
+                // If the element was validated successfully then store the allowed dependency.
+                var dependency = new Dependency(fromValue, toValue);
                 AllowedDependencies.Add(dependency.ToString(), dependency);
             }
+        }
+
+        /// <summary>
+        /// Validates an attribute of the given element that it occurs exactly once and has non-whitespace content.
+        /// </summary>
+        /// <param name="xElement">The parent element of the attribute to be validated.</param>
+        /// <param name="attributeName">The name of the attribute to be validated.</param>
+        /// <returns>The trimmed value of the attribute or null if the validation failed.</returns>
+        private static string ValidateAttribute(XElement xElement, string attributeName)
+        {
+            var attributes = xElement.Attributes(attributeName);
+            if (attributes.Count() != 1)
+            {
+                Debug.WriteLine(
+                    string.Format("Error parsing config file: element '{0}' should have exactly 1 attribute named '{1}'. Ignoring element.",
+                    xElement, attributeName),
+                    Constants.TOOL_NAME);
+                return null;
+            }
+
+            var attribute = attributes.First();
+            if (attribute.Value == null)
+            {
+                Debug.WriteLine(
+                    string.Format("Error parsing config file: element '{0}', attribute '{1}' has null value. Ignoring element.",
+                    xElement, attributeName),
+                    Constants.TOOL_NAME);
+                return null;
+            }
+
+            var attributeValue = attribute.Value.Trim();
+            if (attributeValue.Length == 0)
+            {
+                Debug.WriteLine(
+                    string.Format("Error parsing config file: element '{0}', attribute '{1}' has whitespace value. Ignoring element.",
+                    xElement, attributeName),
+                    Constants.TOOL_NAME);
+                return null;
+            }
+
+            return attributeValue;
+        }
+
+        /// <summary>
+        /// Defines the signature of a TryParse-like method, that is used to parse a value of T from string.
+        /// </summary>
+        /// <typeparam name="T">The type of the parse result.</typeparam>
+        /// <param name="s">The string that must be parsed.</param>
+        /// <param name="t">The successfully parsed value.</param>
+        /// <returns>True if successfully parsed, false otherwise.</returns>
+        private delegate bool TryParseMethod<T>(string s, out T t);
+
+        /// <summary>
+        /// Parses an attribute to the given type. Returns the given default value if the parse failed.
+        /// </summary>
+        /// <typeparam name="T">The type of the parse result.</typeparam>
+        /// <param name="attribute">An attribute object.</param>
+        /// <param name="tryParseMethod">The method that should be used for parsing. Should not throw an exception just return false on failure.</param>
+        /// <param name="defaultValue">The default value to be returned if the parse failed.</param>
+        /// <returns>The parsed value or the given default value if the parse failed.</returns>
+        private T ParseAttribute<T>(XAttribute attribute, TryParseMethod<T> tryParseMethod, T defaultValue)
+        {
+            T result = defaultValue;
+
+            if (attribute != null)
+            {
+                T parseResult;
+                if (tryParseMethod(attribute.Value, out parseResult))
+                {
+                    result = parseResult;
+                }
+                else
+                {
+                    Debug.WriteLine(string.Format("Error parsing config file: attribute name: '{0}', value: '{1}'. Using default value:'{2}'.",
+                        attribute.Name, attribute.Value, defaultValue), Constants.TOOL_NAME);
+                }
+            }
+
+            return result;
         }
     }
 }

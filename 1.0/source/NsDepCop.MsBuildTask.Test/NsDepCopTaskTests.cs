@@ -38,6 +38,16 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [TestMethod]
+        public void Execute_ConfigFileErrorsIgnored()
+        {
+            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_ConfigFileErrorsIgnored",
+                new[] { new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_CONFIG_DISABLED } });
+
+            nsDepCopTask.Execute().ShouldBeTrue();
+            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+        }
+
+        [TestMethod]
         public void Execute_AllowedDependency()
         {
             var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_AllowedDependency",
@@ -60,15 +70,63 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [TestMethod]
-        public void Execute_DepViolation_IdentifierName()
+        public void Execute_DepViolation_IdentifierName_ReportWarning()
         {
-            var sourceFileName = "DepViolation_IdentifierName.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_IdentifierName",
+            var sourceFileName = "DepViolation_IdentifierName_ReportWarning.cs";
+            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_IdentifierName_ReportWarning",
                 new[] 
                 {
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Path = sourceFileName,
+                        StartLine = 7,
+                        StartColumn = 17,
+                        EndLine = 7,
+                        EndColumn = 23
+                    },
+                },
+                new string[] { sourceFileName });
+
+            nsDepCopTask.Execute().ShouldBeTrue();
+            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+        }
+
+        [TestMethod]
+        public void Execute_DepViolation_IdentifierName_ReportInfo()
+        {
+            var sourceFileName = "DepViolation_IdentifierName_ReportInfo.cs";
+            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_IdentifierName_ReportInfo",
+                new[] 
+                {
+                    new LogEntryParameters
+                    { 
+                        IssueKind = IssueKind.Info, 
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Path = sourceFileName,
+                        StartLine = 7,
+                        StartColumn = 17,
+                        EndLine = 7,
+                        EndColumn = 23
+                    },
+                },
+                new string[] { sourceFileName });
+
+            nsDepCopTask.Execute().ShouldBeTrue();
+            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+        }
+
+        [TestMethod]
+        public void Execute_DepViolation_IdentifierName_ReportError()
+        {
+            var sourceFileName = "DepViolation_IdentifierName_ReportError.cs";
+            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_IdentifierName_ReportError",
+                new[] 
+                {
+                    new LogEntryParameters
+                    { 
+                        IssueKind = IssueKind.Error, 
                         Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
                         Path = sourceFileName,
                         StartLine = 7,
