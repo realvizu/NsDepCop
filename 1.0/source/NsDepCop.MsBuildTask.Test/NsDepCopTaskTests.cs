@@ -28,6 +28,16 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [TestMethod]
+        public void Execute_NonXmlConfigFile()
+        {
+            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_NonXmlConfigFile",
+                new[] { new LogEntryParameters { IssueKind = IssueKind.Error, Code = NsDepCopTask.MSBUILD_CODE_EXCEPTION } });
+
+            nsDepCopTask.Execute().ShouldBeFalse();
+            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+        }
+
+        [TestMethod]
         public void Execute_ConfigFileDisabled()
         {
             var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_ConfigDisabled",
@@ -367,6 +377,51 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     },
                 },
                 new string[] { sourceFileName });
+
+            nsDepCopTask.Execute().ShouldBeTrue();
+            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+        }
+
+        [TestMethod]
+        public void Execute_NoSourceFiles()
+        {
+            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_NoSourceFiles",
+                new LogEntryParameters[] { });
+
+            nsDepCopTask.Execute().ShouldBeTrue();
+            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+        }
+
+        [TestMethod]
+        public void Execute_MultipleSourceFiles()
+        {
+            var sourceFile1 = "SourceFile1.cs";
+            var sourceFile2 = "SourceFile2.cs";
+            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_MultipleSourceFiles",
+                new[] 
+                {
+                    new LogEntryParameters
+                    { 
+                        IssueKind = IssueKind.Warning, 
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Path = sourceFile1,
+                        StartLine = 7,
+                        StartColumn = 17,
+                        EndLine = 7,
+                        EndColumn = 23
+                    },
+                    new LogEntryParameters
+                    { 
+                        IssueKind = IssueKind.Warning, 
+                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Path = sourceFile2,
+                        StartLine = 7,
+                        StartColumn = 17,
+                        EndLine = 7,
+                        EndColumn = 23
+                    },
+                },
+                new string[] { sourceFile1, sourceFile2 });
 
             nsDepCopTask.Execute().ShouldBeTrue();
             nsDepCopTask.BuildEngine.VerifyAllExpectations();

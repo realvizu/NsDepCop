@@ -76,17 +76,13 @@ namespace Codartis.NsDepCop.Core
         /// <returns>True if the dependency is allowed, false otherwise.</returns>
         public bool IsAllowedDependency(string fromNamespace, string toNamespace)
         {
-            // Generate all the possible patterns that can help match the namespaces with the rules.
-            var fromPatterns = GenerateMatchingPatterns(fromNamespace);
-            var toPatterns = GenerateMatchingPatterns(toNamespace);
-
             // Search for a match with the rules.
             Dependency foundDependency;
-            foreach (var fromPattern in fromPatterns)
+            foreach (var fromCandidate in NamespaceSpecification.GetContainingNamespaceSpecifications(fromNamespace))
             {
-                foreach (var toPattern in toPatterns)
+                foreach (var toCandidate in NamespaceSpecification.GetContainingNamespaceSpecifications(toNamespace))
                 {
-                    if (AllowedDependencies.TryGetValue(new Dependency(fromPattern, toPattern).ToString(), out foundDependency))
+                    if (AllowedDependencies.TryGetValue(new Dependency(fromCandidate, toCandidate).ToString(), out foundDependency))
                     {
                         //Debug.WriteLine(string.Format("Dependency from '{0}' to '{1}' is allowed by rule '{2}'",
                         //    fromNamespace, toNamespace, foundDependency), Constants.TOOL_NAME);
@@ -99,51 +95,6 @@ namespace Codartis.NsDepCop.Core
 
             // No matching rule was found.
             return false;
-        }
-
-        /// <summary>
-        /// Returns all the strings for the given namespace name that can match a dependency rule.
-        /// </summary>
-        /// <param name="namespaceName">A concrete namespace in string format.</param>
-        /// <returns>All that string that can produce a match when searching matching rules.</returns>
-        private List<string> GenerateMatchingPatterns(string namespaceName)
-        {
-            var result = new List<string>();
-            // The '*' symbol means any namespace so it's always a matching pattern.
-            result.Add("*");
-
-            // Roslyn represents the global namespace like this: "<global namespace>".
-            // This tool represents it like this: "."
-            if (namespaceName.StartsWith("<"))
-            {
-                // If the namespace is the global namespace then substitute it with '.'
-                result.Add(".");
-            }
-            else
-            {
-                // Add the concrete namespace name to the matching patterns.
-                result.Add(namespaceName);
-
-                // And add all the containing namespaces with a '*' (meaning sub-namespaces).
-                // Eg. for 'System.Collections.Generic'
-                // Add 'System.Collections.Generic.*'
-                // Add 'System.Collections.*'
-                // Add 'System.*'
-
-                var pieces = namespaceName.Split('.');
-                var prefix = "";
-
-                foreach (var piece in pieces)
-                {
-                    if (prefix.Length > 0)
-                        prefix += ".";
-
-                    prefix += piece;
-                    result.Add(prefix + ".*");
-                }
-            }
-
-            return result;
         }
 
         /// <summary>
@@ -174,59 +125,39 @@ namespace Codartis.NsDepCop.Core
             // Parse Allowed elements.
             foreach (var xElement in rootElement.Elements("Allowed"))
             {
-                string fromValue = ValidateAttribute(xElement, "From");
-                if (fromValue == null)
-                    continue;
+                try
+                {
+                    string fromValue = GetAttributeValue(xElement, "From");
+                    if (fromValue == null)
+                        throw new Exception("From element missing.");
 
-                string toValue = ValidateAttribute(xElement, "To");
-                if (toValue == null)
-                    continue;
+                    string toValue = GetAttributeValue(xElement, "To");
+                    if (toValue == null)
+                        throw new Exception("To element missing.");
 
-                // If the element was validated successfully then store the allowed dependency.
-                var dependency = new Dependency(fromValue, toValue);
-                AllowedDependencies.Add(dependency.ToString(), dependency);
+                    var dependency = new Dependency(fromValue, toValue);
+                    AllowedDependencies.Add(dependency.ToString(), dependency);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(
+                        string.Format("Error parsing config file: element '{0}' is invalid. ({1}) Ignoring element.", 
+                        xElement, e.Message),
+                        Constants.TOOL_NAME);
+                }
             }
         }
 
         /// <summary>
-        /// Validates an attribute of the given element that it occurs exactly once and has non-whitespace content.
+        /// Returns an attribute's value, or null if the attribute was not found.
         /// </summary>
-        /// <param name="xElement">The parent element of the attribute to be validated.</param>
-        /// <param name="attributeName">The name of the attribute to be validated.</param>
-        /// <returns>The trimmed value of the attribute or null if the validation failed.</returns>
-        private static string ValidateAttribute(XElement xElement, string attributeName)
+        /// <param name="xElement">The parent element of the attribute.</param>
+        /// <param name="attributeName">The name of the attribute.</param>
+        /// <returns>The value of the attribute or null if the attribute was not found.</returns>
+        private static string GetAttributeValue(XElement xElement, string attributeName)
         {
-            var attributes = xElement.Attributes(attributeName);
-            if (attributes.Count() != 1)
-            {
-                Debug.WriteLine(
-                    string.Format("Error parsing config file: element '{0}' should have exactly 1 attribute named '{1}'. Ignoring element.",
-                    xElement, attributeName),
-                    Constants.TOOL_NAME);
-                return null;
-            }
-
-            var attribute = attributes.First();
-            if (attribute.Value == null)
-            {
-                Debug.WriteLine(
-                    string.Format("Error parsing config file: element '{0}', attribute '{1}' has null value. Ignoring element.",
-                    xElement, attributeName),
-                    Constants.TOOL_NAME);
-                return null;
-            }
-
-            var attributeValue = attribute.Value.Trim();
-            if (attributeValue.Length == 0)
-            {
-                Debug.WriteLine(
-                    string.Format("Error parsing config file: element '{0}', attribute '{1}' has whitespace value. Ignoring element.",
-                    xElement, attributeName),
-                    Constants.TOOL_NAME);
-                return null;
-            }
-
-            return attributeValue;
+            var attribute = xElement.Attribute(attributeName);
+            return attribute == null ? null : attribute.Value;
         }
 
         /// <summary>
