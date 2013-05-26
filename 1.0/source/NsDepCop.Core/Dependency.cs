@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace Codartis.NsDepCop.Core
 {
@@ -52,7 +53,11 @@ namespace Codartis.NsDepCop.Core
         /// <returns>The string represenation of a namespace dependency.</returns>
         public override string ToString()
         {
-            return string.Format("{0}->{1}", From, To);
+            var builder = new StringBuilder();
+            builder.Append(From);
+            builder.Append("->");
+            builder.Append(To);
+            return builder.ToString();
         }
     }
 }

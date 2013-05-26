@@ -75,7 +75,8 @@ namespace Codartis.NsDepCop.MsBuildTask
                 }
 
                 // Run the analysis for the whole project.
-                var codeAnalyzer = new Codartis.NsDepCop.Analyzer.Roslyn.DependencyAnalyzer(config);
+                //var codeAnalyzer = new Codartis.NsDepCop.Analyzer.Roslyn.DependencyAnalyzer(config);
+                var codeAnalyzer = new Codartis.NsDepCop.Analyzer.NRefactory.DependencyAnalyzer(config);
                 var dependencyViolations = codeAnalyzer.AnalyzeProject(
                     BaseDirectory.ItemSpec, 
                     Compile.ToList().Select(i => i.ItemSpec), 

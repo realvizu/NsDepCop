@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
     /// Implements a syntax visitor that traverses the syntax tree 
     /// and invokes the dependency analysis logic for every eligible node.
     /// </summary>
-    public class DependencyAnalyzerSyntaxVisitor : SyntaxVisitor<List<DependencyViolation>>
+    internal class DependencyAnalyzerSyntaxVisitor : SyntaxVisitor<List<DependencyViolation>>
     {
         /// <summary>
         /// The semantic model of the current document.

@@ -35,8 +35,6 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
             IEnumerable<string> sourceFilePaths, 
             IEnumerable<string> referencedAssemblyPaths)
         {
-            var dependencyViolations = new List<DependencyViolation>();
-
             // Build a "csc.exe command line"-like string 
             // that contains the project parameters so Roslyn can build up a workspace.
             string projectParametersAsString = string.Format("/reference:{0} {1}",

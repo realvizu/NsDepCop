@@ -5,7 +5,7 @@ using System.Linq;
 namespace Codartis.NsDepCop.Core
 {
     /// <summary>
-    /// Represents a namespace or a set of namespaces.
+    /// Represents a namespace or a namespace tree.
     /// </summary>
     /// <remarks>
     /// Valid namespace specifications are:
@@ -16,7 +16,7 @@ namespace Codartis.NsDepCop.Core
     /// <item>Any namespaces: '*'</item>
     /// </list>
     /// </remarks>
-    public class NamespaceSpecification
+    public class NamespaceSpecification : IEquatable<NamespaceSpecification>
     {
         /// <summary>
         /// Represents the global namespace.
@@ -40,15 +40,18 @@ namespace Codartis.NsDepCop.Core
         public NamespaceSpecification(string namespaceSpecificationAsString)
         {
             if (namespaceSpecificationAsString == null)
-                throw new ArgumentNullException("namespaceSpecificationAsString");
+                throw new ArgumentNullException();
 
-            // Roslyn represents the global namespace like this: "<global namespace>".
-            // This tool represents it like this: "."
-            if (namespaceSpecificationAsString == "<global namespace>")
+            // Global namespace representations:
+            //   Roslyn: "<global namespace>"
+            //   NRefactory: "" (empty string)
+            //   NsDepCop: "." (dot)
+            if (namespaceSpecificationAsString == "" || 
+                namespaceSpecificationAsString == "<global namespace>")
                 namespaceSpecificationAsString = ".";
 
             if (!IsValidNamespaceSpecification(namespaceSpecificationAsString))
-                throw new ArgumentException("Not a valid namespace specification.");
+                throw new FormatException("Not a valid namespace specification.");
 
             _namespaceSpecificationAsString = namespaceSpecificationAsString;
         }
@@ -60,6 +63,44 @@ namespace Codartis.NsDepCop.Core
         public override string ToString()
         {
             return _namespaceSpecificationAsString;
+        }
+
+        public override int GetHashCode()
+        {
+            return _namespaceSpecificationAsString.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            var otherNamespaceSpecification = obj as NamespaceSpecification;
+            if (ReferenceEquals(otherNamespaceSpecification, null))
+                return false;
+
+            return _namespaceSpecificationAsString == otherNamespaceSpecification._namespaceSpecificationAsString;
+        }
+
+        public bool Equals(NamespaceSpecification otherNamespaceSpecification)
+        {
+            if (ReferenceEquals(otherNamespaceSpecification, null))
+                return false;
+
+            if (ReferenceEquals(this, otherNamespaceSpecification))
+                return true;
+
+            return _namespaceSpecificationAsString == otherNamespaceSpecification._namespaceSpecificationAsString;
+        }
+
+        public static bool operator ==(NamespaceSpecification ns1, NamespaceSpecification ns2)
+        {
+            return ns1.Equals(ns2);
+        }
+
+        public static bool operator !=(NamespaceSpecification ns1, NamespaceSpecification ns2)
+        {
+            return !ns1.Equals(ns2);
         }
 
         /// <summary>
@@ -81,16 +122,23 @@ namespace Codartis.NsDepCop.Core
         /// Returns all the different namespace specifications that can contain the given namespace.
         /// </summary>
         /// <param name="namespaceName">A concrete namespace name in string format.</param>
-        /// <returns>All that string that can produce a match when searching matching rules.</returns>
+        /// <returns>A collection of all NamespaceSpecifications that can contain the given namespace.</returns>
         public static IEnumerable<NamespaceSpecification> GetContainingNamespaceSpecifications(string namespaceName)
         {
+            // Convert the string to namespace specification, also validates it.
+            var namespaceSpecification = new NamespaceSpecification(namespaceName);
+
             // The AnyNamespace specification contains every namespace.
             yield return AnyNamespace;
 
             // The namespace specification created from the given namespace obviously contains the given namespace.
-            yield return new NamespaceSpecification(namespaceName);
+            yield return namespaceSpecification;
 
-            // And return all the containing namespaces with a '*' (meaning sub-namespaces).
+            // For the global namespace there's no more containing namespace.
+            if (namespaceSpecification == NamespaceSpecification.GlobalNamespace)
+                yield break;
+
+            // For any other namespace return itself and all parent namespaces postfixed with '*' (meaning any sub-namespaces).
             // Eg. for 'System.Collections.Generic'
             // Return 'System.*'
             // Return 'System.Collections.*'
