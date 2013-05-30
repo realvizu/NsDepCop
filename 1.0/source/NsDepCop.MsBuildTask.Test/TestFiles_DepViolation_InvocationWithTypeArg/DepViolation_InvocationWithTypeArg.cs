@@ -6,8 +6,8 @@
     {
         void MyMethod()
         {
-            MyOtherClass.MyOtherMethod<C.MyEnum>();
-        }            
+            MyOtherClass.MyOtherMethod<C.MyClassC>(null);
+        }
     }
 }
 
@@ -23,9 +23,8 @@ namespace B
 
 namespace C
 {
-    enum MyEnum
+    class MyClassC
     {
-        Value1
     }
 }
 

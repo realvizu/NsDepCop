@@ -8,6 +8,11 @@ namespace Codartis.NsDepCop.Core
     public interface IDependencyAnalyzer
     {
         /// <summary>
+        /// Gets the name of the parser.
+        /// </summary>
+        string ParserName { get; }
+
+        /// <summary>
         /// Analyses a project (source files and referenced assemblies) and returns the found dependency violations.
         /// </summary>
         /// <param name="baseDirectory">The full path of the base directory of the project.</param>

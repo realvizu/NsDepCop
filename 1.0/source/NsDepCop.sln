@@ -29,9 +29,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Analyzer.NRefactor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Core.Test", "NsDepCop.Core.Test\NsDepCop.Core.Test.csproj", "{96044EE5-D220-4CED-A687-35AED0115A35}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Analyzer.Factory", "NsDepCop.Analyzer.Factory\NsDepCop.Analyzer.Factory.csproj", "{72601D9B-3FCC-4360-A0CF-D2144A8E9472}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 12
+		SccNumberOfProjects = 13
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
 		SccLocalPath0 = .
@@ -68,6 +70,9 @@ Global
 		SccProjectUniqueName11 = NsDepCop.Core.Test\\NsDepCop.Core.Test.csproj
 		SccProjectName11 = NsDepCop.Core.Test
 		SccLocalPath11 = NsDepCop.Core.Test
+		SccProjectUniqueName12 = NsDepCop.Analyzer.Factory\\NsDepCop.Analyzer.Factory.csproj
+		SccProjectName12 = NsDepCop.Analyzer.Factory
+		SccLocalPath12 = NsDepCop.Analyzer.Factory
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -188,6 +193,16 @@ Global
 		{96044EE5-D220-4CED-A687-35AED0115A35}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{96044EE5-D220-4CED-A687-35AED0115A35}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{96044EE5-D220-4CED-A687-35AED0115A35}.Release|x86.ActiveCfg = Release|Any CPU
+		{72601D9B-3FCC-4360-A0CF-D2144A8E9472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72601D9B-3FCC-4360-A0CF-D2144A8E9472}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72601D9B-3FCC-4360-A0CF-D2144A8E9472}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{72601D9B-3FCC-4360-A0CF-D2144A8E9472}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{72601D9B-3FCC-4360-A0CF-D2144A8E9472}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{72601D9B-3FCC-4360-A0CF-D2144A8E9472}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72601D9B-3FCC-4360-A0CF-D2144A8E9472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72601D9B-3FCC-4360-A0CF-D2144A8E9472}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{72601D9B-3FCC-4360-A0CF-D2144A8E9472}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{72601D9B-3FCC-4360-A0CF-D2144A8E9472}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

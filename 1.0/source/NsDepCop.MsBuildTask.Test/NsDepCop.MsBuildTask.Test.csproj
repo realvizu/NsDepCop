@@ -121,9 +121,14 @@
     <Content Include="TestFiles_MultipleSourceFiles\SourceFile2.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="TestCaseSpecification.cs" />
     <Compile Include="TestTaskItem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NsDepCop.Analyzer.Factory\NsDepCop.Analyzer.Factory.csproj">
+      <Project>{72601d9b-3fcc-4360-a0cf-d2144a8e9472}</Project>
+      <Name>NsDepCop.Analyzer.Factory</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">
       <Project>{bc26589e-79b0-4f55-b64d-db11534d3476}</Project>
       <Name>NsDepCop.Core</Name>

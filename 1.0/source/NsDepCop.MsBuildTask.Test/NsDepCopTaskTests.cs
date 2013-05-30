@@ -1,4 +1,5 @@
-﻿using Codartis.NsDepCop.Core;
+﻿using Codartis.NsDepCop.Analyzer.Factory;
+using Codartis.NsDepCop.Core;
 using Microsoft.Build.Framework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
@@ -20,72 +21,67 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_NoConfigFile()
         {
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_NoConfigFile",
+            var specification = new TestCaseSpecification("TestFiles_NoConfigFile",
                 new[] { new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_NO_CONFIG_FILE } });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_NonXmlConfigFile()
         {
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_NonXmlConfigFile",
+            var specification = new TestCaseSpecification("TestFiles_NonXmlConfigFile",
                 new[] { new LogEntryParameters { IssueKind = IssueKind.Error, Code = NsDepCopTask.MSBUILD_CODE_EXCEPTION } });
 
-            nsDepCopTask.Execute().ShouldBeFalse();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification, expectedReturnValue: false);
         }
 
         [TestMethod]
         public void Execute_ConfigFileDisabled()
         {
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_ConfigDisabled",
-                new[] { new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_CONFIG_DISABLED } });
+            var specification = new TestCaseSpecification("TestFiles_ConfigDisabled",
+                new[] { new LogEntryParameters { IssueKind = IssueKind.Warning, Code = NsDepCopTask.MSBUILD_CODE_CONFIG_DISABLED } });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_ConfigFileErrorsIgnored()
         {
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_ConfigFileErrorsIgnored",
-                new[] { new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_CONFIG_DISABLED } });
+            var specification = new TestCaseSpecification("TestFiles_ConfigFileErrorsIgnored",
+                new[] { new LogEntryParameters { IssueKind = IssueKind.Warning, Code = NsDepCopTask.MSBUILD_CODE_CONFIG_DISABLED } });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_AllowedDependency()
         {
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_AllowedDependency",
-                new LogEntryParameters[] { },
+            var specification = new TestCaseSpecification("TestFiles_AllowedDependency",
+                new[] { new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO } },
                 new string[] { "AllowedDependency.cs" });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_SameNamespaceAlwaysAllowed()
         {
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_SameNamespaceAlwaysAllowed",
-                new LogEntryParameters[] { },
+            var specification = new TestCaseSpecification("TestFiles_SameNamespaceAlwaysAllowed",
+                new[] { new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO } },
                 new string[] { "SameNamespaceAlwaysAllowed.cs" });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_IdentifierName_ReportWarning()
         {
             var sourceFileName = "DepViolation_IdentifierName_ReportWarning.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_IdentifierName_ReportWarning",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_IdentifierName_ReportWarning",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -99,17 +95,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_IdentifierName_ReportInfo()
         {
             var sourceFileName = "DepViolation_IdentifierName_ReportInfo.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_IdentifierName_ReportInfo",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_IdentifierName_ReportInfo",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Info, 
@@ -123,17 +119,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_IdentifierName_ReportError()
         {
             var sourceFileName = "DepViolation_IdentifierName_ReportError.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_IdentifierName_ReportError",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_IdentifierName_ReportError",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Error, 
@@ -147,17 +143,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_QualifiedName()
         {
             var sourceFileName = "DepViolation_QualifiedName.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_QualifiedName",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_QualifiedName",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -171,17 +167,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_AliasQualifiedName()
         {
             var sourceFileName = "DepViolation_AliasQualifiedName.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_AliasQualifiedName",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_AliasQualifiedName",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -193,20 +189,19 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndColumn = 31
                     },
                 },
-                new string[] { sourceFileName }, 
-                null, true);
+                new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification, skipEndLocationValidation: true);
         }
 
         [TestMethod]
         public void Execute_DepViolation_InvocationExpression()
         {
             var sourceFileName = "DepViolation_InvocationExpression.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_InvocationExpression",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_InvocationExpression",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -220,17 +215,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_InvocationWithTypeArg()
         {
             var sourceFileName = "DepViolation_InvocationWithTypeArg.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_InvocationWithTypeArg",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_InvocationWithTypeArg",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -239,22 +234,22 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         StartLine = 9,
                         StartColumn = 40,
                         EndLine = 9,
-                        EndColumn = 48
+                        EndColumn = 50
                     },
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_MemberAccessExpression()
         {
             var sourceFileName = "DepViolation_MemberAccessExpression.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_MemberAccessExpression",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_MemberAccessExpression",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -268,17 +263,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_GenericName()
         {
             var sourceFileName = "DepViolation_GenericName.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_GenericName",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_GenericName",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -292,17 +287,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_GenericTypeArgument()
         {
             var sourceFileName = "DepViolation_GenericTypeArgument.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_GenericTypeArgument",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_GenericTypeArgument",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -326,17 +321,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_NestedType()
         {
             var sourceFileName = "DepViolation_NestedType.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_NestedType",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_NestedType",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -380,17 +375,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
             new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_ArrayType()
         {
             var sourceFileName = "DepViolation_ArrayType.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_ArrayType",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_ArrayType",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -404,17 +399,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_NullableType()
         {
             var sourceFileName = "DepViolation_NullableType.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_NullableType",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_NullableType",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -428,17 +423,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_DepViolation_EveryUserDefinedTypeKind()
         {
             var sourceFileName = "DepViolation_EveryUserDefinedTypeKind.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_DepViolation_EveryUserDefinedTypeKind",
+            var specification = new TestCaseSpecification("TestFiles_DepViolation_EveryUserDefinedTypeKind",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -492,17 +487,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_TooManyIssues()
         {
             var sourceFileName = "TooManyIssues.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_TooManyIssues",
+            var specification = new TestCaseSpecification("TestFiles_TooManyIssues",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -523,26 +518,20 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndLine = 8,
                         EndColumn = 23
                     },
-                    new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_TOO_MANY_ISSUES,
-                    },
+                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = NsDepCopTask.MSBUILD_CODE_TOO_MANY_ISSUES},
                 },
                 new string[] { sourceFileName });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
         public void Execute_NoSourceFiles()
         {
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_NoSourceFiles",
-                new LogEntryParameters[] { });
+            var specification = new TestCaseSpecification("TestFiles_NoSourceFiles",
+                new[] { new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO } });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         [TestMethod]
@@ -550,9 +539,10 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         {
             var sourceFile1 = "SourceFile1.cs";
             var sourceFile2 = "SourceFile2.cs";
-            var nsDepCopTask = SetUpNsDepCopTaskForTest("TestFiles_MultipleSourceFiles",
+            var specification = new TestCaseSpecification("TestFiles_MultipleSourceFiles",
                 new[] 
                 {
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
@@ -576,40 +566,33 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
                 new string[] { sourceFile1, sourceFile2 });
 
-            nsDepCopTask.Execute().ShouldBeTrue();
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            ExecuteWithAllAnalyzers(specification);
         }
 
         /// <summary>
         /// Creates an NsDepCopTask and sets it up for testing. Adds a mocked BuildEngine and log expectations.
         /// </summary>
-        /// <param name="testFilesFolderName">The name of the test files folder.</param>
-        /// <param name="expectedLogEntries">A collection of expected log entry parameters.</param>
-        /// <param name="sourceFileNames">A collection of name of the source files in the project to be analyzed.</param>
-        /// <param name="referencedFilePaths">A collection of the full path of the files referenced in the project.</param>
-        /// <param name="skipEndLocationValidation">End location validation can be omitted. Needed because an NRefactory bug.</param>
+        /// <param name="specification">The test case specification.</param>
+        /// <param name="skipEndLocationValidation">End location validation can be omitted. Needed because of an NRefactory bug.</param>
         /// <returns>A new NsDepCopTask instance ready for testing.</returns>
         private static NsDepCopTask SetUpNsDepCopTaskForTest(
-            string testFilesFolderName, 
-            IEnumerable<LogEntryParameters> expectedLogEntries, 
-            IEnumerable<string> sourceFileNames = null,
-            IEnumerable<string> referencedFilePaths = null,
+            TestCaseSpecification specification,
             bool skipEndLocationValidation = false)
         {
             var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var baseDirecytory = Path.Combine(assemblyDirectory, testFilesFolderName);
+            var baseDirecytory = Path.Combine(assemblyDirectory, specification.TestFilesFolderName);
 
             var mockBuildEngine = MockRepository.GenerateStrictMock<IBuildEngine>();
-            foreach (var expectedLogEntry in expectedLogEntries)
+            foreach (var expectedLogEntry in specification.ExpectedLogEntries)
             {
-                switch(expectedLogEntry.IssueKind)
+                switch (expectedLogEntry.IssueKind)
                 {
-                    case(IssueKind.Info):
+                    case (IssueKind.Info):
                         mockBuildEngine
-                            .Expect(i => i.LogMessageEvent(Arg<BuildMessageEventArgs>.Matches(a => 
-                                a.Code == expectedLogEntry.Code 
-                                && a.File == TestSourceFileNameToFullPath(baseDirecytory, expectedLogEntry.Path) 
-                                && a.LineNumber == expectedLogEntry.StartLine 
+                            .Expect(i => i.LogMessageEvent(Arg<BuildMessageEventArgs>.Matches(a =>
+                                a.Code == expectedLogEntry.Code
+                                && a.File == TestSourceFileNameToFullPath(baseDirecytory, expectedLogEntry.Path)
+                                && a.LineNumber == expectedLogEntry.StartLine
                                 && a.ColumnNumber == expectedLogEntry.StartColumn
                                 && (skipEndLocationValidation || a.EndLineNumber == expectedLogEntry.EndLine)
                                 && (skipEndLocationValidation || a.EndColumnNumber == expectedLogEntry.EndColumn)
@@ -646,7 +629,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             }
 
             var sourceFullPaths = new List<string>();
-            foreach (var sourceFileName in sourceFileNames.EmptyIfNull())
+            foreach (var sourceFileName in specification.SourceFileNames.EmptyIfNull())
             {
                 sourceFullPaths.Add(Path.Combine(baseDirecytory, sourceFileName));
             }
@@ -655,11 +638,36 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             {
                 BaseDirectory = new TestTaskItem(baseDirecytory),
                 Compile = sourceFullPaths.Select(i => new TestTaskItem(i)).ToArray(),
-                ReferencePath = referencedFilePaths.EmptyIfNull().Select(i => new TestTaskItem(i)).ToArray()
+                ReferencePath = specification.ReferencedFilePaths.EmptyIfNull().Select(i => new TestTaskItem(i)).ToArray(),
             };
             nsDepCopTask.BuildEngine = mockBuildEngine;
 
             return nsDepCopTask;
+        }
+
+        /// <summary>
+        /// Executes the test case using both analyzers.
+        /// </summary>
+        /// <param name="specification">The test case specification.</param>
+        /// <param name="expectedReturnValue">The expected return value of the Task.Execute function.</param>
+        /// <param name="skipEndLocationValidation">End location validation can be omitted. Needed because of an NRefactory bug.</param>
+        private static void ExecuteWithAllAnalyzers(
+            TestCaseSpecification specification, 
+            bool expectedReturnValue = true,
+            bool skipEndLocationValidation = false)
+        {
+            {
+                var nsDepCopTask = SetUpNsDepCopTaskForTest(specification, skipEndLocationValidation);
+                nsDepCopTask.Parser = new TestTaskItem(Parser.NRefactory.ToString());
+                nsDepCopTask.Execute().ShouldEqual(expectedReturnValue);
+                nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            }
+            {
+                var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);
+                nsDepCopTask.Parser = new TestTaskItem(Parser.Roslyn.ToString());
+                nsDepCopTask.Execute().ShouldEqual(expectedReturnValue);
+                nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            }
         }
 
         /// <summary>
@@ -674,6 +682,5 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 ? Path.Combine(baseDirecytory, sourceFileName)
                 : null;
         }
-
     }
 }

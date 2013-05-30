@@ -24,6 +24,14 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
         }
 
         /// <summary>
+        /// Gets the name of the parser.
+        /// </summary>
+        public string ParserName
+        {
+            get { return "Roslyn"; }
+        }
+
+        /// <summary>
         /// Analyses a project (source files and referenced assemblies) and returns the found dependency violations.
         /// </summary>
         /// <param name="baseDirectory">The full path of the base directory of the project.</param>

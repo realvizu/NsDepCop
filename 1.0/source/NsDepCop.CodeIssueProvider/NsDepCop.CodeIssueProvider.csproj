@@ -52,7 +52,7 @@
     <WarningLevel>4</WarningLevel>
     <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
     <CopyVsixExtensionLocation>C:\Users\Vizu\AppData\Local\Microsoft\VisualStudio\11.0\Extensions\Codartis\NsDepCop.CodeIssueProvider\1.0</CopyVsixExtensionLocation>
-    <DeployExtension>True</DeployExtension>
+    <DeployExtension>False</DeployExtension>
     <CreateVsixContainer>True</CreateVsixContainer>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
