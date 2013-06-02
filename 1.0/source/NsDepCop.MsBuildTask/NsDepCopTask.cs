@@ -49,15 +49,22 @@ namespace Codartis.NsDepCop.MsBuildTask
         public ITaskItem Parser { get; set; }
 
         /// <summary>
+        /// Config info.
+        /// </summary>
+        private NsDepCopConfig _config;
+
+        /// <summary>
         /// Executes the custom MsBuild task. Called by the MsBuild tool.
         /// </summary>
-        /// <returns>True if the run was successful. False if it failed.</returns>
+        /// <returns>True if the run was successful (even if issues were reported). False if the task terminated with an exception.</returns>
         public override bool Execute()
         {
+            var startTime = DateTime.Now;
+
             try
             {
                 Debug.WriteLine("Execute started...", Constants.TOOL_NAME);
-                DumpInputParametersToDebug();
+                DebugDumpInputParameters();
 
                 // Find out the location of the config file.
                 var configFileName = Path.Combine(BaseDirectory.ItemSpec, Constants.DEFAULT_CONFIG_FILE_NAME);
@@ -65,25 +72,25 @@ namespace Codartis.NsDepCop.MsBuildTask
                 // No config file means no analysis.
                 if (!File.Exists(configFileName))
                 {
-                    LogHelper(MSBUILD_CODE_NO_CONFIG_FILE, "No config file found, analysis skipped.");
+                    LogMsBuildEvent(MSBUILD_CODE_NO_CONFIG_FILE, "No config file found, analysis skipped.");
                     return true;
                 }
 
                 // Read the config.
-                var config = new NsDepCopConfig(configFileName);
+                _config = new NsDepCopConfig(configFileName);
 
                 // If analysis is switched off in the config file, then bail out.
-                if (!config.IsEnabled)
+                if (!_config.IsEnabled)
                 {
-                    LogHelper(MSBUILD_CODE_CONFIG_DISABLED, "Analysis is disabled in the nsdepcop config file.");
+                    LogMsBuildEvent(MSBUILD_CODE_CONFIG_DISABLED, "Analysis is disabled in the nsdepcop config file.");
                     return true;
                 }
 
                 // Create the code analyzer object.
                 var parserName = GetValueOfTaskItem(Parser);
-                var codeAnalyzer = DependencyAnalyzerFactory.Create(parserName, config);
+                var codeAnalyzer = DependencyAnalyzerFactory.Create(parserName, _config);
 
-                LogHelper(MSBUILD_CODE_INFO, "Analysing project using " + codeAnalyzer.ParserName + ".");
+                LogMsBuildEvent(MSBUILD_CODE_INFO, "Analysing project using " + codeAnalyzer.ParserName + ".");
 
                 // Run the analysis for the whole project.
                 var dependencyViolations = codeAnalyzer.AnalyzeProject(
@@ -95,23 +102,26 @@ namespace Codartis.NsDepCop.MsBuildTask
                 var issuesReported = 0;
                 foreach (var dependencyViolation in dependencyViolations)
                 {
-                    LogHelper(MSBUILD_CODE_ISSUE, dependencyViolation.ToString(), dependencyViolation.SourceSegment, config);
+                    LogMsBuildEvent(MSBUILD_CODE_ISSUE, dependencyViolation.ToString(), dependencyViolation.SourceSegment);
 
                     issuesReported++;
 
                     // Too many issues stop the analysis.
-                    if (issuesReported == config.MaxIssueCount)
+                    if (issuesReported == _config.MaxIssueCount)
                     {
-                        LogHelper(MSBUILD_CODE_TOO_MANY_ISSUES, "Too many issues, analysis was stopped.");
-                        return true;
+                        LogMsBuildEvent(MSBUILD_CODE_TOO_MANY_ISSUES, "Too many issues, analysis was stopped.");
+                        break;
                     }
                 }
             }
             catch (Exception e)
             {
-                LogHelper(MSBUILD_CODE_EXCEPTION, e.ToString());
+                LogMsBuildEvent(MSBUILD_CODE_EXCEPTION, e.ToString());
                 return false;
             }
+
+            var endTime = DateTime.Now;
+            LogMsBuildEvent(MSBUILD_CODE_INFO, string.Format("Analysis took: {0:mm\\:ss\\.fff}", endTime - startTime));
 
             return true;
         }
@@ -131,7 +141,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// <summary>
         /// Dumps the incoming parameters to Debug output to help troubleshooting.
         /// </summary>
-        private void DumpInputParametersToDebug()
+        private void DebugDumpInputParameters()
         {
             Debug.WriteLine(string.Format("  ReferencePath[{0}]", ReferencePath.Length), Constants.TOOL_NAME);
             ReferencePath.ToList().ForEach(i => Debug.WriteLine(string.Format("    {0}", i.ItemSpec), Constants.TOOL_NAME));
@@ -143,12 +153,10 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// <summary>
         /// Log an event to MSBuild.
         /// </summary>
-        /// <param name="issueKind">Error/Warning/Info</param>
         /// <param name="code">The string code of the event.</param>
         /// <param name="message">The string message of the event.</param>
         /// <param name="sourceSegment">The source segment that caused the event or null if not applicable.</param>
-        /// <param name="config">Config object.</param>
-        private void LogHelper(string code, string message, SourceSegment sourceSegment = null, NsDepCopConfig config = null)
+        private void LogMsBuildEvent(string code, string message, SourceSegment sourceSegment = null)
         {
             string path = null;
             int startLine = 0;
@@ -167,7 +175,7 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             message = "[" + Constants.TOOL_NAME + "] " + message;
 
-            var issueKind = GetIssueKindByCode(code, config);
+            var issueKind = GetIssueKindByCode(code);
 
             switch (issueKind)
             {
@@ -190,17 +198,16 @@ namespace Codartis.NsDepCop.MsBuildTask
         }
 
         /// <summary>
-        /// Translates the event codes to issue kind.
+        /// Translates an event code to an issue kind.
         /// </summary>
         /// <param name="code">An event code.</param>
-        /// <param name="config">Config object.</param>
         /// <returns>The IssueKind (severity) of the given code.</returns>
-        private IssueKind GetIssueKindByCode(string code, NsDepCopConfig config)
+        private IssueKind GetIssueKindByCode(string code)
         {
             switch (code)
             {
                 case (MSBUILD_CODE_ISSUE):
-                    return config == null ? IssueKind.Warning : config.IssueKind;
+                    return _config == null ? IssueKind.Warning : _config.IssueKind;
 
                 case (MSBUILD_CODE_EXCEPTION):
                     return IssueKind.Error;

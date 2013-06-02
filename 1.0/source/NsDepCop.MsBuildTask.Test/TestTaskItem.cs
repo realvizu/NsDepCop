@@ -1,5 +1,6 @@
 ﻿using Microsoft.Build.Framework;
 using System;
+using System.Collections;
 
 namespace Codartis.NsDepCop.MsBuildTask.Test
 {
@@ -15,7 +16,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             _content = content;
         }
 
-        public System.Collections.IDictionary CloneCustomMetadata()
+        public IDictionary CloneCustomMetadata()
         {
             throw new NotImplementedException();
         }
@@ -47,7 +48,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             get { throw new NotImplementedException(); }
         }
 
-        public System.Collections.ICollection MetadataNames
+        public ICollection MetadataNames
         {
             get { throw new NotImplementedException(); }
         }

@@ -1,6 +1,8 @@
 ﻿using Codartis.NsDepCop.Core;
+using ICSharpCode.NRefactory;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Resolver;
+using ICSharpCode.NRefactory.Semantics;
 using ICSharpCode.NRefactory.TypeSystem;
 using System;
 using System.Collections.Generic;
@@ -57,73 +59,9 @@ namespace Codartis.NsDepCop.Analyzer.NRefactory
             DependencyViolations = new List<DependencyViolation>();
         }
 
-        /// <summary>
-        /// Single identifiers (eg. MyClass) and first parts of multipart identifiers (eg. [A].MyClass)
-        /// </summary>
-        /// <param name="simpleType"></param>
-        public override void VisitSimpleType(SimpleType simpleType)
+        public override void VisitIdentifier(Identifier identifier)
         {
-            CheckNode(simpleType);
-            // Can have type argument child nodes hence the recursion is needed.
-            base.VisitSimpleType(simpleType);
-        }
-
-        /// <summary>
-        /// Multipart identifiers (eg. B.MyEnum). Also all sub-multipart identifiers (eg. [System.IO].File)
-        /// </summary>
-        /// <param name="memberType"></param>
-        public override void VisitMemberType(MemberType memberType)
-        {
-            CheckNode(memberType);
-            // Can have type argument child nodes hence the recursion is needed.
-            base.VisitMemberType(memberType);
-        }
-
-        /// <summary>
-        /// The first part of a multipart identifier in an expression. Eg. [MyClass].MyMethod or [MyMethod]()
-        /// </summary>
-        /// <param name="identifierExpression"></param>
-        public override void VisitIdentifierExpression(IdentifierExpression identifierExpression)
-        {
-            CheckNode(identifierExpression);
-            // It can have only an identifier child so no need to check children.
-        }
-
-        /// <summary>
-        /// A multipart identifier in an expression. Eg. C.MyEnum.Value1 and [C.MyEnum].Value1
-        /// </summary>
-        /// <param name="memberReferenceExpression"></param>
-        public override void VisitMemberReferenceExpression(MemberReferenceExpression memberReferenceExpression)
-        {
-            CheckNode(memberReferenceExpression);
-            base.VisitMemberReferenceExpression(memberReferenceExpression);
-        }
-
-        /// <summary>
-        /// Expression with an invocation. Eg. MyMethod(). 
-        /// The child MyMethod is an IdentifierExpression with MethodGroup type.
-        /// </summary>
-        /// <param name="invocationExpression"></param>
-        public override void VisitInvocationExpression(InvocationExpression invocationExpression)
-        {
-            CheckNode(invocationExpression);
-            base.VisitInvocationExpression(invocationExpression);
-        }
-
-        // Not visited:
-        //  VisitIdentifier: In NRefactory identifiers don't have type, only higher level constructs have.
-        //  VisitPrimitiveType: Eg. void, object, int. Always references System, there's no value in showing them.
-        //  VisitComposedType: Array (eg. MyClass[]), nullable (eg. MyStruct?) and pointer (eg. int*).
-        //                     This node is not checked because its underlying type (child node) will be checked.
-        //  VisitTypeReferenceExpression: It's a parent of a PrimitiveType in an expression. It's child will be checked.
-
-        /// <summary>
-        /// Performs the analysis on the given node and creates a dependency violation object if needed.
-        /// </summary>
-        /// <param name="node">A syntax node.</param>
-        private void CheckNode(AstNode node)
-        {
-            var dependencyViolation = ProcessSyntaxNode(node, _compilation, _syntaxTree, _config);
+            var dependencyViolation = AnalyzeSyntaxNode(identifier);
             if (dependencyViolation != null && DependencyViolations.Count < _config.MaxIssueCount)
                 DependencyViolations.Add(dependencyViolation);
         }
@@ -136,13 +74,12 @@ namespace Codartis.NsDepCop.Analyzer.NRefactory
         /// <param name="syntaxTree">The syntax tree that contains the given node.</param>
         /// <param name="config">Tool configuration info. Contains the allowed dependencies.</param>
         /// <returns>A DependencyViolation if an issue was found. Null if no problem.</returns>
-        private static DependencyViolation ProcessSyntaxNode(
-            AstNode node, ICompilation compilation, SyntaxTree syntaxTree, NsDepCopConfig config)
+        private DependencyViolation AnalyzeSyntaxNode(AstNode node)
         {
-            var resolver = new CSharpAstResolver(compilation, syntaxTree);
+            var resolver = new CSharpAstResolver(_compilation, _syntaxTree);
 
             // Determine the type of the symbol represented by the current syntax node.
-            var referencedType = DetermineTypeOfAstNode(node, resolver);
+            var referencedType = DetermineReferencedType(node, resolver);
             if (referencedType == null || referencedType.Namespace == null)
                 return null;
 
@@ -160,36 +97,42 @@ namespace Codartis.NsDepCop.Analyzer.NRefactory
                 return null;
 
             // Check the rules whether this dependency is allowed.
-            if (config.IsAllowedDependency(from, to))
+            if (_config.IsAllowedDependency(from, to))
                 return null;
 
             // Create a result item for a dependency violation.
-            return CreateDependencyViolation(node, new Dependency(from, to), enclosingType, referencedType, syntaxTree.FileName);
+            return CreateDependencyViolation(node, new Dependency(from, to), enclosingType, referencedType, _syntaxTree.FileName);
         }
 
         /// <summary>
-        /// Resolves the type of the symbol represented by a given syntax tree node.
+        /// Determines the type referred to by the symbol that is represented by the given syntax node. 
         /// </summary>
-        /// <param name="node">A syntax tree node.</param>
+        /// <param name="node">A syntax node.</param>
         /// <param name="resolver">A resolver object.</param>
-        /// <returns>The type of the symbol represented by a given syntax tree node. Null if failed.</returns>
-        private static IType DetermineTypeOfAstNode(AstNode node, CSharpAstResolver resolver)
+        /// <returns>The type referenced by the given given syntax node.</returns>
+        private static IType DetermineReferencedType(AstNode node, CSharpAstResolver resolver)
         {
-            var resolveResult = resolver.Resolve(node);
-            if (resolveResult == null 
-                || resolveResult.IsError 
-                || resolveResult.Type == null)
+            // In NRefactory identifier nodes don't have type. So we have to check the identifier's parent.
+            var parentNode = node.Parent;
+
+            // These types indicate that the identifier is a declaration, not a usage, so nothing to check here. 
+            if (parentNode is EntityDeclaration ||
+                parentNode is NamespaceDeclaration ||
+                parentNode is UsingDeclaration ||
+                parentNode is UsingAliasDeclaration ||
+                parentNode is VariableInitializer)
                 return null;
 
-            if (resolveResult.Type.Kind == TypeKind.Class
-                || resolveResult.Type.Kind == TypeKind.Interface
-                || resolveResult.Type.Kind == TypeKind.Struct
-                || resolveResult.Type.Kind == TypeKind.Enum
-                || resolveResult.Type.Kind == TypeKind.Delegate)
-                return resolveResult.Type;
+            // Special case: if the identifier is in a member access which is the target of an invocation
+            // then we have to check the type of the invocation, not the member access.
+            if (parentNode is MemberReferenceExpression
+                && parentNode.Role == Roles.TargetExpression
+                && parentNode.Parent is InvocationExpression)
+                parentNode = parentNode.Parent;
 
-            return null;
+            return DetermineTypeOfAstNode(parentNode, resolver);
         }
+
         /// <summary>
         /// Determines the type of the type declaration that contains the given syntax node.
         /// </summary>
@@ -204,6 +147,61 @@ namespace Codartis.NsDepCop.Analyzer.NRefactory
                 return null;
 
             return DetermineTypeOfAstNode(typeDeclarationSyntaxNode, resolver);
+        }
+
+        /// <summary>
+        /// Resolves the type of the symbol represented by a given syntax tree node.
+        /// </summary>
+        /// <param name="node">A syntax tree node.</param>
+        /// <param name="resolver">A resolver object.</param>
+        /// <returns>The type of the symbol represented by a given syntax tree node. Null if failed.</returns>
+        private static IType DetermineTypeOfAstNode(AstNode node, CSharpAstResolver resolver)
+        {
+            var resolveResult = resolver.Resolve(node);
+
+            if (resolveResult != null
+                && !resolveResult.IsError
+                && TypeWasResolved(resolveResult)
+                && IsUserDefinedType(resolveResult.Type))
+                return resolveResult.Type;
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether a type was resolved by the given ResolveResult.
+        /// </summary>
+        /// <param name="resolveResult">A ResolveResult.</param>
+        /// <returns>True if a type was resolved by the given ResolveResult.</returns>
+        private static bool TypeWasResolved(ResolveResult resolveResult)
+        {
+            return TypeCanBeResolved(resolveResult)
+                && resolveResult.Type != null;
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether a type can be resolved from the given ResolveResult.
+        /// </summary>
+        /// <param name="resolveResult">A ResolveResult.</param>
+        /// <returns>True if a type can be resolved from the given ResolveResult</returns>
+        private static bool TypeCanBeResolved(ResolveResult resolveResult)
+        {
+            return resolveResult is TypeResolveResult
+                || resolveResult is MemberResolveResult;
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether the given NRefactory type is user defined.
+        /// </summary>
+        /// <param name="type">An NRefactory type.</param>
+        /// <returns>True if the given NRefactory type is user defined.</returns>
+        private static bool IsUserDefinedType(IType type)
+        {
+            return type.Kind == TypeKind.Class
+                || type.Kind == TypeKind.Interface
+                || type.Kind == TypeKind.Struct
+                || type.Kind == TypeKind.Enum
+                || type.Kind == TypeKind.Delegate;
         }
 
         /// <summary>
@@ -224,11 +222,11 @@ namespace Codartis.NsDepCop.Analyzer.NRefactory
                 syntaxNode.StartLocation.Column,
                 syntaxNode.EndLocation.Line,
                 syntaxNode.EndLocation.Column,
-                syntaxNode.ToString(),
+                syntaxNode.GetText(),
                 filename
             );
 
-            return new DependencyViolation(illegalDependency, referencingType.Name, referencedType.Name, sourceSegment);
+            return new DependencyViolation(illegalDependency, referencingType.FullName, referencedType.FullName, sourceSegment);
         }
     }
 }

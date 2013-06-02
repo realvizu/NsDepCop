@@ -4,7 +4,7 @@
     {
         private B.MyEnum field1;
         private MyGlobalEnum field2;
-        private System.IO.File field3;
+        private System.IO.FileInfo field3;
     }
 }
 

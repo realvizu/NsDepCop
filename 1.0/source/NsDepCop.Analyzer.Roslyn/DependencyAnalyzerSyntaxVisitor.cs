@@ -63,60 +63,23 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
 
         public override List<DependencyViolation> VisitIdentifierName(IdentifierNameSyntax node)
         {
-            return CheckNode(node);
-            // No need to call DefaultVisit, because it cannot have such child nodes that need to be checked.
-        }
-
-        public override List<DependencyViolation> VisitQualifiedName(QualifiedNameSyntax node)
-        {
-            return CheckNode(node);
-            // No need to call DefaultVisit, because it cannot have such child nodes that need to be checked.
-        }
-
-        public override List<DependencyViolation> VisitAliasQualifiedName(AliasQualifiedNameSyntax node)
-        {
-            return CheckNode(node);
+            return AnalyzeNode(node);
             // No need to call DefaultVisit, because it cannot have such child nodes that need to be checked.
         }
 
         public override List<DependencyViolation> VisitGenericName(GenericNameSyntax node)
         {
-            CheckNode(node);
+            AnalyzeNode(node);
             return DefaultVisit(node);
         }
-
-        public override List<DependencyViolation> VisitInvocationExpression(InvocationExpressionSyntax node)
-        {
-            CheckNode(node);
-            return DefaultVisit(node);
-        }
-
-        // No need to check the following node types.
-        //   AnonymousMethodExpressionSyntax: its block's return type is checked anyway.
-        //   ArrayTypeSyntax: its element type is checked.
-        //   BaseExpressionSyntax: the inherited types are checked at the inheritor's declaration.
-        //   MemberAccessExpressionSyntax: it contains the member name that is checked anyway.
-        //   NullableTypeSyntax: its underlying type's name is checked.
-
-        // The following node types rarely yield useful result in real life scenarios.
-        // On the other hand it greatly speeds up the process to omit these, so these are not analyzed.
-        //   LiteralExpressionSyntax: Finds dependency only on System namespace.
-        //   PredefinedTypeSyntax: Finds dependency only on System namespace.
-        //   AnonymousObjectCreationExpressionSyntax: Finds dependency only on the global namespace.
-        //   ConditionalExpressionSyntax: Finds the same type as its children.
-        //   QueryExpressionSyntax: Finds the same type as its children or dependency on System.Linq (eg. IGrouping).
-        //   BinaryExpressionSyntax: Finds the same type as its children except for some rare operator overloading.
-        //   PostfixUnaryExpressionSyntax: Finds the same type as its child except for some rare operator overloading.
-        //   PrefixUnaryExpressionSyntax: Finds the same type as its child except for some rare operator overloading.
-        //   ElementAccessExpressionSyntax: Finds the same type as its child except for some rare indexer overloading.
 
         /// <summary>
         /// Performs the analysis on the given node and creates a dependency violation object if needed.
         /// </summary>
         /// <param name="node">A syntax node.</param>
-        private List<DependencyViolation> CheckNode(SyntaxNode node)
+        private List<DependencyViolation> AnalyzeNode(SyntaxNode node)
         {
-            var dependencyViolation = SyntaxNodeAnalyzer.ProcessSyntaxNode(node, _semanticModel, _config);
+            var dependencyViolation = SyntaxNodeAnalyzer.Analyze(node, _semanticModel, _config);
             if (dependencyViolation != null && _dependencyViolations.Count < _config.MaxIssueCount)
                 _dependencyViolations.Add(dependencyViolation);
 

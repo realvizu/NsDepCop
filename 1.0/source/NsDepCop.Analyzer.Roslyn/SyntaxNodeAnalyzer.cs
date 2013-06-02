@@ -17,11 +17,10 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
         /// <param name="semanticModel">The semantic model of the current document.</param>
         /// <param name="config">Tool configuration info. Contains the allowed dependencies.</param>
         /// <returns>A DependencyViolation if an issue was found. Null if no problem.</returns>
-        public static DependencyViolation ProcessSyntaxNode(
-            CommonSyntaxNode node, ISemanticModel semanticModel, NsDepCopConfig config)
+        public static DependencyViolation Analyze(CommonSyntaxNode node, ISemanticModel semanticModel, NsDepCopConfig config)
         {
             // Determine the types referenced by the symbol represented by the current syntax node.
-            var referencedType = semanticModel.GetTypeInfo(node).Type;
+            var referencedType = DetermineReferencedType(node, semanticModel);
             if (referencedType == null || referencedType.ContainingNamespace == null ||
                 referencedType.TypeKind == CommonTypeKind.Error)
                 return null;
@@ -44,7 +43,33 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
                 return null;
 
             // Create a result item for a dependency violation.
-            return CreateDependencyViolation(node, new Dependency(from, to), enclosingType, referencedType);
+            return new DependencyViolation(
+                new Dependency(from, to),
+                enclosingType.ToDisplayString(),
+                referencedType.ToDisplayString(),
+                GetSourceSegment(node)); 
+        }
+
+        /// <summary>
+        /// Determines the type referenced by the given syntax node.
+        /// </summary>
+        /// <param name="node">A syntax node.</param>
+        /// <param name="semanticModel">The semantic model of the project.</param>
+        /// <returns>The type referenced by the given syntax node, or null if no type was referenced.</returns>
+        private static ITypeSymbol DetermineReferencedType(CommonSyntaxNode node, ISemanticModel semanticModel)
+        {
+            var typeSymbol = semanticModel.GetTypeInfo(node).Type;
+
+            // Special case: for an identifier that represents the name of a method, 
+            // the parent member access expression's parent invocation expression gives the resulting type.
+            if (typeSymbol == null
+                && node.Parent is MemberAccessExpressionSyntax
+                && node.Parent.Parent is InvocationExpressionSyntax)
+            {
+                typeSymbol = semanticModel.GetTypeInfo(node.Parent.Parent).Type;
+            }
+
+            return typeSymbol;
         }
 
         /// <summary>
@@ -52,7 +77,7 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
         /// </summary>
         /// <param name="node">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the project.</param>
-        /// <returns></returns>
+        /// <returns>The type that contains the given syntax node. Or null if can't determine.</returns>
         private static ITypeSymbol DetermineEnclosingType(CommonSyntaxNode node, ISemanticModel semanticModel)
         {
             // Find the type declaration that contains the current syntax node.
@@ -65,30 +90,43 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
         }
 
         /// <summary>
-        /// Creates a dependency violations object.
+        /// Gets the source segment of the given syntax node.
         /// </summary>
-        /// <param name="syntaxNode">The syntax node where the violation was detected.</param>
-        /// <param name="illegalDependency">The illegal namespace dependency.</param>
-        /// <param name="referencingType">The referencing type.</param>
-        /// <param name="referencedType">The referenced type.</param>
-        /// <returns></returns>
-        private static DependencyViolation CreateDependencyViolation(
-            CommonSyntaxNode syntaxNode, Dependency illegalDependency, ISymbol referencingType, ISymbol referencedType)
+        /// <param name="syntaxNode">A syntax node.</param>
+        /// <returns>The source segment of the given syntax node.</returns>
+        private static SourceSegment GetSourceSegment(CommonSyntaxNode syntaxNode)
         {
-            var lineSpan = syntaxNode.GetLocation().GetLineSpan(true);
+            var syntaxNodeOrToken = GetNodeOrTokenToReport(syntaxNode);
 
-            var sourceSegment = new SourceSegment
+            var lineSpan = syntaxNodeOrToken.GetLocation().GetLineSpan(true);
+
+            return new SourceSegment
             (
                 lineSpan.StartLinePosition.Line + 1,
                 lineSpan.StartLinePosition.Character + 1,
                 lineSpan.EndLinePosition.Line + 1,
                 lineSpan.EndLinePosition.Character + 1,
-                syntaxNode.ToString(),
+                syntaxNodeOrToken.ToString(),
                 lineSpan.Path
             );
+        }
 
-            return new DependencyViolation(illegalDependency,
-                referencingType.ToDisplayString(), referencedType.ToDisplayString(), sourceSegment);
+        /// <summary>
+        /// Determine which node or token should be reported as the location of the issue.
+        /// </summary>
+        /// <param name="syntaxNode">The syntax node that caused the issue.</param>
+        /// <returns>The node or token that should be reported as the location of the issue.</returns>
+        private static CommonSyntaxNodeOrToken GetNodeOrTokenToReport(CommonSyntaxNode syntaxNode)
+        {
+            CommonSyntaxNodeOrToken syntaxNodeOrToken = syntaxNode;
+
+            // For a Generic Name we should report its first token as the location.
+            if (syntaxNode is GenericNameSyntax)
+            {
+                syntaxNodeOrToken = syntaxNode.GetFirstToken();
+            }
+
+            return syntaxNodeOrToken;
         }
     }
 }

@@ -5,34 +5,30 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
     /// <summary>
     /// The parameters that specify a test case.
     /// </summary>
-    internal struct TestCaseSpecification
+    internal class TestCaseSpecification
     {
         /// <summary>The name of the test files folder.</summary>
         public string TestFilesFolderName;
 
         /// <summary>A collection of expected log entry parameters.</summary>
-        public IEnumerable<LogEntryParameters> ExpectedLogEntries;
+        public IEnumerable<LogEntryParameters> ExpectedLogEntries = null;
 
         /// <summary>A collection of name of the source files in the project to be analyzed.</summary>
-        public IEnumerable<string> SourceFileNames;
+        public IEnumerable<string> SourceFileNames = null;
 
         /// <summary>A collection of the full path of the files referenced in the project.</summary>
-        public IEnumerable<string> ReferencedFilePaths;
+        public IEnumerable<string> ReferencedFilePaths = null;
 
-        /// <summary>
-        /// Creates a new instance by setting all fields.
-        /// </summary>
-        public TestCaseSpecification(
-            string testFilesFolderName,
-            IEnumerable<LogEntryParameters> expectedLogEntries,
-            IEnumerable<string> sourceFileNames = null,
-            IEnumerable<string> referencedFilePaths = null
-            )
-        {
-            TestFilesFolderName = testFilesFolderName;
-            ExpectedLogEntries = expectedLogEntries;
-            SourceFileNames = sourceFileNames;
-            ReferencedFilePaths = referencedFilePaths;
-        }
+        /// <summary>If true then sets an expectation that the tool logs an event when it starts.</summary>
+        public bool ExpectStartEvent = true;
+
+        /// <summary>If true then sets an expectation that the tool logs an event when it finishes.</summary>
+        public bool ExpectEndEvent = true;
+
+        /// <summary>The expected return value of the task.</summary>
+        public bool ExpectedReturnValue = true;
+
+        /// <summary>If true then ignores the location part of an issue. Needed because of an NRefactory bug that gives wrong location.</summary>
+        public bool SkipLocationValidation = false;
     }
 }

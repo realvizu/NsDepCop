@@ -106,9 +106,9 @@
     <Compile Include="LogEntryParameters.cs" />
     <Compile Include="NsDepCopTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="TestFiles_AllowedDependency\AllowedDependency.cs">
+    <Compile Include="TestFiles_AllowedDependency\AllowedDependency.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </Compile>
     <Content Include="TestFiles_SameNamespaceAlwaysAllowed\SameNamespaceAlwaysAllowed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

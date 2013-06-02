@@ -48,7 +48,7 @@ namespace Codartis.NsDepCop.Analyzer.Roslyn
             string projectParametersAsString = string.Format("/reference:{0} {1}",
                 referencedAssemblyPaths.ToSingleString(",", "\"", "\""),
                 sourceFilePaths.ToSingleString(" ", "\"", "\""));
-            Debug.WriteLine(string.Format("  ProjectParametersAsString='{0}'", projectParametersAsString), Constants.TOOL_NAME);
+            //Debug.WriteLine(string.Format("  ProjectParametersAsString='{0}'", projectParametersAsString), Constants.TOOL_NAME);
 
             // Create the Roslyn workspace and select the project (there can be only one project).
             var workspace = Workspace.LoadProjectFromCommandLineArguments(

@@ -106,7 +106,7 @@ namespace Codartis.NsDepCop.CodeIssueProvider
 
             // Analyze this node and return CodeIssue if needed.
             var semanticModel = document.GetSemanticModel(cancellationToken);
-            var dependencyViolation = SyntaxNodeAnalyzer.ProcessSyntaxNode(node, semanticModel, config);
+            var dependencyViolation = SyntaxNodeAnalyzer.Analyze(node, semanticModel, config);
             if (dependencyViolation != null)
             {
                 yield return new CodeIssue(config.IssueKind.ToCodeIssueKind(), node.Span, dependencyViolation.ToString());
