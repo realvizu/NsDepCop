@@ -1,4 +1,4 @@
-﻿using Codartis.NsDepCop.Core;
+﻿using Codartis.NsDepCop.Core.Common;
 using ICSharpCode.NRefactory;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Resolver;
@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Codartis.NsDepCop.Analyzer.NRefactory
+namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
 {
     /// <summary>
     /// Traverses a syntax tree and collects dependency violations.

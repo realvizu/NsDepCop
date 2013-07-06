@@ -1,8 +1,8 @@
-﻿using Codartis.NsDepCop.Core;
+﻿using Codartis.NsDepCop.Core.Common;
 using Roslyn.Services;
 using System;
 
-namespace Codartis.NsDepCop.Analyzer.Roslyn
+namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
     /// <summary>
     /// Translates between Roslyn.Services.CodeIssueKind and Codartis.NsDepCop.Core.IssueKind.

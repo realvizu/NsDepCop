@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace Codartis.NsDepCop.Core
+namespace Codartis.NsDepCop.Core.Common
 {
     /// <summary>
     /// Represents a dependency between 2 namespace specifications.

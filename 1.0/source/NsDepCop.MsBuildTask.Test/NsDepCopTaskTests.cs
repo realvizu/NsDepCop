@@ -1,5 +1,5 @@
-﻿using Codartis.NsDepCop.Analyzer.Factory;
-using Codartis.NsDepCop.Core;
+﻿using Codartis.NsDepCop.Core.Analyzer.Factory;
+using Codartis.NsDepCop.Core.Common;
 using Microsoft.Build.Framework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;

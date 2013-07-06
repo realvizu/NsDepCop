@@ -1,9 +1,9 @@
-﻿using Codartis.NsDepCop.Core;
+﻿using Codartis.NsDepCop.Core.Common;
 using Roslyn.Compilers.Common;
 using Roslyn.Compilers.CSharp;
 using System.Linq;
 
-namespace Codartis.NsDepCop.Analyzer.Roslyn
+namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
     /// <summary>
     /// Static helper class that implements the dependency analysis logic for a syntax node.

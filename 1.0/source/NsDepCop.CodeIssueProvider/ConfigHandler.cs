@@ -1,4 +1,4 @@
-using Codartis.NsDepCop.Core;
+using Codartis.NsDepCop.Core.Common;
 using System;
 using System.IO;
 

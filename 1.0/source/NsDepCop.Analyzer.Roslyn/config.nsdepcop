@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning">
-    <Allowed From="Codartis.NsDepCop.Analyzer.Roslyn" To="System.*" />
-    <Allowed From="Codartis.NsDepCop.Analyzer.Roslyn" To="Roslyn.*" />
-    <Allowed From="Codartis.NsDepCop.Analyzer.Roslyn" To="Codartis.NsDepCop.Core" />
-</NsDepCopConfig>

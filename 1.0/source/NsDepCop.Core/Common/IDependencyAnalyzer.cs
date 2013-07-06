@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Codartis.NsDepCop.Core
+namespace Codartis.NsDepCop.Core.Common
 {
     /// <summary>
     /// Defines the responsibilities of a type that analyses code and finds dependency violations.

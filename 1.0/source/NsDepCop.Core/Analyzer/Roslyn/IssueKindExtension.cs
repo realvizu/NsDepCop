@@ -1,7 +1,7 @@
-﻿using Codartis.NsDepCop.Core;
+﻿using Codartis.NsDepCop.Core.Common;
 using Roslyn.Services;
 
-namespace Codartis.NsDepCop.Analyzer.Roslyn
+namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
     /// <summary>
     /// Implements extension methods for Codartis.NsDepCop.Core.IssueKind.

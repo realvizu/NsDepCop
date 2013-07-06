@@ -1,5 +1,5 @@
-using Codartis.NsDepCop.Analyzer.Roslyn;
-using Codartis.NsDepCop.Core;
+using Codartis.NsDepCop.Core.Analyzer.Roslyn;
+using Codartis.NsDepCop.Core.Common;
 using Roslyn.Compilers;
 using Roslyn.Compilers.Common;
 using Roslyn.Compilers.CSharp;

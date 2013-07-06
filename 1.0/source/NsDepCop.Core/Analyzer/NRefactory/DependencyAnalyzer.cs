@@ -1,4 +1,4 @@
-﻿using Codartis.NsDepCop.Core;
+﻿using Codartis.NsDepCop.Core.Common;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Codartis.NsDepCop.Analyzer.NRefactory
+namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
 {
     /// <summary>
     /// Dependency analyzer implemented with NRefactory.

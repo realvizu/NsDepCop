@@ -1,11 +1,11 @@
-﻿using Codartis.NsDepCop.Core;
+﻿using Codartis.NsDepCop.Core.Common;
 using Roslyn.Compilers.CSharp;
 using Roslyn.Services;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Codartis.NsDepCop.Analyzer.Roslyn
+namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
     /// <summary>
     /// Dependency analyzer implemented with Roslyn.

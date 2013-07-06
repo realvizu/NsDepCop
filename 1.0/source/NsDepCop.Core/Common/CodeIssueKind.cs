@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core
+﻿namespace Codartis.NsDepCop.Core.Common
 {
     /// <summary>
     /// Enumerates the different kinds of issues that the tool can report.

@@ -106,9 +106,9 @@
     <Compile Include="LogEntryParameters.cs" />
     <Compile Include="NsDepCopTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestFiles_AllowedDependency\AllowedDependency.cs">
+    <Content Include="TestFiles_AllowedDependency\AllowedDependency.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
+    </Content>
     <Content Include="TestFiles_SameNamespaceAlwaysAllowed\SameNamespaceAlwaysAllowed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -125,10 +125,6 @@
     <Compile Include="TestTaskItem.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NsDepCop.Analyzer.Factory\NsDepCop.Analyzer.Factory.csproj">
-      <Project>{72601d9b-3fcc-4360-a0cf-d2144a8e9472}</Project>
-      <Name>NsDepCop.Analyzer.Factory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">
       <Project>{bc26589e-79b0-4f55-b64d-db11534d3476}</Project>
       <Name>NsDepCop.Core</Name>

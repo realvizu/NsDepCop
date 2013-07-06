@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core
+﻿namespace Codartis.NsDepCop.Core.Common
 {
     /// <summary>
     /// Describes a certain segment of a source file.

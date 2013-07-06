@@ -1,10 +1,10 @@
-﻿using Codartis.NsDepCop.Core;
+﻿using Codartis.NsDepCop.Core.Common;
 using Roslyn.Compilers.Common;
 using Roslyn.Compilers.CSharp;
 using System;
 using System.Collections.Generic;
 
-namespace Codartis.NsDepCop.Analyzer.Roslyn
+namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
     /// <summary>
     /// Implements a syntax visitor that traverses the syntax tree 
