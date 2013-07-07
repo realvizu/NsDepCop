@@ -2,6 +2,8 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:vse="http://schemas.microsoft.com/wix/VSExtension">
     <Fragment>
+
+        <PropertyRef Id="VS2012DEVENV"/>
         
         <Feature Id="Feature_ItemTemplate" 
                  Title="Config File Template (VSIX)"
@@ -11,6 +13,7 @@
                  TypicalDefault="install"
                  AllowAdvertise="no">
             <ComponentGroupRef Id="ComponentGroup_ItemTemplate" />
+            <Condition Level="0"><![CDATA[NOT VS2012DEVENV]]></Condition>
         </Feature>
 
         <ComponentGroup Id="ComponentGroup_ItemTemplate" 

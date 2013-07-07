@@ -38,7 +38,27 @@
                       Source="$(var.NsDepCop.Core.TargetPath)"
                       KeyPath="yes" />
             </Component>
-            
+
+            <Component Id="Component_Mono.Cecil.dll"
+                       Guid="136E49E1-139D-40EE-BC84-89A951ADAC4D">
+                <File Id="File_Mono.Cecil.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\Mono.Cecil.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_ICSharpCode.NRefactory.dll"
+                       Guid="4B8956F0-46EF-4340-8601-12A1CEE689C5">
+                <File Id="File_ICSharpCode.NRefactory.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\ICSharpCode.NRefactory.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_ICSharpCode.NRefactory.CSharp.dll"
+                       Guid="C59DA34E-09FF-475A-B6D6-62504395E728">
+                <File Id="File_ICSharpCode.NRefactory.CSharp.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\ICSharpCode.NRefactory.CSharp.dll"
+                      KeyPath="yes" />
+            </Component>
         </ComponentGroup>
 
     </Fragment>
