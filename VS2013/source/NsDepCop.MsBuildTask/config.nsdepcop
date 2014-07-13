@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning">
+    <Allowed From="*" To="System.*" />
+    <Allowed From="Codartis.NsDepCop.MsBuildTask" To="Microsoft.Build.*" />
+    <Allowed From="Codartis.NsDepCop.MsBuildTask" To="Codartis.NsDepCop.Core.*" />
+</NsDepCopConfig>

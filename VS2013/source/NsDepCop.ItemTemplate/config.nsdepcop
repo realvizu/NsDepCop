@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning">
+    <!-- Any namespace can reference the System namespace and its sub-namespaces. -->
+    <Allowed From="*" To="System.*" />
+    <!-- Any namespace can reference the global namespace. -->
+    <Allowed From="*" To="." />
+</NsDepCopConfig>

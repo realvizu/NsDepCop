@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:vse="http://schemas.microsoft.com/wix/VSExtension">
+    <Fragment>
+
+        <PropertyRef Id="VS2012DEVENV"/>
+        
+        <Feature Id="Feature_ItemTemplate" 
+                 Title="Config File Template (VSIX)"
+                 Description="Installs a Visual Studio 2013 extension that contains an NsDepCop config file template."
+                 Level="1"                 
+                 InstallDefault="local"
+                 TypicalDefault="install"
+                 AllowAdvertise="no">
+            <ComponentGroupRef Id="ComponentGroup_ItemTemplate" />
+            <Condition Level="0"><![CDATA[NOT VS2012DEVENV]]></Condition>
+        </Feature>
+
+        <ComponentGroup Id="ComponentGroup_ItemTemplate" 
+                        Directory="TARGETDIR">
+            <Component Id="Component_NsDepCop.ItemTemplatePackage.vsix"
+                       Guid="{51B9BC6B-D069-4225-B6C7-801D546FEA21}">
+                <File Id="File_NsDepCop.ItemTemplatePackage.vsix"
+                      Source="$(var.NsDepCop.ItemTemplatePackage.TargetDir)\$(var.NsDepCop.ItemTemplatePackage.TargetName).vsix"
+                      KeyPath="yes">
+                    <vse:VsixPackage PackageId="NsDepCop.ItemTemplatePackage..5741a44e-b45f-4c3d-864a-ab5ec855435e"
+                                     Vital="no"
+                                     Permanent="no"/>
+                </File>
+            </Component>
+        </ComponentGroup>
+    
+    </Fragment>
+</Wix>
