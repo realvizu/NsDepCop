@@ -1,6 +1,7 @@
 ﻿using Codartis.NsDepCop.Core.Common;
-using Roslyn.Compilers.Common;
-using Roslyn.Compilers.CSharp;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
@@ -17,12 +18,12 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// <param name="semanticModel">The semantic model of the current document.</param>
         /// <param name="config">Tool configuration info. Contains the allowed dependencies.</param>
         /// <returns>A DependencyViolation if an issue was found. Null if no problem.</returns>
-        public static DependencyViolation Analyze(CommonSyntaxNode node, ISemanticModel semanticModel, NsDepCopConfig config)
+        public static DependencyViolation Analyze(SyntaxNode node, SemanticModel semanticModel, NsDepCopConfig config)
         {
             // Determine the types referenced by the symbol represented by the current syntax node.
             var referencedType = DetermineReferencedType(node, semanticModel);
             if (referencedType == null || referencedType.ContainingNamespace == null ||
-                referencedType.TypeKind == CommonTypeKind.Error)
+                referencedType.TypeKind == TypeKind.Error)
                 return null;
 
             // Determine the type that contains the current syntax node.
@@ -56,7 +57,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// <param name="node">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the project.</param>
         /// <returns>The type referenced by the given syntax node, or null if no type was referenced.</returns>
-        private static ITypeSymbol DetermineReferencedType(CommonSyntaxNode node, ISemanticModel semanticModel)
+        private static ITypeSymbol DetermineReferencedType(SyntaxNode node, SemanticModel semanticModel)
         {
             var typeSymbol = semanticModel.GetTypeInfo(node).Type;
 
@@ -78,7 +79,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// <param name="node">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the project.</param>
         /// <returns>The type that contains the given syntax node. Or null if can't determine.</returns>
-        private static ITypeSymbol DetermineEnclosingType(CommonSyntaxNode node, ISemanticModel semanticModel)
+        private static ITypeSymbol DetermineEnclosingType(SyntaxNode node, SemanticModel semanticModel)
         {
             // Find the type declaration that contains the current syntax node.
             var typeDeclarationSyntaxNode = node.Ancestors().Where(i => i is TypeDeclarationSyntax).FirstOrDefault();
@@ -94,11 +95,11 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// </summary>
         /// <param name="syntaxNode">A syntax node.</param>
         /// <returns>The source segment of the given syntax node.</returns>
-        private static SourceSegment GetSourceSegment(CommonSyntaxNode syntaxNode)
+        private static SourceSegment GetSourceSegment(SyntaxNode syntaxNode)
         {
             var syntaxNodeOrToken = GetNodeOrTokenToReport(syntaxNode);
 
-            var lineSpan = syntaxNodeOrToken.GetLocation().GetLineSpan(true);
+            var lineSpan = syntaxNodeOrToken.GetLocation().GetLineSpan();
 
             return new SourceSegment
             (
@@ -116,9 +117,9 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// </summary>
         /// <param name="syntaxNode">The syntax node that caused the issue.</param>
         /// <returns>The node or token that should be reported as the location of the issue.</returns>
-        private static CommonSyntaxNodeOrToken GetNodeOrTokenToReport(CommonSyntaxNode syntaxNode)
+        private static SyntaxNodeOrToken GetNodeOrTokenToReport(SyntaxNode syntaxNode)
         {
-            CommonSyntaxNodeOrToken syntaxNodeOrToken = syntaxNode;
+            SyntaxNodeOrToken syntaxNodeOrToken = syntaxNode;
 
             // For a Generic Name we should report its first token as the location.
             if (syntaxNode is GenericNameSyntax)

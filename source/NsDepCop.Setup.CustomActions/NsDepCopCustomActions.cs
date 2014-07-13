@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.Setup.CustomActions
     /// <summary>
     /// This class implements custom install/uninstall actions.
     /// </summary>
-    public static class NsDepCopCustomActions
+    public static class NsDepCopCustomActions 
     {
         /// <summary>
         /// Modifies an MSBuild targets file to insert the NsDepCop custom action into the C# projects's build workflow.

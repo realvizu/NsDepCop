@@ -27,7 +27,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 TestFilesFolderName = "TestFiles_NoConfigFile",
                 ExpectedLogEntries = new[] 
                 {
-                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_NO_CONFIG_FILE } 
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = Constants.DIAGNOSTIC_ID_NO_CONFIG_FILE} 
                 },
                 ExpectStartEvent = false,
                 ExpectEndEvent = false,
@@ -58,7 +58,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 TestFilesFolderName = "TestFiles_ConfigDisabled",
                 ExpectedLogEntries = new[] 
                 { 
-                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = NsDepCopTask.MSBUILD_CODE_CONFIG_DISABLED } 
+                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = Constants.DIAGNOSTIC_ID_CONFIG_DISABLED } 
                 },
                 ExpectStartEvent = false,
                 ExpectEndEvent = false
@@ -73,7 +73,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 TestFilesFolderName = "TestFiles_ConfigFileErrorsIgnored",
                 ExpectedLogEntries = new[] 
                 { 
-                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = NsDepCopTask.MSBUILD_CODE_CONFIG_DISABLED } 
+                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = Constants.DIAGNOSTIC_ID_CONFIG_DISABLED } 
                 },
                 ExpectStartEvent = false,
                 ExpectEndEvent = false
@@ -113,7 +113,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -137,7 +137,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Info, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -161,7 +161,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Error, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -185,7 +185,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 5,
                         StartColumn = 19,
@@ -209,7 +209,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 25,
@@ -234,7 +234,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 9,
                         StartColumn = 26,
@@ -258,7 +258,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 9,
                         StartColumn = 42,
@@ -282,7 +282,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 9,
                         StartColumn = 37,
@@ -306,7 +306,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -330,7 +330,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 32,
@@ -340,7 +340,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 8,
                         StartColumn = 36,
@@ -364,7 +364,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -374,7 +374,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 26,
@@ -384,7 +384,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 8,
                         StartColumn = 19,
@@ -394,7 +394,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 8,
                         StartColumn = 28,
@@ -418,7 +418,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -442,7 +442,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -466,7 +466,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -476,7 +476,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 8,
                         StartColumn = 17,
@@ -486,7 +486,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 9,
                         StartColumn = 17,
@@ -496,7 +496,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 10,
                         StartColumn = 17,
@@ -506,7 +506,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 11,
                         StartColumn = 17,
@@ -530,7 +530,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -540,14 +540,14 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 8,
                         StartColumn = 17,
                         EndLine = 8,
                         EndColumn = 23
                     },
-                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = NsDepCopTask.MSBUILD_CODE_TOO_MANY_ISSUES},
+                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = Constants.DIAGNOSTIC_ID_TOO_MANY_ISSUES},
                 },
             });
         }
@@ -575,7 +575,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFile1,
                         StartLine = 7,
                         StartColumn = 17,
@@ -585,7 +585,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     new LogEntryParameters
                     { 
                         IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFile2,
                         StartLine = 7,
                         StartColumn = 17,

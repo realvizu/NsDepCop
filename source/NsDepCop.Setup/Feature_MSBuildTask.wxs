@@ -4,7 +4,7 @@
         
         <Feature Id="Feature_MsBuildTask"
                  Title="Integrate NsDepCop with MSBuild"
-                 Description="Installs NsDepCop as a custom MSBuild task and inserts it into the C# project build workflow as the last step before the 'Build' target."
+                 Description="Installs NsDepCop as a custom MSBuild task and inserts it into the C# project build workflow (as the last step before the 'Build' target)."
                  Level="1"
                  InstallDefault="local"
                  TypicalDefault="install"
@@ -15,7 +15,7 @@
         <DirectoryRef Id="TARGETDIR">
             <Directory Id="ProgramFilesFolder">
                 <Directory Id="Folder_MsBuild" Name="MSBuild">
-                    <Directory Id="Folder_MsBuildVersion" Name="v4.0"/>
+                    <Directory Id="Folder_MsBuildVersion" Name="v12.0"/>
                 </Directory>
             </Directory>
         </DirectoryRef>
@@ -57,6 +57,34 @@
                        Guid="C59DA34E-09FF-475A-B6D6-62504395E728">
                 <File Id="File_ICSharpCode.NRefactory.CSharp.dll"
                       Source="$(var.NsDepCop.MsBuildTask.TargetDir)\ICSharpCode.NRefactory.CSharp.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_Microsoft.CodeAnalysis.dll"
+                       Guid="89E0C2CC-9FD7-4502-B855-A2DBE4D2E74B">
+                <File Id="File_Microsoft.CodeAnalysis.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\Microsoft.CodeAnalysis.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_Microsoft.CodeAnalysis.CSharp.dll"
+                       Guid="2D7292AB-8002-45CE-ABBF-F5161B780C67">
+                <File Id="File_Microsoft.CodeAnalysis.CSharp.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\Microsoft.CodeAnalysis.CSharp.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_System.Collections.Immutable.dll"
+                       Guid="09FA023D-2F06-4045-A1B0-D539FCF9AFD7">
+                <File Id="File_System.Collections.Immutable.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\System.Collections.Immutable.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_System.Reflection.Metadata.dll"
+                       Guid="9E1255BB-1CCB-46E3-B1B5-3A47A4795CEC">
+                <File Id="File_System.Reflection.Metadata.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\System.Reflection.Metadata.dll"
                       KeyPath="yes" />
             </Component>
         </ComponentGroup>

@@ -1,21 +1,22 @@
 ﻿using Codartis.NsDepCop.Core.Common;
-using Roslyn.Compilers.Common;
-using Roslyn.Compilers.CSharp;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
     /// <summary>
-    /// Implements a syntax visitor that traverses the syntax tree 
-    /// and invokes the dependency analysis logic for every eligible node.
+    /// Implements a syntax visitor that traverses the syntax tree
+    /// and invokes the dependency analysis logic for every eligible node. 
     /// </summary>
-    internal class DependencyAnalyzerSyntaxVisitor : SyntaxVisitor<List<DependencyViolation>>
+    internal class DependencyAnalyzerSyntaxVisitor : CSharpSyntaxVisitor<List<DependencyViolation>>
     {
         /// <summary>
         /// The semantic model of the current document.
         /// </summary>
-        private ISemanticModel _semanticModel;
+        private SemanticModel _semanticModel;
 
         /// <summary>
         /// The configuration of the tool. Containes the dependency rules.
@@ -32,7 +33,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// </summary>
         /// <param name="semanticModel">The semantic model for the document.</param>
         /// <param name="config">The configuration of the tool.</param>
-        public DependencyAnalyzerSyntaxVisitor(ISemanticModel semanticModel, NsDepCopConfig config)
+        public DependencyAnalyzerSyntaxVisitor(SemanticModel semanticModel, NsDepCopConfig config)
         {
             if (semanticModel == null)
                 throw new ArgumentNullException("semanticModel");

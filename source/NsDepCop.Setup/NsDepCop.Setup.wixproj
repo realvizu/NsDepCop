@@ -93,9 +93,15 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="packages.config" />
     <Content Include="uninstall_withlog.cmd" />
     <Content Include="install_withlog.cmd" />
   </ItemGroup>
+  <PropertyGroup>
+    <WixToolPath>$(SolutionDir)packages\WiX.Toolset.3.8.1128.0\tools\wix\</WixToolPath>
+    <WixTargetsPath>$(WixToolPath)wix.targets</WixTargetsPath>
+    <WixTasksPath>$(WixToolPath)WixTasks.dll</WixTasksPath>
+  </PropertyGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.

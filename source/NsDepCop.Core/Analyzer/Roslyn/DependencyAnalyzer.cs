@@ -1,8 +1,7 @@
 ﻿using Codartis.NsDepCop.Core.Common;
-using Roslyn.Compilers.CSharp;
-using Roslyn.Services;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
@@ -43,23 +42,15 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
             IEnumerable<string> sourceFilePaths, 
             IEnumerable<string> referencedAssemblyPaths)
         {
-            // Build a "csc.exe command line"-like string 
-            // that contains the project parameters so Roslyn can build up a workspace.
-            string projectParametersAsString = string.Format("/reference:{0} {1}",
-                referencedAssemblyPaths.ToSingleString(",", "\"", "\""),
-                sourceFilePaths.ToSingleString(" ", "\"", "\""));
-            //Debug.WriteLine(string.Format("  ProjectParametersAsString='{0}'", projectParametersAsString), Constants.TOOL_NAME);
+            var referencedAssemblies = referencedAssemblyPaths.Select(i => new MetadataFileReference(i)).ToList();
+            var syntaxTrees = sourceFilePaths.Select(i=> CSharpSyntaxTree.ParseFile(i)).ToList();
+            var compilation = CSharpCompilation.Create("NsDepCopTaskProject", syntaxTrees, referencedAssemblies);
 
-            // Create the Roslyn workspace and select the project (there can be only one project).
-            var workspace = Workspace.LoadProjectFromCommandLineArguments(
-                "NsDepCopTaskProject", "C#", projectParametersAsString, baseDirectory);
-            var project = workspace.CurrentSolution.Projects.First();
-
-            // Analyse all documents in the project.
-            foreach (var document in project.Documents)
+            // Analyse all syntaxTrees in the project.
+            foreach (var syntaxTree in syntaxTrees)
             {
-                var syntaxVisitor = new DependencyAnalyzerSyntaxVisitor(document.GetSemanticModel(), _config);
-                var documentRootNode = document.GetSyntaxRoot() as SyntaxNode;
+                var syntaxVisitor = new DependencyAnalyzerSyntaxVisitor(compilation.GetSemanticModel(syntaxTree), _config);
+                var documentRootNode = syntaxTree.GetRoot();
                 if (documentRootNode != null)
                 {
                     var dependencyViolationsInDocument = syntaxVisitor.Visit(documentRootNode);

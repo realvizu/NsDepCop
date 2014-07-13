@@ -1,57 +1,57 @@
 ﻿using Codartis.NsDepCop.Core.Common;
-using Roslyn.Services;
+using Microsoft.CodeAnalysis;
 using System;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
     /// <summary>
-    /// Translates between Roslyn.Services.CodeIssueKind and Codartis.NsDepCop.Core.IssueKind.
+    /// Translates between Microsoft.CodeAnalysis.DiagnosticSeverity and Codartis.NsDepCop.Core.IssueKind.
     /// </summary>
     internal static class IssueKindTranslator
     {
         /// <summary>
-        /// Translates from Roslyn.Services.CodeIssueKind to Codartis.NsDepCop.Core.IssueKind.
+        /// Translates from Microsoft.CodeAnalysis.DiagnosticSeverity to Codartis.NsDepCop.Core.IssueKind.
         /// </summary>
-        /// <param name="codeIssueKind">A Roslyn.Services.CodeIssueKind value.</param>
+        /// <param name="diagnosticSeverity">A Microsoft.CodeAnalysis.DiagnosticSeverity value.</param>
         /// <returns>A Codartis.NsDepCop.Core.IssueKind value.</returns>
-        public static IssueKind ToIssueKind(CodeIssueKind codeIssueKind)
+        public static IssueKind ToIssueKind(DiagnosticSeverity diagnosticSeverity)
         {
-            switch(codeIssueKind)
+            switch(diagnosticSeverity)
             {
-                case(CodeIssueKind.Error):
+                case(DiagnosticSeverity.Error):
                     return IssueKind.Error;
-                case(CodeIssueKind.Info):
+                case(DiagnosticSeverity.Info):
                     return IssueKind.Info;
-                case (CodeIssueKind.Unnecessary):
-                    return IssueKind.Unnecessary;
-                case (CodeIssueKind.Warning):
+                case (DiagnosticSeverity.None):
+                    return IssueKind.None;
+                case (DiagnosticSeverity.Warning):
                     return IssueKind.Warning;
                 default:
                     throw new InvalidCastException(
-                        string.Format("Cannot convert {0} to Codartis.NsDepCop.Core.IssueKind.", codeIssueKind.ToString()));
+                        string.Format("Cannot convert {0} to Codartis.NsDepCop.Core.IssueKind.", diagnosticSeverity.ToString()));
             }
         }
 
         /// <summary>
-        /// Translates from Codartis.NsDepCop.Core.IssueKind to Roslyn.Services.CodeIssueKind.
+        /// Translates from Codartis.NsDepCop.Core.IssueKind to Microsoft.CodeAnalysis.DiagnosticSeverity.
         /// </summary>
         /// <param name="issueKind">A Codartis.NsDepCop.Core.IssueKind value.</param>
-        /// <returns>A Roslyn.Services.CodeIssueKind value.</returns>
-        public static CodeIssueKind ToCodeIssueKind(IssueKind issueKind)
+        /// <returns>A Microsoft.CodeAnalysis.DiagnosticSeverity value.</returns>
+        public static DiagnosticSeverity ToDiagnosticSeverity(IssueKind issueKind)
         {
             switch (issueKind)
             {
                 case (IssueKind.Error):
-                    return CodeIssueKind.Error;
+                    return DiagnosticSeverity.Error;
                 case (IssueKind.Info):
-                    return CodeIssueKind.Info;
-                case (IssueKind.Unnecessary):
-                    return CodeIssueKind.Unnecessary;
+                    return DiagnosticSeverity.Info;
+                case (IssueKind.None):
+                    return DiagnosticSeverity.None;
                 case (IssueKind.Warning):
-                    return CodeIssueKind.Warning;
+                    return DiagnosticSeverity.Warning;
                 default:
                     throw new InvalidCastException(
-                        string.Format("Cannot convert {0} to Roslyn.Services.CodeIssueKind.", issueKind.ToString()));
+                        string.Format("Cannot convert {0} to Microsoft.CodeAnalysis.DiagnosticSeverity.", issueKind.ToString()));
             }
         }
     }

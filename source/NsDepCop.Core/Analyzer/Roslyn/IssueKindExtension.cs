@@ -1,5 +1,5 @@
 ﻿using Codartis.NsDepCop.Core.Common;
-using Roslyn.Services;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
@@ -9,13 +9,13 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
     public static class IssueKindExtension
     {
         /// <summary>
-        /// Translates from Codartis.NsDepCop.Core.IssueKind to Roslyn.Services.CodeIssueKind.
+        /// Translates from Codartis.NsDepCop.Core.IssueKind to Microsoft.CodeAnalysis.DiagnosticSeverity.
         /// </summary>
         /// <param name="issueKind">A Codartis.NsDepCop.Core.IssueKind value.</param>
-        /// <returns>A Roslyn.Services.CodeIssueKind value.</returns>
-        public static CodeIssueKind ToCodeIssueKind(this IssueKind issueKind)
+        /// <returns>A Microsoft.CodeAnalysis.DiagnosticSeverity value.</returns>
+        public static DiagnosticSeverity ToDiagnosticSeverity(this IssueKind issueKind)
         {
-            return IssueKindTranslator.ToCodeIssueKind(issueKind);
+            return IssueKindTranslator.ToDiagnosticSeverity(issueKind);
         }
     }
 }

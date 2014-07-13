@@ -7,7 +7,7 @@
         
         <Feature Id="Feature_ItemTemplate" 
                  Title="Config File Template (VSIX)"
-                 Description="Installs a Visual Studio 2012 extension that contains an NsDepCop config file template."
+                 Description="Installs a Visual Studio 2013 extension that contains an NsDepCop config file template."
                  Level="1"                 
                  InstallDefault="local"
                  TypicalDefault="install"

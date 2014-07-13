@@ -3,14 +3,14 @@
     <Fragment>
         <FeatureGroup Id="FeatureGroup_Prerequisites"/>
 
-        <Property Id="MSBUILD40">
-            <DirectorySearch Id="SystemFolderDriverVersion" Path="[WindowsFolder]Microsoft.NET\Framework\v4.0.30319">
+        <Property Id="MSBUILD120">
+            <DirectorySearch Id="SystemFolderDriverVersion" Path="[ProgramFilesFolder]MSBuild\12.0\Bin">
                 <FileSearch Name="msbuild.exe"/>
             </DirectorySearch>
         </Property>
         
-        <Condition Message='This tool requires MsBuild 4.0 installed.'>
-            <![CDATA[Installed OR MSBUILD40]]>
+        <Condition Message='This tool requires MsBuild 12.0 (aka "Microsoft Build Tools 2013").'>
+            <![CDATA[Installed OR MSBUILD120]]>
         </Condition>
         
     </Fragment>
