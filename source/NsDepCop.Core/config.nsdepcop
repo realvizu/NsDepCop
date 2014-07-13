@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning">
+    <Allowed From="Codartis.NsDepCop.Core.*" To="System.*" />
+    <Allowed From="Codartis.NsDepCop.Core.*" To="Codartis.NsDepCop.Core.Common" />
+    <Allowed From="Codartis.NsDepCop.Core.Analyzer.NRefactory" To="ICSharpCode.NRefactory.*" />
+    <Allowed From="Codartis.NsDepCop.Core.Analyzer.Roslyn" To="Roslyn.*" />
+    <Allowed From="Codartis.NsDepCop.Core.Analyzer.Factory" To="Codartis.NsDepCop.Core.Analyzer.NRefactory" />
+    <Allowed From="Codartis.NsDepCop.Core.Analyzer.Factory" To="Codartis.NsDepCop.Core.Analyzer.Roslyn" />
+</NsDepCopConfig>

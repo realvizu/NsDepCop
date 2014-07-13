@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <FeatureGroup Id="FeatureGroup_Prerequisites"/>
+
+        <Property Id="MSBUILD40">
+            <DirectorySearch Id="SystemFolderDriverVersion" Path="[WindowsFolder]Microsoft.NET\Framework\v4.0.30319">
+                <FileSearch Name="msbuild.exe"/>
+            </DirectorySearch>
+        </Property>
+        
+        <Condition Message='This tool requires MsBuild 4.0 installed.'>
+            <![CDATA[Installed OR MSBUILD40]]>
+        </Condition>
+        
+    </Fragment>
+</Wix>

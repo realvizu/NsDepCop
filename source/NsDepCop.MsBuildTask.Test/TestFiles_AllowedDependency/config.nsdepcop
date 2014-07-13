@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning">
+    <Allowed From="*" To="." />
+    <Allowed From="A" To="System.*" />
+    <Allowed From="A" To="B" />
+</NsDepCopConfig>

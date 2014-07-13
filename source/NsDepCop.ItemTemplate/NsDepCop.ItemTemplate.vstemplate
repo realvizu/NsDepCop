@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+    <TemplateData>
+        <Name>NsDepCop Config File</Name>
+        <Description>NsDepCop config file with default settings.</Description>
+        <Icon>NsDepCop.ItemTemplate.ico</Icon>
+        <TemplateID>NsDepCop.ItemTemplate.ConfigFile</TemplateID>
+        <ProjectType>CSharp</ProjectType>
+        <RequiredFrameworkVersion>4.0</RequiredFrameworkVersion>
+        <DefaultName>config.nsdepcop</DefaultName>
+    </TemplateData>
+    <TemplateContent>
+        <ProjectItem ItemType="None" ReplaceParameters="false" TargetFileName="config.nsdepcop">config.nsdepcop</ProjectItem>
+    </TemplateContent>
+</VSTemplate>

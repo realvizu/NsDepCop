@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:vse="http://schemas.microsoft.com/wix/VSExtension">
+    <Fragment>
+
+        <Property Id="ROSLYN_INSTALLED_VERSION">
+            <RegistrySearch Id="RegSearch_Roslyn"
+                            Type="raw"
+                            Root="HKLM"
+                            Key='Software\Classes\Installer\Products\EBC4B2C91F61DD04CBBF08BC11D290D2'
+                            Name='Version' />
+        </Property>
+
+        <Feature Id="Feature_CodeIssueProvider"
+                 Title="Code Issue Highlighting (VSIX)"
+                 Description="Installs a Visual Studio 2012 extension that highlights NsDepCop issues in the code editor. Works only in Visual Studio hives where Roslyn Language Service is active."
+                 Level="1"
+                 InstallDefault="local"
+                 TypicalDefault="install"
+                 AllowAdvertise="no">
+            <ComponentGroupRef Id="ComponentGroup_CodeIssueProvider" />
+            <Condition Level="0"><![CDATA[ROSLYN_INSTALLED_VERSION <> "#16929194"]]></Condition>
+        </Feature>
+
+        <ComponentGroup Id="ComponentGroup_CodeIssueProvider"
+                        Directory="TARGETDIR">
+            <Component Id="Component_NsDepCop.CodeIssueProvider.vsix"
+                       Guid="{D1A95A04-6E80-4BC4-94CB-C9417AE5496E}">
+                <File Id="File_NsDepCop.CodeIssueProvider.vsix"
+                      Source="$(var.NsDepCop.CodeIssueProvider.TargetDir)\$(var.NsDepCop.CodeIssueProvider.TargetName).vsix"
+                      KeyPath="yes">
+                    <vse:VsixPackage PackageId="NsDepCop.CodeIssueProvider..cbaf7bb9-5543-4476-9eee-f83a9233fa41"
+                                     Vital="no"
+                                     Permanent="no"/>
+                </File>
+            </Component>
+        </ComponentGroup>
+
+    </Fragment>
+</Wix>
