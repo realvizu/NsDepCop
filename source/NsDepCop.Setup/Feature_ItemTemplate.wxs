@@ -3,7 +3,7 @@
      xmlns:vse="http://schemas.microsoft.com/wix/VSExtension">
     <Fragment>
 
-        <PropertyRef Id="VS2012DEVENV"/>
+        <PropertyRef Id="VS2013DEVENV"/>
         
         <Feature Id="Feature_ItemTemplate" 
                  Title="Config File Template (VSIX)"
@@ -13,7 +13,7 @@
                  TypicalDefault="install"
                  AllowAdvertise="no">
             <ComponentGroupRef Id="ComponentGroup_ItemTemplate" />
-            <Condition Level="0"><![CDATA[NOT VS2012DEVENV]]></Condition>
+            <Condition Level="0"><![CDATA[NOT VS2013DEVENV]]></Condition>
         </Feature>
 
         <ComponentGroup Id="ComponentGroup_ItemTemplate" 

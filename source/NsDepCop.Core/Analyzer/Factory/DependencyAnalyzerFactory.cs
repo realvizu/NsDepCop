@@ -20,7 +20,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Factory
             Parser parser;
             if (!Enum.TryParse<Parser>(parserName, out parser))
             {
-                parser = Parser.NRefactory;
+                parser = Parser.Roslyn;
                 Debug.WriteLine(string.Format("Unrecognized parser: '{0}'. Using: '{1}'.", parserName, parser));
             }
 
