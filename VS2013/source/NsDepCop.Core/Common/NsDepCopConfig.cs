@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Xml.Linq;
 
 namespace Codartis.NsDepCop.Core.Common
@@ -12,9 +11,9 @@ namespace Codartis.NsDepCop.Core.Common
     /// </summary>
     public class NsDepCopConfig
     {
-        public const bool DEFAULT_IS_ENABLED_VALUE = false;
-        public const IssueKind DEFAULT_ISSUE_KIND = IssueKind.Warning;
-        public const int DEFAULT_MAX_ISSUE_REPORTED = 100;
+        private const bool DEFAULT_IS_ENABLED_VALUE = false;
+        private const IssueKind DEFAULT_ISSUE_KIND = IssueKind.Warning;
+        private const int DEFAULT_MAX_ISSUE_REPORTED = 100;
 
         /// <summary>
         /// A value indicating whether analysis is enabled.
@@ -32,31 +31,25 @@ namespace Codartis.NsDepCop.Core.Common
         public int MaxIssueCount { get; private set; }
 
         /// <summary>
-        /// A dictionary containing the allowed dependencies.
+        /// The set of allowed dependencies.
         /// </summary>
-        /// <remarks>The key is the string representation of the dependency.</remarks>
-        public Dictionary<string, Dependency> AllowedDependencies { get; private set; }
+        public ImmutableHashSet<Dependency> AllowedDependencies { get; private set; }
+
+        /// <summary>
+        /// The set of disallowed dependencies.
+        /// </summary>
+        public ImmutableHashSet<Dependency> DisallowedDependencies { get; private set; }
 
         /// <summary>
         /// Initializes a new instance with default values.
         /// </summary>
-        /// <remarks>The analysis is disabled by default.</remarks>
-        public NsDepCopConfig()
+        private NsDepCopConfig()
         {
             IsEnabled = DEFAULT_IS_ENABLED_VALUE;
             IssueKind = DEFAULT_ISSUE_KIND;
             MaxIssueCount = DEFAULT_MAX_ISSUE_REPORTED;
-            AllowedDependencies = new Dictionary<string, Dependency>();
-        }
-
-        /// <summary>
-        /// Initializes a new instance with default values and a collection of dependencies.
-        /// </summary>
-        public NsDepCopConfig(IEnumerable<Dependency> allowedDependencies)
-            : this()
-        {
-            allowedDependencies.EmptyIfNull().ToList()
-                .ForEach(dependency => AllowedDependencies.Add(dependency.ToString(), dependency));
+            AllowedDependencies = ImmutableHashSet.Create<Dependency>();
+            DisallowedDependencies = ImmutableHashSet.Create<Dependency>();
         }
 
         /// <summary>
@@ -66,35 +59,6 @@ namespace Codartis.NsDepCop.Core.Common
             : this()
         {
             LoadConfigFromFile(configFilePath);
-        }
-
-        /// <summary>
-        /// Decides whether a dependency is allowed based on the rule configuration.
-        /// </summary>
-        /// <param name="fromNamespace">The namespace that depends on the other.</param>
-        /// <param name="toNamespace">The namespace that the other namespace depends on.</param>
-        /// <returns>True if the dependency is allowed, false otherwise.</returns>
-        public bool IsAllowedDependency(string fromNamespace, string toNamespace)
-        {
-            // Search for a match with the rules.
-            Dependency foundDependency;
-            foreach (var fromCandidate in NamespaceSpecification.GetContainingNamespaceSpecifications(fromNamespace))
-            {
-                foreach (var toCandidate in NamespaceSpecification.GetContainingNamespaceSpecifications(toNamespace))
-                {
-                    if (AllowedDependencies.TryGetValue(new Dependency(fromCandidate, toCandidate).ToString(), out foundDependency))
-                    {
-                        //Debug.WriteLine(string.Format("Dependency from '{0}' to '{1}' is allowed by rule '{2}'",
-                        //    fromNamespace, toNamespace, foundDependency), Constants.TOOL_NAME);
-
-                        // A matching rule was found.
-                        return true;
-                    }
-                }
-            }
-
-            // No matching rule was found.
-            return false;
         }
 
         /// <summary>
@@ -119,33 +83,63 @@ namespace Codartis.NsDepCop.Core.Common
 
             // Parse attributes of the root node.
             IsEnabled = ParseAttribute(rootElement.Attribute("IsEnabled"), bool.TryParse, DEFAULT_IS_ENABLED_VALUE);
-            IssueKind = ParseAttribute(rootElement.Attribute("CodeIssueKind"), Enum.TryParse<IssueKind>, DEFAULT_ISSUE_KIND);
+            IssueKind = ParseAttribute(rootElement.Attribute("CodeIssueKind"), Enum.TryParse, DEFAULT_ISSUE_KIND);
             MaxIssueCount = ParseAttribute(rootElement.Attribute("MaxIssueCount"), int.TryParse, DEFAULT_MAX_ISSUE_REPORTED);
 
-            // Parse Allowed elements.
-            foreach (var xElement in rootElement.Elements("Allowed"))
+            AllowedDependencies = BuildDependencySet(rootElement, "Allowed");
+            DisallowedDependencies = BuildDependencySet(rootElement, "Disallowed");
+        }
+
+        /// <summary>
+        /// Builds an immutable hashset containing dependencies parsed from the given XElement root with the given element name. 
+        /// </summary>
+        /// <param name="rootElement">Root of elements to be parsed.</param>
+        /// <param name="elementName">The name of the elements to be parsed.</param>
+        /// <returns>An immutable set of parsed dependencies.</returns>
+        private static ImmutableHashSet<Dependency> BuildDependencySet(XElement rootElement, string elementName)
+        {
+            var builder = ImmutableHashSet.CreateBuilder<Dependency>();
+
+            foreach (var xElement in rootElement.Elements(elementName))
             {
-                try
-                {
-                    string fromValue = GetAttributeValue(xElement, "From");
-                    if (fromValue == null)
-                        throw new Exception("From element missing.");
-
-                    string toValue = GetAttributeValue(xElement, "To");
-                    if (toValue == null)
-                        throw new Exception("To element missing.");
-
-                    var dependency = new Dependency(fromValue, toValue);
-                    AllowedDependencies.Add(dependency.ToString(), dependency);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(
-                        string.Format("Error parsing config file: element '{0}' is invalid. ({1}) Ignoring element.", 
-                        xElement, e.Message),
-                        Constants.TOOL_NAME);
-                }
+                var dependency = ParseDependency(xElement);
+                if (dependency != null && !builder.Contains(dependency))
+                    builder.Add(dependency);
             }
+
+            return builder.ToImmutable();
+        }
+
+        /// <summary>
+        /// Parse an XEelement that defines a dependency.
+        /// </summary>
+        /// <param name="xElement">An xml element.</param>
+        /// <returns>The parsed dependency, or null if could not parse.</returns>
+        private static Dependency ParseDependency(XElement xElement)
+        {
+            Dependency dependency = null;
+
+            try
+            {
+                var fromValue = GetAttributeValue(xElement, "From");
+                if (fromValue == null)
+                    throw new Exception("From element missing.");
+
+                var toValue = GetAttributeValue(xElement, "To");
+                if (toValue == null)
+                    throw new Exception("To element missing.");
+
+                dependency = new Dependency(fromValue, toValue);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(
+                    string.Format("Error parsing config file: element '{0}' is invalid. ({1}) Ignoring element.",
+                    xElement, e.Message),
+                    Constants.TOOL_NAME);
+            }
+
+            return dependency;
         }
 
         /// <summary>
@@ -177,9 +171,9 @@ namespace Codartis.NsDepCop.Core.Common
         /// <param name="tryParseMethod">The method that should be used for parsing. Should not throw an exception just return false on failure.</param>
         /// <param name="defaultValue">The default value to be returned if the parse failed.</param>
         /// <returns>The parsed value or the given default value if the parse failed.</returns>
-        private T ParseAttribute<T>(XAttribute attribute, TryParseMethod<T> tryParseMethod, T defaultValue)
+        private static T ParseAttribute<T>(XAttribute attribute, TryParseMethod<T> tryParseMethod, T defaultValue)
         {
-            T result = defaultValue;
+            var result = defaultValue;
 
             if (attribute != null)
             {

@@ -23,22 +23,22 @@ namespace Codartis.NsDepCop.CodeIssueProvider
         /// <summary>
         /// Cache for mapping project files to config handlers. The key is the config file name with full path.
         /// </summary>
-        private Dictionary<string, ConfigHandler> _projectFileToConfigHandlerMap = new Dictionary<string, ConfigHandler>();
+        private readonly Dictionary<string, ConfigHandler> _projectFileToConfigHandlerMap = new Dictionary<string, ConfigHandler>();
 
         /// <summary>
         /// Cache for mapping source files to project files. The key is the source file name with full path.
         /// </summary>
-        private Dictionary<string, string> _sourceFileToProjectFileMap = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _sourceFileToProjectFileMap = new Dictionary<string, string>();
 
         /// <summary>
         /// Indicates that a config exception was already reported. To avoid multiple error reports.
         /// </summary>
-        private bool _configExceptionAlreadyReported = false;
+        private bool _configExceptionAlreadyReported;
 
         /// <summary>
         /// Descriptor for the 'Illegal namespace dependency' diagnostic.
         /// </summary>
-        private DiagnosticDescriptor DiagnosticDescriptorForIllegalNsDep = new DiagnosticDescriptor(
+        private readonly DiagnosticDescriptor _diagnosticDescriptorForIllegalNsDep = new DiagnosticDescriptor(
             Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
             Constants.DIAGNOSTIC_DESC_ILLEGAL_NS_DEP,
             Constants.DIAGNOSTIC_FORMAT_ILLEGAL_NS_DEP,
@@ -48,7 +48,7 @@ namespace Codartis.NsDepCop.CodeIssueProvider
         /// <summary>
         /// Descriptor for the 'Config exception' diagnostic.
         /// </summary>
-        private DiagnosticDescriptor DiagnosticDescriptorForConfigException = new DiagnosticDescriptor(
+        private readonly DiagnosticDescriptor _diagnosticDescriptorForConfigException = new DiagnosticDescriptor(
             Constants.DIAGNOSTIC_ID_CONFIG_EXCEPTION,
             Constants.DIAGNOSTIC_DESC_CONFIG_EXCEPTION,
             Constants.DIAGNOSTIC_FORMAT_CONFIG_EXCEPTION,
@@ -60,8 +60,8 @@ namespace Codartis.NsDepCop.CodeIssueProvider
             get
             {
                 return ImmutableArray.Create(
-                    DiagnosticDescriptorForIllegalNsDep, 
-                    DiagnosticDescriptorForConfigException);
+                    _diagnosticDescriptorForIllegalNsDep, 
+                    _diagnosticDescriptorForConfigException);
             }
         }
 
@@ -108,7 +108,7 @@ namespace Codartis.NsDepCop.CodeIssueProvider
                 if (!_configExceptionAlreadyReported)
                 {
                     _configExceptionAlreadyReported = true;
-                    addDiagnostic(Diagnostic.Create(DiagnosticDescriptorForConfigException, Location.None, configException.Message));
+                    addDiagnostic(Diagnostic.Create(_diagnosticDescriptorForConfigException, Location.None, configException.Message));
                 }
             }
 
@@ -119,7 +119,8 @@ namespace Codartis.NsDepCop.CodeIssueProvider
             if (!config.IsEnabled)
                 return;
 
-            var dependencyViolation = SyntaxNodeAnalyzer.Analyze(node, semanticModel, config);
+            var dependencyValidator = configHandler.GetDependencyValidator();
+            var dependencyViolation = SyntaxNodeAnalyzer.Analyze(node, semanticModel, dependencyValidator);
             if (dependencyViolation != null)
             {
                 addDiagnostic(CreateIllegalNsDepDiagnostic(node, dependencyViolation, config.IssueKind));
@@ -128,7 +129,7 @@ namespace Codartis.NsDepCop.CodeIssueProvider
 
         private Diagnostic CreateIllegalNsDepDiagnostic(SyntaxNode node, DependencyViolation dependencyViolation, IssueKind issueKind)
         {
-            var message = string.Format(DiagnosticDescriptorForIllegalNsDep.MessageFormat,
+            var message = string.Format(_diagnosticDescriptorForIllegalNsDep.MessageFormat,
                 dependencyViolation.IllegalDependency.From,
                 dependencyViolation.IllegalDependency.To,
                 dependencyViolation.ReferencingTypeName,
@@ -140,8 +141,8 @@ namespace Codartis.NsDepCop.CodeIssueProvider
             var warningLevel = severity == DiagnosticSeverity.Warning ? 1 : 0;
 
             return Diagnostic.Create(
-                DiagnosticDescriptorForIllegalNsDep.Id,
-                DiagnosticDescriptorForIllegalNsDep.Category,
+                _diagnosticDescriptorForIllegalNsDep.Id,
+                _diagnosticDescriptorForIllegalNsDep.Category,
                 message,
                 severity,
                 warningLevel,

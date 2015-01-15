@@ -11,7 +11,8 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
     /// </summary>
     public class DependencyAnalyzer : IDependencyAnalyzer
     {
-        private NsDepCopConfig _config;
+        private readonly NsDepCopConfig _config;
+        private readonly DependencyValidator _dependencyValidator;
 
         /// <summary>
         /// Creates a new instance.
@@ -20,6 +21,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         public DependencyAnalyzer(NsDepCopConfig config)
         {
             _config = config;
+            _dependencyValidator = new DependencyValidator(config.AllowedDependencies, config.DisallowedDependencies);
         }
 
         /// <summary>
@@ -49,7 +51,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
             // Analyse all syntaxTrees in the project.
             foreach (var syntaxTree in syntaxTrees)
             {
-                var syntaxVisitor = new DependencyAnalyzerSyntaxVisitor(compilation.GetSemanticModel(syntaxTree), _config);
+                var syntaxVisitor = new DependencyAnalyzerSyntaxVisitor(compilation.GetSemanticModel(syntaxTree), _config, _dependencyValidator);
                 var documentRootNode = syntaxTree.GetRoot();
                 if (documentRootNode != null)
                 {

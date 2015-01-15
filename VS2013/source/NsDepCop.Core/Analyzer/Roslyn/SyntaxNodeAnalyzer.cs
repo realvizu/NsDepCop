@@ -1,6 +1,5 @@
 ﻿using Codartis.NsDepCop.Core.Common;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
 
@@ -16,9 +15,9 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// </summary>
         /// <param name="node">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the current document.</param>
-        /// <param name="config">Tool configuration info. Contains the allowed dependencies.</param>
+        /// <param name="dependencyValidator">The validator that decides whether a dependency is allowed.</param>
         /// <returns>A DependencyViolation if an issue was found. Null if no problem.</returns>
-        public static DependencyViolation Analyze(SyntaxNode node, SemanticModel semanticModel, NsDepCopConfig config)
+        public static DependencyViolation Analyze(SyntaxNode node, SemanticModel semanticModel, DependencyValidator dependencyValidator)
         {
             // Determine the types referenced by the symbol represented by the current syntax node.
             var referencedType = DetermineReferencedType(node, semanticModel);
@@ -40,7 +39,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
                 return null;
 
             // Check the rules whether this dependency is allowed.
-            if (config.IsAllowedDependency(from, to))
+            if (dependencyValidator.IsAllowedDependency(from, to))
                 return null;
 
             // Create a result item for a dependency violation.
@@ -82,7 +81,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         private static ITypeSymbol DetermineEnclosingType(SyntaxNode node, SemanticModel semanticModel)
         {
             // Find the type declaration that contains the current syntax node.
-            var typeDeclarationSyntaxNode = node.Ancestors().Where(i => i is TypeDeclarationSyntax).FirstOrDefault();
+            var typeDeclarationSyntaxNode = node.Ancestors().FirstOrDefault(i => i is TypeDeclarationSyntax);
             if (typeDeclarationSyntaxNode == null)
                 return null;
 

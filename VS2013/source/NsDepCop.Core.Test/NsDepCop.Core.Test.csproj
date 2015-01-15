@@ -57,7 +57,7 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="NamespaceSpecificationTest.cs" />
+    <Compile Include="Common\NamespaceSpecificationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

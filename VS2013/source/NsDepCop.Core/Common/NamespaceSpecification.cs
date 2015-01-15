@@ -21,17 +21,17 @@ namespace Codartis.NsDepCop.Core.Common
         /// <summary>
         /// Represents the global namespace.
         /// </summary>
-        public static NamespaceSpecification GlobalNamespace = new NamespaceSpecification(".");
+        public static readonly NamespaceSpecification GlobalNamespace = new NamespaceSpecification(".");
 
         /// <summary>
         /// Represents any namespace.
         /// </summary>
-        public static NamespaceSpecification AnyNamespace = new NamespaceSpecification("*");
+        public static readonly NamespaceSpecification AnyNamespace = new NamespaceSpecification("*");
 
         /// <summary>
         /// The namespace specification stored as a string.
         /// </summary>
-        private string _namespaceSpecificationAsString;
+        private readonly string _namespaceSpecificationAsString;
 
         /// <summary>
         /// Initializes a new instance. Validates the input format.
@@ -56,51 +56,39 @@ namespace Codartis.NsDepCop.Core.Common
             _namespaceSpecificationAsString = namespaceSpecificationAsString;
         }
 
-        /// <summary>
-        /// Returns the string representation of the namespace specification.
-        /// </summary>
-        /// <returns>The string representation of the namespace specification.</returns>
         public override string ToString()
         {
             return _namespaceSpecificationAsString;
         }
 
-        public override int GetHashCode()
+        public bool Equals(NamespaceSpecification other)
         {
-            return _namespaceSpecificationAsString.GetHashCode();
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return string.Equals(_namespaceSpecificationAsString, other._namespaceSpecificationAsString);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, obj))
-                return true;
-
-            var otherNamespaceSpecification = obj as NamespaceSpecification;
-            if (ReferenceEquals(otherNamespaceSpecification, null))
-                return false;
-
-            return _namespaceSpecificationAsString == otherNamespaceSpecification._namespaceSpecificationAsString;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((NamespaceSpecification) obj);
         }
 
-        public bool Equals(NamespaceSpecification otherNamespaceSpecification)
+        public override int GetHashCode()
         {
-            if (ReferenceEquals(otherNamespaceSpecification, null))
-                return false;
-
-            if (ReferenceEquals(this, otherNamespaceSpecification))
-                return true;
-
-            return _namespaceSpecificationAsString == otherNamespaceSpecification._namespaceSpecificationAsString;
+            return (_namespaceSpecificationAsString != null ? _namespaceSpecificationAsString.GetHashCode() : 0);
         }
 
-        public static bool operator ==(NamespaceSpecification ns1, NamespaceSpecification ns2)
+        public static bool operator ==(NamespaceSpecification left, NamespaceSpecification right)
         {
-            return ns1.Equals(ns2);
+            return Equals(left, right);
         }
 
-        public static bool operator !=(NamespaceSpecification ns1, NamespaceSpecification ns2)
+        public static bool operator !=(NamespaceSpecification left, NamespaceSpecification right)
         {
-            return !ns1.Equals(ns2);
+            return !Equals(left, right);
         }
 
         /// <summary>
@@ -135,7 +123,7 @@ namespace Codartis.NsDepCop.Core.Common
             yield return namespaceSpecification;
 
             // For the global namespace there's no more containing namespace.
-            if (namespaceSpecification == NamespaceSpecification.GlobalNamespace)
+            if (namespaceSpecification == GlobalNamespace)
                 yield break;
 
             // For any other namespace return itself and all parent namespaces postfixed with '*' (meaning any sub-namespaces).

@@ -18,10 +18,10 @@ namespace Codartis.NsDepCop.Core.Analyzer.Factory
         public static IDependencyAnalyzer Create(string parserName, NsDepCopConfig config)
         {
             Parser parser;
-            if (!Enum.TryParse<Parser>(parserName, out parser))
+            if (!Enum.TryParse(parserName, out parser))
             {
                 parser = Parser.Roslyn;
-                Debug.WriteLine(string.Format("Unrecognized parser: '{0}'. Using: '{1}'.", parserName, parser));
+                Debug.WriteLine("Unrecognized parser: '{0}'. Using: '{1}'.", parserName, parser);
             }
 
             switch (parser)

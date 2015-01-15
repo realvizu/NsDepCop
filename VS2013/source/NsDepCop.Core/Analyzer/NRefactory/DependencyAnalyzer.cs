@@ -13,7 +13,8 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
     /// </summary>
     public class DependencyAnalyzer : IDependencyAnalyzer
     {
-        private NsDepCopConfig _config;
+        private readonly NsDepCopConfig _config;
+        private readonly DependencyValidator _dependencyValidator;
 
         /// <summary>
         /// Creates a new instance.
@@ -22,6 +23,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         public DependencyAnalyzer(NsDepCopConfig config)
         {
             _config = config;
+            _dependencyValidator = new DependencyValidator(config.AllowedDependencies, config.DisallowedDependencies);
         }
 
         /// <summary>
@@ -56,7 +58,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
             }
 
             // Load the referenced assemblies into the project.
-            foreach (string assemblyPath in referencedAssemblyPathList)
+            foreach (var assemblyPath in referencedAssemblyPathList)
             {
                 var assembly = new CecilLoader().LoadAssemblyFile(assemblyPath);
                 project = project.AddAssemblyReferences(assembly);
@@ -76,7 +78,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
             var compilation = project.CreateCompilation();
             foreach (var syntaxTree in syntaxTrees)
             {
-                var visitor = new DependencyAnalyzerSyntaxVisitor(compilation, syntaxTree, _config);
+                var visitor = new DependencyAnalyzerSyntaxVisitor(compilation, syntaxTree, _config, _dependencyValidator);
                 syntaxTree.AcceptVisitor(visitor);
 
                 foreach (var dependencyViolation in visitor.DependencyViolations)
