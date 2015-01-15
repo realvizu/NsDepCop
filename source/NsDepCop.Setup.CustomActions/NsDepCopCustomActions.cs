@@ -27,7 +27,7 @@ namespace Codartis.NsDepCop.Setup.CustomActions
         [CustomAction]
         public static ActionResult AddNsDepCopToMsBuildWorkflow(Session session)
         {
-            ActionResult result = ActionResult.Success;
+            var result = ActionResult.Success;
 
             try
             {
@@ -84,7 +84,7 @@ namespace Codartis.NsDepCop.Setup.CustomActions
         [CustomAction]
         public static ActionResult RemoveNsDepCopFromMsBuildWorkflow(Session session)
         {
-            ActionResult result = ActionResult.Success;
+            var result = ActionResult.Success;
 
             try
             {
@@ -137,7 +137,7 @@ namespace Codartis.NsDepCop.Setup.CustomActions
         /// <returns>An XDocument object.</returns>
         private static XDocument LoadOrCreateXDocument(string filename, Session session)
         {
-            XDocument xDocument = null;
+            XDocument xDocument;
 
             if (File.Exists(filename))
             {

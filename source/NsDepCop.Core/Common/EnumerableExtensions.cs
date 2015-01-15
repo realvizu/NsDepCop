@@ -7,7 +7,7 @@ namespace Codartis.NsDepCop.Core.Common
     /// <summary>
     /// Static helper class that implements extension methods for IEnumerable[T]
     /// </summary>
-    public static class IEnumerableExtensions
+    public static class EnumerableExtensions
     {
         /// <summary>
         /// Returns an empty collection for a null value.
@@ -48,7 +48,7 @@ namespace Codartis.NsDepCop.Core.Common
                     stringBuilder.Append(leftWrapper);
 
                 // Append the item's string representation.
-                stringBuilder.Append(item.ToString());
+                stringBuilder.Append(item);
 
                 // Apply right wrapper string if necessary.
                 if (!string.IsNullOrEmpty(rightWrapper))

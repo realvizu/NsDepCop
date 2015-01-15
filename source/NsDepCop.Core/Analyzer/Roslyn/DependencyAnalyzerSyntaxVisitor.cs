@@ -16,24 +16,30 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// <summary>
         /// The semantic model of the current document.
         /// </summary>
-        private SemanticModel _semanticModel;
+        private readonly SemanticModel _semanticModel;
 
         /// <summary>
-        /// The configuration of the tool. Containes the dependency rules.
+        /// The configuration of the tool.
         /// </summary>
-        private NsDepCopConfig _config;
+        private readonly NsDepCopConfig _config;
+
+        /// <summary>
+        /// The validator that decides whether a dependency is allowed.
+        /// </summary>
+        private readonly DependencyValidator _dependencyValidator;
 
         /// <summary>
         /// The collection of dependency violations that the syntax visitor found.
         /// </summary>
-        private List<DependencyViolation> _dependencyViolations;
+        private readonly List<DependencyViolation> _dependencyViolations;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="semanticModel">The semantic model for the document.</param>
         /// <param name="config">The configuration of the tool.</param>
-        public DependencyAnalyzerSyntaxVisitor(SemanticModel semanticModel, NsDepCopConfig config)
+        /// <param name="dependencyValidator">The validator that decides whether a dependency is allowed.</param>
+        public DependencyAnalyzerSyntaxVisitor(SemanticModel semanticModel, NsDepCopConfig config, DependencyValidator dependencyValidator)
         {
             if (semanticModel == null)
                 throw new ArgumentNullException("semanticModel");
@@ -41,8 +47,13 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
             if (config == null)
                 throw new ArgumentNullException("config");
 
+            if (dependencyValidator == null)
+                throw new ArgumentNullException("dependencyValidator");
+
             _semanticModel = semanticModel;
             _config = config;
+            _dependencyValidator = dependencyValidator;
+
             _dependencyViolations = new List<DependencyViolation>();
         }
 
@@ -80,7 +91,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// <param name="node">A syntax node.</param>
         private List<DependencyViolation> AnalyzeNode(SyntaxNode node)
         {
-            var dependencyViolation = SyntaxNodeAnalyzer.Analyze(node, _semanticModel, _config);
+            var dependencyViolation = SyntaxNodeAnalyzer.Analyze(node, _semanticModel, _dependencyValidator);
             if (dependencyViolation != null && _dependencyViolations.Count < _config.MaxIssueCount)
                 _dependencyViolations.Add(dependencyViolation);
 

@@ -2,8 +2,9 @@
 using SoftwareApproach.TestingExtensions;
 using System;
 using System.Linq;
+using Codartis.NsDepCop.Core.Common;
 
-namespace Codartis.NsDepCop.Core.Common.Test
+namespace Codartis.NsDepCop.Core.Test.Common
 {
     [TestClass]
     public class NamespaceSpecificationTest

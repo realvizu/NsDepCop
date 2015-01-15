@@ -1,5 +1,4 @@
 ﻿using Codartis.NsDepCop.Core.Common;
-using ICSharpCode.NRefactory;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.Semantics;
@@ -18,17 +17,22 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         /// <summary>
         /// Represents the project that the analysis is working on.
         /// </summary>
-        private ICompilation _compilation;
+        private readonly ICompilation _compilation;
 
         /// <summary>
         /// The syntax tree that this visitor operates on.
         /// </summary>
-        private SyntaxTree _syntaxTree;
+        private readonly SyntaxTree _syntaxTree;
 
         /// <summary>
         /// The configuration of the tool. Containes the dependency rules.
         /// </summary>
-        private NsDepCopConfig _config;
+        private readonly NsDepCopConfig _config;
+
+        /// <summary>
+        /// The validator that decides whether a dependency is allowed.
+        /// </summary>
+        private readonly DependencyValidator _dependencyValidator;
 
         /// <summary>
         /// The collection of dependency violations that the syntax visitor found.
@@ -41,7 +45,8 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         /// <param name="compilation">The representation of the current project.</param>
         /// <param name="syntaxTree">The syntax tree that this visitor operates on.</param>
         /// <param name="config">The configuration of the tool.</param>
-        public DependencyAnalyzerSyntaxVisitor(ICompilation compilation, SyntaxTree syntaxTree, NsDepCopConfig config)
+        /// <param name="dependencyValidator">The validator that decides whether a dependency is allowed.</param>
+        public DependencyAnalyzerSyntaxVisitor(ICompilation compilation, SyntaxTree syntaxTree, NsDepCopConfig config, DependencyValidator dependencyValidator)
         {
             if (compilation == null)
                 throw new ArgumentNullException("compilation");
@@ -52,9 +57,13 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
             if (config == null)
                 throw new ArgumentNullException("config");
 
+            if (dependencyValidator == null)
+                throw new ArgumentNullException("dependencyValidator");
+
             _compilation = compilation;
             _syntaxTree = syntaxTree;
             _config = config;
+            _dependencyValidator = dependencyValidator;
 
             DependencyViolations = new List<DependencyViolation>();
         }
@@ -70,9 +79,6 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         /// Performs namespace dependency analysis for a syntax tree node.
         /// </summary>
         /// <param name="node">A syntax tree node.</param>
-        /// <param name="compilation">The representation of the current project.</param>
-        /// <param name="syntaxTree">The syntax tree that contains the given node.</param>
-        /// <param name="config">Tool configuration info. Contains the allowed dependencies.</param>
         /// <returns>A DependencyViolation if an issue was found. Null if no problem.</returns>
         private DependencyViolation AnalyzeSyntaxNode(AstNode node)
         {
@@ -97,7 +103,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
                 return null;
 
             // Check the rules whether this dependency is allowed.
-            if (_config.IsAllowedDependency(from, to))
+            if (_dependencyValidator.IsAllowedDependency(from, to))
                 return null;
 
             // Create a result item for a dependency violation.
@@ -142,11 +148,10 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         private static IType DetermineEnclosingType(AstNode node, CSharpAstResolver resolver)
         {
             // Find the type declaration that contains the current syntax node.
-            var typeDeclarationSyntaxNode = node.Ancestors.Where(i => i is TypeDeclaration).FirstOrDefault();
-            if (typeDeclarationSyntaxNode == null)
-                return null;
-
-            return DetermineTypeOfAstNode(typeDeclarationSyntaxNode, resolver);
+            var typeDeclarationSyntaxNode = node.Ancestors.FirstOrDefault(i => i is TypeDeclaration);
+            return typeDeclarationSyntaxNode == null 
+                ? null 
+                : DetermineTypeOfAstNode(typeDeclarationSyntaxNode, resolver);
         }
 
         /// <summary>
