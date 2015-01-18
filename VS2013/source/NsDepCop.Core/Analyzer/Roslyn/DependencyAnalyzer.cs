@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
@@ -60,6 +61,12 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
                         yield return dependencyViolation;
                 }
             }
+
+            Debug.WriteLine(string.Format("Cache hits: {0}, cache misses:{1}, efficiency (hits/all): {2:P}",
+                _dependencyValidator.CacheHitCount,
+                _dependencyValidator.CacheMissCount,
+                _dependencyValidator.CacheEfficiencyPercent),
+                Constants.TOOL_NAME);
         }
     }
 }

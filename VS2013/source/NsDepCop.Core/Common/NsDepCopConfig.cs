@@ -133,7 +133,7 @@ namespace Codartis.NsDepCop.Core.Common
             }
             catch (Exception e)
             {
-                Debug.WriteLine(
+                Trace.WriteLine(
                     string.Format("Error parsing config file: element '{0}' is invalid. ({1}) Ignoring element.",
                     xElement, e.Message),
                     Constants.TOOL_NAME);
@@ -184,8 +184,10 @@ namespace Codartis.NsDepCop.Core.Common
                 }
                 else
                 {
-                    Debug.WriteLine(string.Format("Error parsing config file: attribute name: '{0}', value: '{1}'. Using default value:'{2}'.",
-                        attribute.Name, attribute.Value, defaultValue), Constants.TOOL_NAME);
+                    Trace.WriteLine(
+                        string.Format(
+                            "Error parsing config file: attribute name: '{0}', value: '{1}'. Using default value:'{2}'.",
+                            attribute.Name, attribute.Value, defaultValue), Constants.TOOL_NAME);
                 }
             }
 

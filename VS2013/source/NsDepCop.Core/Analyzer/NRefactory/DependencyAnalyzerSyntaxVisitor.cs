@@ -98,10 +98,6 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
             var from = enclosingType.Namespace;
             var to = referencedType.Namespace;
 
-            // No rule needed to access the same namespace.
-            if (from == to)
-                return null;
-
             // Check the rules whether this dependency is allowed.
             if (_dependencyValidator.IsAllowedDependency(from, to))
                 return null;

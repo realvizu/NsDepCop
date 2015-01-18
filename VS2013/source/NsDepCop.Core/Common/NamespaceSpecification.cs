@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Codartis.NsDepCop.Core.Common
 {
@@ -21,12 +20,12 @@ namespace Codartis.NsDepCop.Core.Common
         /// <summary>
         /// Represents the global namespace.
         /// </summary>
-        public static readonly NamespaceSpecification GlobalNamespace = new NamespaceSpecification(".");
+        public static readonly NamespaceSpecification GlobalNamespace = new NamespaceSpecification(".", validate: false);
 
         /// <summary>
         /// Represents any namespace.
         /// </summary>
-        public static readonly NamespaceSpecification AnyNamespace = new NamespaceSpecification("*");
+        public static readonly NamespaceSpecification AnyNamespace = new NamespaceSpecification("*", validate: false);
 
         /// <summary>
         /// The namespace specification stored as a string.
@@ -34,10 +33,11 @@ namespace Codartis.NsDepCop.Core.Common
         private readonly string _namespaceSpecificationAsString;
 
         /// <summary>
-        /// Initializes a new instance. Validates the input format.
+        /// Initializes a new instance. Also validates the input format if needed.
         /// </summary>
         /// <param name="namespaceSpecificationAsString">The string representation of the namespace specification.</param>
-        public NamespaceSpecification(string namespaceSpecificationAsString)
+        /// <param name="validate">True means input format validation.</param>
+        public NamespaceSpecification(string namespaceSpecificationAsString, bool validate = true)
         {
             if (namespaceSpecificationAsString == null)
                 throw new ArgumentNullException();
@@ -50,7 +50,7 @@ namespace Codartis.NsDepCop.Core.Common
                 namespaceSpecificationAsString == "<global namespace>")
                 namespaceSpecificationAsString = ".";
 
-            if (!IsValidNamespaceSpecification(namespaceSpecificationAsString))
+            if (validate && !IsValidNamespaceSpecification(namespaceSpecificationAsString))
                 throw new FormatException("Not a valid namespace specification.");
 
             _namespaceSpecificationAsString = namespaceSpecificationAsString;
@@ -103,7 +103,19 @@ namespace Codartis.NsDepCop.Core.Common
                 return true;
 
             var pieces = namespaceSpecification.Split(new[] { '.' }, StringSplitOptions.None);
-            return pieces.All(i => !string.IsNullOrWhiteSpace(i));
+            for (var i = 0; i < pieces.Length; i++)
+            {
+                var piece = pieces[i];
+
+                if (string.IsNullOrWhiteSpace(piece))
+                    return false;
+
+                // Only the last piece can be '*' (any namespace)
+                if (i < pieces.Length - 1 && piece == "*")
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -114,7 +126,7 @@ namespace Codartis.NsDepCop.Core.Common
         public static IEnumerable<NamespaceSpecification> GetContainingNamespaceSpecifications(string namespaceName)
         {
             // Convert the string to namespace specification, also validates it.
-            var namespaceSpecification = new NamespaceSpecification(namespaceName);
+            var namespaceSpecification = new NamespaceSpecification(namespaceName, validate: false);
 
             // The AnyNamespace specification contains every namespace.
             yield return AnyNamespace;
@@ -139,7 +151,7 @@ namespace Codartis.NsDepCop.Core.Common
                     prefix += ".";
 
                 prefix += piece;
-                yield return new NamespaceSpecification(prefix + ".*");
+                yield return new NamespaceSpecification(prefix + ".*", validate: false);
             }
         }
     }
