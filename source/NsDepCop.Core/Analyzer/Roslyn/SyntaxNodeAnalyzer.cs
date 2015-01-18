@@ -34,10 +34,6 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
             var from = enclosingType.ContainingNamespace.ToDisplayString();
             var to = referencedType.ContainingNamespace.ToDisplayString();
 
-            // No rule needed to access the same namespace.
-            if (from == to)
-                return null;
-
             // Check the rules whether this dependency is allowed.
             if (dependencyValidator.IsAllowedDependency(from, to))
                 return null;

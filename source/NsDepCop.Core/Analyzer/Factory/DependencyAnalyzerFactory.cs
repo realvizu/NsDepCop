@@ -21,7 +21,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Factory
             if (!Enum.TryParse(parserName, out parser))
             {
                 parser = Parser.Roslyn;
-                Debug.WriteLine("Unrecognized parser: '{0}'. Using: '{1}'.", parserName, parser);
+                Trace.WriteLine(string.Format("Unrecognized parser name: '{0}'. Using: '{1}'.", parserName, parser), Constants.TOOL_NAME);
             }
 
             switch (parser)

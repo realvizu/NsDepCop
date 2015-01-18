@@ -7,7 +7,7 @@ using Codartis.NsDepCop.Core.Common;
 namespace Codartis.NsDepCop.Core.Test.Common
 {
     [TestClass]
-    public class NamespaceSpecificationTest
+    public class NamespaceSpecificationTests
     {
         [TestMethod]
         public void Create()
@@ -39,6 +39,13 @@ namespace Codartis.NsDepCop.Core.Test.Common
         public void CreateInvalid()
         {
             new NamespaceSpecification("..");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void CreateInvalidUseOfAny()
+        {
+            new NamespaceSpecification("*.*");
         }
 
         [TestMethod]

@@ -43,7 +43,7 @@ namespace Codartis.NsDepCop.Core.Common
         /// <param name="from">A namespace specification in string format. The starting point of the dependency.</param>
         /// <param name="to">A namespace specification in string format. The starting point of the dependency.</param>
         public Dependency(string from, string to)
-            : this(new NamespaceSpecification(from), new NamespaceSpecification(to))
+            : this(new NamespaceSpecification(from, validate: false), new NamespaceSpecification(to, validate: false))
         { }
 
         /// <summary>
