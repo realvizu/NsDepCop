@@ -125,5 +125,47 @@ namespace Codartis.NsDepCop.Core.Test.Common
 
             dependencyValidator.IsAllowedDependency("A", "B").ShouldBeFalse();
         }
+
+        [TestMethod]
+        public void ChildCanDependOnParentImplicitly()
+        {
+            var allowedDependencies = ImmutableHashSet.Create<Dependency>();
+            var disallowedDependencies = ImmutableHashSet.Create<Dependency>();
+            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies, true);
+
+            dependencyValidator.IsAllowedDependency("A", ".").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("A.B", ".").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("A.B", "A").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("A.B.C", "A").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("A.B.C", "A.B").ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void ChildCanDependOnParentImplicitly_ButDisallowedWins()
+        {
+            var allowedDependencies = ImmutableHashSet.Create<Dependency>();
+            var disallowedDependencies = ImmutableHashSet.Create(new Dependency("A.B", "A"));
+            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies, true);
+
+            dependencyValidator.IsAllowedDependency("A", ".").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("A.B", ".").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("A.B", "A").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("A.B.C", "A").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("A.B.C", "A.B").ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void ChildCanDependOnParentImplicitly_ButDisallowedWithWildcardsWins()
+        {
+            var allowedDependencies = ImmutableHashSet.Create<Dependency>();
+            var disallowedDependencies = ImmutableHashSet.Create(new Dependency("A.*", "A"));
+            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies, true);
+
+            dependencyValidator.IsAllowedDependency("A", ".").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("A.B", ".").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("A.B", "A").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("A.B.C", "A").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("A.B.C", "A.B").ShouldBeTrue();
+        }
     }
 }
