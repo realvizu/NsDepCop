@@ -595,7 +595,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
             });
         }
-        
+
+        [TestMethod]
+        public void Execute_AllowedDependency_ByChildCanDependOnParentImplicitlyOption()
+        {
+            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            {
+                TestFilesFolderName = "TestFiles_ByChildCanDependOnParentImplicitlyOption",
+                SourceFileNames = new[] { "ChildToParentDependency.cs" },
+            });
+        }
+
         /// <summary>
         /// Executes the test case using both analyzers.
         /// </summary>

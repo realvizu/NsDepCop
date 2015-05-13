@@ -23,7 +23,8 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         public DependencyAnalyzer(NsDepCopConfig config)
         {
             _config = config;
-            _dependencyValidator = new DependencyValidator(config.AllowedDependencies, config.DisallowedDependencies);
+            _dependencyValidator = new DependencyValidator(config.AllowedDependencies, config.DisallowedDependencies,
+                config.ChildCanDependOnParentImplicitly);
         }
 
         /// <summary>

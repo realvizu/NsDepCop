@@ -32,7 +32,7 @@ namespace Codartis.NsDepCop.Core.Common
         public int MaxIssueCount { get; private set; }
 
         /// <summary>
-        /// True means that all child namespaces can depend on any of their parent namespaces without an expicit Allowed rule.
+        /// True means that all child namespaces can depend on any of their parent namespaces without an explicit Allowed rule.
         /// True is in line with how C# type resolution works: it searches parent namespaces without an explicit using statement.
         /// False means that all dependencies must be explicitly allowed with a rule.
         /// False is the default for backward compatibility.

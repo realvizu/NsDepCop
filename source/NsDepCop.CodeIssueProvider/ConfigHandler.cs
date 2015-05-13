@@ -50,7 +50,8 @@ namespace Codartis.NsDepCop.CodeIssueProvider
             {
                 _configLastReadUtc = DateTime.UtcNow;
                 _config = new NsDepCopConfig(_configPath);
-                _dependencyValidator = new DependencyValidator(_config.AllowedDependencies, _config.DisallowedDependencies);
+                _dependencyValidator = new DependencyValidator(_config.AllowedDependencies, _config.DisallowedDependencies,
+                    _config.ChildCanDependOnParentImplicitly);
             }
 
             return _config;
