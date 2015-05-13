@@ -105,16 +105,9 @@ namespace Codartis.NsDepCop.Core.Test.Common
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void GetContainingNamespaceSpecifications_NullArgument()
-        {
-            NamespaceSpecification.GetContainingNamespaceSpecifications(null).ToList();
-        }
-
-        [TestMethod]
         public void GetContainingNamespaceSpecifications_GlobalNamespace()
         {
-            var results = NamespaceSpecification.GetContainingNamespaceSpecifications(".");
+            var results = NamespaceSpecification.GlobalNamespace.GetContainingNamespaceSpecifications();
             var expectedElements = new[]
             {
                 new NamespaceSpecification("*"),
@@ -127,7 +120,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         [TestMethod]
         public void GetContainingNamespaceSpecifications_SingleTagNamespace()
         {
-            var results = NamespaceSpecification.GetContainingNamespaceSpecifications("A");
+            var results = new NamespaceSpecification("A").GetContainingNamespaceSpecifications();
             var expectedElements = new[]
             {
                 new NamespaceSpecification("*"),
@@ -141,7 +134,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         [TestMethod]
         public void GetContainingNamespaceSpecifications_MultiTagNamespace()
         {
-            var results = NamespaceSpecification.GetContainingNamespaceSpecifications("A.B");
+            var results = new NamespaceSpecification("A.B").GetContainingNamespaceSpecifications();
             var expectedElements = new[]
             {
                 new NamespaceSpecification("*"),
@@ -151,6 +144,30 @@ namespace Codartis.NsDepCop.Core.Test.Common
             };
             expectedElements.Count().ShouldEqual(results.Count());
             expectedElements.All(i => results.Contains(i)).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void IsSubnamespaceOf()
+        {
+            new NamespaceSpecification("A").IsSubnamespaceOf(new NamespaceSpecification(".")).ShouldBeTrue();
+            new NamespaceSpecification("A.B").IsSubnamespaceOf(new NamespaceSpecification(".")).ShouldBeTrue();
+
+            new NamespaceSpecification("A.*").IsSubnamespaceOf(new NamespaceSpecification(".")).ShouldBeFalse();
+
+            new NamespaceSpecification("A.B").IsSubnamespaceOf(new NamespaceSpecification("A")).ShouldBeTrue();
+            new NamespaceSpecification("A.B.C").IsSubnamespaceOf(new NamespaceSpecification("A")).ShouldBeTrue();
+
+            new NamespaceSpecification(".").IsSubnamespaceOf(new NamespaceSpecification("A")).ShouldBeFalse();
+            new NamespaceSpecification("*").IsSubnamespaceOf(new NamespaceSpecification("A")).ShouldBeFalse();
+            new NamespaceSpecification("A").IsSubnamespaceOf(new NamespaceSpecification("A")).ShouldBeFalse();
+            new NamespaceSpecification("A.*").IsSubnamespaceOf(new NamespaceSpecification("A")).ShouldBeFalse();
+            new NamespaceSpecification("A.B.*").IsSubnamespaceOf(new NamespaceSpecification("A")).ShouldBeFalse();
+
+            new NamespaceSpecification("A").IsSubnamespaceOf(new NamespaceSpecification("A.*")).ShouldBeFalse();
+            new NamespaceSpecification("A.B").IsSubnamespaceOf(new NamespaceSpecification("A.*")).ShouldBeFalse();
+            new NamespaceSpecification("A.B.C").IsSubnamespaceOf(new NamespaceSpecification("A.*")).ShouldBeFalse();
+
+            new NamespaceSpecification("A").IsSubnamespaceOf(new NamespaceSpecification("*")).ShouldBeFalse();
         }
     }
 }

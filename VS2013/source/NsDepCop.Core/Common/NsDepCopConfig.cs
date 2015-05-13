@@ -14,6 +14,7 @@ namespace Codartis.NsDepCop.Core.Common
         private const bool DEFAULT_IS_ENABLED_VALUE = false;
         private const IssueKind DEFAULT_ISSUE_KIND = IssueKind.Warning;
         private const int DEFAULT_MAX_ISSUE_REPORTED = 100;
+        private const bool DEFAULT_CHILD_CAN_DEPEND_ON_PARENT_IMPLICITLY = false;
 
         /// <summary>
         /// A value indicating whether analysis is enabled.
@@ -29,6 +30,14 @@ namespace Codartis.NsDepCop.Core.Common
         /// The max number of issues reported.
         /// </summary>
         public int MaxIssueCount { get; private set; }
+
+        /// <summary>
+        /// True means that all child namespaces can depend on any of their parent namespaces without an expicit Allowed rule.
+        /// True is in line with how C# type resolution works: it searches parent namespaces without an explicit using statement.
+        /// False means that all dependencies must be explicitly allowed with a rule.
+        /// False is the default for backward compatibility.
+        /// </summary>
+        public bool ChildCanDependOnParentImplicitly { get; private set; }
 
         /// <summary>
         /// The set of allowed dependencies.
@@ -85,6 +94,8 @@ namespace Codartis.NsDepCop.Core.Common
             IsEnabled = ParseAttribute(rootElement.Attribute("IsEnabled"), bool.TryParse, DEFAULT_IS_ENABLED_VALUE);
             IssueKind = ParseAttribute(rootElement.Attribute("CodeIssueKind"), Enum.TryParse, DEFAULT_ISSUE_KIND);
             MaxIssueCount = ParseAttribute(rootElement.Attribute("MaxIssueCount"), int.TryParse, DEFAULT_MAX_ISSUE_REPORTED);
+            ChildCanDependOnParentImplicitly = ParseAttribute(rootElement.Attribute("ChildCanDependOnParentImplicitly"), 
+                bool.TryParse, DEFAULT_CHILD_CAN_DEPEND_ON_PARENT_IMPLICITLY);
 
             AllowedDependencies = BuildDependencySet(rootElement, "Allowed");
             DisallowedDependencies = BuildDependencySet(rootElement, "Disallowed");

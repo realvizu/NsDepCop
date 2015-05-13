@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 
@@ -12,15 +13,20 @@ namespace Codartis.NsDepCop.Core.Common
         private readonly ImmutableHashSet<Dependency> _allowedDependencies;
         private readonly ImmutableHashSet<Dependency> _disallowedDependencies;
         private readonly Dictionary<Dependency, bool> _alreadyAnalyzedDependencies;
+        private readonly bool _childCanDependOnParentImplicitly;
 
         public int CacheHitCount { get; private set; }
         public int CacheMissCount { get; private set; }
 
-        public DependencyValidator(ImmutableHashSet<Dependency> allowedDependencies, ImmutableHashSet<Dependency> disallowedDependencies)
+        public DependencyValidator(
+            ImmutableHashSet<Dependency> allowedDependencies, 
+            ImmutableHashSet<Dependency> disallowedDependencies,
+            bool childCanDependOnParentImplicitly = false)
         {
             _allowedDependencies = allowedDependencies;
             _disallowedDependencies = disallowedDependencies;
             _alreadyAnalyzedDependencies = new Dictionary<Dependency, bool>();
+            _childCanDependOnParentImplicitly = childCanDependOnParentImplicitly;
             CacheHitCount = 0;
             CacheMissCount = 0;
         }
@@ -61,25 +67,31 @@ namespace Codartis.NsDepCop.Core.Common
             {
                 CacheMissCount++;
 
-                isAllowed = IsMathingDependencyFound(_allowedDependencies, fromNamespace, toNamespace, "allowed") &&
-                            !IsMathingDependencyFound(_disallowedDependencies, fromNamespace, toNamespace, "disallowed");
+                isAllowed = (IsAllowedBecauseChildCanDependOnParent(dependency.From, dependency.To) 
+                    || IsMathingDependencyFound(_allowedDependencies, dependency.From, dependency.To, "allowed"))
+                    && !IsMathingDependencyFound(_disallowedDependencies, dependency.From, dependency.To, "disallowed");
 
                 _alreadyAnalyzedDependencies.Add(dependency, isAllowed);
 
                 Debug.WriteLine(
-                    string.Format("Dependency {0} added to cache as {1}.", dependency,
-                        isAllowed ? "allowed" : "disallowed"),
+                    string.Format("Dependency {0} added to cache as {1}.", dependency, isAllowed ? "allowed" : "disallowed"),
                     Constants.TOOL_NAME);
             }
 
             return isAllowed;
         }
 
-        private static bool IsMathingDependencyFound(IImmutableSet<Dependency> dependencies, string fromNamespace, string toNamespace, string debugString)
+        private bool IsAllowedBecauseChildCanDependOnParent(NamespaceSpecification fromNamespace, NamespaceSpecification toNamespace)
         {
-            foreach (var fromCandidate in NamespaceSpecification.GetContainingNamespaceSpecifications(fromNamespace))
+            return _childCanDependOnParentImplicitly && fromNamespace.IsSubnamespaceOf(toNamespace);
+        }
+
+        private static bool IsMathingDependencyFound(IImmutableSet<Dependency> dependencies, 
+            NamespaceSpecification fromNamespace, NamespaceSpecification toNamespace, string debugString)
+        {
+            foreach (var fromCandidate in fromNamespace.GetContainingNamespaceSpecifications())
             {
-                foreach (var toCandidate in NamespaceSpecification.GetContainingNamespaceSpecifications(toNamespace))
+                foreach (var toCandidate in toNamespace.GetContainingNamespaceSpecifications())
                 {
                     Dependency foundDependency;
                     if (dependencies.TryGetValue(new Dependency(fromCandidate, toCandidate), out foundDependency))

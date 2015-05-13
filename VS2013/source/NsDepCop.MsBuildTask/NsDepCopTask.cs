@@ -40,7 +40,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         public ITaskItem BaseDirectory { get; set; }
 
         /// <summary>
-        /// Specifies the parser: NRefactory or Roslyn. Optional. NRefactory is default if omitted.
+        /// Specifies the parser: NRefactory or Roslyn. Optional. Roslyn is default if omitted or unrecognized.
         /// </summary>
         public ITaskItem Parser { get; set; }
 
