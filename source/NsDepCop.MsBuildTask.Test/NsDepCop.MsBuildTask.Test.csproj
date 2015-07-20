@@ -127,6 +127,9 @@
     <Content Include="TestFiles_ByChildCanDependOnParentImplicitlyOption\ChildToParentDependency.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="TestFiles_DepViolation_ExtensionMethodInvocation\DepViolation_ExtensionMethodInvocation.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="TestTaskItem.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -257,6 +260,9 @@
     <Content Include="TestFiles_ByChildCanDependOnParentImplicitlyOption\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="TestFiles_DepViolation_ExtensionMethodInvocation\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

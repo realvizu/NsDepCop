@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
@@ -89,11 +90,15 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// Performs the analysis on the given node and creates a dependency violation object if needed.
         /// </summary>
         /// <param name="node">A syntax node.</param>
+        /// <returns>A list of dependency violations. Can be empty.</returns>
         private List<DependencyViolation> AnalyzeNode(SyntaxNode node)
         {
-            var dependencyViolation = SyntaxNodeAnalyzer.Analyze(node, _semanticModel, _dependencyValidator);
-            if (dependencyViolation != null && _dependencyViolations.Count < _config.MaxIssueCount)
-                _dependencyViolations.Add(dependencyViolation);
+            var newDependencyViolations = SyntaxNodeAnalyzer.Analyze(node, _semanticModel, _dependencyValidator).ToList();
+            if (newDependencyViolations.Any() && _dependencyViolations.Count < _config.MaxIssueCount)
+            {
+                var maxElementsToAdd = Math.Min(_config.MaxIssueCount - _dependencyViolations.Count, newDependencyViolations.Count);
+                _dependencyViolations.AddRange(newDependencyViolations.Take(maxElementsToAdd));
+            }
 
             return _dependencyViolations;
         }
