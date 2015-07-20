@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
@@ -16,23 +17,47 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// <param name="node">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the current document.</param>
         /// <param name="dependencyValidator">The validator that decides whether a dependency is allowed.</param>
-        /// <returns>A DependencyViolation if an issue was found. Null if no problem.</returns>
-        public static DependencyViolation Analyze(SyntaxNode node, SemanticModel semanticModel, DependencyValidator dependencyValidator)
+        /// <returns>A list of dependency violations. Can be empty.</returns>
+        public static IEnumerable<DependencyViolation> Analyze(SyntaxNode node, SemanticModel semanticModel, DependencyValidator dependencyValidator)
         {
-            // Determine the types referenced by the symbol represented by the current syntax node.
-            var referencedType = DetermineReferencedType(node, semanticModel);
-            if (referencedType == null || referencedType.ContainingNamespace == null ||
-                referencedType.TypeKind == TypeKind.Error)
-                return null;
-
             // Determine the type that contains the current syntax node.
             var enclosingType = DetermineEnclosingType(node, semanticModel);
             if (enclosingType == null || enclosingType.ContainingNamespace == null)
+                yield break;
+
+            // Determine the type referenced by the symbol represented by the current syntax node.
+            var referencedType = DetermineReferencedType(node, semanticModel);
+            var referencedTypeDependencyViolation = ValidateDependency(enclosingType, referencedType, node, dependencyValidator);
+            if (referencedTypeDependencyViolation != null)
+                yield return referencedTypeDependencyViolation;
+
+            // If this is an extension method invocation then determine the type declaring the extension method.
+            var declaringType = DetermineExtensionMethodDeclaringType(node, semanticModel);
+            var declaringTypeDependencyViolation = ValidateDependency(enclosingType, declaringType, node, dependencyValidator);
+            if (declaringTypeDependencyViolation != null)
+                yield return declaringTypeDependencyViolation;
+        }
+
+        /// <summary>
+        /// Validates whether a type is allowed to reference another. Returns a DependencyViolation if not allowed.
+        /// </summary>
+        /// <param name="fromType">The referring type.</param>
+        /// <param name="toType">The referenced type.</param>
+        /// <param name="node">The syntax node currently analyzed.</param>
+        /// <param name="dependencyValidator">The validator that decides whether a dependency is allowed.</param>
+        /// <returns>A DependencyViolation if the dependency is not allowed. Null otherwise.</returns>
+        private static DependencyViolation ValidateDependency(ITypeSymbol fromType, ITypeSymbol toType,
+            SyntaxNode node, DependencyValidator dependencyValidator)
+        {
+            if (fromType == null ||
+                toType == null ||
+                toType.ContainingNamespace == null ||
+                toType.TypeKind == TypeKind.Error)
                 return null;
 
             // Get containing namespace for the declaring and the referenced type, in string format.
-            var from = enclosingType.ContainingNamespace.ToDisplayString();
-            var to = referencedType.ContainingNamespace.ToDisplayString();
+            var from = fromType.ContainingNamespace.ToDisplayString();
+            var to = toType.ContainingNamespace.ToDisplayString();
 
             // Check the rules whether this dependency is allowed.
             if (dependencyValidator.IsAllowedDependency(from, to))
@@ -41,9 +66,29 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
             // Create a result item for a dependency violation.
             return new DependencyViolation(
                 new Dependency(from, to),
-                enclosingType.ToDisplayString(),
-                referencedType.ToDisplayString(),
-                GetSourceSegment(node)); 
+                fromType.ToDisplayString(),
+                toType.ToDisplayString(),
+                GetSourceSegment(node));
+        }
+
+        /// <summary>
+        /// Determines the type declaring the given extension method syntax node.
+        /// </summary>
+        /// <param name="node">A syntax node representing an extension method.</param>
+        /// <param name="semanticModel">The semantic model of the project.</param>
+        /// <returns>The type declaring the given extension method syntax node, or null if not found.</returns>
+        private static ITypeSymbol DetermineExtensionMethodDeclaringType(SyntaxNode node, SemanticModel semanticModel)
+        {
+            var symbol = semanticModel.GetSymbolInfo(node).Symbol;
+            if (symbol == null)
+                return null;
+
+            var symbolType = symbol.GetType();
+            if (symbolType == null ||
+                symbolType.Name != "ReducedExtensionMethodSymbol")
+                return null;
+
+            return symbol.ContainingType;
         }
 
         /// <summary>

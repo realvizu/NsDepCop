@@ -606,6 +606,30 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             });
         }
 
+        [TestMethod]
+        public void Execute_DepViolation_ExtensionMethodInvocation()
+        {
+            const string sourceFileName = "DepViolation_ExtensionMethodInvocation.cs";
+            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            {
+                TestFilesFolderName = "TestFiles_DepViolation_ExtensionMethodInvocation",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
+                        Path = sourceFileName,
+                        StartLine = 9,
+                        StartColumn = 27,
+                        EndLine = 9,
+                        EndColumn = 44
+                    },
+                },
+            });
+        }
+
         /// <summary>
         /// Executes the test case using both analyzers.
         /// </summary>

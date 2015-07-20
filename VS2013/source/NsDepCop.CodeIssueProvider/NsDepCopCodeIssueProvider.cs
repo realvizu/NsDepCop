@@ -120,11 +120,10 @@ namespace Codartis.NsDepCop.CodeIssueProvider
                 return;
 
             var dependencyValidator = configHandler.GetDependencyValidator();
-            var dependencyViolation = SyntaxNodeAnalyzer.Analyze(node, semanticModel, dependencyValidator);
-            if (dependencyViolation != null)
-            {
+            var dependencyViolations = SyntaxNodeAnalyzer.Analyze(node, semanticModel, dependencyValidator);
+
+            foreach (var dependencyViolation in dependencyViolations)
                 addDiagnostic(CreateIllegalNsDepDiagnostic(node, dependencyViolation, config.IssueKind));
-            }
         }
 
         private Diagnostic CreateIllegalNsDepDiagnostic(SyntaxNode node, DependencyViolation dependencyViolation, IssueKind issueKind)

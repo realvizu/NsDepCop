@@ -25,6 +25,11 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         private readonly SyntaxTree _syntaxTree;
 
         /// <summary>
+        /// The resolver that returns semantic info for syntax tree nodes.
+        /// </summary>
+        private readonly CSharpAstResolver _resolver;
+
+        /// <summary>
         /// The configuration of the tool. Containes the dependency rules.
         /// </summary>
         private readonly NsDepCopConfig _config;
@@ -65,45 +70,91 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
             _config = config;
             _dependencyValidator = dependencyValidator;
 
+            _resolver = new CSharpAstResolver(_compilation, _syntaxTree);
+
             DependencyViolations = new List<DependencyViolation>();
         }
 
         public override void VisitIdentifier(Identifier identifier)
         {
-            var dependencyViolation = AnalyzeSyntaxNode(identifier);
-            if (dependencyViolation != null && DependencyViolations.Count < _config.MaxIssueCount)
-                DependencyViolations.Add(dependencyViolation);
+            var newDependencyViolations = AnalyzeSyntaxNode(identifier).ToList();
+            if (newDependencyViolations.Any() && DependencyViolations.Count < _config.MaxIssueCount)
+            {
+                var maxElementsToAdd = Math.Min(_config.MaxIssueCount - DependencyViolations.Count, newDependencyViolations.Count);
+                DependencyViolations.AddRange(newDependencyViolations.Take(maxElementsToAdd));
+            }
         }
 
         /// <summary>
         /// Performs namespace dependency analysis for a syntax tree node.
         /// </summary>
         /// <param name="node">A syntax tree node.</param>
-        /// <returns>A DependencyViolation if an issue was found. Null if no problem.</returns>
-        private DependencyViolation AnalyzeSyntaxNode(AstNode node)
+        /// <returns>A list of dependency violations. Can be empty.</returns>
+        private IEnumerable<DependencyViolation> AnalyzeSyntaxNode(AstNode node)
         {
-            var resolver = new CSharpAstResolver(_compilation, _syntaxTree);
-
-            // Determine the type of the symbol represented by the current syntax node.
-            var referencedType = DetermineReferencedType(node, resolver);
-            if (referencedType == null || referencedType.Namespace == null)
-                return null;
-
             // Determine the type that contains the current syntax node.
-            var enclosingType = DetermineEnclosingType(node, resolver);
+            var enclosingType = DetermineEnclosingType(node, _resolver);
             if (enclosingType == null || enclosingType.Namespace == null)
+                yield break;
+
+            // Determine the type referenced by the symbol represented by the current syntax node.
+            var referencedType = DetermineReferencedType(node, _resolver);
+            var referencedTypeDependencyViolation = ValidateDependency(enclosingType, referencedType, node);
+            if (referencedTypeDependencyViolation != null)
+                yield return referencedTypeDependencyViolation;
+
+            // If this is an extension method invocation then determine the type declaring the extension method.
+            var declaringType = DetermineExtensionMethodDeclaringType(node, _resolver);
+            var declaringTypeDependencyViolation = ValidateDependency(enclosingType, declaringType, node);
+            if (declaringTypeDependencyViolation != null)
+                yield return declaringTypeDependencyViolation;
+        }
+
+        /// <summary>
+        /// Validates whether a type is allowed to reference another. Returns a DependencyViolation if not allowed.
+        /// </summary>
+        /// <param name="fromType">The referring type.</param>
+        /// <param name="toType">The referenced type.</param>
+        /// <param name="node">The syntax node currently analyzed.</param>
+        /// <returns>A DependencyViolation if the dependency is not allowed. Null otherwise.</returns>
+        private DependencyViolation ValidateDependency(IType fromType, IType toType, AstNode node)
+        {
+            if (fromType == null || fromType.Namespace == null ||
+                toType == null || toType.Namespace == null)
                 return null;
 
             // Get containing namespace for the declaring and the referenced type, in string format.
-            var from = enclosingType.Namespace;
-            var to = referencedType.Namespace;
+            var from = fromType.Namespace;
+            var to = toType.Namespace;
 
             // Check the rules whether this dependency is allowed.
             if (_dependencyValidator.IsAllowedDependency(from, to))
                 return null;
 
             // Create a result item for a dependency violation.
-            return CreateDependencyViolation(node, new Dependency(from, to), enclosingType, referencedType, _syntaxTree.FileName);
+            return CreateDependencyViolation(node, new Dependency(from, to), fromType, toType, _syntaxTree.FileName);
+        }
+
+        /// <summary>
+        /// If the given node is an extension method invocation's identifier then returns the declaring type of the extension method.
+        /// </summary>
+        /// <param name="node">The currently analyzed AST node.</param>
+        /// <param name="resolver">The AST resolver.</param>
+        /// <returns>The declaring type of the extension method or null if not applicable.</returns>
+        private static IType DetermineExtensionMethodDeclaringType(AstNode node, CSharpAstResolver resolver)
+        {
+            if (node == null ||
+                node.Parent == null ||
+                !(node.Parent.Parent is InvocationExpression))
+                return null;
+
+            var csharpInvocationResolveResult = resolver.Resolve(node.Parent.Parent) as CSharpInvocationResolveResult;
+            if (csharpInvocationResolveResult == null  ||
+                !csharpInvocationResolveResult.IsExtensionMethodInvocation ||
+                csharpInvocationResolveResult.Member == null)
+                return null;
+
+            return csharpInvocationResolveResult.Member.DeclaringType;
         }
 
         /// <summary>
