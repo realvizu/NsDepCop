@@ -83,9 +83,9 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
             if (symbol == null)
                 return null;
 
-            var symbolType = symbol.GetType();
-            if (symbolType == null ||
-                symbolType.Name != "ReducedExtensionMethodSymbol")
+            var methodSymbol = symbol as IMethodSymbol;
+            if (methodSymbol == null ||
+                !methodSymbol.IsExtensionMethod)
                 return null;
 
             return symbol.ContainingType;
