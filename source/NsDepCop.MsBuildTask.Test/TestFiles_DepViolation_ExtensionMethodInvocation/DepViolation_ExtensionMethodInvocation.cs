@@ -7,7 +7,8 @@
         void MyMethod()
         {
             new MyClass().MyExtensionMethod();
-        }            
+            new MyClass().MyGenericExtensionMethod();
+        }
     }
 }
 
@@ -18,6 +19,10 @@ namespace B
     static class MyClassExtensions
     {
         public static void MyExtensionMethod(this MyClass myClass)
+        {
+        }
+
+        public static void MyGenericExtensionMethod<T>(this T t)
         {
         }   
     }
