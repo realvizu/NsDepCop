@@ -38,7 +38,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.Deployment.WindowsInstaller, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ce35f76fcda82bad, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\WiX Toolset v3.7\bin\Microsoft.Deployment.WindowsInstaller.dll</HintPath>
+      <HintPath>..\packages\WiX.Toolset.3.8.1128.0\tools\wix\Microsoft.Deployment.WindowsInstaller.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

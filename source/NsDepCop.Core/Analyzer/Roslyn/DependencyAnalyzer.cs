@@ -1,6 +1,6 @@
 ﻿using Codartis.NsDepCop.Core.Common;
-using Roslyn.Compilers.CSharp;
-using Roslyn.Services;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,7 +12,8 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
     /// </summary>
     public class DependencyAnalyzer : IDependencyAnalyzer
     {
-        private NsDepCopConfig _config;
+        private readonly NsDepCopConfig _config;
+        private readonly DependencyValidator _dependencyValidator;
 
         /// <summary>
         /// Creates a new instance.
@@ -21,6 +22,8 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         public DependencyAnalyzer(NsDepCopConfig config)
         {
             _config = config;
+            _dependencyValidator = new DependencyValidator(config.AllowedDependencies, config.DisallowedDependencies,
+                config.ChildCanDependOnParentImplicitly);
         }
 
         /// <summary>
@@ -43,23 +46,15 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
             IEnumerable<string> sourceFilePaths, 
             IEnumerable<string> referencedAssemblyPaths)
         {
-            // Build a "csc.exe command line"-like string 
-            // that contains the project parameters so Roslyn can build up a workspace.
-            string projectParametersAsString = string.Format("/reference:{0} {1}",
-                referencedAssemblyPaths.ToSingleString(",", "\"", "\""),
-                sourceFilePaths.ToSingleString(" ", "\"", "\""));
-            //Debug.WriteLine(string.Format("  ProjectParametersAsString='{0}'", projectParametersAsString), Constants.TOOL_NAME);
+            var referencedAssemblies = referencedAssemblyPaths.Select(i => new MetadataFileReference(i)).ToList();
+            var syntaxTrees = sourceFilePaths.Select(i=> CSharpSyntaxTree.ParseFile(i)).ToList();
+            var compilation = CSharpCompilation.Create("NsDepCopTaskProject", syntaxTrees, referencedAssemblies);
 
-            // Create the Roslyn workspace and select the project (there can be only one project).
-            var workspace = Workspace.LoadProjectFromCommandLineArguments(
-                "NsDepCopTaskProject", "C#", projectParametersAsString, baseDirectory);
-            var project = workspace.CurrentSolution.Projects.First();
-
-            // Analyse all documents in the project.
-            foreach (var document in project.Documents)
+            // Analyse all syntaxTrees in the project.
+            foreach (var syntaxTree in syntaxTrees)
             {
-                var syntaxVisitor = new DependencyAnalyzerSyntaxVisitor(document.GetSemanticModel(), _config);
-                var documentRootNode = document.GetSyntaxRoot() as SyntaxNode;
+                var syntaxVisitor = new DependencyAnalyzerSyntaxVisitor(compilation.GetSemanticModel(syntaxTree), _config, _dependencyValidator);
+                var documentRootNode = syntaxTree.GetRoot();
                 if (documentRootNode != null)
                 {
                     var dependencyViolationsInDocument = syntaxVisitor.Visit(documentRootNode);
@@ -67,6 +62,12 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
                         yield return dependencyViolation;
                 }
             }
+
+            Debug.WriteLine(string.Format("Cache hits: {0}, cache misses:{1}, efficiency (hits/all): {2:P}",
+                _dependencyValidator.CacheHitCount,
+                _dependencyValidator.CacheMissCount,
+                _dependencyValidator.CacheEfficiencyPercent),
+                Constants.TOOL_NAME);
         }
     }
 }

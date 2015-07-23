@@ -6,20 +6,20 @@
         <Property Id="ROSLYN_INSTALLED_VERSION">
             <RegistrySearch Id="RegSearch_Roslyn"
                             Type="raw"
-                            Root="HKLM"
-                            Key='Software\Classes\Installer\Products\EBC4B2C91F61DD04CBBF08BC11D290D2'
-                            Name='Version' />
+                            Root="HKCU"
+                            Key='Software\Microsoft\VisualStudio\12.0_Config\InstalledProducts\Roslyn'
+                            Name='PID' />
         </Property>
 
         <Feature Id="Feature_CodeIssueProvider"
                  Title="Code Issue Highlighting (VSIX)"
-                 Description="Installs a Visual Studio 2012 extension that highlights NsDepCop issues in the code editor. Works only in Visual Studio hives where Roslyn Language Service is active."
+                 Description="Installs a Visual Studio 2013 extension that highlights NsDepCop issues in the code editor. Requires .NET Compiler Platform ('Roslyn') End User Preview (March/April 2014)."
                  Level="1"
                  InstallDefault="local"
                  TypicalDefault="install"
                  AllowAdvertise="no">
             <ComponentGroupRef Id="ComponentGroup_CodeIssueProvider" />
-            <Condition Level="0"><![CDATA[ROSLYN_INSTALLED_VERSION <> "#16929194"]]></Condition>
+            <Condition Level="0"><![CDATA[ROSLYN_INSTALLED_VERSION <> "0.5"]]></Condition>
         </Feature>
 
         <ComponentGroup Id="ComponentGroup_CodeIssueProvider"

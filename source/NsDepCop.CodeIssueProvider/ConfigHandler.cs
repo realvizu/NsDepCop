@@ -9,11 +9,13 @@ namespace Codartis.NsDepCop.CodeIssueProvider
     /// </summary>
     internal class ConfigHandler
     {
-        private string _projectFilePath;
-        private NsDepCopConfig _config;
+        private readonly string _projectFilePath;
+
         private string _configPath;
         private bool _configFileExists;
         private DateTime _configLastReadUtc;
+        private NsDepCopConfig _config;
+        private DependencyValidator _dependencyValidator;
 
         /// <summary>
         /// Initializes a new instance.
@@ -48,9 +50,19 @@ namespace Codartis.NsDepCop.CodeIssueProvider
             {
                 _configLastReadUtc = DateTime.UtcNow;
                 _config = new NsDepCopConfig(_configPath);
+                _dependencyValidator = new DependencyValidator(_config.AllowedDependencies, _config.DisallowedDependencies,
+                    _config.ChildCanDependOnParentImplicitly);
             }
 
             return _config;
+        }
+
+        public DependencyValidator GetDependencyValidator()
+        {
+            if (_dependencyValidator == null)
+                GetConfig();
+
+            return _dependencyValidator;
         }
     }
 }

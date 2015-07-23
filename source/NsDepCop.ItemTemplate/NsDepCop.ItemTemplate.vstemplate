@@ -6,7 +6,7 @@
         <Icon>NsDepCop.ItemTemplate.ico</Icon>
         <TemplateID>NsDepCop.ItemTemplate.ConfigFile</TemplateID>
         <ProjectType>CSharp</ProjectType>
-        <RequiredFrameworkVersion>4.0</RequiredFrameworkVersion>
+        <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
         <DefaultName>config.nsdepcop</DefaultName>
     </TemplateData>
     <TemplateContent>

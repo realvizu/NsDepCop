@@ -1,133 +1,176 @@
 using Codartis.NsDepCop.Core.Analyzer.Roslyn;
 using Codartis.NsDepCop.Core.Common;
-using Roslyn.Compilers;
-using Roslyn.Compilers.Common;
-using Roslyn.Compilers.CSharp;
-using Roslyn.Services;
-using Roslyn.Services.Editor;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Collections.Immutable;
+using System.IO;
 
 namespace Codartis.NsDepCop.CodeIssueProvider
 {
     /// <summary>
-    /// Implements a CodeIssueProvider that returns NsDepCop issues 
+    /// Implements a DiagnosticAnalyzer that returns NsDepCop issues 
     /// about the source code loaded into the Visual Studio code editor.
     /// </summary>
-    [ExportCodeIssueProvider("NsDepCop.CodeIssueProvider", LanguageNames.CSharp)]
-    class NsDepCopCodeIssueProvider : ICodeIssueProvider
+    [DiagnosticAnalyzer]
+    [ExportDiagnosticAnalyzer("NsDepCop.CodeIssueProvider", LanguageNames.CSharp)]
+    public class NsDepCopCodeIssueProvider : ISyntaxNodeAnalyzer<SyntaxKind>
     {
         /// <summary>
-        /// Cache for config handlers of C# projects. The key is the project file path.
+        /// Cache for mapping project files to config handlers. The key is the config file name with full path.
         /// </summary>
-        private Dictionary<string, ConfigHandler> _configHandlers = new Dictionary<string, ConfigHandler>();
+        private readonly Dictionary<string, ConfigHandler> _projectFileToConfigHandlerMap = new Dictionary<string, ConfigHandler>();
+
+        /// <summary>
+        /// Cache for mapping source files to project files. The key is the source file name with full path.
+        /// </summary>
+        private readonly Dictionary<string, string> _sourceFileToProjectFileMap = new Dictionary<string, string>();
 
         /// <summary>
         /// Indicates that a config exception was already reported. To avoid multiple error reports.
         /// </summary>
-        private bool _configExceptionAlreadyReported = false;
+        private bool _configExceptionAlreadyReported;
 
         /// <summary>
-        /// Gets the syntax node types that this code issue provider will be invoked for.
+        /// Descriptor for the 'Illegal namespace dependency' diagnostic.
         /// </summary>
-        /// <returns>A collection of SyntaxNode descendant types.</returns>
-        public IEnumerable<Type> SyntaxNodeTypes
+        private readonly DiagnosticDescriptor _diagnosticDescriptorForIllegalNsDep = new DiagnosticDescriptor(
+            Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
+            Constants.DIAGNOSTIC_DESC_ILLEGAL_NS_DEP,
+            Constants.DIAGNOSTIC_FORMAT_ILLEGAL_NS_DEP,
+            Constants.TOOL_NAME,
+            DiagnosticSeverity.Error);
+
+        /// <summary>
+        /// Descriptor for the 'Config exception' diagnostic.
+        /// </summary>
+        private readonly DiagnosticDescriptor _diagnosticDescriptorForConfigException = new DiagnosticDescriptor(
+            Constants.DIAGNOSTIC_ID_CONFIG_EXCEPTION,
+            Constants.DIAGNOSTIC_DESC_CONFIG_EXCEPTION,
+            Constants.DIAGNOSTIC_FORMAT_CONFIG_EXCEPTION,
+            Constants.TOOL_NAME,
+            DiagnosticSeverity.Error);
+
+        ImmutableArray<DiagnosticDescriptor> IDiagnosticAnalyzer.SupportedDiagnostics
         {
             get
             {
-                yield return typeof(IdentifierNameSyntax);
-                yield return typeof(QualifiedNameSyntax);
-                yield return typeof(AliasQualifiedNameSyntax);
-                yield return typeof(GenericNameSyntax);
-                yield return typeof(InvocationExpressionSyntax);
+                return ImmutableArray.Create(
+                    _diagnosticDescriptorForIllegalNsDep, 
+                    _diagnosticDescriptorForConfigException);
+            }
+        }
+
+        ImmutableArray<SyntaxKind> ISyntaxNodeAnalyzer<SyntaxKind>.SyntaxKindsOfInterest
+        {
+            get
+            {
+                return ImmutableArray.Create(
+                    SyntaxKind.IdentifierName,
+                    SyntaxKind.GenericName);
             }
         }
 
         /// <summary>
-        /// Analyzes a syntax node a returns code issues if necessary.
+        /// Called for each node whose language-specific kind is an element of SyntaxKindsOfInterest.
         /// </summary>
-        /// <param name="document">The document in the code editor.</param>
-        /// <param name="node">The syntax node to be analyzed.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>Any number of CodeIssues (including none).</returns>
-        public IEnumerable<CodeIssue> GetIssues(IDocument document, CommonSyntaxNode node, CancellationToken cancellationToken)
+        /// <param name="node">A node of a kind of interest</param>
+        /// <param name="semanticModel">A SemanticModel for the compilation unit</param>
+        /// <param name="addDiagnostic">A delegate to be used to emit diagnostics</param>
+        /// <param name="cancellationToken">A token for cancelling the computation</param>
+        void ISyntaxNodeAnalyzer<SyntaxKind>.AnalyzeNode(SyntaxNode node, SemanticModel semanticModel, Action<Diagnostic> addDiagnostic, CancellationToken cancellationToken)
         {
-            // If something is missing from the necessary input then bail out.
-            if (node == null || document == null || document.Project == null || document.Project.FilePath == null)
-                yield break;
-
-            // If the node has one of the following parents then it was already analyzed, bail out.
-            if (node.Ancestors().Any(i =>
-                i is IdentifierNameSyntax ||
-                i is QualifiedNameSyntax ||
-                i is AliasQualifiedNameSyntax))
-                yield break;
-
             // The project file path is the key for finding the right NsDepCop config handler.
-            var projectFilePath = document.Project.FilePath;
+            var projectFilePath = FindProjectFile(node.SyntaxTree.FilePath);
 
             // Get an NsDepCop config handler instance for the current project (get from cache or create a new one).
             ConfigHandler configHandler;
-            if (!_configHandlers.TryGetValue(projectFilePath, out configHandler))
+            if (!_projectFileToConfigHandlerMap.TryGetValue(projectFilePath, out configHandler))
             {
                 configHandler = new ConfigHandler(projectFilePath);
-                _configHandlers.Add(projectFilePath, configHandler);
+                _projectFileToConfigHandlerMap.Add(projectFilePath, configHandler);
             }
 
             // Get the NsDepCop config. It can throw if the config file is malformed.
             NsDepCopConfig config = null;
-            Exception configException = null;
             try
             {
                 config = configHandler.GetConfig();
                 _configExceptionAlreadyReported = false;
             }
-            catch (Exception e)
+            catch (Exception configException)
             {
-                configException = e;
-            }
-
-            // Report config exception if there's one. Can't do it inside the catch block because of a C# limitation.
-            if (configException != null && !_configExceptionAlreadyReported)
-            {
-                _configExceptionAlreadyReported = true;
-                var message = string.Format("Error loading NsDepCop config: {0}", configException.Message);
-                yield return new CodeIssue(CodeIssueKind.Error, node.Span, message);
+                // Report config exception.
+                if (!_configExceptionAlreadyReported)
+                {
+                    _configExceptionAlreadyReported = true;
+                    addDiagnostic(Diagnostic.Create(_diagnosticDescriptorForConfigException, Location.None, configException.Message));
+                }
             }
 
             if (config == null)
-                yield break;
+                return;
 
             // If analysis is switched off in the config file, then bail out.
             if (!config.IsEnabled)
-                yield break;
+                return;
 
-            // Analyze this node and return CodeIssue if needed.
-            var semanticModel = document.GetSemanticModel(cancellationToken);
-            var dependencyViolation = SyntaxNodeAnalyzer.Analyze(node, semanticModel, config);
-            if (dependencyViolation != null)
-            {
-                yield return new CodeIssue(config.IssueKind.ToCodeIssueKind(), node.Span, dependencyViolation.ToString());
-            }
+            var dependencyValidator = configHandler.GetDependencyValidator();
+            var dependencyViolations = SyntaxNodeAnalyzer.Analyze(node, semanticModel, dependencyValidator);
+
+            foreach (var dependencyViolation in dependencyViolations)
+                addDiagnostic(CreateIllegalNsDepDiagnostic(node, dependencyViolation, config.IssueKind));
         }
 
-        #region Unimplemented ICodeIssueProvider members
-
-        public IEnumerable<CodeIssue> GetIssues(IDocument document, CommonSyntaxToken token, CancellationToken cancellationToken)
+        private Diagnostic CreateIllegalNsDepDiagnostic(SyntaxNode node, DependencyViolation dependencyViolation, IssueKind issueKind)
         {
-            throw new NotImplementedException();
+            var message = string.Format(_diagnosticDescriptorForIllegalNsDep.MessageFormat,
+                dependencyViolation.IllegalDependency.From,
+                dependencyViolation.IllegalDependency.To,
+                dependencyViolation.ReferencingTypeName,
+                dependencyViolation.SourceSegment.Text,
+                dependencyViolation.ReferencedTypeName);
+
+            var severity = issueKind.ToDiagnosticSeverity();
+
+            var warningLevel = severity == DiagnosticSeverity.Warning ? 1 : 0;
+
+            return Diagnostic.Create(
+                _diagnosticDescriptorForIllegalNsDep.Id,
+                _diagnosticDescriptorForIllegalNsDep.Category,
+                message,
+                severity,
+                warningLevel,
+                false,
+                Location.Create(node.SyntaxTree, node.Span));
         }
 
-        public IEnumerable<int> SyntaxTokenKinds
+        private string FindProjectFile(string sourceFilePath)
         {
-            get
-            {
-                return null;
-            }
-        }
+            string projectFilePath;
+            if (_sourceFileToProjectFileMap.TryGetValue(sourceFilePath, out projectFilePath))
+                return projectFilePath;
 
-        #endregion
+            var directoryPath = sourceFilePath == null ? null : Path.GetDirectoryName(sourceFilePath);
+
+            while (!string.IsNullOrEmpty(directoryPath))
+            {
+                projectFilePath = Directory.GetFiles(directoryPath, "*.csproj", SearchOption.TopDirectoryOnly).FirstOrDefault();
+                if (projectFilePath != null)
+                {
+                    _sourceFileToProjectFileMap.Add(sourceFilePath, projectFilePath);
+                    return projectFilePath;
+                }
+
+                var parentDirectory = Directory.GetParent(directoryPath);
+                directoryPath = parentDirectory == null ? null : parentDirectory.FullName;
+            }
+
+            return null;
+        }
     }
 }

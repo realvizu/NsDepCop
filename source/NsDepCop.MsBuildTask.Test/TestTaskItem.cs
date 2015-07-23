@@ -9,11 +9,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
     /// </summary>
     internal class TestTaskItem : ITaskItem
     {
-        private string _content;
-
         public TestTaskItem(string content)
         {
-            _content = content;
+            ItemSpec = content;
         }
 
         public IDictionary CloneCustomMetadata()
@@ -31,17 +29,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             throw new NotImplementedException();
         }
 
-        public string ItemSpec
-        {
-            get
-            {
-                return _content;
-            }
-            set
-            {
-                _content = value;
-            }
-        }
+        public string ItemSpec { get; set; }
 
         public int MetadataCount
         {

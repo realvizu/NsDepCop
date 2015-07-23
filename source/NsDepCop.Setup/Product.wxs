@@ -3,7 +3,7 @@
 
     <Product Id="29F08BE2-7FDE-4232-81D3-16DBB252551D"
              UpgradeCode="56a21729-da73-4571-82e2-ecf4bb5caf7a"
-             Name="NsDepCop - Namespace dependency checker tool for C# (v!(bind.assemblyVersion.File_NsDepCop.MsBuildTask.dll))"
+             Name="NsDepCop - Namespace dependency checker tool for C# (v!(bind.assemblyVersion.File_NsDepCop.MsBuildTask.dll) for VS2013)"
              Manufacturer="Codartis"
              Language="1033"
              Version="!(bind.assemblyVersion.File_NsDepCop.MsBuildTask.dll)" >

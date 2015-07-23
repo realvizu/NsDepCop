@@ -1,17 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.MsBuildTask", "NsDepCop.MsBuildTask\NsDepCop.MsBuildTask.csproj", "{2ACFCACC-FC7D-4192-9B9F-C916784D93B3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Core", "NsDepCop.Core\NsDepCop.Core.csproj", "{BC26589E-79B0-4F55-B64D-DB11534D3476}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.CodeIssueProvider", "NsDepCop.CodeIssueProvider\NsDepCop.CodeIssueProvider.csproj", "{746F649A-E6D3-4C89-915A-D070155581C1}"
-EndProject
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30324.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AB1A4FF5-D372-416A-9986-6C3548F78B3B}"
 	ProjectSection(SolutionItems) = preProject
 		include\CommonAssemblyInfo.cs = include\CommonAssemblyInfo.cs
 		include\VersionInfo.cs = include\VersionInfo.cs
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.MsBuildTask", "NsDepCop.MsBuildTask\NsDepCop.MsBuildTask.csproj", "{2ACFCACC-FC7D-4192-9B9F-C916784D93B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Core", "NsDepCop.Core\NsDepCop.Core.csproj", "{BC26589E-79B0-4F55-B64D-DB11534D3476}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.CodeIssueProvider", "NsDepCop.CodeIssueProvider\NsDepCop.CodeIssueProvider.csproj", "{746F649A-E6D3-4C89-915A-D070155581C1}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "NsDepCop.Setup", "NsDepCop.Setup\NsDepCop.Setup.wixproj", "{5298F6D3-02F9-4791-9679-24C6C7B88C54}"
 EndProject

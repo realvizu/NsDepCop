@@ -22,12 +22,12 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_NoConfigFile()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification() 
+            ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_NoConfigFile",
-                ExpectedLogEntries = new[] 
+                ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_NO_CONFIG_FILE } 
+                    new LogEntryParameters { IssueKind = IssueKind.Info, Code = Constants.DIAGNOSTIC_ID_NO_CONFIG_FILE}
                 },
                 ExpectStartEvent = false,
                 ExpectEndEvent = false,
@@ -40,9 +40,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_NonXmlConfigFile",
-                ExpectedLogEntries = new[] 
-                { 
-                    new LogEntryParameters { IssueKind = IssueKind.Error, Code = NsDepCopTask.MSBUILD_CODE_EXCEPTION } 
+                ExpectedLogEntries = new[]
+                {
+                    new LogEntryParameters { IssueKind = IssueKind.Error, Code = NsDepCopTask.MSBUILD_CODE_EXCEPTION }
                 },
                 ExpectedReturnValue = false,
                 ExpectStartEvent = false,
@@ -56,9 +56,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_ConfigDisabled",
-                ExpectedLogEntries = new[] 
-                { 
-                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = NsDepCopTask.MSBUILD_CODE_CONFIG_DISABLED } 
+                ExpectedLogEntries = new[]
+                {
+                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = Constants.DIAGNOSTIC_ID_CONFIG_DISABLED }
                 },
                 ExpectStartEvent = false,
                 ExpectEndEvent = false
@@ -71,9 +71,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_ConfigFileErrorsIgnored",
-                ExpectedLogEntries = new[] 
-                { 
-                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = NsDepCopTask.MSBUILD_CODE_CONFIG_DISABLED } 
+                ExpectedLogEntries = new[]
+                {
+                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = Constants.DIAGNOSTIC_ID_CONFIG_DISABLED }
                 },
                 ExpectStartEvent = false,
                 ExpectEndEvent = false
@@ -86,7 +86,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_AllowedDependency",
-                SourceFileNames = new string[] { "AllowedDependency.cs" },
+                SourceFileNames = new[] { "AllowedDependency.cs" },
             });
         }
 
@@ -96,24 +96,24 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_SameNamespaceAlwaysAllowed",
-                SourceFileNames = new string[] { "SameNamespaceAlwaysAllowed.cs" },
+                SourceFileNames = new[] { "SameNamespaceAlwaysAllowed.cs" },
             });
         }
 
         [TestMethod]
         public void Execute_DepViolation_IdentifierName_ReportWarning()
         {
-            var sourceFileName = "DepViolation_IdentifierName_ReportWarning.cs";
+            const string sourceFileName = "DepViolation_IdentifierName_ReportWarning.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_IdentifierName_ReportWarning",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -127,17 +127,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_IdentifierName_ReportInfo()
         {
-            var sourceFileName = "DepViolation_IdentifierName_ReportInfo.cs";
+            const string sourceFileName = "DepViolation_IdentifierName_ReportInfo.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_IdentifierName_ReportInfo",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Info, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Info,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -151,17 +151,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_IdentifierName_ReportError()
         {
-            var sourceFileName = "DepViolation_IdentifierName_ReportError.cs";
+            const string sourceFileName = "DepViolation_IdentifierName_ReportError.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_IdentifierName_ReportError",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Error, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Error,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -175,17 +175,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_QualifiedName()
         {
-            var sourceFileName = "DepViolation_QualifiedName.cs";
+            const string sourceFileName = "DepViolation_QualifiedName.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_QualifiedName",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 5,
                         StartColumn = 19,
@@ -199,17 +199,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_AliasQualifiedName()
         {
-            var sourceFileName = "DepViolation_AliasQualifiedName.cs";
+            const string sourceFileName = "DepViolation_AliasQualifiedName.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_AliasQualifiedName",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 25,
@@ -224,17 +224,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_InvocationExpression()
         {
-            var sourceFileName = "DepViolation_InvocationExpression.cs";
+            const string sourceFileName = "DepViolation_InvocationExpression.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_InvocationExpression",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 9,
                         StartColumn = 26,
@@ -248,17 +248,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_InvocationWithTypeArg()
         {
-            var sourceFileName = "DepViolation_InvocationWithTypeArg.cs";
+            const string sourceFileName = "DepViolation_InvocationWithTypeArg.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_InvocationWithTypeArg",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 9,
                         StartColumn = 42,
@@ -272,17 +272,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_MemberAccessExpression()
         {
-            var sourceFileName = "DepViolation_MemberAccessExpression.cs";
+            const string sourceFileName = "DepViolation_MemberAccessExpression.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_MemberAccessExpression",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 9,
                         StartColumn = 37,
@@ -296,17 +296,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_GenericName()
         {
-            var sourceFileName = "DepViolation_GenericName.cs";
+            const string sourceFileName = "DepViolation_GenericName.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_GenericName",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -320,17 +320,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_GenericTypeArgument()
         {
-            var sourceFileName = "DepViolation_GenericTypeArgument.cs";
+            const string sourceFileName = "DepViolation_GenericTypeArgument.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_GenericTypeArgument",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 32,
@@ -338,15 +338,15 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndColumn = 40
                     },
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 8,
                         StartColumn = 36,
                         EndLine = 8,
                         EndColumn = 44
-                    },                
+                    },
                 },
             });
         }
@@ -354,17 +354,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_NestedType()
         {
-            var sourceFileName = "DepViolation_NestedType.cs";
+            const string sourceFileName = "DepViolation_NestedType.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_NestedType",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -372,9 +372,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndColumn = 25
                     },
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 26,
@@ -382,9 +382,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndColumn = 36
                     },
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 8,
                         StartColumn = 19,
@@ -392,9 +392,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndColumn = 27
                     },
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 8,
                         StartColumn = 28,
@@ -408,17 +408,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_ArrayType()
         {
-            var sourceFileName = "DepViolation_ArrayType.cs";
+            const string sourceFileName = "DepViolation_ArrayType.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ArrayType",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -432,17 +432,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_NullableType()
         {
-            var sourceFileName = "DepViolation_NullableType.cs";
+            const string sourceFileName = "DepViolation_NullableType.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_NullableType",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -456,17 +456,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_EveryUserDefinedTypeKind()
         {
-            var sourceFileName = "DepViolation_EveryUserDefinedTypeKind.cs";
+            const string sourceFileName = "DepViolation_EveryUserDefinedTypeKind.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_DepViolation_EveryUserDefinedTypeKind",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -474,9 +474,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndColumn = 24
                     },
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 8,
                         StartColumn = 17,
@@ -484,9 +484,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndColumn = 29
                     },
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 9,
                         StartColumn = 17,
@@ -494,9 +494,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndColumn = 25
                     },
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 10,
                         StartColumn = 17,
@@ -504,9 +504,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndColumn = 23
                     },
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 11,
                         StartColumn = 17,
@@ -520,17 +520,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_TooManyIssues()
         {
-            var sourceFileName = "TooManyIssues.cs";
+            const string sourceFileName = "TooManyIssues.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_TooManyIssues",
-                SourceFileNames = new string[] { sourceFileName },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 7,
                         StartColumn = 17,
@@ -538,16 +538,16 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndColumn = 23
                     },
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
                         StartLine = 8,
                         StartColumn = 17,
                         EndLine = 8,
                         EndColumn = 23
                     },
-                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = NsDepCopTask.MSBUILD_CODE_TOO_MANY_ISSUES},
+                    new LogEntryParameters { IssueKind = IssueKind.Warning, Code = Constants.DIAGNOSTIC_ID_TOO_MANY_ISSUES},
                 },
             });
         }
@@ -564,18 +564,18 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_MultipleSourceFiles()
         {
-            var sourceFile1 = "SourceFile1.cs";
-            var sourceFile2 = "SourceFile2.cs";
+            const string sourceFile1 = "SourceFile1.cs";
+            const string sourceFile2 = "SourceFile2.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification()
             {
                 TestFilesFolderName = "TestFiles_MultipleSourceFiles",
-                SourceFileNames = new string[] { sourceFile1, sourceFile2 },
-                ExpectedLogEntries = new[] 
+                SourceFileNames = new[] { sourceFile1, sourceFile2 },
+                ExpectedLogEntries = new[]
                 {
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFile1,
                         StartLine = 7,
                         StartColumn = 17,
@@ -583,9 +583,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         EndColumn = 23
                     },
                     new LogEntryParameters
-                    { 
-                        IssueKind = IssueKind.Warning, 
-                        Code = NsDepCopTask.MSBUILD_CODE_ISSUE,
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFile2,
                         StartLine = 7,
                         StartColumn = 17,
@@ -595,7 +595,51 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
             });
         }
-        
+
+        [TestMethod]
+        public void Execute_AllowedDependency_ByChildCanDependOnParentImplicitlyOption()
+        {
+            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            {
+                TestFilesFolderName = "TestFiles_ByChildCanDependOnParentImplicitlyOption",
+                SourceFileNames = new[] { "ChildToParentDependency.cs" },
+            });
+        }
+
+        [TestMethod]
+        public void Execute_DepViolation_ExtensionMethodInvocation()
+        {
+            const string sourceFileName = "DepViolation_ExtensionMethodInvocation.cs";
+            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            {
+                TestFilesFolderName = "TestFiles_DepViolation_ExtensionMethodInvocation",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
+                        Path = sourceFileName,
+                        StartLine = 9,
+                        StartColumn = 27,
+                        EndLine = 9,
+                        EndColumn = 44
+                    },
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
+                        Path = sourceFileName,
+                        StartLine = 10,
+                        StartColumn = 27,
+                        EndLine = 10,
+                        EndColumn = 51
+                    },
+                },
+            });
+        }
+
         /// <summary>
         /// Executes the test case using both analyzers.
         /// </summary>
@@ -629,12 +673,12 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             var baseDirecytory = Path.Combine(assemblyDirectory, specification.TestFilesFolderName);
 
             var mockBuildEngine = MockRepository.GenerateStrictMock<IBuildEngine>();
-            
+
             if (specification.ExpectStartEvent)
                 ExpectStartEvent(mockBuildEngine);
-            
+
             ExpectEvents(mockBuildEngine, specification.ExpectedLogEntries, baseDirecytory, specification.SkipLocationValidation);
-            
+
             if (specification.ExpectEndEvent)
                 ExpectEndEvent(mockBuildEngine);
 
@@ -677,7 +721,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         /// <param name="expectedLogEntries">The expected log entry events.</param>
         /// <param name="baseDirecytory">The base directory of the source files.</param>
         /// <param name="skipLocationValidation">If true then skip the validation of the location info.</param>
-        private static void ExpectEvents(IBuildEngine mockBuildEngine, IEnumerable<LogEntryParameters> expectedLogEntries, 
+        private static void ExpectEvents(IBuildEngine mockBuildEngine, IEnumerable<LogEntryParameters> expectedLogEntries,
             string baseDirecytory = null, bool skipLocationValidation = true)
         {
             foreach (var expectedLogEntry in expectedLogEntries.EmptyIfNull())
@@ -710,7 +754,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 }
             }
         }
-        
+
         /// <summary>
         /// Compares a log entry to an expected value.
         /// </summary>
@@ -746,7 +790,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         /// <param name="mockBuildEngine">A mock BuildEngine.</param>
         private static void ExpectStartEvent(IBuildEngine mockBuildEngine)
         {
-            ExpectEvents(mockBuildEngine, new[] 
+            ExpectEvents(mockBuildEngine, new[]
             {
                     new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
             });
@@ -758,7 +802,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         /// <param name="mockBuildEngine">A mock BuildEngine.</param>
         private static void ExpectEndEvent(IBuildEngine mockBuildEngine)
         {
-            ExpectEvents(mockBuildEngine, new[] 
+            ExpectEvents(mockBuildEngine, new[]
             {
                     new LogEntryParameters { IssueKind = IssueKind.Info, Code = NsDepCopTask.MSBUILD_CODE_INFO },
             });

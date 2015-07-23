@@ -1,38 +1,46 @@
 ﻿using Codartis.NsDepCop.Core.Common;
-using Roslyn.Compilers.Common;
-using Roslyn.Compilers.CSharp;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
     /// <summary>
-    /// Implements a syntax visitor that traverses the syntax tree 
-    /// and invokes the dependency analysis logic for every eligible node.
+    /// Implements a syntax visitor that traverses the syntax tree
+    /// and invokes the dependency analysis logic for every eligible node. 
     /// </summary>
-    internal class DependencyAnalyzerSyntaxVisitor : SyntaxVisitor<List<DependencyViolation>>
+    internal class DependencyAnalyzerSyntaxVisitor : CSharpSyntaxVisitor<List<DependencyViolation>>
     {
         /// <summary>
         /// The semantic model of the current document.
         /// </summary>
-        private ISemanticModel _semanticModel;
+        private readonly SemanticModel _semanticModel;
 
         /// <summary>
-        /// The configuration of the tool. Containes the dependency rules.
+        /// The configuration of the tool.
         /// </summary>
-        private NsDepCopConfig _config;
+        private readonly NsDepCopConfig _config;
+
+        /// <summary>
+        /// The validator that decides whether a dependency is allowed.
+        /// </summary>
+        private readonly DependencyValidator _dependencyValidator;
 
         /// <summary>
         /// The collection of dependency violations that the syntax visitor found.
         /// </summary>
-        private List<DependencyViolation> _dependencyViolations;
+        private readonly List<DependencyViolation> _dependencyViolations;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="semanticModel">The semantic model for the document.</param>
         /// <param name="config">The configuration of the tool.</param>
-        public DependencyAnalyzerSyntaxVisitor(ISemanticModel semanticModel, NsDepCopConfig config)
+        /// <param name="dependencyValidator">The validator that decides whether a dependency is allowed.</param>
+        public DependencyAnalyzerSyntaxVisitor(SemanticModel semanticModel, NsDepCopConfig config, DependencyValidator dependencyValidator)
         {
             if (semanticModel == null)
                 throw new ArgumentNullException("semanticModel");
@@ -40,8 +48,13 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
             if (config == null)
                 throw new ArgumentNullException("config");
 
+            if (dependencyValidator == null)
+                throw new ArgumentNullException("dependencyValidator");
+
             _semanticModel = semanticModel;
             _config = config;
+            _dependencyValidator = dependencyValidator;
+
             _dependencyViolations = new List<DependencyViolation>();
         }
 
@@ -77,11 +90,15 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// Performs the analysis on the given node and creates a dependency violation object if needed.
         /// </summary>
         /// <param name="node">A syntax node.</param>
+        /// <returns>A list of dependency violations. Can be empty.</returns>
         private List<DependencyViolation> AnalyzeNode(SyntaxNode node)
         {
-            var dependencyViolation = SyntaxNodeAnalyzer.Analyze(node, _semanticModel, _config);
-            if (dependencyViolation != null && _dependencyViolations.Count < _config.MaxIssueCount)
-                _dependencyViolations.Add(dependencyViolation);
+            var newDependencyViolations = SyntaxNodeAnalyzer.Analyze(node, _semanticModel, _dependencyValidator).ToList();
+            if (newDependencyViolations.Any() && _dependencyViolations.Count < _config.MaxIssueCount)
+            {
+                var maxElementsToAdd = Math.Min(_config.MaxIssueCount - _dependencyViolations.Count, newDependencyViolations.Count);
+                _dependencyViolations.AddRange(newDependencyViolations.Take(maxElementsToAdd));
+            }
 
             return _dependencyViolations;
         }

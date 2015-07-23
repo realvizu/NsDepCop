@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Text;
 
 namespace Codartis.NsDepCop.Core.Common
@@ -9,7 +8,7 @@ namespace Codartis.NsDepCop.Core.Common
     /// The 'From' namespace specification depends on the 'To' namespace specification.
     /// A namespace specification can represent more than just a single namespace (eg. a subtree of namespaces).
     /// </summary>
-    public class Dependency
+    public class Dependency : IEquatable<Dependency>
     {
         /// <summary>
         /// The dependency points from this namespace to the other.
@@ -44,7 +43,7 @@ namespace Codartis.NsDepCop.Core.Common
         /// <param name="from">A namespace specification in string format. The starting point of the dependency.</param>
         /// <param name="to">A namespace specification in string format. The starting point of the dependency.</param>
         public Dependency(string from, string to)
-            : this(new NamespaceSpecification(from), new NamespaceSpecification(to))
+            : this(new NamespaceSpecification(from, validate: false), new NamespaceSpecification(to, validate: false))
         { }
 
         /// <summary>
@@ -58,6 +57,27 @@ namespace Codartis.NsDepCop.Core.Common
             builder.Append("->");
             builder.Append(To);
             return builder.ToString();
+        }
+
+        public bool Equals(Dependency other)
+        {
+            return Equals(From, other.From) && Equals(To, other.To);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Dependency) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((From != null ? From.GetHashCode() : 0)*397) ^ (To != null ? To.GetHashCode() : 0);
+            }
         }
     }
 }

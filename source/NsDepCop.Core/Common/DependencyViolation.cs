@@ -42,7 +42,7 @@
         /// <returns>The dependency violation info in readable format.</returns>
         public override string ToString()
         {
-            return string.Format("Illegal namespace reference: {0}->{1} (Symbol '{3}' in type '{2}' is type of '{4}'.)",
+            return string.Format(Constants.DIAGNOSTIC_FORMAT_ILLEGAL_NS_DEP,
                 IllegalDependency.From,
                 IllegalDependency.To,
                 ReferencingTypeName,

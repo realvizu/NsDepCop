@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Codartis.NsDepCop.Core.Common
 {
@@ -18,26 +17,31 @@ namespace Codartis.NsDepCop.Core.Common
     /// </remarks>
     public class NamespaceSpecification : IEquatable<NamespaceSpecification>
     {
+        private const string ROOT_NAMESPACE_MARKER = ".";
+        private const string ANY_NAMESPACE_MARKER = "*";
+        private const char NAMESPACE_PART_SEPARATOR = '.';
+
         /// <summary>
         /// Represents the global namespace.
         /// </summary>
-        public static NamespaceSpecification GlobalNamespace = new NamespaceSpecification(".");
+        public static readonly NamespaceSpecification GlobalNamespace = new NamespaceSpecification(ROOT_NAMESPACE_MARKER, validate: false);
 
         /// <summary>
         /// Represents any namespace.
         /// </summary>
-        public static NamespaceSpecification AnyNamespace = new NamespaceSpecification("*");
+        public static readonly NamespaceSpecification AnyNamespace = new NamespaceSpecification(ANY_NAMESPACE_MARKER, validate: false);
 
         /// <summary>
         /// The namespace specification stored as a string.
         /// </summary>
-        private string _namespaceSpecificationAsString;
+        private readonly string _namespaceSpecificationAsString;
 
         /// <summary>
-        /// Initializes a new instance. Validates the input format.
+        /// Initializes a new instance. Also validates the input format if needed.
         /// </summary>
         /// <param name="namespaceSpecificationAsString">The string representation of the namespace specification.</param>
-        public NamespaceSpecification(string namespaceSpecificationAsString)
+        /// <param name="validate">True means input format validation.</param>
+        public NamespaceSpecification(string namespaceSpecificationAsString, bool validate = true)
         {
             if (namespaceSpecificationAsString == null)
                 throw new ArgumentNullException();
@@ -48,59 +52,47 @@ namespace Codartis.NsDepCop.Core.Common
             //   NsDepCop: "." (dot)
             if (namespaceSpecificationAsString == "" || 
                 namespaceSpecificationAsString == "<global namespace>")
-                namespaceSpecificationAsString = ".";
+                namespaceSpecificationAsString = ROOT_NAMESPACE_MARKER;
 
-            if (!IsValidNamespaceSpecification(namespaceSpecificationAsString))
+            if (validate && !IsValidNamespaceSpecification(namespaceSpecificationAsString))
                 throw new FormatException("Not a valid namespace specification.");
 
             _namespaceSpecificationAsString = namespaceSpecificationAsString;
         }
 
-        /// <summary>
-        /// Returns the string representation of the namespace specification.
-        /// </summary>
-        /// <returns>The string representation of the namespace specification.</returns>
         public override string ToString()
         {
             return _namespaceSpecificationAsString;
         }
 
-        public override int GetHashCode()
+        public bool Equals(NamespaceSpecification other)
         {
-            return _namespaceSpecificationAsString.GetHashCode();
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return string.Equals(_namespaceSpecificationAsString, other._namespaceSpecificationAsString);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, obj))
-                return true;
-
-            var otherNamespaceSpecification = obj as NamespaceSpecification;
-            if (ReferenceEquals(otherNamespaceSpecification, null))
-                return false;
-
-            return _namespaceSpecificationAsString == otherNamespaceSpecification._namespaceSpecificationAsString;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((NamespaceSpecification) obj);
         }
 
-        public bool Equals(NamespaceSpecification otherNamespaceSpecification)
+        public override int GetHashCode()
         {
-            if (ReferenceEquals(otherNamespaceSpecification, null))
-                return false;
-
-            if (ReferenceEquals(this, otherNamespaceSpecification))
-                return true;
-
-            return _namespaceSpecificationAsString == otherNamespaceSpecification._namespaceSpecificationAsString;
+            return (_namespaceSpecificationAsString != null ? _namespaceSpecificationAsString.GetHashCode() : 0);
         }
 
-        public static bool operator ==(NamespaceSpecification ns1, NamespaceSpecification ns2)
+        public static bool operator ==(NamespaceSpecification left, NamespaceSpecification right)
         {
-            return ns1.Equals(ns2);
+            return Equals(left, right);
         }
 
-        public static bool operator !=(NamespaceSpecification ns1, NamespaceSpecification ns2)
+        public static bool operator !=(NamespaceSpecification left, NamespaceSpecification right)
         {
-            return !ns1.Equals(ns2);
+            return !Equals(left, right);
         }
 
         /// <summary>
@@ -111,31 +103,59 @@ namespace Codartis.NsDepCop.Core.Common
         private static bool IsValidNamespaceSpecification(string namespaceSpecification)
         {
             // "." means the global namespace, '*' means any namespace.
-            if (namespaceSpecification == "." || namespaceSpecification == "*")
+            if (namespaceSpecification == ROOT_NAMESPACE_MARKER || namespaceSpecification == ANY_NAMESPACE_MARKER)
                 return true;
 
-            var pieces = namespaceSpecification.Split(new[] { '.' }, StringSplitOptions.None);
-            return pieces.All(i => !string.IsNullOrWhiteSpace(i));
+            var pieces = namespaceSpecification.Split(new[] { ROOT_NAMESPACE_MARKER }, StringSplitOptions.None);
+            for (var i = 0; i < pieces.Length; i++)
+            {
+                var piece = pieces[i];
+
+                if (string.IsNullOrWhiteSpace(piece))
+                    return false;
+
+                // Only the last piece can be '*' (any namespace)
+                if (i < pieces.Length - 1 && piece == ANY_NAMESPACE_MARKER)
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether this namespace is a subnamespace of the given other one.
+        /// </summary>
+        /// <param name="parentCandidate"></param>
+        /// <returns></returns>
+        public bool IsSubnamespaceOf(NamespaceSpecification parentCandidate)
+        {
+            if (this == GlobalNamespace 
+                || this == AnyNamespace
+                || _namespaceSpecificationAsString.EndsWith(ANY_NAMESPACE_MARKER)
+                || parentCandidate.ToString().EndsWith(ANY_NAMESPACE_MARKER))
+                return false;
+
+            if (parentCandidate == GlobalNamespace)
+                return true;
+
+            return _namespaceSpecificationAsString.StartsWith(parentCandidate.ToString() + NAMESPACE_PART_SEPARATOR);
         }
 
         /// <summary>
         /// Returns all the different namespace specifications that can contain the given namespace.
         /// </summary>
-        /// <param name="namespaceName">A concrete namespace name in string format.</param>
+        /// <param name="namespaceSpecification">A concrete namespace name in string format.</param>
         /// <returns>A collection of all NamespaceSpecifications that can contain the given namespace.</returns>
-        public static IEnumerable<NamespaceSpecification> GetContainingNamespaceSpecifications(string namespaceName)
+        public IEnumerable<NamespaceSpecification> GetContainingNamespaceSpecifications()
         {
-            // Convert the string to namespace specification, also validates it.
-            var namespaceSpecification = new NamespaceSpecification(namespaceName);
-
             // The AnyNamespace specification contains every namespace.
             yield return AnyNamespace;
 
             // The namespace specification created from the given namespace obviously contains the given namespace.
-            yield return namespaceSpecification;
+            yield return this;
 
             // For the global namespace there's no more containing namespace.
-            if (namespaceSpecification == NamespaceSpecification.GlobalNamespace)
+            if (this == GlobalNamespace)
                 yield break;
 
             // For any other namespace return itself and all parent namespaces postfixed with '*' (meaning any sub-namespaces).
@@ -145,13 +165,13 @@ namespace Codartis.NsDepCop.Core.Common
             // Return 'System.Collections.Generic.*'
 
             var prefix = "";
-            foreach (var piece in namespaceName.Split('.'))
+            foreach (var piece in _namespaceSpecificationAsString.Split(NAMESPACE_PART_SEPARATOR))
             {
                 if (prefix.Length > 0)
-                    prefix += ".";
+                    prefix += NAMESPACE_PART_SEPARATOR;
 
                 prefix += piece;
-                yield return new NamespaceSpecification(prefix + ".*");
+                yield return new NamespaceSpecification(prefix + NAMESPACE_PART_SEPARATOR + ANY_NAMESPACE_MARKER, validate: false);
             }
         }
     }
