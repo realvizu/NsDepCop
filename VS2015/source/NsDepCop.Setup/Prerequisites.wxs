@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <FeatureGroup Id="FeatureGroup_Prerequisites"/>
+
+        <Property Id="MSBUILD120">
+            <DirectorySearch Id="SystemFolderDriverVersion" Path="[ProgramFilesFolder]MSBuild\12.0\Bin">
+                <FileSearch Name="msbuild.exe"/>
+            </DirectorySearch>
+        </Property>
+        
+        <Condition Message='This tool requires MsBuild 12.0 (aka "Microsoft Build Tools 2013").'>
+            <![CDATA[Installed OR MSBUILD120]]>
+        </Condition>
+        
+    </Fragment>
+</Wix>

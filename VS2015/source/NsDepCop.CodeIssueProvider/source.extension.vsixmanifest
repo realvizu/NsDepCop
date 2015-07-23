@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Vsix Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
+    <Identifier Id="NsDepCop.CodeIssueProvider..cbaf7bb9-5543-4476-9eee-f83a9233fa41">
+        <Name>NsDepCop Code Issue Highlighting</Name>
+        <Author>Codartis</Author>
+        <Version>1.4.0.0</Version>
+        <Description xml:space="preserve">Highlights namespace dependency issues in the source code. Requires .NET Compiler Platform ("Roslyn") End User Preview (March/April 2014).</Description>
+        <Locale>1033</Locale>
+        <MoreInfoUrl>http://nsdepcop.codeplex.com</MoreInfoUrl>
+        <GettingStartedGuide>https://nsdepcop.codeplex.com/wikipage?title=Getting%20Started</GettingStartedGuide>
+        <AllUsers>true</AllUsers>
+        <InstalledByMsi>false</InstalledByMsi>
+        <SupportedProducts>
+            <VisualStudio Version="12.0">
+                <Edition>Ultimate</Edition>
+                <Edition>Premium</Edition>
+                <Edition>Pro</Edition>
+            </VisualStudio>
+        </SupportedProducts>
+        <SupportedFrameworkRuntimeEdition MinVersion="4.5" MaxVersion="4.5" />
+    </Identifier>
+    <Content>
+        <MefComponent>|%CurrentProject%|</MefComponent>
+    </Content>
+</Vsix>
