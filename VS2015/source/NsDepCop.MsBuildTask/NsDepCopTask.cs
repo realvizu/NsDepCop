@@ -56,6 +56,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         public override bool Execute()
         {
             var startTime = DateTime.Now;
+            var errorIssueDetected = false;
 
             try
             {
@@ -94,12 +95,16 @@ namespace Codartis.NsDepCop.MsBuildTask
                     Compile.ToList().Select(i => i.ItemSpec),
                     ReferencePath.ToList().Select(i => i.ItemSpec));
 
+                // Set return value (success indicator)
+                if (dependencyViolations.Any() && 
+                    GetIssueKindByCode(Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP) == IssueKind.Error)
+                    errorIssueDetected = true;
+
                 // Report issues to MSBuild.
                 var issuesReported = 0;
                 foreach (var dependencyViolation in dependencyViolations)
                 {
                     LogMsBuildEvent(Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP, dependencyViolation.ToString(), dependencyViolation.SourceSegment);
-
                     issuesReported++;
 
                     // Too many issues stop the analysis.
@@ -119,7 +124,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             var endTime = DateTime.Now;
             LogMsBuildEvent(MSBUILD_CODE_INFO, string.Format("Analysis took: {0:mm\\:ss\\.fff}", endTime - startTime));
 
-            return true;
+            return !errorIssueDetected;
         }
 
         /// <summary>
