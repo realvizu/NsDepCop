@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.IO;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
@@ -43,14 +44,13 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// <returns>A collection of dependency violations. Empty collection if none found.</returns>
         public IEnumerable<DependencyViolation> AnalyzeProject(
             string baseDirectory,
-            IEnumerable<string> sourceFilePaths, 
+            IEnumerable<string> sourceFilePaths,
             IEnumerable<string> referencedAssemblyPaths)
         {
-            var referencedAssemblies = referencedAssemblyPaths.Select(i => new MetadataFileReference(i)).ToList();
-            var syntaxTrees = sourceFilePaths.Select(i=> CSharpSyntaxTree.ParseFile(i)).ToList();
+            var referencedAssemblies = referencedAssemblyPaths.Select(i => MetadataReference.CreateFromFile(i)).ToList();
+            var syntaxTrees = sourceFilePaths.Select(i => ParseFile(i)).ToList();
             var compilation = CSharpCompilation.Create("NsDepCopTaskProject", syntaxTrees, referencedAssemblies);
 
-            // Analyse all syntaxTrees in the project.
             foreach (var syntaxTree in syntaxTrees)
             {
                 var syntaxVisitor = new DependencyAnalyzerSyntaxVisitor(compilation.GetSemanticModel(syntaxTree), _config, _dependencyValidator);
@@ -68,6 +68,16 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
                 _dependencyValidator.CacheMissCount,
                 _dependencyValidator.CacheEfficiencyPercent),
                 Constants.TOOL_NAME);
+        }
+
+        private static SyntaxTree ParseFile(string fileName)
+        {
+            using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var streamReader = new StreamReader(stream))
+            {
+                var sourceText = streamReader.ReadToEnd();
+                return CSharpSyntaxTree.ParseText(sourceText, null, fileName);
+            }
         }
     }
 }

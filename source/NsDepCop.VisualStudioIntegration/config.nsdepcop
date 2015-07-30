@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning">
+    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="System.*" />
+    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Microsoft.CodeAnalysis.*" />
+    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.*" />
+</NsDepCopConfig>

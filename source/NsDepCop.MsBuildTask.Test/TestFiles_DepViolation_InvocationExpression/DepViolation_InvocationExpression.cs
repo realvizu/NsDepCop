@@ -1,21 +1,31 @@
 ﻿namespace A
 {
     using B;
+    using C;
 
     class MyClass
     {
         void MyMethod()
         {
-            MyOtherClass.MyOtherMethod();
-        }            
+            MyOtherMethod();
+            MyOtherClass.MyOtherStaticMethod();
+            new MyOtherClass().MyOtherMethod();
+        }
+        
+        MyEnum MyOtherMethod() { return null; }
     }
 }
 
 namespace B
 {
-    static class MyOtherClass
+    class MyOtherClass
     {
-        public static C.MyEnum MyOtherMethod()
+        public C.MyEnum MyOtherMethod()
+        {
+            return C.MyEnum.Value1;
+        }
+
+        public static C.MyEnum MyOtherStaticMethod()
         {
             return C.MyEnum.Value1;
         }

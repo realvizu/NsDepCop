@@ -22,8 +22,8 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
                     return IssueKind.Error;
                 case(DiagnosticSeverity.Info):
                     return IssueKind.Info;
-                case (DiagnosticSeverity.None):
-                    return IssueKind.None;
+                case (DiagnosticSeverity.Hidden):
+                    return IssueKind.Hidden;
                 case (DiagnosticSeverity.Warning):
                     return IssueKind.Warning;
                 default:
@@ -45,8 +45,8 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
                     return DiagnosticSeverity.Error;
                 case (IssueKind.Info):
                     return DiagnosticSeverity.Info;
-                case (IssueKind.None):
-                    return DiagnosticSeverity.None;
+                case (IssueKind.Hidden):
+                    return DiagnosticSeverity.Hidden;
                 case (IssueKind.Warning):
                     return DiagnosticSeverity.Warning;
                 default:

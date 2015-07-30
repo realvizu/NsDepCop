@@ -1,7 +1,6 @@
 ﻿using Codartis.NsDepCop.Core.Common;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Resolver;
-using ICSharpCode.NRefactory.Semantics;
 using ICSharpCode.NRefactory.TypeSystem;
 using System;
 using System.Collections.Generic;
@@ -176,13 +175,6 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
                 parentNode is VariableInitializer)
                 return null;
 
-            // Special case: if the identifier is in a member access which is the target of an invocation
-            // then we have to check the type of the invocation, not the member access.
-            if (parentNode is MemberReferenceExpression
-                && parentNode.Role == Roles.TargetExpression
-                && parentNode.Parent is InvocationExpression)
-                parentNode = parentNode.Parent;
-
             return DetermineTypeOfAstNode(parentNode, resolver);
         }
 
@@ -211,35 +203,16 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         {
             var resolveResult = resolver.Resolve(node);
 
+            // For method name nodes their parent resolve result gives the type info we need
+            if (resolveResult is MethodGroupResolveResult && node != null)
+                resolveResult = resolver.Resolve(node.Parent);
+
             if (resolveResult != null
                 && !resolveResult.IsError
-                && TypeWasResolved(resolveResult)
                 && IsUserDefinedType(resolveResult.Type))
                 return resolveResult.Type;
 
             return null;
-        }
-
-        /// <summary>
-        /// Returns a value indicating whether a type was resolved by the given ResolveResult.
-        /// </summary>
-        /// <param name="resolveResult">A ResolveResult.</param>
-        /// <returns>True if a type was resolved by the given ResolveResult.</returns>
-        private static bool TypeWasResolved(ResolveResult resolveResult)
-        {
-            return TypeCanBeResolved(resolveResult)
-                && resolveResult.Type != null;
-        }
-
-        /// <summary>
-        /// Returns a value indicating whether a type can be resolved from the given ResolveResult.
-        /// </summary>
-        /// <param name="resolveResult">A ResolveResult.</param>
-        /// <returns>True if a type can be resolved from the given ResolveResult</returns>
-        private static bool TypeCanBeResolved(ResolveResult resolveResult)
-        {
-            return resolveResult is TypeResolveResult
-                || resolveResult is MemberResolveResult;
         }
 
         /// <summary>
@@ -274,7 +247,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
                 syntaxNode.StartLocation.Column,
                 syntaxNode.EndLocation.Line,
                 syntaxNode.EndLocation.Column,
-                syntaxNode.GetText(),
+                syntaxNode.ToString(),
                 filename
             );
 

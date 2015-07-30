@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-    <Product Id="29F08BE2-7FDE-4232-81D3-16DBB252551D"
-             UpgradeCode="56a21729-da73-4571-82e2-ecf4bb5caf7a"
-             Name="NsDepCop - Namespace dependency checker tool for C# (v!(bind.assemblyVersion.File_NsDepCop.MsBuildTask.dll) for VS2013)"
+    <?define ProductCode = "73A487DD-94B4-4223-89F7-4B551B4F71D4"?>
+    <?define UpgradeCode = "DCF33D45-CE3C-423B-9B76-9D504164B260"?>
+
+    <Product Id="$(var.ProductCode)"
+             UpgradeCode="$(var.UpgradeCode)"
+             Name="NsDepCop - Namespace dependency checker tool for C# (v!(bind.assemblyVersion.File_NsDepCop.MsBuildTask.dll) for VS2015)"
              Manufacturer="Codartis"
              Language="1033"
              Version="!(bind.assemblyVersion.File_NsDepCop.MsBuildTask.dll)" >
@@ -26,8 +29,7 @@
         <FeatureGroupRef Id="FeatureGroup_Prerequisites"/>
         <FeatureGroupRef Id="FeatureGroup_CustomActions"/>
         <FeatureRef Id="Feature_MsBuildTask" />
-        <FeatureRef Id="Feature_ItemTemplate" />
-        <FeatureRef Id="Feature_CodeIssueProvider"/>
+        <FeatureRef Id="Feature_VisualStudioPackage" />
 
     </Product>
     

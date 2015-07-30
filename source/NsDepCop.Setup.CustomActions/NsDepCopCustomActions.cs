@@ -170,7 +170,7 @@ namespace Codartis.NsDepCop.Setup.CustomActions
         {
             var root = xDocument.Root;
             var ns = root.Name.Namespace;
-
+            
             var existingBuildDependsOnElement = root.Elements(ns + "PropertyGroup").Elements(ns + "BuildDependsOn").FirstOrDefault();
             if (existingBuildDependsOnElement == null)
             {

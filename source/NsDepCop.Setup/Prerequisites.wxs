@@ -3,14 +3,14 @@
     <Fragment>
         <FeatureGroup Id="FeatureGroup_Prerequisites"/>
 
-        <Property Id="MSBUILD120">
-            <DirectorySearch Id="SystemFolderDriverVersion" Path="[ProgramFilesFolder]MSBuild\12.0\Bin">
+        <Property Id="MSBUILD140">
+            <DirectorySearch Id="SystemFolderDriverVersion" Path="[ProgramFilesFolder]MSBuild\14.0\Bin">
                 <FileSearch Name="msbuild.exe"/>
             </DirectorySearch>
         </Property>
         
-        <Condition Message='This tool requires MsBuild 12.0 (aka "Microsoft Build Tools 2013").'>
-            <![CDATA[Installed OR MSBUILD120]]>
+        <Condition Message='This tool requires MSBuild 14.0 (aka Microsoft Build Tools 2015).'>
+            <![CDATA[Installed OR MSBUILD140]]>
         </Condition>
         
     </Fragment>

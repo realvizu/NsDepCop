@@ -63,16 +63,19 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
             {
                 var assembly = new CecilLoader().LoadAssemblyFile(assemblyPath);
                 project = project.AddAssemblyReferences(assembly);
-            } 
-            
+            }
+
             // Load the syntax trees of the source files into the project.
             var parser = new CSharpParser();
             foreach (var sourceFilePath in sourceFilePaths)
             {
-                var textReader = new StreamReader(sourceFilePath);
-                var syntaxTree = parser.Parse(textReader, sourceFilePath);
-                syntaxTrees.Add(syntaxTree);
-                project = project.AddOrUpdateFiles(syntaxTree.ToTypeSystem());
+                using (var stream = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var textReader = new StreamReader(stream))
+                {
+                    var syntaxTree = parser.Parse(textReader, sourceFilePath);
+                    syntaxTrees.Add(syntaxTree);
+                    project = project.AddOrUpdateFiles(syntaxTree.ToTypeSystem());
+                }
             }
 
             // Analyze all syntax trees.
