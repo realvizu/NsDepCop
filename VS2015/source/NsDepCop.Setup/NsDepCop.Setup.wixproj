@@ -28,34 +28,17 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Feature_CodeIssueProvider.wxs" />
+    <Compile Include="Feature_VisualStudioPackage.wxs" />
     <Compile Include="CustomActions.wxs" />
-    <Compile Include="Feature_ItemTemplate.wxs" />
     <Compile Include="Feature_MSBuildTask.wxs" />
     <Compile Include="Prerequisites.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="UI.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NsDepCop.CodeIssueProvider\NsDepCop.CodeIssueProvider.csproj">
-      <Name>NsDepCop.CodeIssueProvider</Name>
-      <Project>{746f649a-e6d3-4c89-915a-d070155581c1}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
     <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">
       <Name>NsDepCop.Core</Name>
       <Project>{bc26589e-79b0-4f55-b64d-db11534d3476}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\NsDepCop.ItemTemplatePackage\NsDepCop.ItemTemplatePackage.csproj">
-      <Name>NsDepCop.ItemTemplatePackage</Name>
-      <Project>{cb861040-886f-4d43-b328-ade69d73fc1c}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
@@ -72,6 +55,14 @@
     <ProjectReference Include="..\NsDepCop.Setup.CustomActions\NsDepCop.Setup.CustomActions.csproj">
       <Name>NsDepCop.Setup.CustomActions</Name>
       <Project>{e8def64a-8eab-4023-8f0e-23e2d9580596}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\NsDepCop.VisualStudioIntegration.Vsix\NsDepCop.VisualStudioIntegration.Vsix.csproj">
+      <Name>NsDepCop.VisualStudioIntegration.Vsix</Name>
+      <Project>{9e294e04-7b01-4aae-810f-56c00b45a939}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

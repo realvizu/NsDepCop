@@ -101,13 +101,20 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         {
             var typeSymbol = semanticModel.GetTypeInfo(node).Type;
 
-            // Special case: for an identifier that represents the name of a method, 
-            // the parent member access expression's parent invocation expression gives the resulting type.
-            if (typeSymbol == null
-                && node.Parent is MemberAccessExpressionSyntax
-                && node.Parent.Parent is InvocationExpressionSyntax)
+            // Special cases
+            if (typeSymbol == null)
             {
-                typeSymbol = semanticModel.GetTypeInfo(node.Parent.Parent).Type;
+                // Special case (or Roslyn bug?): 
+                // if we have an IdentifierNameSyntax inside an ObjectCreationExpression then 
+                // semanticModel.GetTypeInfo(node).Type returns null but
+                // semanticModel.GetSymbolInfo(node).Symbol returns the expected ITypeSymbol
+                var symbolInfo = semanticModel.GetSymbolInfo(node);
+                if (symbolInfo.Symbol is ITypeSymbol)
+                    typeSymbol = symbolInfo.Symbol as ITypeSymbol;
+
+                // Special case: for method invocations we should check the return type
+                else if (symbolInfo.Symbol is IMethodSymbol)
+                    typeSymbol = (symbolInfo.Symbol as IMethodSymbol).ReturnType;
             }
 
             return typeSymbol;

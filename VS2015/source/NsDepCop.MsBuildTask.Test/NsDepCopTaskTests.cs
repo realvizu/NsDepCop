@@ -236,10 +236,40 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         IssueKind = IssueKind.Warning,
                         Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
                         Path = sourceFileName,
-                        StartLine = 9,
+                        StartLine = 10,
+                        StartColumn = 13,
+                        EndLine = 10,
+                        EndColumn = 26
+                    },
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
+                        Path = sourceFileName,
+                        StartLine = 11,
                         StartColumn = 26,
-                        EndLine = 9,
-                        EndColumn = 39
+                        EndLine = 11,
+                        EndColumn = 45
+                    },
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
+                        Path = sourceFileName,
+                        StartLine = 12,
+                        StartColumn = 32,
+                        EndLine = 12,
+                        EndColumn = 45
+                    },
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
+                        Path = sourceFileName,
+                        StartLine = 15,
+                        StartColumn = 9,
+                        EndLine = 15,
+                        EndColumn = 15
                     },
                 },
             });
@@ -635,6 +665,30 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         StartColumn = 27,
                         EndLine = 10,
                         EndColumn = 51
+                    },
+                },
+            });
+        }
+
+        [TestMethod]
+        public void Execute_DepViolation_ObjectCreationExpression()
+        {
+            const string sourceFileName = "DepViolation_ObjectCreationExpression.cs";
+            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            {
+                TestFilesFolderName = "TestFiles_DepViolation_ObjectCreationExpression",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
+                        Path = sourceFileName,
+                        StartLine = 9,
+                        StartColumn = 17,
+                        EndLine = 9,
+                        EndColumn = 29
                     },
                 },
             });

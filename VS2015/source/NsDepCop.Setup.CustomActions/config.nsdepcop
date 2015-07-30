@@ -3,6 +3,7 @@
     <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System" />
     <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System.Collections.Generic" />
     <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System.IO" />
+    <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System.Linq.*" />
     <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System.Xml.Linq" />
     <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="Microsoft.Deployment.WindowsInstaller" />
 </NsDepCopConfig>

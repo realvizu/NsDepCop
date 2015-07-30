@@ -3,7 +3,7 @@
     <Identifier Id="NsDepCop.CodeIssueProvider..cbaf7bb9-5543-4476-9eee-f83a9233fa41">
         <Name>NsDepCop Code Issue Highlighting</Name>
         <Author>Codartis</Author>
-        <Version>1.4.0.0</Version>
+        <Version>1.3.1.0</Version>
         <Description xml:space="preserve">Highlights namespace dependency issues in the source code. Requires .NET Compiler Platform ("Roslyn") End User Preview (March/April 2014).</Description>
         <Locale>1033</Locale>
         <MoreInfoUrl>http://nsdepcop.codeplex.com</MoreInfoUrl>

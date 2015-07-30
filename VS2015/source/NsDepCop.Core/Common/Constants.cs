@@ -10,7 +10,7 @@
 
         public const string DIAGNOSTIC_ID_ILLEGAL_NS_DEP = "NSDEPCOP01";
         public const string DIAGNOSTIC_DESC_ILLEGAL_NS_DEP = "Illegal namespace reference.";
-        public const string DIAGNOSTIC_FORMAT_ILLEGAL_NS_DEP = "Illegal namespace reference: {0}->{1} (Symbol '{3}' in type '{2}' is type of '{4}'.)";
+        public const string DIAGNOSTIC_FORMAT_ILLEGAL_NS_DEP = "Illegal namespace reference: {0}->{1} (Symbol '{3}' in type '{2}' references type '{4}'.)";
 
         public const string DIAGNOSTIC_ID_TOO_MANY_ISSUES = "NSDEPCOP02";
         public const string DIAGNOSTIC_DESC_TOO_MANY_ISSUES = "Too many issues, analysis was stopped.";

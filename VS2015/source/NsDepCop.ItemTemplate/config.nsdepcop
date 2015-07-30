@@ -1,7 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning">
+<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
+    
     <!-- Any namespace can reference the System namespace and its sub-namespaces. -->
     <Allowed From="*" To="System.*" />
+    
     <!-- Any namespace can reference the global namespace. -->
     <Allowed From="*" To="." />
+
+    <!-- Code generated from XAML files can reference any namespace. -->
+    <Allowed From="XamlGeneratedNamespace" To="*" />
+
 </NsDepCopConfig>

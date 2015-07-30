@@ -8,6 +8,6 @@
         Error = 0,
         Warning = 1,
         Info = 2,
-        None = 3,
+        Hidden = 3,
     }
 }
