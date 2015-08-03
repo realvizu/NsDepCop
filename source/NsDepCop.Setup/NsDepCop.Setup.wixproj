@@ -84,6 +84,9 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="NsDepCop_256.ico" />
+    <Content Include="SetupBackground.png" />
+    <Content Include="SetupTopBanner.png" />
     <Content Include="uninstall_withlog.cmd" />
     <Content Include="install_withlog.cmd" />
   </ItemGroup>

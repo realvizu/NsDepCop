@@ -13,10 +13,11 @@ namespace Codartis.NsDepCop.MsBuildTask
     /// Implements a custom MsBuild task that performs namespace dependency analysis 
     /// and reports disallowed dependencies.
     /// </summary>
-    public class NsDepCopTask : Task 
+    public class NsDepCopTask : Task
     {
         public const string MSBUILD_CODE_INFO = "NSDEPCOPINFO";
         public const string MSBUILD_CODE_EXCEPTION = "NSDEPCOPEX";
+        public const IssueKind MSBUILD_CODE_EXCEPTION_SEVERITY = IssueKind.Error;
 
         /// <summary>
         /// MsBuild task item list that contains the name and full path 
@@ -69,7 +70,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                 // No config file means no analysis.
                 if (!File.Exists(configFileName))
                 {
-                    LogMsBuildEvent(Constants.DIAGNOSTIC_ID_NO_CONFIG_FILE, Constants.DIAGNOSTIC_DESC_NO_CONFIG_FILE);
+                    LogMsBuildEvent(Constants.DIAGNOSTIC_NOCONFIGFILE_ID, Constants.DIAGNOSTIC_NOCONFIGFILE_DESC);
                     return true;
                 }
 
@@ -79,7 +80,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                 // If analysis is switched off in the config file, then bail out.
                 if (!_config.IsEnabled)
                 {
-                    LogMsBuildEvent(Constants.DIAGNOSTIC_ID_CONFIG_DISABLED, Constants.DIAGNOSTIC_DESC_CONFIG_DISABLED);
+                    LogMsBuildEvent(Constants.DIAGNOSTIC_CONFIGDISABLED_ID, Constants.DIAGNOSTIC_CONFIGDISABLED_DESC);
                     return true;
                 }
 
@@ -96,21 +97,21 @@ namespace Codartis.NsDepCop.MsBuildTask
                     ReferencePath.ToList().Select(i => i.ItemSpec));
 
                 // Set return value (success indicator)
-                if (dependencyViolations.Any() && 
-                    GetIssueKindByCode(Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP) == IssueKind.Error)
+                if (dependencyViolations.Any() &&
+                    GetIssueKindByCode(Constants.DIAGNOSTIC_ILLEGALDEP_ID) == IssueKind.Error)
                     errorIssueDetected = true;
 
                 // Report issues to MSBuild.
                 var issuesReported = 0;
                 foreach (var dependencyViolation in dependencyViolations)
                 {
-                    LogMsBuildEvent(Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP, dependencyViolation.ToString(), dependencyViolation.SourceSegment);
+                    LogMsBuildEvent(Constants.DIAGNOSTIC_ILLEGALDEP_ID, dependencyViolation.ToString(), dependencyViolation.SourceSegment);
                     issuesReported++;
 
                     // Too many issues stop the analysis.
                     if (issuesReported == _config.MaxIssueCount)
                     {
-                        LogMsBuildEvent(Constants.DIAGNOSTIC_ID_TOO_MANY_ISSUES, Constants.DIAGNOSTIC_DESC_TOO_MANY_ISSUES);
+                        LogMsBuildEvent(Constants.DIAGNOSTIC_TOOMANYISSUES_ID, Constants.DIAGNOSTIC_TOOMANYISSUES_DESC);
                         break;
                     }
                 }
@@ -180,21 +181,21 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             switch (issueKind)
             {
-                case (IssueKind.Error):
-                    BuildEngine.LogErrorEvent(new BuildErrorEventArgs(
-                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME));
-                    break;
+            case (IssueKind.Error):
+                BuildEngine.LogErrorEvent(new BuildErrorEventArgs(
+                    null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME));
+                break;
 
-                case (IssueKind.Warning):
-                    BuildEngine.LogWarningEvent(new BuildWarningEventArgs(
-                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME));
-                    break;
+            case (IssueKind.Warning):
+                BuildEngine.LogWarningEvent(new BuildWarningEventArgs(
+                    null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME));
+                break;
 
-                default:
-                    BuildEngine.LogMessageEvent(new BuildMessageEventArgs(
-                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME,
-                        MessageImportance.High));
-                    break;
+            default:
+                BuildEngine.LogMessageEvent(new BuildMessageEventArgs(
+                    null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME,
+                    MessageImportance.High));
+                break;
             }
         }
 
@@ -207,18 +208,26 @@ namespace Codartis.NsDepCop.MsBuildTask
         {
             switch (code)
             {
-                case (Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP):
-                    return _config == null ? IssueKind.Warning : _config.IssueKind;
+            case (Constants.DIAGNOSTIC_ILLEGALDEP_ID):
+                return _config == null ? Constants.DIAGNOSTIC_ILLEGALDEP_DEFAULTSEVERITY : _config.IssueKind;
 
-                case (MSBUILD_CODE_EXCEPTION):
-                    return IssueKind.Error;
+            case (Constants.DIAGNOSTIC_TOOMANYISSUES_ID):
+                return Constants.DIAGNOSTIC_TOOMANYISSUES_DEFAULTSEVERITY;
 
-                case (Constants.DIAGNOSTIC_ID_TOO_MANY_ISSUES):
-                case (Constants.DIAGNOSTIC_ID_CONFIG_DISABLED):
-                    return IssueKind.Warning;
+            case (Constants.DIAGNOSTIC_CONFIGDISABLED_ID):
+                return Constants.DIAGNOSTIC_CONFIGDISABLED_DEFAULTSEVERITY;
 
-                default:
-                    return IssueKind.Info;
+            case (Constants.DIAGNOSTIC_CONFIGEXCEPTION_ID):
+                return Constants.DIAGNOSTIC_CONFIGEXCEPTION_DEFAULTSEVERITY;
+
+            case (Constants.DIAGNOSTIC_NOCONFIGFILE_ID):
+                return Constants.DIAGNOSTIC_NOCONFIGFILE_DEFAULTSEVERITY;
+
+            case (MSBUILD_CODE_EXCEPTION):
+                return MSBUILD_CODE_EXCEPTION_SEVERITY;
+
+            default:
+                return IssueKind.Info;
             }
         }
     }

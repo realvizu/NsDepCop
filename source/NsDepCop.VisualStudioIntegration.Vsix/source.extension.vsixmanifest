@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="NsDepCop.VisualStudioIntegration..e8ae3b7e-3cd5-40ef-92ca-b22ef9d0cc24" Version="1.4.0.0" Language="en-US" Publisher="Codartis"/>
+        <Identity Id="NsDepCop..e8ae3b7e-3cd5-40ef-92ca-b22ef9d0cc24" Version="1.4.0.0" Language="en-US" Publisher="Codartis"/>
         <DisplayName>NsDepCop - Namespace dependency checker for C#</DisplayName>
-        <Description xml:space="preserve">This Visual Studio extension highlights namespace dependency issues in the code editor.</Description>
-        <MoreInfo>https://nsdepcop.codeplex.com/Documentation</MoreInfo>
+        <Description xml:space="preserve">Highlights unintended namespace dependencies in the code editor. Also available as an MSBuild extension: http://nsdepcop.codeplex.com</Description>
+        <MoreInfo>https://nsdepcop.codeplex.com</MoreInfo>
         <GettingStartedGuide>https://nsdepcop.codeplex.com/wikipage?title=Getting%20Started</GettingStartedGuide>
+        <Icon>NsDepCop_40.ico</Icon>
+        <PreviewImage>NsDepCop_256.ico</PreviewImage>
+        <Tags>static analysis;code analysis;namespace;dependency;c#;roslyn</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Version="[14.0]" Id="Microsoft.VisualStudio.Pro" />
