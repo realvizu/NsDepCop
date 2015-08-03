@@ -36,22 +36,22 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// Descriptor for the 'Illegal namespace dependency' diagnostic.
         /// </summary>
         private readonly DiagnosticDescriptor _diagnosticDescriptorForIllegalNsDep = new DiagnosticDescriptor(
-            Constants.DIAGNOSTIC_ID_ILLEGAL_NS_DEP,
-            Constants.DIAGNOSTIC_DESC_ILLEGAL_NS_DEP,
-            Constants.DIAGNOSTIC_FORMAT_ILLEGAL_NS_DEP,
+            Constants.DIAGNOSTIC_ILLEGALDEP_ID,
+            Constants.DIAGNOSTIC_ILLEGALDEP_DESC,
+            Constants.DIAGNOSTIC_ILLEGALDEP_FORMAT,
             Constants.TOOL_NAME,
-            DiagnosticSeverity.Error,
+            Constants.DIAGNOSTIC_ILLEGALDEP_DEFAULTSEVERITY.ToDiagnosticSeverity(),
             isEnabledByDefault: true);
 
         /// <summary>
         /// Descriptor for the 'Config exception' diagnostic.
         /// </summary>
         private readonly DiagnosticDescriptor _diagnosticDescriptorForConfigException = new DiagnosticDescriptor(
-            Constants.DIAGNOSTIC_ID_CONFIG_EXCEPTION,
-            Constants.DIAGNOSTIC_DESC_CONFIG_EXCEPTION,
-            Constants.DIAGNOSTIC_FORMAT_CONFIG_EXCEPTION,
+            Constants.DIAGNOSTIC_CONFIGEXCEPTION_ID,
+            Constants.DIAGNOSTIC_CONFIGEXCEPTION_DESC,
+            Constants.DIAGNOSTIC_CONFIGEXCEPTION_FORMAT,
             Constants.TOOL_NAME,
-            DiagnosticSeverity.Error,
+            Constants.DIAGNOSTIC_CONFIGEXCEPTION_DEFAULTSEVERITY.ToDiagnosticSeverity(),
             isEnabledByDefault: true);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
@@ -66,8 +66,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, 
-                SyntaxKind.IdentifierName, 
+            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode,
+                SyntaxKind.IdentifierName,
                 SyntaxKind.GenericName,
                 SyntaxKind.ElementAccessExpression);
         }
@@ -112,7 +112,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 return;
 
             var dependencyValidator = configHandler.GetDependencyValidator();
-          var dependencyViolations = SyntaxNodeAnalyzer.Analyze(context.Node, context.SemanticModel, dependencyValidator);
+            var dependencyViolations = SyntaxNodeAnalyzer.Analyze(context.Node, context.SemanticModel, dependencyValidator);
 
             foreach (var dependencyViolation in dependencyViolations)
                 context.ReportDiagnostic(CreateIllegalNsDepDiagnostic(context.Node, dependencyViolation, config.IssueKind));
@@ -136,7 +136,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 _diagnosticDescriptorForIllegalNsDep.Category,
                 message,
                 severity: severity,
-                defaultSeverity: DiagnosticSeverity.Error,
+                defaultSeverity: Constants.DIAGNOSTIC_ILLEGALDEP_DEFAULTSEVERITY.ToDiagnosticSeverity(),
                 isEnabledByDefault: true,
                 warningLevel: warningLevel,
                 location: Location.Create(node.SyntaxTree, node.Span));

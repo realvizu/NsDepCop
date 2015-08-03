@@ -18,12 +18,12 @@
 
         <ComponentGroup Id="ComponentGroup_VisualStudioPackage"
                         Directory="TARGETDIR">
-            <Component Id="Component_NsDepCop.VisualStudioIntegration.vsix"
+            <Component Id="Component_NsDepCop.vsix"
                        Guid="{4669979F-02EA-40BF-BB6F-B08B10252D2D}">
-                <File Id="File_NsDepCop.VisualStudioIntegration.vsix"
+                <File Id="File_NsDepCop.vsix"
                       Source="$(var.NsDepCop.VisualStudioIntegration.Vsix.TargetDir)\$(var.NsDepCop.VisualStudioIntegration.Vsix.TargetName).vsix"
                       KeyPath="yes">
-                    <vse:VsixPackage PackageId="NsDepCop.VisualStudioIntegration..e8ae3b7e-3cd5-40ef-92ca-b22ef9d0cc24"
+                    <vse:VsixPackage PackageId="NsDepCop..e8ae3b7e-3cd5-40ef-92ca-b22ef9d0cc24"
                                      Vital="yes"
                                      Permanent="no"/>
                 </File>

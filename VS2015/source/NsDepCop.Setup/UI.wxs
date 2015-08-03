@@ -19,7 +19,12 @@ Patch dialog sequence:
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
+
+        <WixVariable Id="WixUIBannerBmp" Value="SetupTopBanner.png" />
+        <WixVariable Id="WixUIDialogBmp" Value="SetupBackground.png" />
+
         <UI Id="WixUI_NsDepCop">
+            
             <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
             <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
             <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />

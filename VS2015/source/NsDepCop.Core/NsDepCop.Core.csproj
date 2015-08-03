@@ -141,7 +141,7 @@
     <Compile Include="Analyzer\Roslyn\IssueKindExtension.cs" />
     <Compile Include="Analyzer\Roslyn\IssueKindTranslator.cs" />
     <Compile Include="Analyzer\Roslyn\SyntaxNodeAnalyzer.cs" />
-    <Compile Include="Common\CodeIssueKind.cs" />
+    <Compile Include="Common\IssueKind.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\Dependency.cs" />
     <Compile Include="Common\DependencyValidator.cs" />

@@ -3,7 +3,8 @@
     <TemplateData>
         <Name>NsDepCop Config File</Name>
         <Description>NsDepCop config file with default settings.</Description>
-        <Icon>NsDepCop.ItemTemplate.ico</Icon>
+        <Icon>NsDepCop_ItemTemplate_40.ico</Icon>
+        <PreviewImage>NsDepCop_256.ico</PreviewImage>
         <TemplateID>NsDepCop.ItemTemplate.ConfigFile</TemplateID>
         <ProjectType>CSharp</ProjectType>
         <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
