@@ -15,9 +15,17 @@ namespace Codartis.NsDepCop.MsBuildTask
     /// </summary>
     public class NsDepCopTask : Task
     {
-        public const string MSBUILD_CODE_INFO = "NSDEPCOPINFO";
-        public const string MSBUILD_CODE_EXCEPTION = "NSDEPCOPEX";
-        public const IssueKind MSBUILD_CODE_EXCEPTION_SEVERITY = IssueKind.Error;
+        private const ParserType DEFAULT_PARSER_TYPE = ParserType.Roslyn;
+        private const MessageImportance DEFAULT_MESSAGE_IMPORTANCE = MessageImportance.Normal;
+
+        public static IssueDescriptor TaskStartedIssue =
+            new IssueDescriptor("NSDEPCOPSTART", IssueKind.Info, null, "Analysing project using {0}.");
+
+        public static IssueDescriptor TaskFinishedIssue =
+            new IssueDescriptor("NSDEPCOPFINISH", IssueKind.Info, null, "Analysis took: {0:mm\\:ss\\.fff}");
+
+        public static IssueDescriptor TaskExceptionIssue =
+            new IssueDescriptor("NSDEPCOPEX", IssueKind.Error, null, "Exception during NsDepCopTask execution: {0}");
 
         /// <summary>
         /// MsBuild task item list that contains the name and full path 
@@ -46,23 +54,29 @@ namespace Codartis.NsDepCop.MsBuildTask
         public ITaskItem Parser { get; set; }
 
         /// <summary>
-        /// Config info.
+        /// Specifies the info log events' message importance level. Optional. Normal is default if omitted or unrecognized.
         /// </summary>
+        public ITaskItem InfoImportance { get; set; }
+
         private NsDepCopConfig _config;
+        private MessageImportance _currentMessageImportance = DEFAULT_MESSAGE_IMPORTANCE;
 
         /// <summary>
         /// Executes the custom MsBuild task. Called by the MsBuild tool.
         /// </summary>
-        /// <returns>True if the run was successful (even if issues were reported). False if the task terminated with an exception.</returns>
+        /// <returns>
+        /// True if there was no error and no exception.
+        /// </returns>
         public override bool Execute()
         {
-            var startTime = DateTime.Now;
-            var errorIssueDetected = false;
-
             try
             {
                 Debug.WriteLine("Execute started...", Constants.TOOL_NAME);
                 DebugDumpInputParameters();
+
+                var startTime = DateTime.Now;
+                var errorIssueDetected = false;
+                _currentMessageImportance = ParseMessageImportance(GetValueOfTaskItem(InfoImportance));
 
                 // Find out the location of the config file.
                 var configFileName = Path.Combine(BaseDirectory.ItemSpec, Constants.DEFAULT_CONFIG_FILE_NAME);
@@ -70,25 +84,33 @@ namespace Codartis.NsDepCop.MsBuildTask
                 // No config file means no analysis.
                 if (!File.Exists(configFileName))
                 {
-                    LogMsBuildEvent(Constants.DIAGNOSTIC_NOCONFIGFILE_ID, Constants.DIAGNOSTIC_NOCONFIGFILE_DESC);
+                    LogMsBuildEvent(Constants.NoConfigFileIssue);
                     return true;
                 }
 
                 // Read the config.
-                _config = new NsDepCopConfig(configFileName);
+                try
+                {
+                    _config = new NsDepCopConfig(configFileName);
+                }
+                catch (Exception e)
+                {
+                    LogMsBuildEvent(Constants.ConfigExceptionIssue, e.Message);
+                    return false;
+                }
 
                 // If analysis is switched off in the config file, then bail out.
                 if (!_config.IsEnabled)
                 {
-                    LogMsBuildEvent(Constants.DIAGNOSTIC_CONFIGDISABLED_ID, Constants.DIAGNOSTIC_CONFIGDISABLED_DESC);
+                    LogMsBuildEvent(Constants.ConfigDisabledIssue);
                     return true;
                 }
 
                 // Create the code analyzer object.
                 var parserName = GetValueOfTaskItem(Parser);
-                var codeAnalyzer = DependencyAnalyzerFactory.Create(parserName, _config);
+                var codeAnalyzer = DependencyAnalyzerFactory.Create(parserName, _config, DEFAULT_PARSER_TYPE);
 
-                LogMsBuildEvent(MSBUILD_CODE_INFO, "Analysing project using " + codeAnalyzer.ParserName + ".");
+                LogMsBuildEvent(TaskStartedIssue, codeAnalyzer.ParserName);
 
                 // Run the analysis for the whole project.
                 var dependencyViolations = codeAnalyzer.AnalyzeProject(
@@ -97,35 +119,36 @@ namespace Codartis.NsDepCop.MsBuildTask
                     ReferencePath.ToList().Select(i => i.ItemSpec));
 
                 // Set return value (success indicator)
-                if (dependencyViolations.Any() &&
-                    GetIssueKindByCode(Constants.DIAGNOSTIC_ILLEGALDEP_ID) == IssueKind.Error)
+                if (dependencyViolations.Any() && _config.IssueKind == IssueKind.Error)
                     errorIssueDetected = true;
 
                 // Report issues to MSBuild.
                 var issuesReported = 0;
                 foreach (var dependencyViolation in dependencyViolations)
                 {
-                    LogMsBuildEvent(Constants.DIAGNOSTIC_ILLEGALDEP_ID, dependencyViolation.ToString(), dependencyViolation.SourceSegment);
+                    LogMsBuildEvent(Constants.IllegalDependencyIssue, _config.IssueKind,
+                        dependencyViolation.SourceSegment, dependencyViolation.ToString());
+
                     issuesReported++;
 
                     // Too many issues stop the analysis.
                     if (issuesReported == _config.MaxIssueCount)
                     {
-                        LogMsBuildEvent(Constants.DIAGNOSTIC_TOOMANYISSUES_ID, Constants.DIAGNOSTIC_TOOMANYISSUES_DESC);
+                        LogMsBuildEvent(Constants.TooManyIssuesIssue);
                         break;
                     }
                 }
+
+                var endTime = DateTime.Now;
+                LogMsBuildEvent(TaskFinishedIssue, endTime - startTime);
+
+                return !errorIssueDetected;
             }
             catch (Exception e)
             {
-                LogMsBuildEvent(MSBUILD_CODE_EXCEPTION, e.ToString());
+                LogMsBuildEvent(TaskExceptionIssue, e.ToString());
                 return false;
             }
-
-            var endTime = DateTime.Now;
-            LogMsBuildEvent(MSBUILD_CODE_INFO, string.Format("Analysis took: {0:mm\\:ss\\.fff}", endTime - startTime));
-
-            return !errorIssueDetected;
         }
 
         /// <summary>
@@ -152,14 +175,22 @@ namespace Codartis.NsDepCop.MsBuildTask
             Debug.WriteLine(string.Format("  BaseDirectory={0}", BaseDirectory.ItemSpec), Constants.TOOL_NAME);
         }
 
-        /// <summary>
-        /// Log an event to MSBuild.
-        /// </summary>
-        /// <param name="code">The string code of the event.</param>
-        /// <param name="message">The string message of the event.</param>
-        /// <param name="sourceSegment">The source segment that caused the event or null if not applicable.</param>
-        private void LogMsBuildEvent(string code, string message, SourceSegment sourceSegment = null)
+        private void LogMsBuildEvent(IssueDescriptor issueDescriptor, params object[] messageParams)
         {
+            var message = issueDescriptor.MessageFormat == null
+                ? null
+                : string.Format(issueDescriptor.MessageFormat, messageParams);
+
+            LogMsBuildEvent(issueDescriptor, issueDescriptor.DefaultKind, null, message);
+        }
+
+        private void LogMsBuildEvent(IssueDescriptor issueDescriptor, IssueKind issueKind, SourceSegment sourceSegment, string message)
+        {
+            var code = issueDescriptor.Id;
+
+            message = message == null ? issueDescriptor.Description : message;
+            message = "[" + Constants.TOOL_NAME + "] " + message;
+
             string path = null;
             int startLine = 0;
             int startColumn = 0;
@@ -174,10 +205,6 @@ namespace Codartis.NsDepCop.MsBuildTask
                 endLine = sourceSegment.EndLine;
                 endColumn = sourceSegment.EndColumn;
             }
-
-            message = "[" + Constants.TOOL_NAME + "] " + message;
-
-            var issueKind = GetIssueKindByCode(code);
 
             switch (issueKind)
             {
@@ -194,41 +221,18 @@ namespace Codartis.NsDepCop.MsBuildTask
             default:
                 BuildEngine.LogMessageEvent(new BuildMessageEventArgs(
                     null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME,
-                    MessageImportance.High));
+                    _currentMessageImportance));
                 break;
             }
         }
 
-        /// <summary>
-        /// Translates an event code to an issue kind.
-        /// </summary>
-        /// <param name="code">An event code.</param>
-        /// <returns>The IssueKind (severity) of the given code.</returns>
-        private IssueKind GetIssueKindByCode(string code)
+        private MessageImportance ParseMessageImportance(string infoImportanceString)
         {
-            switch (code)
-            {
-            case (Constants.DIAGNOSTIC_ILLEGALDEP_ID):
-                return _config == null ? Constants.DIAGNOSTIC_ILLEGALDEP_DEFAULTSEVERITY : _config.IssueKind;
+            MessageImportance result;
+            if (!Enum.TryParse(infoImportanceString, out result))
+                result = DEFAULT_MESSAGE_IMPORTANCE;
 
-            case (Constants.DIAGNOSTIC_TOOMANYISSUES_ID):
-                return Constants.DIAGNOSTIC_TOOMANYISSUES_DEFAULTSEVERITY;
-
-            case (Constants.DIAGNOSTIC_CONFIGDISABLED_ID):
-                return Constants.DIAGNOSTIC_CONFIGDISABLED_DEFAULTSEVERITY;
-
-            case (Constants.DIAGNOSTIC_CONFIGEXCEPTION_ID):
-                return Constants.DIAGNOSTIC_CONFIGEXCEPTION_DEFAULTSEVERITY;
-
-            case (Constants.DIAGNOSTIC_NOCONFIGFILE_ID):
-                return Constants.DIAGNOSTIC_NOCONFIGFILE_DEFAULTSEVERITY;
-
-            case (MSBUILD_CODE_EXCEPTION):
-                return MSBUILD_CODE_EXCEPTION_SEVERITY;
-
-            default:
-                return IssueKind.Info;
-            }
+            return result;
         }
     }
 }

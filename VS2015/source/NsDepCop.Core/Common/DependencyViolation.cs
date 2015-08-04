@@ -42,7 +42,7 @@
         /// <returns>The dependency violation info in readable format.</returns>
         public override string ToString()
         {
-            return string.Format(Constants.DIAGNOSTIC_ILLEGALDEP_FORMAT,
+            return string.Format(Constants.IllegalDependencyIssue.MessageFormat,
                 IllegalDependency.From,
                 IllegalDependency.To,
                 ReferencingTypeName,

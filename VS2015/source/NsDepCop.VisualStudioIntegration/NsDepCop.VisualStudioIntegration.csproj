@@ -101,6 +101,7 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="ConfigHandler.cs" />
+    <Compile Include="IssueDescriptorExtensions.cs" />
     <Compile Include="NsDepCopDiagnosticAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

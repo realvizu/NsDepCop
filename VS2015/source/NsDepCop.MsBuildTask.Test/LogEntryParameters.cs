@@ -7,12 +7,21 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
     /// </summary>
     internal struct LogEntryParameters
     {
-        public IssueKind IssueKind;
         public string Code;
+        public IssueKind IssueKind;
         public string Path;
         public int StartLine; 
         public int StartColumn;
         public int EndLine;
         public int EndColumn;
+
+        public static LogEntryParameters FromIssueDescriptor(IssueDescriptor issueDescriptor)
+        {
+            return new LogEntryParameters
+            {
+                Code = issueDescriptor.Id,
+                IssueKind = issueDescriptor.DefaultKind
+            };
+        }
     }
 }

@@ -25,7 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -133,7 +133,7 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Analyzer\Factory\DependencyAnalyzerFactory.cs" />
-    <Compile Include="Analyzer\Factory\Parser.cs" />
+    <Compile Include="Analyzer\Factory\ParserType.cs" />
     <Compile Include="Analyzer\NRefactory\DependencyAnalyzer.cs" />
     <Compile Include="Analyzer\NRefactory\DependencyAnalyzerSyntaxVisitor.cs" />
     <Compile Include="Analyzer\Roslyn\DependencyAnalyzer.cs" />
@@ -141,6 +141,7 @@
     <Compile Include="Analyzer\Roslyn\IssueKindExtension.cs" />
     <Compile Include="Analyzer\Roslyn\IssueKindTranslator.cs" />
     <Compile Include="Analyzer\Roslyn\SyntaxNodeAnalyzer.cs" />
+    <Compile Include="Common\IssueDescriptor.cs" />
     <Compile Include="Common\IssueKind.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\Dependency.cs" />
