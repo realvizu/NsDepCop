@@ -35,32 +35,20 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <summary>
         /// Descriptor for the 'Illegal namespace dependency' diagnostic.
         /// </summary>
-        private readonly DiagnosticDescriptor _diagnosticDescriptorForIllegalNsDep = new DiagnosticDescriptor(
-            Constants.DIAGNOSTIC_ILLEGALDEP_ID,
-            Constants.DIAGNOSTIC_ILLEGALDEP_DESC,
-            Constants.DIAGNOSTIC_ILLEGALDEP_FORMAT,
-            Constants.TOOL_NAME,
-            Constants.DIAGNOSTIC_ILLEGALDEP_DEFAULTSEVERITY.ToDiagnosticSeverity(),
-            isEnabledByDefault: true);
+        private static readonly DiagnosticDescriptor _illegalDependencyDescriptor = Constants.IllegalDependencyIssue.ToDiagnosticDescriptor();
 
         /// <summary>
         /// Descriptor for the 'Config exception' diagnostic.
         /// </summary>
-        private readonly DiagnosticDescriptor _diagnosticDescriptorForConfigException = new DiagnosticDescriptor(
-            Constants.DIAGNOSTIC_CONFIGEXCEPTION_ID,
-            Constants.DIAGNOSTIC_CONFIGEXCEPTION_DESC,
-            Constants.DIAGNOSTIC_CONFIGEXCEPTION_FORMAT,
-            Constants.TOOL_NAME,
-            Constants.DIAGNOSTIC_CONFIGEXCEPTION_DEFAULTSEVERITY.ToDiagnosticSeverity(),
-            isEnabledByDefault: true);
+        private static readonly DiagnosticDescriptor _configExceptionDescriptor = Constants.ConfigExceptionIssue.ToDiagnosticDescriptor();
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
             get
             {
                 return ImmutableArray.Create(
-                    _diagnosticDescriptorForIllegalNsDep,
-                    _diagnosticDescriptorForConfigException);
+                    _illegalDependencyDescriptor,
+                    _configExceptionDescriptor);
             }
         }
 
@@ -94,14 +82,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 config = configHandler.GetConfig();
                 _configExceptionAlreadyReported = false;
             }
-            catch (Exception configException)
+            catch (Exception exception)
             {
-                // Report config exception.
-                if (!_configExceptionAlreadyReported)
-                {
-                    _configExceptionAlreadyReported = true;
-                    context.ReportDiagnostic(Diagnostic.Create(_diagnosticDescriptorForConfigException, Location.None, configException.Message));
-                }
+                ReportConfigException(context, exception);
             }
 
             if (config == null)
@@ -120,7 +103,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private Diagnostic CreateIllegalNsDepDiagnostic(SyntaxNode node, DependencyViolation dependencyViolation, IssueKind issueKind)
         {
-            var message = string.Format(_diagnosticDescriptorForIllegalNsDep.MessageFormat.ToString(),
+            var message = string.Format(_illegalDependencyDescriptor.MessageFormat.ToString(),
                 dependencyViolation.IllegalDependency.From,
                 dependencyViolation.IllegalDependency.To,
                 dependencyViolation.ReferencingTypeName,
@@ -132,14 +115,32 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             var warningLevel = severity == DiagnosticSeverity.Error ? 0 : 1;
 
             return Diagnostic.Create(
-                _diagnosticDescriptorForIllegalNsDep.Id,
-                _diagnosticDescriptorForIllegalNsDep.Category,
+                _illegalDependencyDescriptor.Id,
+                _illegalDependencyDescriptor.Category,
                 message,
                 severity: severity,
-                defaultSeverity: Constants.DIAGNOSTIC_ILLEGALDEP_DEFAULTSEVERITY.ToDiagnosticSeverity(),
+                defaultSeverity: _illegalDependencyDescriptor.DefaultSeverity,
                 isEnabledByDefault: true,
                 warningLevel: warningLevel,
                 location: Location.Create(node.SyntaxTree, node.Span));
+        }
+
+        private Diagnostic CreateConfigExceptionDiagnostic(SyntaxNode node, Exception exception)
+        {
+            // We have to use a dummy location because of this Roslyn 1.0 limitation: 
+            // https://github.com/dotnet/roslyn/issues/3748#issuecomment-117231706
+            var location = Location.Create(node.SyntaxTree, node.Span);
+            return Diagnostic.Create(_configExceptionDescriptor, location, exception.Message);
+        }
+
+        private void ReportConfigException(SyntaxNodeAnalysisContext context, Exception exception)
+        {
+            if (!_configExceptionAlreadyReported)
+            {
+                _configExceptionAlreadyReported = true;
+                var diagnostic = CreateConfigExceptionDiagnostic(context.Node, exception);
+                context.ReportDiagnostic(diagnostic);
+            }
         }
 
         private string FindProjectFile(SyntaxNodeAnalysisContext context)

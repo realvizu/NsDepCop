@@ -15,25 +15,25 @@ namespace Codartis.NsDepCop.Core.Analyzer.Factory
         /// <param name="parserName">The name of the parser to be used.</param>
         /// <param name="config">The config object required by the analyzer.</param>
         /// <returns>A new IDependencyAnalyzer object using the specified parser.</returns>
-        public static IDependencyAnalyzer Create(string parserName, NsDepCopConfig config)
+        public static IDependencyAnalyzer Create(string parserName, NsDepCopConfig config, ParserType defaultParserType)
         {
-            Parser parser;
-            if (!Enum.TryParse(parserName, out parser))
+            ParserType parserType;
+            if (!Enum.TryParse(parserName, out parserType))
             {
-                parser = Parser.Roslyn;
-                Trace.WriteLine(string.Format("Unrecognized parser name: '{0}'. Using: '{1}'.", parserName, parser), Constants.TOOL_NAME);
+                parserType = defaultParserType;
+                Trace.WriteLine(string.Format("Unrecognized parser name: '{0}'. Using: '{1}'.", parserName, parserType), Constants.TOOL_NAME);
             }
 
-            switch (parser)
+            switch (parserType)
             {
-                case (Parser.Roslyn):
+                case (ParserType.Roslyn):
                     return new Codartis.NsDepCop.Core.Analyzer.Roslyn.DependencyAnalyzer(config);
 
-                case (Parser.NRefactory):
+                case (ParserType.NRefactory):
                     return new Codartis.NsDepCop.Core.Analyzer.NRefactory.DependencyAnalyzer(config);
 
                 default:
-                    throw new Exception(string.Format("Unexpected Parser: {0}.", parser));
+                    throw new Exception(string.Format("Unexpected Parser: {0}.", parserType));
             }
         }
     }
