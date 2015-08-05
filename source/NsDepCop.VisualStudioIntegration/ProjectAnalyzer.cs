@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using Codartis.NsDepCop.Core.Analyzer.Roslyn;
 using Codartis.NsDepCop.Core.Common;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
     /// <summary>
-    /// Holds analyzer config info for a certain C# project file.
-    /// Can load info from an NsDepCop config file and can also refresh it if the file was updated since last read.
+    /// Namespace dependency analyzer for a certain C# project file.
+    /// Can load config info from an NsDepCop config file and can also refresh it if the file was updated since last read.
     /// </summary>
-    internal class ProjectAnalyzerConfig
+    internal class ProjectAnalyzer
     {
         private readonly string _projectFilePath;
 
@@ -19,7 +22,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private NsDepCopConfig _config;
         private DependencyValidator _dependencyValidator;
 
-        public ProjectAnalyzerConfig(string projectFilePath)
+        public ProjectAnalyzer(string projectFilePath)
         {
             _projectFilePath = projectFilePath;
         }
@@ -51,20 +54,26 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             get { return IsConfigLoaded ? _config.IssueKind : IssueKind.Error; }
         }
 
-        public DependencyValidator DependencyValidator
-        {
-            get { return _dependencyValidator; }
-        }
-
         public Exception ConfigException
         {
             get { return _configException; }
         }
 
         /// <summary>
+        /// Performs namespace dependency analysis on a syntax node and returns the resulting violations.
+        /// </summary>
+        /// <param name="node">A syntax node.</param>
+        /// <param name="semanticModel">The semantic model of the compilation.</param>
+        /// <returns>A collection of dependency violations or empty collection if found none.</returns>
+        public IEnumerable<DependencyViolation> AnalyzeNode(SyntaxNode node, SemanticModel semanticModel)
+        {
+            return SyntaxNodeAnalyzer.Analyze(node, semanticModel, _dependencyValidator);
+        }
+
+        /// <summary>
         /// Loads or refreshes NsDepCop config info from file.
         /// </summary>
-        public void Refresh()
+        public void RefreshConfig()
         {
             if (_configPath == null)
                 _configPath = CreateConfigFilePath(_projectFilePath);

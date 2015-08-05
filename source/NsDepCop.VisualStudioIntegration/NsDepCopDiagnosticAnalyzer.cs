@@ -8,6 +8,14 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
+    /// <summary>
+    /// This diagnostic analyzer is invoked by Visual Studio/Roslyn an it reports namespace dependency issues to the VS IDE.
+    /// </summary>
+    /// <remarks>
+    /// The supporting classes (eg. ProjectAnalyzerConfigRepository) are not thread safe! 
+    /// However Roslyn 1.0 assumes that all non-built-in diagnostic analyzers are not thread safe and invokes them accordingly.
+    /// Should Roslyn behavior change this topic must be revisited.
+    /// </remarks>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class NsDepCopDiagnosticAnalyzer : DiagnosticAnalyzer
     {
@@ -60,22 +68,22 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
             var assemblyName = semanticModel.Compilation.AssemblyName;
 
-            var projectAnalyzerConfig = ProjectAnalyzerConfigRepository.GetConfig(sourceFilePath, assemblyName);
+            var projectAnalyzer = ProjectAnalyzerRepository.GetAnalyzer(sourceFilePath, assemblyName);
 
-            if (projectAnalyzerConfig == null ||
-                projectAnalyzerConfig.State == ProjectAnalyzerState.Disabled)
+            if (projectAnalyzer == null ||
+                projectAnalyzer.State == ProjectAnalyzerState.Disabled)
                 return;
 
-            if (projectAnalyzerConfig.State == ProjectAnalyzerState.ConfigError)
+            if (projectAnalyzer.State == ProjectAnalyzerState.ConfigError)
             {
-                ReportConfigException(context, projectAnalyzerConfig.ConfigException);
+                ReportConfigException(context, projectAnalyzer.ConfigException);
                 return;
             }
 
-            var dependencyViolations = SyntaxNodeAnalyzer.Analyze(syntaxNode, semanticModel, projectAnalyzerConfig.DependencyValidator);
+            var dependencyViolations = projectAnalyzer.AnalyzeNode(syntaxNode, semanticModel);
 
             foreach (var dependencyViolation in dependencyViolations)
-                ReportIllegalDependency(context, dependencyViolation, projectAnalyzerConfig.IssueKind);
+                ReportIllegalDependency(context, dependencyViolation, projectAnalyzer.IssueKind);
         }
 
         private void ReportIllegalDependency(SyntaxNodeAnalysisContext context, DependencyViolation dependencyViolation, IssueKind issueKind)

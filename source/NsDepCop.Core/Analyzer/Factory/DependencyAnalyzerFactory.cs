@@ -21,7 +21,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Factory
             if (!Enum.TryParse(parserName, out parserType))
             {
                 parserType = defaultParserType;
-                Trace.WriteLine(string.Format("Unrecognized parser name: '{0}'. Using: '{1}'.", parserName, parserType), Constants.TOOL_NAME);
+                Debug.WriteLine(string.Format("Unrecognized parser name: '{0}'. Using: '{1}'.", parserName, parserType), Constants.TOOL_NAME);
             }
 
             switch (parserType)
