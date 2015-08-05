@@ -100,10 +100,10 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="ProjectAnalyzerConfigRepository.cs" />
+    <Compile Include="ProjectAnalyzerRepository.cs" />
     <Compile Include="IssueDescriptorExtensions.cs" />
     <Compile Include="NsDepCopDiagnosticAnalyzer.cs" />
-    <Compile Include="ProjectAnalyzerConfig.cs" />
+    <Compile Include="ProjectAnalyzer.cs" />
     <Compile Include="ProjectAnalyzerState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -9,9 +9,9 @@ using System.Xml.XPath;
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
     /// <summary>
-    /// Retrieves analyzer config information.
+    /// Creates and stores project analyzers.
     /// </summary>
-    internal static class ProjectAnalyzerConfigRepository
+    internal static class ProjectAnalyzerRepository
     {
         /// <summary>
         /// Cache for mapping source files to project files. The key is the source file name with full path.
@@ -20,36 +20,36 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             new ConcurrentDictionary<string, string>();
 
         /// <summary>
-        /// Cache for mapping project files to their analyzer configs. The key is the project file name with full path.
+        /// Cache for mapping project files to their analyzers. The key is the project file name with full path.
         /// </summary>
-        private static readonly ConcurrentDictionary<string, ProjectAnalyzerConfig> _projectFileToAnalyzerConfigMap =
-            new ConcurrentDictionary<string, ProjectAnalyzerConfig>();
+        private static readonly ConcurrentDictionary<string, ProjectAnalyzer> _projectFileToAnalyzerMap =
+            new ConcurrentDictionary<string, ProjectAnalyzer>();
 
         /// <summary>
-        /// Retrieves an up-to-date analyzer config info for a source file + assembly name pair.
+        /// Retrieves an up-to-date analyzer for a source file + assembly name pair.
         /// </summary>
         /// <param name="sourceFilePath">The full path of a source file.</param>
         /// <param name="assemblyName">The name of the assembly that the source file belongs to.</param>
-        /// <returns>A ProjectAnalyzerConfig, or null if cannot be retrieved.</returns>
-        public static ProjectAnalyzerConfig GetConfig(string sourceFilePath, string assemblyName)
+        /// <returns>A ProjectAnalyzer, or null if cannot be retrieved.</returns>
+        public static ProjectAnalyzer GetAnalyzer(string sourceFilePath, string assemblyName)
         {
             var projectFilePath = GetProjectFilePath(sourceFilePath, assemblyName);
             if (projectFilePath == null)
                 return null;
 
-            return GetProjectAnalyzerConfig(projectFilePath);
+            return GetProjectAnalyzer(projectFilePath);
         }
 
-        private static ProjectAnalyzerConfig GetProjectAnalyzerConfig(string projectFilePath)
+        private static ProjectAnalyzer GetProjectAnalyzer(string projectFilePath)
         {
-            var projectAnalyzerConfig = _projectFileToAnalyzerConfigMap.GetOrAdd(projectFilePath, i => CreateAnalyzerConfig(i));
-            projectAnalyzerConfig.Refresh();
-            return projectAnalyzerConfig;
+            var projectAnalyzer = _projectFileToAnalyzerMap.GetOrAdd(projectFilePath, i => CreateAnalyzer(i));
+            projectAnalyzer.RefreshConfig();
+            return projectAnalyzer;
         }
 
-        private static ProjectAnalyzerConfig CreateAnalyzerConfig(string projectFilePath)
+        private static ProjectAnalyzer CreateAnalyzer(string projectFilePath)
         {
-            return new ProjectAnalyzerConfig(projectFilePath);
+            return new ProjectAnalyzer(projectFilePath);
         }
 
         private static string GetProjectFilePath(string sourceFilePath, string assemblyName)
@@ -80,7 +80,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Exception in FindProjectFile({0}, {1}): {2}", sourceFilePath, assemblyName, e);
+                Trace.WriteLine(string.Format("Exception in FindProjectFile({0}, {1}): {2}", sourceFilePath, assemblyName, e));
                 return null;
             }
         }
@@ -104,7 +104,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Exception in IsProjectFileForAssembly({0}, {1}): {2}", projectFilePath, assemblyName, e);
+                Trace.WriteLine(string.Format("Exception in IsProjectFileForAssembly({0}, {1}): {2}", projectFilePath, assemblyName, e));
                 return false;
             }
         }
