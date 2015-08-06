@@ -22,12 +22,14 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <summary>
         /// Descriptor for the 'Illegal namespace dependency' diagnostic.
         /// </summary>
-        private static readonly DiagnosticDescriptor _illegalDependencyDescriptor = Constants.IllegalDependencyIssue.ToDiagnosticDescriptor();
+        private static readonly DiagnosticDescriptor _illegalDependencyDescriptor =
+            Constants.IllegalDependencyIssue.ToDiagnosticDescriptor();
 
         /// <summary>
         /// Descriptor for the 'Config exception' diagnostic.
         /// </summary>
-        private static readonly DiagnosticDescriptor _configExceptionDescriptor = Constants.ConfigExceptionIssue.ToDiagnosticDescriptor();
+        private static readonly DiagnosticDescriptor _configExceptionDescriptor = 
+            Constants.ConfigExceptionIssue.ToDiagnosticDescriptor();
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
@@ -113,7 +115,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 defaultSeverity: _illegalDependencyDescriptor.DefaultSeverity,
                 isEnabledByDefault: true,
                 warningLevel: warningLevel,
-                location: Location.Create(node.SyntaxTree, node.Span));
+                location: Location.Create(node.SyntaxTree, node.Span),
+                helpLink: _illegalDependencyDescriptor.HelpLinkUri,
+                title: _illegalDependencyDescriptor.Title);
         }
 
         private void ReportConfigException(SyntaxNodeAnalysisContext context, Exception exception)
