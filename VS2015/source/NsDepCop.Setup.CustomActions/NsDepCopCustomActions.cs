@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.Setup.CustomActions
     /// <summary>
     /// This class implements custom install/uninstall actions.
     /// </summary>
-    public static class NsDepCopCustomActions 
+    public static class NsDepCopCustomActions
     {
         /// <summary>
         /// Modifies an MSBuild targets file to insert the NsDepCop custom action into the C# projects's build workflow.
@@ -41,12 +41,11 @@ namespace Codartis.NsDepCop.Setup.CustomActions
                 {
                     var record = new Record
                     {
-                        FormatString = string.Format(
-                            "Setup is unable to add NsDepCop target to the C# build workflow, " +
-                            "because of custom content in {0}\n" +
-                            "You have to add it manually. " +
-                            "See the FAQ at http://nsdepcop.codeplex.com/documentation for more info. " +
-                            "Setup continues.", filename)
+                        FormatString = "Setup is unable to add NsDepCop target to the C# build workflow, " +
+                        $"because of custom content in {filename}\n" +
+                        "You have to add it manually. " +
+                        "See the FAQ at http://nsdepcop.codeplex.com/documentation for more info. " +
+                        "Setup continues."
                     };
                     session.Message(InstallMessage.Warning, record);
                     result = ActionResult.NotExecuted;
@@ -102,12 +101,11 @@ namespace Codartis.NsDepCop.Setup.CustomActions
                 {
                     var record = new Record
                     {
-                        FormatString = string.Format(
-                            "Setup is unable to remove NsDepCop target from the C# build workflow, " +
-                            "because of custom content in {0}\n" +
-                            "You have to remove it manually. " +
-                            "See the FAQ at http://nsdepcop.codeplex.com/documentation for more info. " +
-                            "Setup continues.", filename)
+                        FormatString = "Setup is unable to remove NsDepCop target from the C# build workflow, " +
+                        $"because of custom content in {filename}\n" +
+                        "You have to remove it manually. " +
+                        "See the FAQ at http://nsdepcop.codeplex.com/documentation for more info. " +
+                        "Setup continues."
                     };
                     session.Message(InstallMessage.Warning, record);
                     result = ActionResult.NotExecuted;
@@ -170,7 +168,7 @@ namespace Codartis.NsDepCop.Setup.CustomActions
         {
             var root = xDocument.Root;
             var ns = root.Name.Namespace;
-            
+
             var existingBuildDependsOnElement = root.Elements(ns + "PropertyGroup").Elements(ns + "BuildDependsOn").FirstOrDefault();
             if (existingBuildDependsOnElement == null)
             {
@@ -184,8 +182,7 @@ namespace Codartis.NsDepCop.Setup.CustomActions
                 return true;
             }
 
-            if (existingBuildDependsOnElement.Value != null &&
-                existingBuildDependsOnElement.Value.Contains("NsDepCop"))
+            if (existingBuildDependsOnElement.Value.Contains("NsDepCop"))
             {
                 session.Log("PropertyGroup/BuildDependOn already contains NsDepCop target.");
                 return true;
@@ -215,8 +212,7 @@ namespace Codartis.NsDepCop.Setup.CustomActions
                 return true;
             }
 
-            if (existingBuildDependsOnElement.Value == null ||
-                !existingBuildDependsOnElement.Value.Contains("NsDepCop"))
+            if (!existingBuildDependsOnElement.Value.Contains("NsDepCop"))
             {
                 session.Log("PropertyGroup/BuildDependOn does not contain NsDepCop. Leaving it as is.");
                 return true;

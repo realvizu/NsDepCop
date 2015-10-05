@@ -22,24 +22,19 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <summary>
         /// Descriptor for the 'Illegal namespace dependency' diagnostic.
         /// </summary>
-        private static readonly DiagnosticDescriptor _illegalDependencyDescriptor =
+        private static readonly DiagnosticDescriptor IllegalDependencyDescriptor =
             Constants.IllegalDependencyIssue.ToDiagnosticDescriptor();
 
         /// <summary>
         /// Descriptor for the 'Config exception' diagnostic.
         /// </summary>
-        private static readonly DiagnosticDescriptor _configExceptionDescriptor = 
+        private static readonly DiagnosticDescriptor ConfigExceptionDescriptor =
             Constants.ConfigExceptionIssue.ToDiagnosticDescriptor();
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-        {
-            get
-            {
-                return ImmutableArray.Create(
-                    _illegalDependencyDescriptor,
-                    _configExceptionDescriptor);
-            }
-        }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+            ImmutableArray.Create(
+                IllegalDependencyDescriptor,
+                ConfigExceptionDescriptor);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -49,7 +44,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 SyntaxKind.ElementAccessExpression);
         }
 
-        private void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
         {
             if (context.Node == null ||
                 context.SemanticModel == null)
@@ -58,14 +53,12 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             var syntaxNode = context.Node;
             var semanticModel = context.SemanticModel;
 
-            if (syntaxNode.SyntaxTree == null ||
-                string.IsNullOrWhiteSpace(syntaxNode.SyntaxTree.FilePath))
+            if (string.IsNullOrWhiteSpace(syntaxNode.SyntaxTree?.FilePath))
                 return;
 
             var sourceFilePath = syntaxNode.SyntaxTree.FilePath;
 
-            if (semanticModel.Compilation == null ||
-                string.IsNullOrWhiteSpace(semanticModel.Compilation.AssemblyName))
+            if (string.IsNullOrWhiteSpace(semanticModel.Compilation?.AssemblyName))
                 return;
 
             var assemblyName = semanticModel.Compilation.AssemblyName;
@@ -88,15 +81,15 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 ReportIllegalDependency(context, dependencyViolation, projectAnalyzer.IssueKind);
         }
 
-        private void ReportIllegalDependency(SyntaxNodeAnalysisContext context, DependencyViolation dependencyViolation, IssueKind issueKind)
+        private static void ReportIllegalDependency(SyntaxNodeAnalysisContext context, DependencyViolation dependencyViolation, IssueKind issueKind)
         {
             var diagnostic = CreateIllegalDependencyDiagnostic(context.Node, dependencyViolation, issueKind);
             context.ReportDiagnostic(diagnostic);
         }
 
-        private Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, DependencyViolation dependencyViolation, IssueKind issueKind)
+        private static Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, DependencyViolation dependencyViolation, IssueKind issueKind)
         {
-            var message = string.Format(_illegalDependencyDescriptor.MessageFormat.ToString(),
+            var message = string.Format(IllegalDependencyDescriptor.MessageFormat.ToString(),
                 dependencyViolation.IllegalDependency.From,
                 dependencyViolation.IllegalDependency.To,
                 dependencyViolation.ReferencingTypeName,
@@ -108,31 +101,31 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             var warningLevel = severity == DiagnosticSeverity.Error ? 0 : 1;
 
             return Diagnostic.Create(
-                _illegalDependencyDescriptor.Id,
-                _illegalDependencyDescriptor.Category,
+                IllegalDependencyDescriptor.Id,
+                IllegalDependencyDescriptor.Category,
                 message,
                 severity: severity,
-                defaultSeverity: _illegalDependencyDescriptor.DefaultSeverity,
+                defaultSeverity: IllegalDependencyDescriptor.DefaultSeverity,
                 isEnabledByDefault: true,
                 warningLevel: warningLevel,
                 location: Location.Create(node.SyntaxTree, node.Span),
-                helpLink: _illegalDependencyDescriptor.HelpLinkUri,
-                title: _illegalDependencyDescriptor.Title);
+                helpLink: IllegalDependencyDescriptor.HelpLinkUri,
+                title: IllegalDependencyDescriptor.Title);
         }
 
-        private void ReportConfigException(SyntaxNodeAnalysisContext context, Exception exception)
+        private static void ReportConfigException(SyntaxNodeAnalysisContext context, Exception exception)
         {
             var diagnostic = CreateConfigExceptionDiagnostic(context.Node, exception);
             context.ReportDiagnostic(diagnostic);
         }
 
-        private Diagnostic CreateConfigExceptionDiagnostic(SyntaxNode node, Exception exception)
+        private static Diagnostic CreateConfigExceptionDiagnostic(SyntaxNode node, Exception exception)
         {
             // The location should be the config.nsdepcop file, but we cannot use that because of a Roslyn 1.0 limitation: 
             // https://github.com/dotnet/roslyn/issues/3748#issuecomment-117231706
             // So we report the current syntax node's location.
             var location = Location.Create(node.SyntaxTree, node.Span);
-            return Diagnostic.Create(_configExceptionDescriptor, location, exception.Message);
+            return Diagnostic.Create(ConfigExceptionDescriptor, location, exception.Message);
         }
     }
 }

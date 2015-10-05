@@ -27,10 +27,11 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             _projectFilePath = projectFilePath;
         }
 
-        private bool IsConfigLoaded
-        {
-            get { return _config != null; }
-        }
+        private bool IsConfigLoaded => _config != null;
+        private bool IsConfigErroneous => _configException != null;
+
+        public IssueKind IssueKind => IsConfigLoaded ? _config.IssueKind : IssueKind.Error;
+        public Exception ConfigException => _configException;
 
         public ProjectAnalyzerState State
         {
@@ -39,7 +40,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 if (_configFileExists && IsConfigLoaded && _config.IsEnabled)
                     return ProjectAnalyzerState.Enabled;
 
-                if (_configFileExists && !IsConfigLoaded && _configException != null)
+                if (_configFileExists && !IsConfigLoaded && IsConfigErroneous)
                     return ProjectAnalyzerState.ConfigError;
 
                 if (!_configFileExists || (IsConfigLoaded && !_config.IsEnabled))
@@ -49,15 +50,6 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             }
         }
 
-        public IssueKind IssueKind
-        {
-            get { return IsConfigLoaded ? _config.IssueKind : IssueKind.Error; }
-        }
-
-        public Exception ConfigException
-        {
-            get { return _configException; }
-        }
 
         /// <summary>
         /// Performs namespace dependency analysis on a syntax node and returns the resulting violations.

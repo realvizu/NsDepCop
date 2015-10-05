@@ -58,8 +58,7 @@ namespace Codartis.NsDepCop.Core.Common
                 CacheHitCount++;
 
                 Debug.WriteLine(
-                    string.Format("Cache hit: dependency {0} is {1}.", dependency,
-                        isAllowed ? "allowed" : "disallowed"),
+                    $"Cache hit: dependency {dependency} is {(isAllowed ? "allowed" : "disallowed")}.",
                     Constants.TOOL_NAME);
             }
             else
@@ -72,8 +71,7 @@ namespace Codartis.NsDepCop.Core.Common
 
                 _alreadyAnalyzedDependencies.Add(dependency, isAllowed);
 
-                Debug.WriteLine(
-                    string.Format("Dependency {0} added to cache as {1}.", dependency, isAllowed ? "allowed" : "disallowed"),
+                Debug.WriteLine($"Dependency {dependency} added to cache as {(isAllowed ? "allowed" : "disallowed")}.", 
                     Constants.TOOL_NAME);
             }
 

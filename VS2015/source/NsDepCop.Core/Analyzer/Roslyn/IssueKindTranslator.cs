@@ -28,7 +28,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
                     return IssueKind.Warning;
                 default:
                     throw new InvalidCastException(
-                        string.Format("Cannot convert {0} to Codartis.NsDepCop.Core.IssueKind.", diagnosticSeverity));
+                        $"Cannot convert {diagnosticSeverity} to Codartis.NsDepCop.Core.IssueKind.");
             }
         }
 
@@ -51,7 +51,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
                     return DiagnosticSeverity.Warning;
                 default:
                     throw new InvalidCastException(
-                        string.Format("Cannot convert {0} to Microsoft.CodeAnalysis.DiagnosticSeverity.", issueKind));
+                        $"Cannot convert {issueKind} to Microsoft.CodeAnalysis.DiagnosticSeverity.");
             }
         }
     }

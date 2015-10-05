@@ -22,7 +22,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         {
             // Determine the type that contains the current syntax node.
             var enclosingType = DetermineEnclosingType(node, semanticModel);
-            if (enclosingType == null || enclosingType.ContainingNamespace == null)
+            if (enclosingType?.ContainingNamespace == null)
                 yield break;
 
             // Determine the type referenced by the symbol represented by the current syntax node.
@@ -49,9 +49,8 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         private static DependencyViolation ValidateDependency(ITypeSymbol fromType, ITypeSymbol toType,
             SyntaxNode node, DependencyValidator dependencyValidator)
         {
-            if (fromType == null ||
-                toType == null ||
-                toType.ContainingNamespace == null ||
+            if (fromType == null || 
+                toType?.ContainingNamespace == null || 
                 toType.TypeKind == TypeKind.Error)
                 return null;
 
@@ -100,24 +99,23 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         private static ITypeSymbol DetermineReferencedType(SyntaxNode node, SemanticModel semanticModel)
         {
             var typeSymbol = semanticModel.GetTypeInfo(node).Type;
+            if (typeSymbol != null)
+                return typeSymbol;
 
-            // Special cases
-            if (typeSymbol == null)
-            {
-                // Special case (or Roslyn bug?): 
-                // if we have an IdentifierNameSyntax inside an ObjectCreationExpression then 
-                // semanticModel.GetTypeInfo(node).Type returns null but
-                // semanticModel.GetSymbolInfo(node).Symbol returns the expected ITypeSymbol
-                var symbolInfo = semanticModel.GetSymbolInfo(node);
-                if (symbolInfo.Symbol is ITypeSymbol)
-                    typeSymbol = symbolInfo.Symbol as ITypeSymbol;
+            // Special case (or Roslyn bug?): 
+            // if we have an IdentifierNameSyntax inside an ObjectCreationExpression then 
+            // semanticModel.GetTypeInfo(node).Type returns null but
+            // semanticModel.GetSymbolInfo(node).Symbol returns the expected ITypeSymbol
+            var symbolInfo = semanticModel.GetSymbolInfo(node);
+            if (symbolInfo.Symbol is ITypeSymbol)
+                return symbolInfo.Symbol as ITypeSymbol;
 
-                // Special case: for method invocations we should check the return type
-                else if (symbolInfo.Symbol is IMethodSymbol)
-                    typeSymbol = (symbolInfo.Symbol as IMethodSymbol).ReturnType;
-            }
+            // Special case: for method invocations we should check the return type
+            if (symbolInfo.Symbol is IMethodSymbol)
+                return (symbolInfo.Symbol as IMethodSymbol).ReturnType;
 
-            return typeSymbol;
+            // Could not determine referenced type.
+            return null;
         }
 
         /// <summary>
