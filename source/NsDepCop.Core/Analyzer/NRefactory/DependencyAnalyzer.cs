@@ -30,10 +30,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         /// <summary>
         /// Gets the name of the parser.
         /// </summary>
-        public string ParserName
-        {
-            get { return "NRefactory"; }
-        }
+        public string ParserName => "NRefactory";
 
         /// <summary>
         /// Analyses a project (source files and referenced assemblies) and returns the found dependency violations.

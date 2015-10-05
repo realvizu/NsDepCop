@@ -41,7 +41,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         /// <summary>
         /// The collection of dependency violations that the syntax visitor found.
         /// </summary>
-        public List<DependencyViolation> DependencyViolations { get; private set; }
+        public List<DependencyViolation> DependencyViolations { get; }
 
         /// <summary>
         /// Initializes a new instance.
@@ -53,16 +53,16 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         public DependencyAnalyzerSyntaxVisitor(ICompilation compilation, SyntaxTree syntaxTree, NsDepCopConfig config, DependencyValidator dependencyValidator)
         {
             if (compilation == null)
-                throw new ArgumentNullException("compilation");
+                throw new ArgumentNullException(nameof(compilation));
 
             if (syntaxTree == null)
-                throw new ArgumentNullException("syntaxTree");
+                throw new ArgumentNullException(nameof(syntaxTree));
 
             if (config == null)
-                throw new ArgumentNullException("config");
+                throw new ArgumentNullException(nameof(config));
 
             if (dependencyValidator == null)
-                throw new ArgumentNullException("dependencyValidator");
+                throw new ArgumentNullException(nameof(dependencyValidator));
 
             _compilation = compilation;
             _syntaxTree = syntaxTree;
@@ -77,11 +77,11 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         public override void VisitIdentifier(Identifier identifier)
         {
             var newDependencyViolations = AnalyzeSyntaxNode(identifier).ToList();
-            if (newDependencyViolations.Any() && DependencyViolations.Count < _config.MaxIssueCount)
-            {
-                var maxElementsToAdd = Math.Min(_config.MaxIssueCount - DependencyViolations.Count, newDependencyViolations.Count);
-                DependencyViolations.AddRange(newDependencyViolations.Take(maxElementsToAdd));
-            }
+            if (!newDependencyViolations.Any() || DependencyViolations.Count >= _config.MaxIssueCount)
+                return;
+
+            var maxElementsToAdd = Math.Min(_config.MaxIssueCount - DependencyViolations.Count, newDependencyViolations.Count);
+            DependencyViolations.AddRange(newDependencyViolations.Take(maxElementsToAdd));
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         {
             // Determine the type that contains the current syntax node.
             var enclosingType = DetermineEnclosingType(node, _resolver);
-            if (enclosingType == null || enclosingType.Namespace == null)
+            if (enclosingType?.Namespace == null)
                 yield break;
 
             // Determine the type referenced by the symbol represented by the current syntax node.
@@ -118,8 +118,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         /// <returns>A DependencyViolation if the dependency is not allowed. Null otherwise.</returns>
         private DependencyViolation ValidateDependency(IType fromType, IType toType, AstNode node)
         {
-            if (fromType == null || fromType.Namespace == null ||
-                toType == null || toType.Namespace == null)
+            if (fromType?.Namespace == null || toType?.Namespace == null)
                 return null;
 
             // Get containing namespace for the declaring and the referenced type, in string format.
@@ -127,11 +126,9 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
             var to = toType.Namespace;
 
             // Check the rules whether this dependency is allowed.
-            if (_dependencyValidator.IsAllowedDependency(from, to))
-                return null;
-
-            // Create a result item for a dependency violation.
-            return CreateDependencyViolation(node, new Dependency(from, to), fromType, toType, _syntaxTree.FileName);
+            return _dependencyValidator.IsAllowedDependency(@from, to) 
+                ? null 
+                : CreateDependencyViolation(node, new Dependency(@from, to), fromType, toType, _syntaxTree.FileName);
         }
 
         /// <summary>
@@ -142,9 +139,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         /// <returns>The declaring type of the extension method or null if not applicable.</returns>
         private static IType DetermineExtensionMethodDeclaringType(AstNode node, CSharpAstResolver resolver)
         {
-            if (node == null ||
-                node.Parent == null ||
-                !(node.Parent.Parent is InvocationExpression))
+            if (!(node?.Parent?.Parent is InvocationExpression))
                 return null;
 
             var csharpInvocationResolveResult = resolver.Resolve(node.Parent.Parent) as CSharpInvocationResolveResult;

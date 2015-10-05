@@ -13,12 +13,12 @@ namespace Codartis.NsDepCop.Core.Common
         /// <summary>
         /// The dependency points from this namespace to the other.
         /// </summary>
-        public NamespaceSpecification From { get; private set; }
+        public NamespaceSpecification From { get; }
 
         /// <summary>
         /// The dependency points into this namespace.
         /// </summary>
-        public NamespaceSpecification To { get; private set; }
+        public NamespaceSpecification To { get; }
 
         /// <summary>
         /// Initializes a new instance.
@@ -28,10 +28,10 @@ namespace Codartis.NsDepCop.Core.Common
         public Dependency(NamespaceSpecification from, NamespaceSpecification to)
         {
             if (from == null)
-                throw new ArgumentNullException("from");
+                throw new ArgumentNullException(nameof(@from));
 
             if (to == null)
-                throw new ArgumentNullException("to");
+                throw new ArgumentNullException(nameof(to));
             
             From = from;
             To = to;

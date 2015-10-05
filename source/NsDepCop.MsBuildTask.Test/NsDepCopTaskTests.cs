@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace Codartis.NsDepCop.MsBuildTask.Test
@@ -17,12 +16,12 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
     /// Unit tests for the NsDepCopTask class.
     /// </summary>
     [TestClass]
-    public class NsDepCopTaskTests
+    public class NsDepCopTaskTests : NsDepCopTaskTestBase
     {
         [TestMethod]
         public void Execute_NoConfigFile()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_NoConfigFile",
                 ExpectedLogEntries = new[]
@@ -37,7 +36,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_NonXmlConfigFile()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_NonXmlConfigFile",
                 ExpectedLogEntries = new[]
@@ -53,7 +52,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_ConfigFileDisabled()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_ConfigDisabled",
                 ExpectedLogEntries = new[]
@@ -91,7 +90,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             var mockBuildEngine = MockRepository.GenerateStrictMock<IBuildEngine>();
             ExpectEvents(mockBuildEngine, expectedLogEntries);
 
-            var nsDepCopTask = new NsDepCopTask()
+            var nsDepCopTask = new NsDepCopTask
             {
                 BuildEngine = mockBuildEngine,
                 BaseDirectory = null,
@@ -104,7 +103,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_AllowedDependency()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_AllowedDependency",
                 SourceFileNames = new[] { "AllowedDependency.cs" },
@@ -114,7 +113,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_SameNamespaceAlwaysAllowed()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_SameNamespaceAlwaysAllowed",
                 SourceFileNames = new[] { "SameNamespaceAlwaysAllowed.cs" },
@@ -125,7 +124,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_IdentifierName_ReportWarning()
         {
             const string sourceFileName = "DepViolation_IdentifierName_ReportWarning.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_IdentifierName_ReportWarning",
                 SourceFileNames = new[] { sourceFileName },
@@ -149,7 +148,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_IdentifierName_ReportInfo()
         {
             const string sourceFileName = "DepViolation_IdentifierName_ReportInfo.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_IdentifierName_ReportInfo",
                 SourceFileNames = new[] { sourceFileName },
@@ -173,7 +172,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_IdentifierName_ReportError()
         {
             const string sourceFileName = "DepViolation_IdentifierName_ReportError.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_IdentifierName_ReportError",
                 SourceFileNames = new[] { sourceFileName },
@@ -198,7 +197,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_QualifiedName()
         {
             const string sourceFileName = "DepViolation_QualifiedName.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_QualifiedName",
                 SourceFileNames = new[] { sourceFileName },
@@ -222,7 +221,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_AliasQualifiedName()
         {
             const string sourceFileName = "DepViolation_AliasQualifiedName.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_AliasQualifiedName",
                 SourceFileNames = new[] { sourceFileName },
@@ -247,7 +246,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_InvocationExpression()
         {
             const string sourceFileName = "DepViolation_InvocationExpression.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_InvocationExpression",
                 SourceFileNames = new[] { sourceFileName },
@@ -301,7 +300,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_InvocationWithTypeArg()
         {
             const string sourceFileName = "DepViolation_InvocationWithTypeArg.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_InvocationWithTypeArg",
                 SourceFileNames = new[] { sourceFileName },
@@ -325,7 +324,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_MemberAccessExpression()
         {
             const string sourceFileName = "DepViolation_MemberAccessExpression.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_MemberAccessExpression",
                 SourceFileNames = new[] { sourceFileName },
@@ -349,7 +348,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_GenericName()
         {
             const string sourceFileName = "DepViolation_GenericName.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_GenericName",
                 SourceFileNames = new[] { sourceFileName },
@@ -373,7 +372,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_GenericTypeArgument()
         {
             const string sourceFileName = "DepViolation_GenericTypeArgument.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_GenericTypeArgument",
                 SourceFileNames = new[] { sourceFileName },
@@ -407,7 +406,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_NestedType()
         {
             const string sourceFileName = "DepViolation_NestedType.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_NestedType",
                 SourceFileNames = new[] { sourceFileName },
@@ -461,7 +460,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_ArrayType()
         {
             const string sourceFileName = "DepViolation_ArrayType.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ArrayType",
                 SourceFileNames = new[] { sourceFileName },
@@ -485,7 +484,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_NullableType()
         {
             const string sourceFileName = "DepViolation_NullableType.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_NullableType",
                 SourceFileNames = new[] { sourceFileName },
@@ -509,7 +508,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_EveryUserDefinedTypeKind()
         {
             const string sourceFileName = "DepViolation_EveryUserDefinedTypeKind.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_EveryUserDefinedTypeKind",
                 SourceFileNames = new[] { sourceFileName },
@@ -573,7 +572,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_TooManyIssues()
         {
             const string sourceFileName = "TooManyIssues.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_TooManyIssues",
                 SourceFileNames = new[] { sourceFileName },
@@ -607,7 +606,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_NoSourceFiles()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_NoSourceFiles",
             });
@@ -618,7 +617,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         {
             const string sourceFile1 = "SourceFile1.cs";
             const string sourceFile2 = "SourceFile2.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_MultipleSourceFiles",
                 SourceFileNames = new[] { sourceFile1, sourceFile2 },
@@ -651,7 +650,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_AllowedDependency_ByChildCanDependOnParentImplicitlyOption()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_ByChildCanDependOnParentImplicitlyOption",
                 SourceFileNames = new[] { "ChildToParentDependency.cs" },
@@ -662,7 +661,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_ExtensionMethodInvocation()
         {
             const string sourceFileName = "DepViolation_ExtensionMethodInvocation.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ExtensionMethodInvocation",
                 SourceFileNames = new[] { sourceFileName },
@@ -696,7 +695,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_ObjectCreationExpression()
         {
             const string sourceFileName = "DepViolation_ObjectCreationExpression.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ObjectCreationExpression",
                 SourceFileNames = new[] { sourceFileName },
@@ -746,6 +745,8 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         private static NsDepCopTask SetUpNsDepCopTaskForTest(TestCaseSpecification specification)
         {
             var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Assert.IsNotNull(assemblyDirectory);
+
             var baseDirectory = Path.Combine(assemblyDirectory, specification.TestFilesFolderName);
 
             var mockBuildEngine = MockRepository.GenerateStrictMock<IBuildEngine>();
@@ -767,27 +768,6 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             };
 
             return nsDepCopTask;
-        }
-
-        /// <summary>
-        /// Creates a collection of full path filenames from the given filenames and a base directory.
-        /// </summary>
-        /// <param name="baseDirecytory">A directory.</param>
-        /// <param name="sourceFileNames">A collection of filenames (without full path).</param>
-        /// <returns>A collection of full path filenames.</returns>
-        private static IEnumerable<string> CreateFullPathFileNames(string baseDirecytory, IEnumerable<string> sourceFileNames)
-        {
-            return sourceFileNames.EmptyIfNull().Select(i => FileNameToFullPath(baseDirecytory, i));
-        }
-
-        /// <summary>
-        /// Creates MSBuild an TaskItem array from the given string collection by wrapping the string content into TestTaskItem objects.
-        /// </summary>
-        /// <param name="payloadCollection">A string collection. The payload of the task items.</param>
-        /// <returns>A TaskItem array created from the given payload.</returns>
-        private static TestTaskItem[] CreateTaskItems(IEnumerable<string> payloadCollection)
-        {
-            return payloadCollection.EmptyIfNull().Select(i => new TestTaskItem(i)).ToArray();
         }
 
         /// <summary>
@@ -826,7 +806,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     break;
 
                 default:
-                    throw new Exception(string.Format("Unexpected IssueKind: {0}", expectedLogEntry.IssueKind));
+                    throw new Exception($"Unexpected IssueKind: {expectedLogEntry.IssueKind}");
                 }
             }
         }
@@ -882,19 +862,6 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             {
                     new LogEntryParameters { IssueKind = NsDepCopTask.TaskFinishedIssue.DefaultKind, Code = NsDepCopTask.TaskFinishedIssue.Id },
             });
-        }
-
-        /// <summary>
-        /// Converts a file name to full path by prepending a base directory.
-        /// </summary>
-        /// <param name="baseDirecytory">The full path of the base directory.</param>
-        /// <param name="fileName">The name of the file.</param>
-        /// <returns>The filename converted to full path.</returns>
-        private static string FileNameToFullPath(string baseDirecytory, string fileName)
-        {
-            return baseDirecytory != null && fileName != null
-                ? Path.Combine(baseDirecytory, fileName)
-                : null;
         }
     }
 }

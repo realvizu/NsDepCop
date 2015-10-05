@@ -30,10 +30,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// <summary>
         /// Gets the name of the parser.
         /// </summary>
-        public string ParserName
-        {
-            get { return "Roslyn"; }
-        }
+        public string ParserName => "Roslyn";
 
         /// <summary>
         /// Analyses a project (source files and referenced assemblies) and returns the found dependency violations.
@@ -48,7 +45,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
             IEnumerable<string> referencedAssemblyPaths)
         {
             var referencedAssemblies = referencedAssemblyPaths.Select(i => MetadataReference.CreateFromFile(i)).ToList();
-            var syntaxTrees = sourceFilePaths.Select(i => ParseFile(i)).ToList();
+            var syntaxTrees = sourceFilePaths.Select(ParseFile).ToList();
             var compilation = CSharpCompilation.Create("NsDepCopTaskProject", syntaxTrees, referencedAssemblies);
 
             foreach (var syntaxTree in syntaxTrees)

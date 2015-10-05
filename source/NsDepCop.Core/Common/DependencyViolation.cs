@@ -8,22 +8,22 @@
         /// <summary>
         /// The illegal dependency. Contains the two namespaces.
         /// </summary>
-        public Dependency IllegalDependency { get; private set; }
+        public Dependency IllegalDependency { get; }
 
         /// <summary>
         /// The name of the referencing type.
         /// </summary>
-        public string ReferencingTypeName { get; private set; }
+        public string ReferencingTypeName { get; }
 
         /// <summary>
         /// The name of the referenced type.
         /// </summary>
-        public string ReferencedTypeName { get; private set; }
+        public string ReferencedTypeName { get; }
 
         /// <summary>
         /// Specifies the source file and the start and end positions of the text that caused this dependency violation.
         /// </summary>
-        public SourceSegment SourceSegment { get; private set; }
+        public SourceSegment SourceSegment { get; }
 
         /// <summary>
         /// Initializes a new instance.

@@ -16,13 +16,13 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <summary>
         /// Cache for mapping source files to project files. The key is the source file name with full path.
         /// </summary>
-        private static readonly ConcurrentDictionary<string, string> _sourceFileToProjectFileMap =
+        private static readonly ConcurrentDictionary<string, string> SourceFileToProjectFileMap =
             new ConcurrentDictionary<string, string>();
 
         /// <summary>
         /// Cache for mapping project files to their analyzers. The key is the project file name with full path.
         /// </summary>
-        private static readonly ConcurrentDictionary<string, ProjectAnalyzer> _projectFileToAnalyzerMap =
+        private static readonly ConcurrentDictionary<string, ProjectAnalyzer> ProjectFileToAnalyzerMap =
             new ConcurrentDictionary<string, ProjectAnalyzer>();
 
         /// <summary>
@@ -34,15 +34,14 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         public static ProjectAnalyzer GetAnalyzer(string sourceFilePath, string assemblyName)
         {
             var projectFilePath = GetProjectFilePath(sourceFilePath, assemblyName);
-            if (projectFilePath == null)
-                return null;
-
-            return GetProjectAnalyzer(projectFilePath);
+            return projectFilePath == null 
+                ? null 
+                : GetProjectAnalyzer(projectFilePath);
         }
 
         private static ProjectAnalyzer GetProjectAnalyzer(string projectFilePath)
         {
-            var projectAnalyzer = _projectFileToAnalyzerMap.GetOrAdd(projectFilePath, i => CreateAnalyzer(i));
+            var projectAnalyzer = ProjectFileToAnalyzerMap.GetOrAdd(projectFilePath, CreateAnalyzer);
             projectAnalyzer.RefreshConfig();
             return projectAnalyzer;
         }
@@ -54,7 +53,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static string GetProjectFilePath(string sourceFilePath, string assemblyName)
         {
-            return _sourceFileToProjectFileMap.GetOrAdd(sourceFilePath, i => FindProjectFile(i, assemblyName));
+            return SourceFileToProjectFileMap.GetOrAdd(sourceFilePath, i => FindProjectFile(i, assemblyName));
         }
 
         private static string FindProjectFile(string sourceFilePath, string assemblyName)
@@ -73,14 +72,14 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                     }
 
                     var parentDirectory = Directory.GetParent(directoryPath);
-                    directoryPath = parentDirectory == null ? null : parentDirectory.FullName;
+                    directoryPath = parentDirectory?.FullName;
                 }
 
                 return null;
             }
             catch (Exception e)
             {
-                Trace.WriteLine(string.Format("Exception in FindProjectFile({0}, {1}): {2}", sourceFilePath, assemblyName, e));
+                Trace.WriteLine($"Exception in FindProjectFile({sourceFilePath}, {assemblyName}): {e}");
                 return null;
             }
         }
@@ -104,7 +103,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             }
             catch (Exception e)
             {
-                Trace.WriteLine(string.Format("Exception in IsProjectFileForAssembly({0}, {1}): {2}", projectFilePath, assemblyName, e));
+                Trace.WriteLine($"Exception in IsProjectFileForAssembly({projectFilePath}, {assemblyName}): {e}");
                 return false;
             }
         }

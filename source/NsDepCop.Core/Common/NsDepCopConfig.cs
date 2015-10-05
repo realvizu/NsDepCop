@@ -84,11 +84,11 @@ namespace Codartis.NsDepCop.Core.Common
             // Validate that it's an xml document and the root node is NsDepCopConfig.
             var configXml = XDocument.Load(configFilePath);
             if (configXml == null)
-                throw new Exception(string.Format("Could not load NsDepCop config file '{0}'.", configFilePath));
+                throw new Exception($"Could not load NsDepCop config file '{configFilePath}'.");
 
             var rootElement = configXml.Element("NsDepCopConfig");
             if (rootElement == null)
-                throw new Exception(string.Format("Error in NsDepCop config file '{0}', NsDepCopConfig root element not found.", configFilePath));
+                throw new Exception($"Error in NsDepCop config file '{configFilePath}', NsDepCopConfig root element not found.");
 
             // Parse attributes of the root node.
             IsEnabled = ParseAttribute(rootElement.Attribute("IsEnabled"), bool.TryParse, DEFAULT_IS_ENABLED_VALUE);
@@ -144,9 +144,7 @@ namespace Codartis.NsDepCop.Core.Common
             }
             catch (Exception e)
             {
-                Trace.WriteLine(
-                    string.Format("Error parsing config file: element '{0}' is invalid. ({1}) Ignoring element.",
-                    xElement, e.Message),
+                Trace.WriteLine($"Error parsing config file: element '{xElement}' is invalid. ({e.Message}) Ignoring element.",
                     Constants.TOOL_NAME);
             }
 
@@ -161,8 +159,7 @@ namespace Codartis.NsDepCop.Core.Common
         /// <returns>The value of the attribute or null if the attribute was not found.</returns>
         private static string GetAttributeValue(XElement xElement, string attributeName)
         {
-            var attribute = xElement.Attribute(attributeName);
-            return attribute == null ? null : attribute.Value;
+            return xElement.Attribute(attributeName)?.Value;
         }
 
         /// <summary>

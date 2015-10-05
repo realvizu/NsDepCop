@@ -14,6 +14,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Factory
         /// </summary>
         /// <param name="parserName">The name of the parser to be used.</param>
         /// <param name="config">The config object required by the analyzer.</param>
+        /// <param name="defaultParserType">The parser type to be used as default.</param>
         /// <returns>A new IDependencyAnalyzer object using the specified parser.</returns>
         public static IDependencyAnalyzer Create(string parserName, NsDepCopConfig config, ParserType defaultParserType)
         {
@@ -21,7 +22,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Factory
             if (!Enum.TryParse(parserName, out parserType))
             {
                 parserType = defaultParserType;
-                Debug.WriteLine(string.Format("Unrecognized parser name: '{0}'. Using: '{1}'.", parserName, parserType), Constants.TOOL_NAME);
+                Debug.WriteLine($"Unrecognized parser name: '{parserName}'. Using: '{parserType}'.", Constants.TOOL_NAME);
             }
 
             switch (parserType)
@@ -33,7 +34,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.Factory
                     return new Codartis.NsDepCop.Core.Analyzer.NRefactory.DependencyAnalyzer(config);
 
                 default:
-                    throw new Exception(string.Format("Unexpected Parser: {0}.", parserType));
+                    throw new Exception($"Unexpected Parser: {parserType}.");
             }
         }
     }

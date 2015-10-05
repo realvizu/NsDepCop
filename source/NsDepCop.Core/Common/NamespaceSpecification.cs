@@ -142,10 +142,9 @@ namespace Codartis.NsDepCop.Core.Common
         }
 
         /// <summary>
-        /// Returns all the different namespace specifications that can contain the given namespace.
+        /// Returns all the different namespace specifications that can contain this namespace.
         /// </summary>
-        /// <param name="namespaceSpecification">A concrete namespace name in string format.</param>
-        /// <returns>A collection of all NamespaceSpecifications that can contain the given namespace.</returns>
+        /// <returns>A collection of all NamespaceSpecifications that can contain this namespace.</returns>
         public IEnumerable<NamespaceSpecification> GetContainingNamespaceSpecifications()
         {
             // The AnyNamespace specification contains every namespace.

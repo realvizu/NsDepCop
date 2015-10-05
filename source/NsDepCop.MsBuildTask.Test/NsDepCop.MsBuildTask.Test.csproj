@@ -106,7 +106,9 @@
     <Content Include="TestFiles_DepViolation_EveryUserDefinedTypeKind\DepViolation_EveryUserDefinedTypeKind.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="AdHocNsDepCopTaskTests.cs" />
     <Compile Include="LogEntryParameters.cs" />
+    <Compile Include="NsDepCopTaskTestBase.cs" />
     <Compile Include="NsDepCopTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="TestFiles_AllowedDependency\AllowedDependency.cs">

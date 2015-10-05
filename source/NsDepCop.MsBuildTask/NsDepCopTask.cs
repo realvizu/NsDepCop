@@ -15,8 +15,8 @@ namespace Codartis.NsDepCop.MsBuildTask
     /// </summary>
     public class NsDepCopTask : Task
     {
-        private const ParserType DEFAULT_PARSER_TYPE = ParserType.Roslyn;
-        private const MessageImportance DEFAULT_MESSAGE_IMPORTANCE = MessageImportance.Normal;
+        private const ParserType DefaultParserType = ParserType.Roslyn;
+        private const MessageImportance DefaultMessageImportance = MessageImportance.Normal;
 
         public static IssueDescriptor TaskStartedIssue =
             new IssueDescriptor("NSDEPCOPSTART", IssueKind.Info, null, "Analysing project using {0}.");
@@ -59,7 +59,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         public ITaskItem InfoImportance { get; set; }
 
         private NsDepCopConfig _config;
-        private MessageImportance _currentMessageImportance = DEFAULT_MESSAGE_IMPORTANCE;
+        private MessageImportance _currentMessageImportance = DefaultMessageImportance;
 
         /// <summary>
         /// Executes the custom MsBuild task. Called by the MsBuild tool.
@@ -108,7 +108,7 @@ namespace Codartis.NsDepCop.MsBuildTask
 
                 // Create the code analyzer object.
                 var parserName = GetValueOfTaskItem(Parser);
-                var codeAnalyzer = DependencyAnalyzerFactory.Create(parserName, _config, DEFAULT_PARSER_TYPE);
+                var codeAnalyzer = DependencyAnalyzerFactory.Create(parserName, _config, DefaultParserType);
 
                 LogMsBuildEvent(TaskStartedIssue, codeAnalyzer.ParserName);
 
@@ -116,7 +116,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                 var dependencyViolations = codeAnalyzer.AnalyzeProject(
                     BaseDirectory.ItemSpec,
                     Compile.ToList().Select(i => i.ItemSpec),
-                    ReferencePath.ToList().Select(i => i.ItemSpec));
+                    ReferencePath.ToList().Select(i => i.ItemSpec)).ToList();
 
                 // Set return value (success indicator)
                 if (dependencyViolations.Any() && _config.IssueKind == IssueKind.Error)
@@ -158,9 +158,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// <returns>The string value (ItemSpec) of the TaskItem or null if not defined.</returns>
         private static string GetValueOfTaskItem(ITaskItem taskItem)
         {
-            return taskItem == null
-                    ? null
-                    : taskItem.ItemSpec;
+            return taskItem?.ItemSpec;
         }
 
         /// <summary>
@@ -168,11 +166,11 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// </summary>
         private void DebugDumpInputParameters()
         {
-            Debug.WriteLine(string.Format("  ReferencePath[{0}]", ReferencePath.Length), Constants.TOOL_NAME);
-            ReferencePath.ToList().ForEach(i => Debug.WriteLine(string.Format("    {0}", i.ItemSpec), Constants.TOOL_NAME));
-            Debug.WriteLine(string.Format("  Compile[{0}]", Compile.Length), Constants.TOOL_NAME);
-            Compile.ToList().ForEach(i => Debug.WriteLine(string.Format("    {0}", i.ItemSpec), Constants.TOOL_NAME));
-            Debug.WriteLine(string.Format("  BaseDirectory={0}", BaseDirectory.ItemSpec), Constants.TOOL_NAME);
+            Debug.WriteLine($"  ReferencePath[{ReferencePath.Length}]", Constants.TOOL_NAME);
+            ReferencePath.ToList().ForEach(i => Debug.WriteLine($"    {i.ItemSpec}", Constants.TOOL_NAME));
+            Debug.WriteLine($"  Compile[{Compile.Length}]", Constants.TOOL_NAME);
+            Compile.ToList().ForEach(i => Debug.WriteLine($"    {i.ItemSpec}", Constants.TOOL_NAME));
+            Debug.WriteLine($"  BaseDirectory={BaseDirectory.ItemSpec}", Constants.TOOL_NAME);
         }
 
         private void LogMsBuildEvent(IssueDescriptor issueDescriptor, params object[] messageParams)
@@ -188,7 +186,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         {
             var code = issueDescriptor.Id;
 
-            message = message == null ? issueDescriptor.Description : message;
+            message = message ?? issueDescriptor.Description;
             message = "[" + Constants.TOOL_NAME + "] " + message;
 
             string path = null;
@@ -226,11 +224,11 @@ namespace Codartis.NsDepCop.MsBuildTask
             }
         }
 
-        private MessageImportance ParseMessageImportance(string infoImportanceString)
+        private static MessageImportance ParseMessageImportance(string infoImportanceString)
         {
             MessageImportance result;
             if (!Enum.TryParse(infoImportanceString, out result))
-                result = DEFAULT_MESSAGE_IMPORTANCE;
+                result = DefaultMessageImportance;
 
             return result;
         }

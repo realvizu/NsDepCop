@@ -107,34 +107,34 @@ namespace Codartis.NsDepCop.Core.Test.Common
         [TestMethod]
         public void GetContainingNamespaceSpecifications_GlobalNamespace()
         {
-            var results = NamespaceSpecification.GlobalNamespace.GetContainingNamespaceSpecifications();
+            var results = NamespaceSpecification.GlobalNamespace.GetContainingNamespaceSpecifications().ToArray();
             var expectedElements = new[]
             {
                 new NamespaceSpecification("*"),
                 new NamespaceSpecification(".")
             };
-            expectedElements.Count().ShouldEqual(results.Count());
+            expectedElements.Length.ShouldEqual(results.Length);
             expectedElements.All(i => results.Contains(i)).ShouldBeTrue();
         }
 
         [TestMethod]
         public void GetContainingNamespaceSpecifications_SingleTagNamespace()
         {
-            var results = new NamespaceSpecification("A").GetContainingNamespaceSpecifications();
+            var results = new NamespaceSpecification("A").GetContainingNamespaceSpecifications().ToArray();
             var expectedElements = new[]
             {
                 new NamespaceSpecification("*"),
                 new NamespaceSpecification("A"),
                 new NamespaceSpecification("A.*"),
             };
-            expectedElements.Count().ShouldEqual(results.Count());
+            expectedElements.Length.ShouldEqual(results.Length);
             expectedElements.All(i => results.Contains(i)).ShouldBeTrue();
         }
 
         [TestMethod]
         public void GetContainingNamespaceSpecifications_MultiTagNamespace()
         {
-            var results = new NamespaceSpecification("A.B").GetContainingNamespaceSpecifications();
+            var results = new NamespaceSpecification("A.B").GetContainingNamespaceSpecifications().ToArray();
             var expectedElements = new[]
             {
                 new NamespaceSpecification("*"),
@@ -142,7 +142,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
                 new NamespaceSpecification("A.*"),
                 new NamespaceSpecification("A.B.*"),
             };
-            expectedElements.Count().ShouldEqual(results.Count());
+            expectedElements.Length.ShouldEqual(results.Length);
             expectedElements.All(i => results.Contains(i)).ShouldBeTrue();
         }
 
