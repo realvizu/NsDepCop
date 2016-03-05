@@ -12,7 +12,7 @@ namespace Codartis.NsDepCop.Core.Common
     /// <item>A concrete namespace, eg. 'System.IO'</item>
     /// <item>A concrete namespace and all subnamespaces, eg. 'System.IO.*'</item>
     /// <item>The global namespaces: '.'</item>
-    /// <item>Any namespaces: '*'</item>
+    /// <item>Any namespace: '*'</item>
     /// </list>
     /// </remarks>
     public class NamespaceSpecification : IEquatable<NamespaceSpecification>

@@ -23,8 +23,8 @@ namespace Codartis.NsDepCop.Core.Common
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
-        /// <param name="from">The starting point of the dependency.</param>
-        /// <param name="to">The starting point of the dependency.</param>
+        /// <param name="from">The source of the dependency.</param>
+        /// <param name="to">The target of the dependency.</param>
         public Dependency(NamespaceSpecification from, NamespaceSpecification to)
         {
             if (from == null)
@@ -40,8 +40,8 @@ namespace Codartis.NsDepCop.Core.Common
         /// <summary>
         /// Initilaizes a new instance by converting the string parameters to NamespaceSpecification objects.
         /// </summary>
-        /// <param name="from">A namespace specification in string format. The starting point of the dependency.</param>
-        /// <param name="to">A namespace specification in string format. The starting point of the dependency.</param>
+        /// <param name="from">A namespace specification in string format. The source of the dependency.</param>
+        /// <param name="to">A namespace specification in string format. The target of the dependency.</param>
         public Dependency(string from, string to)
             : this(new NamespaceSpecification(from, validate: false), new NamespaceSpecification(to, validate: false))
         { }
