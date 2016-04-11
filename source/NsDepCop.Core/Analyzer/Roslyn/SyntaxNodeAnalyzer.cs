@@ -16,9 +16,9 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// </summary>
         /// <param name="node">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the current document.</param>
-        /// <param name="dependencyValidator">The validator that decides whether a dependency is allowed.</param>
+        /// <param name="typeDependencyValidator">The validator that decides whether a dependency is allowed.</param>
         /// <returns>A list of dependency violations. Can be empty.</returns>
-        public static IEnumerable<DependencyViolation> Analyze(SyntaxNode node, SemanticModel semanticModel, DependencyValidator dependencyValidator)
+        public static IEnumerable<DependencyViolation> Analyze(SyntaxNode node, SemanticModel semanticModel, TypeDependencyValidator typeDependencyValidator)
         {
             // Determine the type that contains the current syntax node.
             var enclosingType = DetermineEnclosingType(node, semanticModel);
@@ -27,13 +27,13 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 
             // Determine the type referenced by the symbol represented by the current syntax node.
             var referencedType = DetermineReferencedType(node, semanticModel);
-            var referencedTypeDependencyViolation = ValidateDependency(enclosingType, referencedType, node, dependencyValidator);
+            var referencedTypeDependencyViolation = ValidateDependency(enclosingType, referencedType, node, typeDependencyValidator);
             if (referencedTypeDependencyViolation != null)
                 yield return referencedTypeDependencyViolation;
 
             // If this is an extension method invocation then determine the type declaring the extension method.
             var declaringType = DetermineExtensionMethodDeclaringType(node, semanticModel);
-            var declaringTypeDependencyViolation = ValidateDependency(enclosingType, declaringType, node, dependencyValidator);
+            var declaringTypeDependencyViolation = ValidateDependency(enclosingType, declaringType, node, typeDependencyValidator);
             if (declaringTypeDependencyViolation != null)
                 yield return declaringTypeDependencyViolation;
         }
@@ -44,10 +44,10 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// <param name="fromType">The referring type.</param>
         /// <param name="toType">The referenced type.</param>
         /// <param name="node">The syntax node currently analyzed.</param>
-        /// <param name="dependencyValidator">The validator that decides whether a dependency is allowed.</param>
+        /// <param name="typeDependencyValidator">The validator that decides whether a dependency is allowed.</param>
         /// <returns>A DependencyViolation if the dependency is not allowed. Null otherwise.</returns>
         private static DependencyViolation ValidateDependency(ITypeSymbol fromType, ITypeSymbol toType,
-            SyntaxNode node, DependencyValidator dependencyValidator)
+            SyntaxNode node, TypeDependencyValidator typeDependencyValidator)
         {
             if (fromType == null || 
                 toType?.ContainingNamespace == null || 
@@ -55,16 +55,16 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
                 return null;
 
             // Get containing namespace for the declaring and the referenced type, in string format.
-            var from = fromType.ContainingNamespace.ToDisplayString();
-            var to = toType.ContainingNamespace.ToDisplayString();
+            var fromNamespace = fromType.ContainingNamespace.ToDisplayString();
+            var toNamespace = toType.ContainingNamespace.ToDisplayString();
 
             // Check the rules whether this dependency is allowed.
-            if (dependencyValidator.IsAllowedDependency(from, to))
+            if (typeDependencyValidator.IsAllowedDependency(fromNamespace, fromType.MetadataName, toNamespace, toType.MetadataName))
                 return null;
 
             // Create a result item for a dependency violation.
             return new DependencyViolation(
-                new Dependency(from, to),
+                new Dependency(fromNamespace, toNamespace),
                 fromType.ToDisplayString(),
                 toType.ToDisplayString(),
                 GetSourceSegment(node));

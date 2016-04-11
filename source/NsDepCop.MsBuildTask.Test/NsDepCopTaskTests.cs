@@ -715,6 +715,40 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             });
         }
 
+        [TestMethod]
+        public void Execute_DepViolation_AllowedDependencyInvisibleMembers()
+        {
+            const string sourceFileName = "AllowedDependencyInvisibleMembers.cs";
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_AllowedDependencyInvisibleMembers",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.IllegalDependencyIssue.Id,
+                        Path = sourceFileName,
+                        StartLine = 7,
+                        StartColumn = 19,
+                        EndLine = 7,
+                        EndColumn = 33
+                    },
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.IllegalDependencyIssue.Id,
+                        Path = sourceFileName,
+                        StartLine = 8,
+                        StartColumn = 19,
+                        EndLine = 8,
+                        EndColumn = 33
+                    },
+                },
+            });
+        }
+
         /// <summary>
         /// Executes the test case using both analyzers.
         /// </summary>

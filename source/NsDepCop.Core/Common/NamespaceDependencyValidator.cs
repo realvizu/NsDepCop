@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Diagnostics;
 
 namespace Codartis.NsDepCop.Core.Common
@@ -7,36 +6,20 @@ namespace Codartis.NsDepCop.Core.Common
     /// <summary>
     /// Validates dependencies to a set of allowed/disallowed rules.
     /// </summary>
-    public class DependencyValidator
+    public class NamespaceDependencyValidator
     {
         private readonly ImmutableHashSet<Dependency> _allowedDependencies;
         private readonly ImmutableHashSet<Dependency> _disallowedDependencies;
-        private readonly Dictionary<Dependency, bool> _alreadyAnalyzedDependencies;
         private readonly bool _childCanDependOnParentImplicitly;
 
-        public int CacheHitCount { get; private set; }
-        public int CacheMissCount { get; private set; }
-
-        public DependencyValidator(
+        public NamespaceDependencyValidator(
             ImmutableHashSet<Dependency> allowedDependencies, 
             ImmutableHashSet<Dependency> disallowedDependencies,
             bool childCanDependOnParentImplicitly = false)
         {
             _allowedDependencies = allowedDependencies;
             _disallowedDependencies = disallowedDependencies;
-            _alreadyAnalyzedDependencies = new Dictionary<Dependency, bool>();
             _childCanDependOnParentImplicitly = childCanDependOnParentImplicitly;
-            CacheHitCount = 0;
-            CacheMissCount = 0;
-        }
-
-        public double CacheEfficiencyPercent
-        {
-            get
-            {
-                var totalCount = CacheHitCount + CacheMissCount;
-                return totalCount == 0 ? 0 : (double) CacheHitCount/totalCount;
-            }
         }
 
         /// <summary>
@@ -45,37 +28,18 @@ namespace Codartis.NsDepCop.Core.Common
         /// <param name="fromNamespace">The namespace that depends on the other.</param>
         /// <param name="toNamespace">The namespace that the other namespace depends on.</param>
         /// <returns>True if the dependency is allowed, false otherwise.</returns>
-        public bool IsAllowedDependency(string fromNamespace, string toNamespace)
+        public virtual bool IsAllowedDependency(string fromNamespace, string toNamespace)
         {
             if (fromNamespace == toNamespace)
                 return true;
 
             var dependency = new Dependency(fromNamespace, toNamespace);
 
-            bool isAllowed;
-            if (_alreadyAnalyzedDependencies.TryGetValue(dependency, out isAllowed))
-            {
-                CacheHitCount++;
+            var isNamespaceDependencyAllowed = (IsAllowedBecauseChildCanDependOnParent(dependency.From, dependency.To) 
+                    || IsMathingDependencyFound(_allowedDependencies, dependency.From, dependency.To, IsAllowedToString(true)))
+                    && !IsMathingDependencyFound(_disallowedDependencies, dependency.From, dependency.To, IsAllowedToString(false));
 
-                Debug.WriteLine(
-                    $"Cache hit: dependency {dependency} is {(isAllowed ? "allowed" : "disallowed")}.",
-                    Constants.TOOL_NAME);
-            }
-            else
-            {
-                CacheMissCount++;
-
-                isAllowed = (IsAllowedBecauseChildCanDependOnParent(dependency.From, dependency.To) 
-                    || IsMathingDependencyFound(_allowedDependencies, dependency.From, dependency.To, "allowed"))
-                    && !IsMathingDependencyFound(_disallowedDependencies, dependency.From, dependency.To, "disallowed");
-
-                _alreadyAnalyzedDependencies.Add(dependency, isAllowed);
-
-                Debug.WriteLine($"Dependency {dependency} added to cache as {(isAllowed ? "allowed" : "disallowed")}.", 
-                    Constants.TOOL_NAME);
-            }
-
-            return isAllowed;
+            return isNamespaceDependencyAllowed;
         }
 
         private bool IsAllowedBecauseChildCanDependOnParent(NamespaceSpecification fromNamespace, NamespaceSpecification toNamespace)
@@ -104,6 +68,11 @@ namespace Codartis.NsDepCop.Core.Common
 
             // No matching rule was found.
             return false;
+        }
+
+        protected static string IsAllowedToString(bool isAllowed)
+        {
+            return isAllowed ? "allowed" : "disallowed";
         }
     }
 }
