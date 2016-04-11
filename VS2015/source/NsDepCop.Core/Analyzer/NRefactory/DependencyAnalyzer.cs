@@ -11,26 +11,21 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
     /// <summary>
     /// Dependency analyzer implemented with NRefactory.
     /// </summary>
-    public class DependencyAnalyzer : IDependencyAnalyzer
+    public class DependencyAnalyzer : DependencyAnalyzerBase
     {
-        private readonly NsDepCopConfig _config;
-        private readonly DependencyValidator _dependencyValidator;
-
         /// <summary>
         /// Creates a new instance.
         /// </summary>
         /// <param name="config">Config object.</param>
-        public DependencyAnalyzer(NsDepCopConfig config)
+        public DependencyAnalyzer(NsDepCopConfig config) 
+            : base(config)
         {
-            _config = config;
-            _dependencyValidator = new DependencyValidator(config.AllowedDependencies, config.DisallowedDependencies,
-                config.ChildCanDependOnParentImplicitly);
         }
 
         /// <summary>
         /// Gets the name of the parser.
         /// </summary>
-        public string ParserName => "NRefactory";
+        public override string ParserName => "NRefactory";
 
         /// <summary>
         /// Analyses a project (source files and referenced assemblies) and returns the found dependency violations.
@@ -39,7 +34,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         /// <param name="sourceFilePaths">A collection of the full path of source files.</param>
         /// <param name="referencedAssemblyPaths">A collection of the full path of referenced assemblies.</param>
         /// <returns>A collection of dependency violations. Empty collection if none found.</returns>
-        public IEnumerable<DependencyViolation> AnalyzeProject(
+        public override IEnumerable<DependencyViolation> AnalyzeProject(
             string baseDirectory,
             IEnumerable<string> sourceFilePaths,
             IEnumerable<string> referencedAssemblyPaths)
@@ -79,12 +74,14 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
             var compilation = project.CreateCompilation();
             foreach (var syntaxTree in syntaxTrees)
             {
-                var visitor = new DependencyAnalyzerSyntaxVisitor(compilation, syntaxTree, _config, _dependencyValidator);
+                var visitor = new DependencyAnalyzerSyntaxVisitor(compilation, syntaxTree, Config, TypeDependencyValidator);
                 syntaxTree.AcceptVisitor(visitor);
 
                 foreach (var dependencyViolation in visitor.DependencyViolations)
                     yield return dependencyViolation;
             }
+
+            DebugDumpCacheStatistics();
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         /// <summary>
         /// The validator that decides whether a dependency is allowed.
         /// </summary>
-        private readonly DependencyValidator _dependencyValidator;
+        private readonly TypeDependencyValidator _typeDependencyValidator;
 
         /// <summary>
         /// The collection of dependency violations that the syntax visitor found.
@@ -49,8 +49,8 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         /// <param name="compilation">The representation of the current project.</param>
         /// <param name="syntaxTree">The syntax tree that this visitor operates on.</param>
         /// <param name="config">The configuration of the tool.</param>
-        /// <param name="dependencyValidator">The validator that decides whether a dependency is allowed.</param>
-        public DependencyAnalyzerSyntaxVisitor(ICompilation compilation, SyntaxTree syntaxTree, NsDepCopConfig config, DependencyValidator dependencyValidator)
+        /// <param name="typeDependencyValidator">The validator that decides whether a dependency is allowed.</param>
+        public DependencyAnalyzerSyntaxVisitor(ICompilation compilation, SyntaxTree syntaxTree, NsDepCopConfig config, TypeDependencyValidator typeDependencyValidator)
         {
             if (compilation == null)
                 throw new ArgumentNullException(nameof(compilation));
@@ -61,13 +61,13 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
 
-            if (dependencyValidator == null)
-                throw new ArgumentNullException(nameof(dependencyValidator));
+            if (typeDependencyValidator == null)
+                throw new ArgumentNullException(nameof(typeDependencyValidator));
 
             _compilation = compilation;
             _syntaxTree = syntaxTree;
             _config = config;
-            _dependencyValidator = dependencyValidator;
+            _typeDependencyValidator = typeDependencyValidator;
 
             _resolver = new CSharpAstResolver(_compilation, _syntaxTree);
 
@@ -122,13 +122,13 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
                 return null;
 
             // Get containing namespace for the declaring and the referenced type, in string format.
-            var from = fromType.Namespace;
-            var to = toType.Namespace;
+            var fromNamespace = fromType.Namespace;
+            var toNamespace = toType.Namespace;
 
             // Check the rules whether this dependency is allowed.
-            return _dependencyValidator.IsAllowedDependency(@from, to) 
+            return _typeDependencyValidator.IsAllowedDependency(fromNamespace, fromType.Name, toNamespace, toType.Name) 
                 ? null 
-                : CreateDependencyViolation(node, new Dependency(@from, to), fromType, toType, _syntaxTree.FileName);
+                : CreateDependencyViolation(node, new Dependency(fromNamespace, toNamespace), fromType, toType, _syntaxTree.FileName);
         }
 
         /// <summary>

@@ -61,6 +61,13 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Content Include="TestFiles_AllowedDependencyInvisibleMembers\AllowedDependencyInvisibleMembers.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles_AllowedDependencyInvisibleMembers\config.nsdepcop">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="TestFiles_NoConfigFile\Placeholder.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -231,6 +238,7 @@
   <ItemGroup>
     <Content Include="TestFiles_NonXmlConfigFile\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>

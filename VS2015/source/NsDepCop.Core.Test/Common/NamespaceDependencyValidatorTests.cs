@@ -6,14 +6,14 @@ using SoftwareApproach.TestingExtensions;
 namespace Codartis.NsDepCop.Core.Test.Common
 {
     [TestClass]
-    public class DependencyValidatorTests
+    public class NamespaceDependencyValidatorTests
     {
         [TestMethod]
         public void NoRule_SameIsAllowed()
         {
             var allowedDependencies = ImmutableHashSet.Create<Dependency>();
             var disallowedDependencies = ImmutableHashSet.Create<Dependency>();
-            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies);
+            var dependencyValidator = new NamespaceDependencyValidator(allowedDependencies, disallowedDependencies);
 
             dependencyValidator.IsAllowedDependency(".", ".").ShouldBeTrue();
             dependencyValidator.IsAllowedDependency("A", "A").ShouldBeTrue();
@@ -25,7 +25,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         {
             var allowedDependencies = ImmutableHashSet.Create<Dependency>();
             var disallowedDependencies = ImmutableHashSet.Create<Dependency>();
-            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies);
+            var dependencyValidator = new NamespaceDependencyValidator(allowedDependencies, disallowedDependencies);
 
             dependencyValidator.IsAllowedDependency("A", ".").ShouldBeFalse();
             dependencyValidator.IsAllowedDependency("A", "B").ShouldBeFalse();
@@ -37,7 +37,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         {
             var allowedDependencies = ImmutableHashSet.Create(new Dependency("A", "B"));
             var disallowedDependencies = ImmutableHashSet.Create<Dependency>();
-            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies);
+            var dependencyValidator = new NamespaceDependencyValidator(allowedDependencies, disallowedDependencies);
 
             dependencyValidator.IsAllowedDependency("A", "B").ShouldBeTrue();
 
@@ -51,7 +51,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         {
             var allowedDependencies = ImmutableHashSet.Create(new Dependency("*", "*"));
             var disallowedDependencies = ImmutableHashSet.Create<Dependency>();
-            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies);
+            var dependencyValidator = new NamespaceDependencyValidator(allowedDependencies, disallowedDependencies);
 
             dependencyValidator.IsAllowedDependency("A", ".").ShouldBeTrue();
             dependencyValidator.IsAllowedDependency("B", ".").ShouldBeTrue();
@@ -67,7 +67,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         {
             var allowedDependencies = ImmutableHashSet.Create(new Dependency("A.*", "B.*"));
             var disallowedDependencies = ImmutableHashSet.Create<Dependency>();
-            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies);
+            var dependencyValidator = new NamespaceDependencyValidator(allowedDependencies, disallowedDependencies);
 
             dependencyValidator.IsAllowedDependency("A", "B").ShouldBeTrue();
             dependencyValidator.IsAllowedDependency("A", "B.A").ShouldBeTrue();
@@ -87,7 +87,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         {
             var allowedDependencies = ImmutableHashSet.Create(new Dependency("*", "*"));
             var disallowedDependencies = ImmutableHashSet.Create(new Dependency("A", "B"));
-            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies);
+            var dependencyValidator = new NamespaceDependencyValidator(allowedDependencies, disallowedDependencies);
 
             dependencyValidator.IsAllowedDependency("A", ".").ShouldBeTrue();
             dependencyValidator.IsAllowedDependency("A.B", "B").ShouldBeTrue();
@@ -101,7 +101,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         {
             var allowedDependencies = ImmutableHashSet.Create(new Dependency("*", "*"));
             var disallowedDependencies = ImmutableHashSet.Create(new Dependency("A.*", "B.*"));
-            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies);
+            var dependencyValidator = new NamespaceDependencyValidator(allowedDependencies, disallowedDependencies);
 
             dependencyValidator.IsAllowedDependency("A", ".").ShouldBeTrue();
             dependencyValidator.IsAllowedDependency("A", "C").ShouldBeTrue();
@@ -121,7 +121,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         {
             var allowedDependencies = ImmutableHashSet.Create(new Dependency("A", "B"));
             var disallowedDependencies = ImmutableHashSet.Create(new Dependency("A", "B"));
-            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies);
+            var dependencyValidator = new NamespaceDependencyValidator(allowedDependencies, disallowedDependencies);
 
             dependencyValidator.IsAllowedDependency("A", "B").ShouldBeFalse();
         }
@@ -131,7 +131,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         {
             var allowedDependencies = ImmutableHashSet.Create<Dependency>();
             var disallowedDependencies = ImmutableHashSet.Create<Dependency>();
-            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies, true);
+            var dependencyValidator = new NamespaceDependencyValidator(allowedDependencies, disallowedDependencies, true);
 
             dependencyValidator.IsAllowedDependency("A", ".").ShouldBeTrue();
             dependencyValidator.IsAllowedDependency("A.B", ".").ShouldBeTrue();
@@ -145,7 +145,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         {
             var allowedDependencies = ImmutableHashSet.Create<Dependency>();
             var disallowedDependencies = ImmutableHashSet.Create(new Dependency("A.B", "A"));
-            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies, true);
+            var dependencyValidator = new NamespaceDependencyValidator(allowedDependencies, disallowedDependencies, true);
 
             dependencyValidator.IsAllowedDependency("A", ".").ShouldBeTrue();
             dependencyValidator.IsAllowedDependency("A.B", ".").ShouldBeTrue();
@@ -159,7 +159,7 @@ namespace Codartis.NsDepCop.Core.Test.Common
         {
             var allowedDependencies = ImmutableHashSet.Create<Dependency>();
             var disallowedDependencies = ImmutableHashSet.Create(new Dependency("A.*", "A"));
-            var dependencyValidator = new DependencyValidator(allowedDependencies, disallowedDependencies, true);
+            var dependencyValidator = new NamespaceDependencyValidator(allowedDependencies, disallowedDependencies, true);
 
             dependencyValidator.IsAllowedDependency("A", ".").ShouldBeTrue();
             dependencyValidator.IsAllowedDependency("A.B", ".").ShouldBeTrue();

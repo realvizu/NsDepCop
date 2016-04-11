@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace Codartis.NsDepCop.Core.Common
@@ -50,6 +51,12 @@ namespace Codartis.NsDepCop.Core.Common
         public ImmutableHashSet<Dependency> DisallowedDependencies { get; private set; }
 
         /// <summary>
+        /// Dictionary of visible type by namespace. The Key is the name of a namespace, 
+        /// the Value is a set of type names defines in the namespace and visible outside of the namespace.
+        /// </summary>
+        public ImmutableDictionary<string, ImmutableHashSet<string>> VisibleTypesByNamespace { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance with default values.
         /// </summary>
         private NsDepCopConfig()
@@ -59,6 +66,7 @@ namespace Codartis.NsDepCop.Core.Common
             MaxIssueCount = DEFAULT_MAX_ISSUE_REPORTED;
             AllowedDependencies = ImmutableHashSet.Create<Dependency>();
             DisallowedDependencies = ImmutableHashSet.Create<Dependency>();
+            VisibleTypesByNamespace = ImmutableDictionary.Create<string, ImmutableHashSet<string>>();
         }
 
         /// <summary>
@@ -94,11 +102,59 @@ namespace Codartis.NsDepCop.Core.Common
             IsEnabled = ParseAttribute(rootElement.Attribute("IsEnabled"), bool.TryParse, DEFAULT_IS_ENABLED_VALUE);
             IssueKind = ParseAttribute(rootElement.Attribute("CodeIssueKind"), Enum.TryParse, DEFAULT_ISSUE_KIND);
             MaxIssueCount = ParseAttribute(rootElement.Attribute("MaxIssueCount"), int.TryParse, DEFAULT_MAX_ISSUE_REPORTED);
-            ChildCanDependOnParentImplicitly = ParseAttribute(rootElement.Attribute("ChildCanDependOnParentImplicitly"), 
+            ChildCanDependOnParentImplicitly = ParseAttribute(rootElement.Attribute("ChildCanDependOnParentImplicitly"),
                 bool.TryParse, DEFAULT_CHILD_CAN_DEPEND_ON_PARENT_IMPLICITLY);
 
             AllowedDependencies = BuildDependencySet(rootElement, "Allowed");
             DisallowedDependencies = BuildDependencySet(rootElement, "Disallowed");
+            VisibleTypesByNamespace = BuildVisibleMembersDictionary(rootElement, "VisibleMembers");
+        }
+
+        /// <summary>
+        /// Builds an immutable dictionary containing visible namespace members parsed from the given XElement root with the given element name. 
+        /// </summary>
+        /// <param name="rootElement">Root of elements to be parsed.</param>
+        /// <param name="elementName">The name of the elements to be parsed.</param>
+        /// <returns>An immutable dictionary containing visible namespace members.</returns>
+        private static ImmutableDictionary<string, ImmutableHashSet<string>> BuildVisibleMembersDictionary(XElement rootElement, string elementName)
+        {
+            var result = ImmutableDictionary.CreateBuilder<string, ImmutableHashSet<string>>();
+
+            foreach (var xElement in rootElement.Elements(elementName))
+            {
+                var namespaceName = GetAttributeValue(xElement, "OfNamespace");
+                if (namespaceName == null)
+                    throw new Exception("OfNamespace element missing.");
+
+                var visibleTypeNames = BuildVisibleTypeSet(xElement, "Type");
+                if (visibleTypeNames.Any())
+                    result.Add(namespaceName, visibleTypeNames);
+            }
+
+            return result.ToImmutable();
+        }
+
+        /// <summary>
+        /// Builds an immutable hashset containing type names parsed from the given XElement root with the given element name. 
+        /// </summary>
+        /// <param name="rootElement">Root of elements to be parsed.</param>
+        /// <param name="elementName">The name of the elements to be parsed.</param>
+        /// <returns>An immutable set of type names.</returns>
+        private static ImmutableHashSet<string> BuildVisibleTypeSet(XElement rootElement, string elementName)
+        {
+            var builder = ImmutableHashSet.CreateBuilder<string>();
+
+            foreach (var xElement in rootElement.Elements(elementName))
+            {
+                var typeName = GetAttributeValue(xElement, "Name");
+                if (typeName == null)
+                    throw new Exception("Name element missing.");
+
+                if (!string.IsNullOrWhiteSpace(typeName))
+                    builder.Add(typeName);
+            }
+
+            return builder.ToImmutable();
         }
 
         /// <summary>

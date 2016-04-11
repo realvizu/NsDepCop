@@ -20,7 +20,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private DateTime _configLastReadUtc;
         private Exception _configException;
         private NsDepCopConfig _config;
-        private DependencyValidator _dependencyValidator;
+        private TypeDependencyValidator _typeDependencyValidator;
 
         public ProjectAnalyzer(string projectFilePath)
         {
@@ -59,7 +59,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <returns>A collection of dependency violations or empty collection if found none.</returns>
         public IEnumerable<DependencyViolation> AnalyzeNode(SyntaxNode node, SemanticModel semanticModel)
         {
-            return SyntaxNodeAnalyzer.Analyze(node, semanticModel, _dependencyValidator);
+            return SyntaxNodeAnalyzer.Analyze(node, semanticModel, _typeDependencyValidator);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             {
                 _configException = null;
                 _config = null;
-                _dependencyValidator = null;
+                _typeDependencyValidator = null;
                 return;
             }
 
@@ -89,17 +89,18 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
                     _configException = null;
                     _config = new NsDepCopConfig(_configPath);
-                    _dependencyValidator = new DependencyValidator(
+                    _typeDependencyValidator = new TypeDependencyValidator(
                         _config.AllowedDependencies,
                         _config.DisallowedDependencies,
-                        _config.ChildCanDependOnParentImplicitly);
+                        _config.ChildCanDependOnParentImplicitly,
+                        _config.VisibleTypesByNamespace);
                 }
             }
             catch (Exception e)
             {
                 _configException = e;
                 _config = null;
-                _dependencyValidator = null;
+                _typeDependencyValidator = null;
             }
         }
 
