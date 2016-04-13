@@ -4,8 +4,8 @@
     <Allowed From="A" To="B" />
 
     <VisibleMembers OfNamespace="B">
-        <Type Name="VisibleType1" />
-        <Type Name="VisibleType2" />
+        <Type Name="VisibleType" />
+        <Type Name="OnlyGenericIsVisibleType`1" />
     </VisibleMembers>
     
 </NsDepCopConfig>

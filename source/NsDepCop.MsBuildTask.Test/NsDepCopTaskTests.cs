@@ -730,10 +730,10 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         IssueKind = IssueKind.Warning,
                         Code = Constants.IllegalDependencyIssue.Id,
                         Path = sourceFileName,
-                        StartLine = 7,
+                        StartLine = 6,
                         StartColumn = 19,
-                        EndLine = 7,
-                        EndColumn = 33
+                        EndLine = 6,
+                        EndColumn = 32
                     },
                     new LogEntryParameters
                     {
@@ -743,7 +743,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                         StartLine = 8,
                         StartColumn = 19,
                         EndLine = 8,
-                        EndColumn = 33
+                        EndColumn = 43
+                    },
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = Constants.IllegalDependencyIssue.Id,
+                        Path = sourceFileName,
+                        StartLine = 9,
+                        StartColumn = 19,
+                        EndLine = 9,
+                        EndColumn = 39
                     },
                 },
             });

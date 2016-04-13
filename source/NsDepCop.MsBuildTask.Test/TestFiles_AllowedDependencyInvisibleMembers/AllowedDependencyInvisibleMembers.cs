@@ -1,25 +1,29 @@
 ﻿namespace A
 {
-    public class AllowedSourceType1
+    public class MyClass
     {
-        private B.VisibleType1 field1;
-        private B.VisibleType2 field2;
-        private B.InvisibleType1 field3;
-        private B.InvisibleType2 field4;
+        private B.VisibleType field1;
+        private B.InvisibleType field2;
+        private B.OnlyGenericIsVisibleType<int> field3;
+        private B.OnlyGenericIsVisibleType field4;
+        private B.InvisibleGenericType<int> field5;
     }
 }
 
 namespace B
 {
-    public enum VisibleType1
+    public enum VisibleType
     { }
 
-    public class VisibleType2
+    public enum InvisibleType
     { }
 
-    public enum InvisibleType1
+    public class OnlyGenericIsVisibleType<T>
     { }
 
-    public class InvisibleType2
+    public class OnlyGenericIsVisibleType
+    { }
+
+    public class InvisibleGenericType<T>
     { }
 }

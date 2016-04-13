@@ -126,7 +126,7 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
             var toNamespace = toType.Namespace;
 
             // Check the rules whether this dependency is allowed.
-            return _typeDependencyValidator.IsAllowedDependency(fromNamespace, fromType.Name, toNamespace, toType.Name) 
+            return _typeDependencyValidator.IsAllowedDependency(fromNamespace, fromType.GetMetadataName(), toNamespace, toType.GetMetadataName()) 
                 ? null 
                 : CreateDependencyViolation(node, new Dependency(fromNamespace, toNamespace), fromType, toType, _syntaxTree.FileName);
         }
