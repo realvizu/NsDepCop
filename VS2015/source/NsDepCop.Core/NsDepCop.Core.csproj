@@ -136,6 +136,7 @@
     <Compile Include="Analyzer\Factory\ParserType.cs" />
     <Compile Include="Analyzer\NRefactory\DependencyAnalyzer.cs" />
     <Compile Include="Analyzer\NRefactory\DependencyAnalyzerSyntaxVisitor.cs" />
+    <Compile Include="Analyzer\NRefactory\ITypeExtensions.cs" />
     <Compile Include="Analyzer\Roslyn\DependencyAnalyzer.cs" />
     <Compile Include="Common\DependencyAnalyzerBase.cs" />
     <Compile Include="Analyzer\Roslyn\DependencyAnalyzerSyntaxVisitor.cs" />
