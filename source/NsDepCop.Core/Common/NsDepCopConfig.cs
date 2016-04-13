@@ -128,7 +128,12 @@ namespace Codartis.NsDepCop.Core.Common
 
                 var visibleTypeNames = BuildVisibleTypeSet(xElement, "Type");
                 if (visibleTypeNames.Any())
-                    result.Add(namespaceName, visibleTypeNames);
+                {
+                    if (result.ContainsKey(namespaceName))
+                        result[namespaceName] = result[namespaceName].Union(visibleTypeNames);
+                    else
+                        result.Add(namespaceName, visibleTypeNames);
+                }
             }
 
             return result.ToImmutable();

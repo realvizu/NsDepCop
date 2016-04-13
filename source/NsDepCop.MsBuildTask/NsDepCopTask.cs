@@ -18,13 +18,13 @@ namespace Codartis.NsDepCop.MsBuildTask
         private const ParserType DefaultParserType = ParserType.Roslyn;
         private const MessageImportance DefaultMessageImportance = MessageImportance.Normal;
 
-        public static IssueDescriptor TaskStartedIssue =
+        public static readonly IssueDescriptor TaskStartedIssue =
             new IssueDescriptor("NSDEPCOPSTART", IssueKind.Info, null, "Analysing project using {0}.");
 
-        public static IssueDescriptor TaskFinishedIssue =
+        public static readonly IssueDescriptor TaskFinishedIssue =
             new IssueDescriptor("NSDEPCOPFINISH", IssueKind.Info, null, "Analysis took: {0:mm\\:ss\\.fff}");
 
-        public static IssueDescriptor TaskExceptionIssue =
+        public static readonly IssueDescriptor TaskExceptionIssue =
             new IssueDescriptor("NSDEPCOPEX", IssueKind.Error, null, "Exception during NsDepCopTask execution: {0}");
 
         /// <summary>
