@@ -7,7 +7,7 @@
         <PreviewImage>NsDepCop_256.ico</PreviewImage>
         <TemplateID>NsDepCop.ItemTemplate.ConfigFile</TemplateID>
         <ProjectType>CSharp</ProjectType>
-        <RequiredFrameworkVersion>4.5</RequiredFrameworkVersion>
+        <AppliesTo>CSharp</AppliesTo>
         <DefaultName>config.nsdepcop</DefaultName>
     </TemplateData>
     <TemplateContent>
