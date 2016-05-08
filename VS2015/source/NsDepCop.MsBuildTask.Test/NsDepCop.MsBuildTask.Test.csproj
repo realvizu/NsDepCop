@@ -143,6 +143,9 @@
     <Compile Include="TestFiles_DepViolation_ObjectCreationExpression\DepViolation_ObjectCreationExpression.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Content Include="TestFiles_SameNamespaceAllowedEvenWhenVisibleMembersDefined\SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="TestTaskItem.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -280,6 +283,10 @@
     </Content>
     <Content Include="TestFiles_DepViolation_ObjectCreationExpression\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles_SameNamespaceAllowedEvenWhenVisibleMembersDefined\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,4 +6,11 @@
     <Allowed From="Codartis.NsDepCop.Core.Analyzer.Roslyn" To="Microsoft.CodeAnalysis.*" />
     <Allowed From="Codartis.NsDepCop.Core.Analyzer.Factory" To="Codartis.NsDepCop.Core.Analyzer.NRefactory" />
     <Allowed From="Codartis.NsDepCop.Core.Analyzer.Factory" To="Codartis.NsDepCop.Core.Analyzer.Roslyn" />
+
+    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Analyzer.NRefactory">
+        <Type Name="DependencyAnalyzer" />
+    </VisibleMembers>
+    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Analyzer.Roslyn">
+        <Type Name="DependencyAnalyzer" />
+    </VisibleMembers>
 </NsDepCopConfig>

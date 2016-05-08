@@ -33,6 +33,10 @@ namespace Codartis.NsDepCop.Core.Common
         /// <returns>True if the dependency is allowed, false otherwise.</returns>
         public bool IsAllowedDependency(string fromNamespace, string sourceType, string toNamespace, string targeType)
         {
+            // Inside a namespace dependencies are not restricted.
+            if (fromNamespace == toNamespace)
+                return true;
+
             return _namespaceDependencyValidator.IsAllowedDependency(fromNamespace, toNamespace)
                 && _typeVisibilityValidator.IsTypeVisible(toNamespace, targeType);
         }
