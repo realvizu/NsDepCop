@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Common
+﻿namespace Codartis.NsDepCop.Core.Analyzer.Common
 {
     /// <summary>
     /// Provides cache statistics.

@@ -2,7 +2,7 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 
-namespace Codartis.NsDepCop.Core.Common
+namespace Codartis.NsDepCop.Core.Analyzer.Common
 {
     /// <summary>
     /// Validates dependencies to a set of allowed/disallowed rules and caches the results.

@@ -1,9 +1,8 @@
-﻿using Codartis.NsDepCop.Core.Common;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {
@@ -29,12 +28,10 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
         /// <summary>
         /// Analyses a project (source files and referenced assemblies) and returns the found dependency violations.
         /// </summary>
-        /// <param name="baseDirectory">The full path of the base directory of the project.</param>
         /// <param name="sourceFilePaths">A collection of the full path of source files.</param>
         /// <param name="referencedAssemblyPaths">A collection of the full path of referenced assemblies.</param>
         /// <returns>A collection of dependency violations. Empty collection if none found.</returns>
         public override IEnumerable<DependencyViolation> AnalyzeProject(
-            string baseDirectory,
             IEnumerable<string> sourceFilePaths,
             IEnumerable<string> referencedAssemblyPaths)
         {
@@ -55,6 +52,11 @@ namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
             }
 
             DebugDumpCacheStatistics();
+        }
+
+        public IEnumerable<DependencyViolation> AnalyzeNode(SyntaxNode node, SemanticModel semanticModel)
+        {
+            return SyntaxNodeAnalyzer.Analyze(node, semanticModel, TypeDependencyValidator);
         }
 
         private static SyntaxTree ParseFile(string fileName)

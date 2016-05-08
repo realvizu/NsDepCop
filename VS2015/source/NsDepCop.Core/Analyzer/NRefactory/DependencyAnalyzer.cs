@@ -1,10 +1,9 @@
-﻿using Codartis.NsDepCop.Core.Common;
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.TypeSystem;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using ICSharpCode.NRefactory.CSharp;
+using ICSharpCode.NRefactory.TypeSystem;
 
 namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
 {
@@ -30,12 +29,10 @@ namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
         /// <summary>
         /// Analyses a project (source files and referenced assemblies) and returns the found dependency violations.
         /// </summary>
-        /// <param name="baseDirectory">The full path of the base directory of the project.</param>
         /// <param name="sourceFilePaths">A collection of the full path of source files.</param>
         /// <param name="referencedAssemblyPaths">A collection of the full path of referenced assemblies.</param>
         /// <returns>A collection of dependency violations. Empty collection if none found.</returns>
         public override IEnumerable<DependencyViolation> AnalyzeProject(
-            string baseDirectory,
             IEnumerable<string> sourceFilePaths,
             IEnumerable<string> referencedAssemblyPaths)
         {

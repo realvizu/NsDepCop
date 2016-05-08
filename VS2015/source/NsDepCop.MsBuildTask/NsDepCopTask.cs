@@ -1,5 +1,4 @@
-﻿using Codartis.NsDepCop.Core.Analyzer.Factory;
-using Codartis.NsDepCop.Core.Common;
+﻿using Codartis.NsDepCop.Core;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;
@@ -114,7 +113,6 @@ namespace Codartis.NsDepCop.MsBuildTask
 
                 // Run the analysis for the whole project.
                 var dependencyViolations = codeAnalyzer.AnalyzeProject(
-                    BaseDirectory.ItemSpec,
                     Compile.ToList().Select(i => i.ItemSpec),
                     ReferencePath.ToList().Select(i => i.ItemSpec)).ToList();
 

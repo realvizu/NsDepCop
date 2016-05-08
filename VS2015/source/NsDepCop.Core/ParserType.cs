@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Analyzer.Factory
+﻿namespace Codartis.NsDepCop.Core
 {
     /// <summary>
     /// Enumerates the parsers that can be used in the system.

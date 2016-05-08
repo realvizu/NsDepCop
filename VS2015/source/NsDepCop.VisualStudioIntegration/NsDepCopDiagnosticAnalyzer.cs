@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Immutable;
+using Codartis.NsDepCop.Core;
 using Codartis.NsDepCop.Core.Analyzer.Roslyn;
-using Codartis.NsDepCop.Core.Common;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;

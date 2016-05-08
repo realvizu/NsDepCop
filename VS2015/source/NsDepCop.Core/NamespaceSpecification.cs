@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Codartis.NsDepCop.Core.Common
+namespace Codartis.NsDepCop.Core
 {
     /// <summary>
     /// Represents a namespace or a namespace tree.

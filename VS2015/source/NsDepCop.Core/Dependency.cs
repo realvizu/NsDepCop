@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Codartis.NsDepCop.Core.Common
+namespace Codartis.NsDepCop.Core
 {
     /// <summary>
     /// Represents a dependency between 2 namespace specifications.
