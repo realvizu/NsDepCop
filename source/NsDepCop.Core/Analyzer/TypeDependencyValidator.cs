@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using Codartis.NsDepCop.Core.Analyzer.Common;
 
-namespace Codartis.NsDepCop.Core.Common
+namespace Codartis.NsDepCop.Core.Analyzer
 {
     /// <summary>
     /// Determines whether a given type-to-type dependency is allowed.

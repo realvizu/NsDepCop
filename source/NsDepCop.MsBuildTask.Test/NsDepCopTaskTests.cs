@@ -1,6 +1,4 @@
-﻿using Codartis.NsDepCop.Core.Analyzer.Factory;
-using Codartis.NsDepCop.Core.Common;
-using Microsoft.Build.Framework;
+﻿using Microsoft.Build.Framework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 using SoftwareApproach.TestingExtensions;
@@ -9,6 +7,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using Codartis.NsDepCop.Core;
+using Codartis.NsDepCop.Core.Analyzer.Common;
 
 namespace Codartis.NsDepCop.MsBuildTask.Test
 {

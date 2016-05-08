@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Common
+﻿namespace Codartis.NsDepCop.Core
 {
     /// <summary>
     /// Constant values used in the NsDepCop tool.

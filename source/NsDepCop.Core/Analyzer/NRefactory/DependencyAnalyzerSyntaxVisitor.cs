@@ -1,10 +1,9 @@
-﻿using Codartis.NsDepCop.Core.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.TypeSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Codartis.NsDepCop.Core.Analyzer.NRefactory
 {

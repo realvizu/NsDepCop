@@ -1,8 +1,7 @@
-﻿using Codartis.NsDepCop.Core.Common;
-using System;
+﻿using System;
 using System.Diagnostics;
 
-namespace Codartis.NsDepCop.Core.Analyzer.Factory
+namespace Codartis.NsDepCop.Core
 {
     /// <summary>
     /// Factory for IDependencyAnalyzer objects.
@@ -27,11 +26,11 @@ namespace Codartis.NsDepCop.Core.Analyzer.Factory
 
             switch (parserType)
             {
-                case (ParserType.Roslyn):
-                    return new Codartis.NsDepCop.Core.Analyzer.Roslyn.DependencyAnalyzer(config);
+                case ParserType.Roslyn:
+                    return new Analyzer.Roslyn.DependencyAnalyzer(config);
 
-                case (ParserType.NRefactory):
-                    return new Codartis.NsDepCop.Core.Analyzer.NRefactory.DependencyAnalyzer(config);
+                case ParserType.NRefactory:
+                    return new Analyzer.NRefactory.DependencyAnalyzer(config);
 
                 default:
                     throw new Exception($"Unexpected Parser: {parserType}.");

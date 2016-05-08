@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Common
+﻿namespace Codartis.NsDepCop.Core
 {
     /// <summary>
     /// Represents the info that describes a namespace dependency violation.

@@ -1,8 +1,7 @@
-﻿using Codartis.NsDepCop.Core.Common;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {

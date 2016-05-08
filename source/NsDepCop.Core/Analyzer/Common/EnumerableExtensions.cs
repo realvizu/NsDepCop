@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace Codartis.NsDepCop.Core.Common
+namespace Codartis.NsDepCop.Core.Analyzer.Common
 {
     /// <summary>
     /// Static helper class that implements extension methods for IEnumerable[T]

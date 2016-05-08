@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Codartis.NsDepCop.Core.Common
+namespace Codartis.NsDepCop.Core
 {
     /// <summary>
     /// Represents the configuration of the tool.

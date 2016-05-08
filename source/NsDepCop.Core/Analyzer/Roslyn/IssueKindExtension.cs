@@ -1,5 +1,4 @@
-﻿using Codartis.NsDepCop.Core.Common;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.Core.Analyzer.Roslyn
 {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Codartis.NsDepCop.Core;
 using Codartis.NsDepCop.Core.Analyzer.Roslyn;
-using Codartis.NsDepCop.Core.Common;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
@@ -20,7 +20,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private DateTime _configLastReadUtc;
         private Exception _configException;
         private NsDepCopConfig _config;
-        private TypeDependencyValidator _typeDependencyValidator;
+        private DependencyAnalyzer _dependencyAnalyzer;
 
         public ProjectAnalyzer(string projectFilePath)
         {
@@ -59,7 +59,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <returns>A collection of dependency violations or empty collection if found none.</returns>
         public IEnumerable<DependencyViolation> AnalyzeNode(SyntaxNode node, SemanticModel semanticModel)
         {
-            return SyntaxNodeAnalyzer.Analyze(node, semanticModel, _typeDependencyValidator);
+            return _dependencyAnalyzer.AnalyzeNode(node, semanticModel);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             {
                 _configException = null;
                 _config = null;
-                _typeDependencyValidator = null;
+                _dependencyAnalyzer = null;
                 return;
             }
 
@@ -89,18 +89,14 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
                     _configException = null;
                     _config = new NsDepCopConfig(_configPath);
-                    _typeDependencyValidator = new TypeDependencyValidator(
-                        _config.AllowedDependencies,
-                        _config.DisallowedDependencies,
-                        _config.ChildCanDependOnParentImplicitly,
-                        _config.VisibleTypesByNamespace);
+                    _dependencyAnalyzer = new DependencyAnalyzer(_config);
                 }
             }
             catch (Exception e)
             {
                 _configException = e;
                 _config = null;
-                _typeDependencyValidator = null;
+                _dependencyAnalyzer = null;
             }
         }
 
