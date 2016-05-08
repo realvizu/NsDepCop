@@ -121,6 +121,16 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [TestMethod]
+        public void Execute_SameNamespaceAllowedEvenWhenVisibleMembersDefined()
+        {
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_SameNamespaceAllowedEvenWhenVisibleMembersDefined",
+                SourceFileNames = new[] { "SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs" },
+            });
+        }
+
+        [TestMethod]
         public void Execute_DepViolation_IdentifierName_ReportWarning()
         {
             const string sourceFileName = "DepViolation_IdentifierName_ReportWarning.cs";
