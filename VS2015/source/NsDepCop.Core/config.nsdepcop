@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="True">
+<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
     <Allowed From="*" To="System.*" />
     <Allowed From="Codartis.NsDepCop.Core" To="Codartis.NsDepCop.Core.Analyzer.NRefactory" />
     <Allowed From="Codartis.NsDepCop.Core" To="Codartis.NsDepCop.Core.Analyzer.Roslyn" />

@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <xs:element name="NsDepCopConfig">
+			<xs:annotation>
+				<xs:documentation>
+					The root tag for NsDepCop config files. Add any number of Allowed, Disallowed and VisibleMembers children in any order.
+				</xs:documentation>
+			</xs:annotation>       
+			<xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="Allowed" type="NamespaceDependecySpecification">
+					<xs:annotation>
+						<xs:documentation>
+							Defines an allowed namespace dependency.
+						</xs:documentation>
+					</xs:annotation>  				
+				</xs:element>
+                <xs:element name="Disallowed" type="NamespaceDependecySpecification">
+					<xs:annotation>
+						<xs:documentation>
+							Defines a disallowed namespace dependency.
+						</xs:documentation>
+					</xs:annotation>  				
+				</xs:element>
+                <xs:element name="VisibleMembers" type="TypeListOfNamespace">
+					<xs:annotation>
+						<xs:documentation>
+							Defines the types of a namespace that are visible from outside. If not defined then all types are visible.
+						</xs:documentation>
+					</xs:annotation>  				
+				</xs:element>
+            </xs:choice>
+            <xs:attribute name="IsEnabled" type="xs:boolean" use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						Set to true to perform analysis on the current project, false to skip analysis. Default is true.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+            <xs:attribute name="CodeIssueKind" type="CodeIssueKind" use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						Sets the severity of the dependency violations: Info, Warning (default), Error.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+            <xs:attribute name="ChildCanDependOnParentImplicitly" type="xs:boolean" use="optional">
+				<xs:annotation>
+					<xs:documentation>
+						Set to true to enable types to depend on any other types defined in parent namespaces. Default: false (for backward compatibility).
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="CodeIssueKind" >
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Info" />
+            <xs:enumeration value="Warning" />
+            <xs:enumeration value="Error" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="NamespaceDependecySpecification">
+        <xs:attribute name="From" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+					The fully qualified name of the namespace that depends on the other namespace.
+				</xs:documentation>
+			</xs:annotation>  				
+		</xs:attribute>
+        <xs:attribute name="To" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+					The fully qualified name of the namespace that the other namespace depends on.
+				</xs:documentation>
+			</xs:annotation>  				
+		</xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="TypeListOfNamespace">
+        <xs:sequence>
+            <xs:element name="Type" type="TypeName" minOccurs="0" maxOccurs="unbounded">			
+				<xs:annotation>
+					<xs:documentation>
+						Specifies a type.
+					</xs:documentation>
+				</xs:annotation> 		
+			</xs:element>
+        </xs:sequence>
+        <xs:attribute name="OfNamespace" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+					The fully qualified name of the namespace whose types are listed.
+				</xs:documentation>
+			</xs:annotation> 		
+		</xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="TypeName">
+        <xs:attribute name="Name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+					A type name without namespace qualification. (Generic type names in metadata format, eg: List`1)
+				</xs:documentation>
+			</xs:annotation> 		
+		</xs:attribute>
+    </xs:complexType>
+</xs:schema>

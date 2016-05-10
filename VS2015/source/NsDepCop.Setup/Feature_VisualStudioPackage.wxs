@@ -4,6 +4,7 @@
     <Fragment>
 
         <PropertyRef Id="VS2015DEVENV"/>
+        <PropertyRef Id="VS2015_SCHEMAS_DIR"/>
 
         <Feature Id="Feature_VisualStudioPackage"
                  Title="Visual Studio 2015 integration"
@@ -13,6 +14,7 @@
                  TypicalDefault="install"
                  AllowAdvertise="no">
             <ComponentGroupRef Id="ComponentGroup_VisualStudioPackage" />
+            <ComponentGroupRef Id="ComponentGroup_NsDepCopConfigSchema" />
             <Condition Level="0"><![CDATA[NOT VS2015DEVENV]]></Condition>
         </Feature>
 
@@ -27,6 +29,27 @@
                                      Vital="yes"
                                      Permanent="no"/>
                 </File>
+            </Component>
+        </ComponentGroup>
+
+        <DirectoryRef Id="TARGETDIR">
+            <Directory Id="VS2015_SCHEMAS_DIR"/>
+        </DirectoryRef>
+
+        <ComponentGroup Id="ComponentGroup_NsDepCopConfigSchema" 
+                        Directory="VS2015_SCHEMAS_DIR">
+            <Component Id="Component_NsDepCopConfig.xsd"
+                       Guid="4C438DD8-D9BB-4C53-8D61-0EAEE0B26B5D">
+                <File Id="File_NsDepCopConfig.xsd"
+                      Source="NsDepCopConfigSchema\NsDepCopConfig.xsd"
+                      KeyPath="yes"  />
+            </Component>
+
+            <Component Id="Component_NsDepCopCatalog.xml"
+                       Guid="F1EBF1EE-414B-4FF0-AD68-D37900E4CD82">
+                <File Id="File_NsDepCopCatalog.xml"
+                      Source="NsDepCopConfigSchema\NsDepCopCatalog.xml"
+                      KeyPath="yes" />
             </Component>
         </ComponentGroup>
 

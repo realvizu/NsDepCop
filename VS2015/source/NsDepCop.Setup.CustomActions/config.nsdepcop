@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning">
+<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning">
     <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System" />
     <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System.Collections.Generic" />
     <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System.IO" />
