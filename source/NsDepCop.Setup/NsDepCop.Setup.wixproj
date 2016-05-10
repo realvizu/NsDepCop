@@ -84,11 +84,16 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="NsDepCopConfigSchema\NsDepCopCatalog.xml" />
+    <Content Include="NsDepCopConfigSchema\NsDepCopConfig.xsd" />
     <Content Include="NsDepCop_256.ico" />
     <Content Include="SetupBackground.png" />
     <Content Include="SetupTopBanner.png" />
     <Content Include="uninstall_withlog.cmd" />
     <Content Include="install_withlog.cmd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NsDepCopConfigSchema\" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
