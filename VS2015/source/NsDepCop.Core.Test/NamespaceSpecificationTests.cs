@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
-using System;
+﻿using System;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SoftwareApproach.TestingExtensions;
 
-namespace Codartis.NsDepCop.Core.Test.Common
+namespace Codartis.NsDepCop.Core.Test
 {
     [TestClass]
     public class NamespaceSpecificationTests

@@ -3,7 +3,7 @@ using Codartis.NsDepCop.Core.Analyzer.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareApproach.TestingExtensions;
 
-namespace Codartis.NsDepCop.Core.Test.Common
+namespace Codartis.NsDepCop.Core.Test.Analyzer.Common
 {
     [TestClass]
     public class NamespaceDependencyValidatorTests
