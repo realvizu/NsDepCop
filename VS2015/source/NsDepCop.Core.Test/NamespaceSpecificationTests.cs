@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Codartis.NsDepCop.Core.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareApproach.TestingExtensions;
 

@@ -1,10 +1,11 @@
-﻿using Codartis.NsDepCop.Core;
-using Microsoft.Build.Framework;
+﻿using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Codartis.NsDepCop.Core.Factory;
+using Codartis.NsDepCop.Core.Interface;
 
 namespace Codartis.NsDepCop.MsBuildTask
 {

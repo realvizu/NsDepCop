@@ -8,7 +8,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Codartis.NsDepCop.Core;
-using Codartis.NsDepCop.Core.Analyzer.Common;
+using Codartis.NsDepCop.Core.Factory;
+using Codartis.NsDepCop.Core.Interface;
 
 namespace Codartis.NsDepCop.MsBuildTask.Test
 {

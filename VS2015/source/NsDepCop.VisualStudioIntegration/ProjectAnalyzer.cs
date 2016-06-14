@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Codartis.NsDepCop.Core;
-using Codartis.NsDepCop.Core.Analyzer.Roslyn;
+using Codartis.NsDepCop.Core.Factory;
+using Codartis.NsDepCop.Core.Implementation.Roslyn;
+using Codartis.NsDepCop.Core.Interface;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
@@ -89,7 +90,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
                     _configException = null;
                     _config = new NsDepCopConfig(_configPath);
-                    _dependencyAnalyzer = new DependencyAnalyzer(_config);
+                    _dependencyAnalyzer = DependencyAnalyzerFactory.Create(ParserType.Roslyn, _config) as DependencyAnalyzer;
                 }
             }
             catch (Exception e)
