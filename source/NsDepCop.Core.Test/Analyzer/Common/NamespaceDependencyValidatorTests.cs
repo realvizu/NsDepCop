@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
-using Codartis.NsDepCop.Core.Analyzer.Common;
+using Codartis.NsDepCop.Core.Implementation.Common;
+using Codartis.NsDepCop.Core.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareApproach.TestingExtensions;
 

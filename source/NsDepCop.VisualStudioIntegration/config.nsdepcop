@@ -2,10 +2,11 @@
 <NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning">
     <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="System.*" />
     <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Microsoft.CodeAnalysis.*" />
-    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core" />
-    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.Analyzer.Roslyn" />
+    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.Interface" />
+    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.Factory" />
+    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.Implementation.Roslyn" />
 
-    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Analyzer.Roslyn">
+    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Implementation.Roslyn">
         <Type Name="DependencyAnalyzer" />
         <Type Name="IssueKindExtension" />
     </VisibleMembers>

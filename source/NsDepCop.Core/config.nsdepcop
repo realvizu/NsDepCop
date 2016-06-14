@@ -1,16 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
     <Allowed From="*" To="System.*" />
-    <Allowed From="Codartis.NsDepCop.Core" To="Codartis.NsDepCop.Core.Analyzer.NRefactory" />
-    <Allowed From="Codartis.NsDepCop.Core" To="Codartis.NsDepCop.Core.Analyzer.Roslyn" />
-    <Allowed From="Codartis.NsDepCop.Core.Analyzer.NRefactory" To="ICSharpCode.NRefactory.*" />
-    <Allowed From="Codartis.NsDepCop.Core.Analyzer.Roslyn" To="Microsoft.CodeAnalysis.*" />
-    <Allowed From="Codartis.NsDepCop.Core.Analyzer.*" To="Codartis.NsDepCop.Core.Analyzer.Common" />
+    <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Interface" />
+    <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.*" />
 
-    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Analyzer.NRefactory">
+    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Implementation.Common">
+        <Type Name="TypeDependencyValidator" />
+    </VisibleMembers>
+    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Implementation.NRefactory">
         <Type Name="DependencyAnalyzer" />
     </VisibleMembers>
-    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Analyzer.Roslyn">
+    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Implementation.Roslyn">
         <Type Name="DependencyAnalyzer" />
     </VisibleMembers>
+
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.*" To="Codartis.NsDepCop.Core.Interface" />
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.NRefactory" To="ICSharpCode.NRefactory.*" />
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.Roslyn" To="Microsoft.CodeAnalysis.*" />
 </NsDepCopConfig>

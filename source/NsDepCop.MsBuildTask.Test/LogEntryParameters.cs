@@ -1,4 +1,4 @@
-﻿using Codartis.NsDepCop.Core;
+﻿using Codartis.NsDepCop.Core.Interface;
 
 namespace Codartis.NsDepCop.MsBuildTask.Test
 {
