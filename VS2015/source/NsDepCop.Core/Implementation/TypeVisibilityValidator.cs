@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace Codartis.NsDepCop.Core.Implementation.Common
+namespace Codartis.NsDepCop.Core.Implementation
 {
     /// <summary>
     /// Validates dependencies to a set of allowed/disallowed rules and namespace surface definitions.

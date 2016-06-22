@@ -1,12 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
+<NsDepCopConfig IsEnabled="true" CodeIssueKind="Error" ChildCanDependOnParentImplicitly="true">
     <Allowed From="*" To="System.*" />
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Interface" />
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.*" />
 
-    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Implementation.Common">
-        <Type Name="TypeDependencyValidator" />
-    </VisibleMembers>
     <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Implementation.NRefactory">
         <Type Name="DependencyAnalyzer" />
     </VisibleMembers>

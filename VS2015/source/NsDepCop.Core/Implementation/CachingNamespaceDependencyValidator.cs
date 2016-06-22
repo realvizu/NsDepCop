@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using Codartis.NsDepCop.Core.Interface;
 
-namespace Codartis.NsDepCop.Core.Implementation.Common
+namespace Codartis.NsDepCop.Core.Implementation
 {
     /// <summary>
     /// Validates dependencies to a set of allowed/disallowed rules and caches the results.

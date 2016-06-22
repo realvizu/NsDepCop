@@ -15,9 +15,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        /// <param name="config">Config object.</param>
-        public DependencyAnalyzer(NsDepCopConfig config, ITypeDependencyValidator typeDependencyValidator)
-            : base(config, typeDependencyValidator)
+        /// <param name="configFileName">The name and full path of the config file required by the analyzer.</param>
+        public DependencyAnalyzer(string configFileName)
+            : base(configFileName)
         {
         }
 
@@ -36,13 +36,15 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
             IEnumerable<string> sourceFilePaths,
             IEnumerable<string> referencedAssemblyPaths)
         {
+            EnsureValidStateForAnalysis();
+
             var referencedAssemblies = referencedAssemblyPaths.Select(i => MetadataReference.CreateFromFile(i)).ToList();
             var syntaxTrees = sourceFilePaths.Select(ParseFile).ToList();
             var compilation = CSharpCompilation.Create("NsDepCopTaskProject", syntaxTrees, referencedAssemblies);
 
             foreach (var syntaxTree in syntaxTrees)
             {
-                var syntaxVisitor = new DependencyAnalyzerSyntaxVisitor(compilation.GetSemanticModel(syntaxTree), Config, TypeDependencyValidator);
+                var syntaxVisitor = new DependencyAnalyzerSyntaxVisitor(compilation.GetSemanticModel(syntaxTree), TypeDependencyValidator, Config.MaxIssueCount);
                 var documentRootNode = syntaxTree.GetRoot();
                 if (documentRootNode != null)
                 {

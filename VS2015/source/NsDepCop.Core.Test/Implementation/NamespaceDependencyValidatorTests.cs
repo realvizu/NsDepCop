@@ -1,10 +1,10 @@
 ﻿using System.Collections.Immutable;
-using Codartis.NsDepCop.Core.Implementation.Common;
+using Codartis.NsDepCop.Core.Implementation;
 using Codartis.NsDepCop.Core.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareApproach.TestingExtensions;
 
-namespace Codartis.NsDepCop.Core.Test.Analyzer.Common
+namespace Codartis.NsDepCop.Core.Test.Implementation
 {
     [TestClass]
     public class NamespaceDependencyValidatorTests

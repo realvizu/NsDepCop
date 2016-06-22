@@ -4,13 +4,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using Codartis.NsDepCop.Core.Interface;
 
-namespace Codartis.NsDepCop.Core.Interface
+namespace Codartis.NsDepCop.Core.Implementation
 {
     /// <summary>
-    /// Represents the configuration of the tool.
+    /// Implements config file parsing.
     /// </summary>
-    public class NsDepCopConfig
+    public class NsDepCopConfig : INsDepCopConfig
     {
         private const bool DEFAULT_IS_ENABLED_VALUE = false;
         private const IssueKind DEFAULT_ISSUE_KIND = IssueKind.Warning;

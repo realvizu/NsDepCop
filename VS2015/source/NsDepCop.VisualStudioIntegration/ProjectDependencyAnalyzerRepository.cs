@@ -5,13 +5,16 @@ using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Codartis.NsDepCop.Core.Factory;
+using Codartis.NsDepCop.Core.Implementation.Roslyn;
+using Codartis.NsDepCop.Core.Interface;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
     /// <summary>
-    /// Creates and stores project analyzers.
+    /// Creates and stores dependency analyzers for C# projects.
     /// </summary>
-    internal static class ProjectAnalyzerRepository
+    internal static class ProjectDependencyAnalyzerRepository
     {
         /// <summary>
         /// Cache for mapping source files to project files. The key is the source file name with full path.
@@ -22,8 +25,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <summary>
         /// Cache for mapping project files to their analyzers. The key is the project file name with full path.
         /// </summary>
-        private static readonly ConcurrentDictionary<string, ProjectAnalyzer> ProjectFileToAnalyzerMap =
-            new ConcurrentDictionary<string, ProjectAnalyzer>();
+        private static readonly ConcurrentDictionary<string, DependencyAnalyzer> ProjectFileToAnalyzerMap =
+            new ConcurrentDictionary<string, DependencyAnalyzer>();
 
         /// <summary>
         /// Retrieves an up-to-date analyzer for a source file + assembly name pair.
@@ -31,7 +34,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <param name="sourceFilePath">The full path of a source file.</param>
         /// <param name="assemblyName">The name of the assembly that the source file belongs to.</param>
         /// <returns>A ProjectAnalyzer, or null if cannot be retrieved.</returns>
-        public static ProjectAnalyzer GetAnalyzer(string sourceFilePath, string assemblyName)
+        public static DependencyAnalyzer GetAnalyzer(string sourceFilePath, string assemblyName)
         {
             var projectFilePath = GetProjectFilePath(sourceFilePath, assemblyName);
             return projectFilePath == null 
@@ -39,16 +42,24 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 : GetProjectAnalyzer(projectFilePath);
         }
 
-        private static ProjectAnalyzer GetProjectAnalyzer(string projectFilePath)
+        private static DependencyAnalyzer GetProjectAnalyzer(string projectFilePath)
         {
             var projectAnalyzer = ProjectFileToAnalyzerMap.GetOrAdd(projectFilePath, CreateAnalyzer);
+            // TODO: no need to refresh if just added
             projectAnalyzer.RefreshConfig();
             return projectAnalyzer;
         }
 
-        private static ProjectAnalyzer CreateAnalyzer(string projectFilePath)
+        private static DependencyAnalyzer CreateAnalyzer(string projectFilePath)
         {
-            return new ProjectAnalyzer(projectFilePath);
+            var configFileName = CreateConfigFileName(projectFilePath);
+            return DependencyAnalyzerFactory.Create(ParserType.Roslyn, configFileName) as DependencyAnalyzer;
+        }
+
+        private static string CreateConfigFileName(string projectFilePath)
+        {
+            var projectFileDirectory = projectFilePath.Substring(0, projectFilePath.LastIndexOf('\\'));
+            return Path.Combine(projectFileDirectory, Constants.DEFAULT_CONFIG_FILE_NAME);
         }
 
         private static string GetProjectFilePath(string sourceFilePath, string assemblyName)
