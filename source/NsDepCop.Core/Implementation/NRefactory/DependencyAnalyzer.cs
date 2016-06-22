@@ -16,9 +16,9 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        /// <param name="config">Config object.</param>
-        public DependencyAnalyzer(NsDepCopConfig config, ITypeDependencyValidator typeDependencyValidator) 
-            : base(config, typeDependencyValidator)
+        /// <param name="configFileName">The name and full path of the config file required by the analyzer.</param>
+        public DependencyAnalyzer(string configFileName) 
+            : base(configFileName)
         {
         }
 
@@ -37,6 +37,8 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
             IEnumerable<string> sourceFilePaths,
             IEnumerable<string> referencedAssemblyPaths)
         {
+            EnsureValidStateForAnalysis();
+
             IProjectContent project = new CSharpProjectContent();
             var syntaxTrees = new List<SyntaxTree>();
 
@@ -72,7 +74,7 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
             var compilation = project.CreateCompilation();
             foreach (var syntaxTree in syntaxTrees)
             {
-                var visitor = new DependencyAnalyzerSyntaxVisitor(compilation, syntaxTree, Config, TypeDependencyValidator);
+                var visitor = new DependencyAnalyzerSyntaxVisitor(compilation, syntaxTree, TypeDependencyValidator, Config.MaxIssueCount);
                 syntaxTree.AcceptVisitor(visitor);
 
                 foreach (var dependencyViolation in visitor.DependencyViolations)

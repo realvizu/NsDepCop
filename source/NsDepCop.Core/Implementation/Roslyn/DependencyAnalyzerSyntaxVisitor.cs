@@ -20,14 +20,14 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
         private readonly SemanticModel _semanticModel;
 
         /// <summary>
-        /// The configuration of the tool.
-        /// </summary>
-        private readonly NsDepCopConfig _config;
-
-        /// <summary>
         /// The validator that decides whether a dependency is allowed.
         /// </summary>
         private readonly ITypeDependencyValidator _typeDependencyValidator;
+
+        /// <summary>
+        /// The maximum number of issues to report before stopping analysis.
+        /// </summary>
+        private readonly int _maxIssueCount;
 
         /// <summary>
         /// The collection of dependency violations that the syntax visitor found.
@@ -38,22 +38,20 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
         /// Initializes a new instance.
         /// </summary>
         /// <param name="semanticModel">The semantic model for the document.</param>
-        /// <param name="config">The configuration of the tool.</param>
         /// <param name="typeDependencyValidator">The validator that decides whether a dependency is allowed.</param>
-        public DependencyAnalyzerSyntaxVisitor(SemanticModel semanticModel, NsDepCopConfig config, ITypeDependencyValidator typeDependencyValidator)
+        /// <param name="maxIssueCount">The maximum number of issues to report before stopping analysis.</param>
+        public DependencyAnalyzerSyntaxVisitor(SemanticModel semanticModel, 
+            ITypeDependencyValidator typeDependencyValidator, int maxIssueCount)
         {
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
-
-            if (config == null)
-                throw new ArgumentNullException(nameof(config));
 
             if (typeDependencyValidator == null)
                 throw new ArgumentNullException(nameof(typeDependencyValidator));
 
             _semanticModel = semanticModel;
-            _config = config;
             _typeDependencyValidator = typeDependencyValidator;
+            _maxIssueCount = maxIssueCount;
 
             _dependencyViolations = new List<DependencyViolation>();
         }
@@ -67,7 +65,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
         {
             foreach (var childNode in node.ChildNodes())
             {
-                if (_dependencyViolations.Count < _config.MaxIssueCount)
+                if (_dependencyViolations.Count < _maxIssueCount)
                     Visit(childNode);
             }
 
@@ -94,10 +92,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
         private List<DependencyViolation> AnalyzeNode(SyntaxNode node)
         {
             var newDependencyViolations = SyntaxNodeAnalyzer.Analyze(node, _semanticModel, _typeDependencyValidator).ToList();
-            if (!newDependencyViolations.Any() || _dependencyViolations.Count >= _config.MaxIssueCount)
+            if (!newDependencyViolations.Any() || _dependencyViolations.Count >= _maxIssueCount)
                 return _dependencyViolations;
 
-            var maxElementsToAdd = Math.Min(_config.MaxIssueCount - _dependencyViolations.Count, newDependencyViolations.Count);
+            var maxElementsToAdd = Math.Min(_maxIssueCount - _dependencyViolations.Count, newDependencyViolations.Count);
             _dependencyViolations.AddRange(newDependencyViolations.Take(maxElementsToAdd));
             return _dependencyViolations;
         }

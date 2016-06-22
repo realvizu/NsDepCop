@@ -1,6 +1,7 @@
 ﻿using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -58,8 +59,10 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// </summary>
         public ITaskItem InfoImportance { get; set; }
 
-        private NsDepCopConfig _config;
         private MessageImportance _currentMessageImportance = DefaultMessageImportance;
+
+        private IEnumerable<string> SourceFilePaths => Compile.ToList().Select(i => i.ItemSpec);
+        private IEnumerable<string> ReferencedAssemblyPaths => ReferencePath.ToList().Select(i => i.ItemSpec);
 
         /// <summary>
         /// Executes the custom MsBuild task. Called by the MsBuild tool.
@@ -73,75 +76,42 @@ namespace Codartis.NsDepCop.MsBuildTask
             {
                 Debug.WriteLine("Execute started...", Constants.TOOL_NAME);
                 DebugDumpInputParameters();
-
                 var startTime = DateTime.Now;
-                var errorIssueDetected = false;
+
                 _currentMessageImportance = ParseMessageImportance(GetValueOfTaskItem(InfoImportance));
-
-                // Find out the location of the config file.
-                var configFileName = Path.Combine(BaseDirectory.ItemSpec, Constants.DEFAULT_CONFIG_FILE_NAME);
-
-                // No config file means no analysis.
-                if (!File.Exists(configFileName))
-                {
-                    LogMsBuildEvent(Constants.NoConfigFileIssue);
-                    return true;
-                }
-
-                // Read the config.
-                try
-                {
-                    _config = new NsDepCopConfig(configFileName);
-                }
-                catch (Exception e)
-                {
-                    LogMsBuildEvent(Constants.ConfigExceptionIssue, e.Message);
-                    return false;
-                }
-
-                // If analysis is switched off in the config file, then bail out.
-                if (!_config.IsEnabled)
-                {
-                    LogMsBuildEvent(Constants.ConfigDisabledIssue);
-                    return true;
-                }
-
-                // Create the code analyzer object.
                 var parserName = GetValueOfTaskItem(Parser);
-                var codeAnalyzer = DependencyAnalyzerFactory.Create(parserName, _config, DefaultParserType);
+                var configFileName = Path.Combine(BaseDirectory.ItemSpec, Constants.DEFAULT_CONFIG_FILE_NAME);
+                var runWasSuccessful = true;
 
-                LogMsBuildEvent(TaskStartedIssue, codeAnalyzer.ParserName);
-
-                // Run the analysis for the whole project.
-                var dependencyViolations = codeAnalyzer.AnalyzeProject(
-                    Compile.ToList().Select(i => i.ItemSpec),
-                    ReferencePath.ToList().Select(i => i.ItemSpec)).ToList();
-
-                // Set return value (success indicator)
-                if (dependencyViolations.Any() && _config.IssueKind == IssueKind.Error)
-                    errorIssueDetected = true;
-
-                // Report issues to MSBuild.
-                var issuesReported = 0;
-                foreach (var dependencyViolation in dependencyViolations)
+                var dependencyAnalyzer = DependencyAnalyzerFactory.Create(parserName, configFileName, DefaultParserType);
+                switch (dependencyAnalyzer.State)
                 {
-                    LogMsBuildEvent(Constants.IllegalDependencyIssue, _config.IssueKind,
-                        dependencyViolation.SourceSegment, dependencyViolation.ToString());
-
-                    issuesReported++;
-
-                    // Too many issues stop the analysis.
-                    if (issuesReported == _config.MaxIssueCount)
-                    {
-                        LogMsBuildEvent(Constants.TooManyIssuesIssue);
+                    case DependencyAnalyzerState.NoConfigFile:
+                        LogMsBuildEvent(Constants.NoConfigFileIssue);
                         break;
-                    }
+
+                    case DependencyAnalyzerState.Disabled:
+                        LogMsBuildEvent(Constants.ConfigDisabledIssue);
+                        break;
+
+                    case DependencyAnalyzerState.ConfigError:
+                        LogMsBuildEvent(Constants.ConfigExceptionIssue, dependencyAnalyzer.ConfigException.Message);
+                        runWasSuccessful = false;
+                        break;
+
+                    case DependencyAnalyzerState.Enabled:
+                        LogMsBuildEvent(TaskStartedIssue, dependencyAnalyzer.ParserName);
+                        var errorIssueDetected = AnalyzeProjectAndReportIssues(dependencyAnalyzer);
+                        runWasSuccessful = !errorIssueDetected;
+                        var endTime = DateTime.Now;
+                        LogMsBuildEvent(TaskFinishedIssue, endTime - startTime);
+                        break;
+
+                    default:
+                        throw new Exception($"Unexpected DependencyAnalyzerState: {dependencyAnalyzer.State}");
                 }
 
-                var endTime = DateTime.Now;
-                LogMsBuildEvent(TaskFinishedIssue, endTime - startTime);
-
-                return !errorIssueDetected;
+                return runWasSuccessful;
             }
             catch (Exception e)
             {
@@ -150,26 +120,34 @@ namespace Codartis.NsDepCop.MsBuildTask
             }
         }
 
-        /// <summary>
-        /// Returns the string value (ItemSpec) of an MSBuild TaskItem or null if not defined.
-        /// </summary>
-        /// <param name="taskItem">An MSBuild TaskItem object.</param>
-        /// <returns>The string value (ItemSpec) of the TaskItem or null if not defined.</returns>
-        private static string GetValueOfTaskItem(ITaskItem taskItem)
+        private bool AnalyzeProjectAndReportIssues(IDependencyAnalyzer dependencyAnalyzer)
         {
-            return taskItem?.ItemSpec;
+            var dependencyViolations = dependencyAnalyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths).ToList();
+
+            ReportIssuesToMsBuild(dependencyViolations, dependencyAnalyzer.DependencyViolationIssueKind, dependencyAnalyzer.MaxIssueCount);
+
+            var errorIssueDetected = dependencyViolations.Any() && dependencyAnalyzer.DependencyViolationIssueKind == IssueKind.Error;
+            return errorIssueDetected;
         }
 
-        /// <summary>
-        /// Dumps the incoming parameters to Debug output to help troubleshooting.
-        /// </summary>
-        private void DebugDumpInputParameters()
+        private void ReportIssuesToMsBuild(IEnumerable<DependencyViolation> dependencyViolations,
+            IssueKind issueKind, int maxIssueCount)
         {
-            Debug.WriteLine($"  ReferencePath[{ReferencePath.Length}]", Constants.TOOL_NAME);
-            ReferencePath.ToList().ForEach(i => Debug.WriteLine($"    {i.ItemSpec}", Constants.TOOL_NAME));
-            Debug.WriteLine($"  Compile[{Compile.Length}]", Constants.TOOL_NAME);
-            Compile.ToList().ForEach(i => Debug.WriteLine($"    {i.ItemSpec}", Constants.TOOL_NAME));
-            Debug.WriteLine($"  BaseDirectory={BaseDirectory.ItemSpec}", Constants.TOOL_NAME);
+            var issuesReported = 0;
+            foreach (var dependencyViolation in dependencyViolations)
+            {
+                LogMsBuildEvent(Constants.IllegalDependencyIssue, issueKind,
+                    dependencyViolation.SourceSegment, dependencyViolation.ToString());
+
+                issuesReported++;
+
+                // Too many issues stop the analysis.
+                if (issuesReported == maxIssueCount)
+                {
+                    LogMsBuildEvent(Constants.TooManyIssuesIssue);
+                    break;
+                }
+            }
         }
 
         private void LogMsBuildEvent(IssueDescriptor issueDescriptor, params object[] messageParams)
@@ -205,21 +183,21 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             switch (issueKind)
             {
-            case (IssueKind.Error):
-                BuildEngine.LogErrorEvent(new BuildErrorEventArgs(
-                    null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME));
-                break;
+                case (IssueKind.Error):
+                    BuildEngine.LogErrorEvent(new BuildErrorEventArgs(
+                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME));
+                    break;
 
-            case (IssueKind.Warning):
-                BuildEngine.LogWarningEvent(new BuildWarningEventArgs(
-                    null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME));
-                break;
+                case (IssueKind.Warning):
+                    BuildEngine.LogWarningEvent(new BuildWarningEventArgs(
+                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME));
+                    break;
 
-            default:
-                BuildEngine.LogMessageEvent(new BuildMessageEventArgs(
-                    null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME,
-                    _currentMessageImportance));
-                break;
+                default:
+                    BuildEngine.LogMessageEvent(new BuildMessageEventArgs(
+                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, Constants.TOOL_NAME,
+                        _currentMessageImportance));
+                    break;
             }
         }
 
@@ -230,6 +208,20 @@ namespace Codartis.NsDepCop.MsBuildTask
                 result = DefaultMessageImportance;
 
             return result;
+        }
+
+        private static string GetValueOfTaskItem(ITaskItem taskItem)
+        {
+            return taskItem?.ItemSpec;
+        }
+
+        private void DebugDumpInputParameters()
+        {
+            Debug.WriteLine($"  ReferencePath[{ReferencePath.Length}]", Constants.TOOL_NAME);
+            ReferencePath.ToList().ForEach(i => Debug.WriteLine($"    {i.ItemSpec}", Constants.TOOL_NAME));
+            Debug.WriteLine($"  Compile[{Compile.Length}]", Constants.TOOL_NAME);
+            Compile.ToList().ForEach(i => Debug.WriteLine($"    {i.ItemSpec}", Constants.TOOL_NAME));
+            Debug.WriteLine($"  BaseDirectory={BaseDirectory.ItemSpec}", Constants.TOOL_NAME);
         }
     }
 }

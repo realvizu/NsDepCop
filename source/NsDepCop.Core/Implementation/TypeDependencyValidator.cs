@@ -2,7 +2,7 @@
 using System.Collections.Immutable;
 using Codartis.NsDepCop.Core.Interface;
 
-namespace Codartis.NsDepCop.Core.Implementation.Common
+namespace Codartis.NsDepCop.Core.Implementation
 {
     /// <summary>
     /// Determines whether a given type-to-type dependency is allowed.

@@ -29,14 +29,14 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
         private readonly CSharpAstResolver _resolver;
 
         /// <summary>
-        /// The configuration of the tool. Containes the dependency rules.
-        /// </summary>
-        private readonly NsDepCopConfig _config;
-
-        /// <summary>
         /// The validator that decides whether a dependency is allowed.
         /// </summary>
         private readonly ITypeDependencyValidator _typeDependencyValidator;
+
+        /// <summary>
+        /// The maximum number of issues to report before stopping analysis.
+        /// </summary>
+        private readonly int _maxIssueCount;
 
         /// <summary>
         /// The collection of dependency violations that the syntax visitor found.
@@ -48,9 +48,10 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
         /// </summary>
         /// <param name="compilation">The representation of the current project.</param>
         /// <param name="syntaxTree">The syntax tree that this visitor operates on.</param>
-        /// <param name="config">The configuration of the tool.</param>
         /// <param name="typeDependencyValidator">The validator that decides whether a dependency is allowed.</param>
-        public DependencyAnalyzerSyntaxVisitor(ICompilation compilation, SyntaxTree syntaxTree, NsDepCopConfig config, ITypeDependencyValidator typeDependencyValidator)
+        /// <param name="maxIssueCount">The maximum number of issues to report before stopping analysis.</param>
+        public DependencyAnalyzerSyntaxVisitor(ICompilation compilation, SyntaxTree syntaxTree, 
+            ITypeDependencyValidator typeDependencyValidator, int maxIssueCount)
         {
             if (compilation == null)
                 throw new ArgumentNullException(nameof(compilation));
@@ -58,16 +59,13 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
             if (syntaxTree == null)
                 throw new ArgumentNullException(nameof(syntaxTree));
 
-            if (config == null)
-                throw new ArgumentNullException(nameof(config));
-
             if (typeDependencyValidator == null)
                 throw new ArgumentNullException(nameof(typeDependencyValidator));
 
             _compilation = compilation;
             _syntaxTree = syntaxTree;
-            _config = config;
             _typeDependencyValidator = typeDependencyValidator;
+            _maxIssueCount = maxIssueCount;
 
             _resolver = new CSharpAstResolver(_compilation, _syntaxTree);
 
@@ -77,10 +75,10 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
         public override void VisitIdentifier(Identifier identifier)
         {
             var newDependencyViolations = AnalyzeSyntaxNode(identifier).ToList();
-            if (!newDependencyViolations.Any() || DependencyViolations.Count >= _config.MaxIssueCount)
+            if (!newDependencyViolations.Any() || DependencyViolations.Count >= _maxIssueCount)
                 return;
 
-            var maxElementsToAdd = Math.Min(_config.MaxIssueCount - DependencyViolations.Count, newDependencyViolations.Count);
+            var maxElementsToAdd = Math.Min(_maxIssueCount - DependencyViolations.Count, newDependencyViolations.Count);
             DependencyViolations.AddRange(newDependencyViolations.Take(maxElementsToAdd));
         }
 
