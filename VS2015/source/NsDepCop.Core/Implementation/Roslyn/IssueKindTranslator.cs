@@ -18,13 +18,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
         {
             switch(diagnosticSeverity)
             {
-                case(DiagnosticSeverity.Error):
+                case DiagnosticSeverity.Error:
                     return IssueKind.Error;
-                case(DiagnosticSeverity.Info):
+                case DiagnosticSeverity.Info:
                     return IssueKind.Info;
-                case (DiagnosticSeverity.Hidden):
+                case DiagnosticSeverity.Hidden:
                     return IssueKind.Hidden;
-                case (DiagnosticSeverity.Warning):
+                case DiagnosticSeverity.Warning:
                     return IssueKind.Warning;
                 default:
                     throw new InvalidCastException(
@@ -41,13 +41,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
         {
             switch (issueKind)
             {
-                case (IssueKind.Error):
+                case IssueKind.Error:
                     return DiagnosticSeverity.Error;
-                case (IssueKind.Info):
+                case IssueKind.Info:
                     return DiagnosticSeverity.Info;
-                case (IssueKind.Hidden):
+                case IssueKind.Hidden:
                     return DiagnosticSeverity.Hidden;
-                case (IssueKind.Warning):
+                case IssueKind.Warning:
                     return DiagnosticSeverity.Warning;
                 default:
                     throw new InvalidCastException(

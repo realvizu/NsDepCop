@@ -51,6 +51,22 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [TestMethod]
+        public void Execute_ConfigFileErrorCausesException()
+        {
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_ConfigFileErrorCausesException",
+                ExpectedLogEntries = new[]
+                {
+                    LogEntryParameters.FromIssueDescriptor(Constants.ConfigExceptionIssue)
+                },
+                ExpectedReturnValue = false,
+                ExpectStartEvent = false,
+                ExpectEndEvent = false,
+            });
+        }
+
+        [TestMethod]
         public void Execute_ConfigFileDisabled()
         {
             ExecuteWithAllAnalyzers(new TestCaseSpecification
@@ -66,17 +82,11 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [TestMethod]
-        public void Execute_ConfigFileErrorsIgnored()
+        public void Execute_ConfigFileExtraElementsIgnored()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification()
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
-                TestFilesFolderName = "TestFiles_ConfigFileErrorsIgnored",
-                ExpectedLogEntries = new[]
-                {
-                    LogEntryParameters.FromIssueDescriptor(Constants.ConfigDisabledIssue)
-                },
-                ExpectStartEvent = false,
-                ExpectEndEvent = false
+                TestFilesFolderName = "TestFiles_ConfigFileExtraElementsIgnored",
             });
         }
 

@@ -40,8 +40,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
         /// <param name="semanticModel">The semantic model for the document.</param>
         /// <param name="typeDependencyValidator">The validator that decides whether a dependency is allowed.</param>
         /// <param name="maxIssueCount">The maximum number of issues to report before stopping analysis.</param>
-        public DependencyAnalyzerSyntaxVisitor(SemanticModel semanticModel, 
-            ITypeDependencyValidator typeDependencyValidator, int maxIssueCount)
+        public DependencyAnalyzerSyntaxVisitor(SemanticModel semanticModel, ITypeDependencyValidator typeDependencyValidator, int maxIssueCount)
         {
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));

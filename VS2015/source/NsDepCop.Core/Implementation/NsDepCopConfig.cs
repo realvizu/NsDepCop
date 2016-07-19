@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 using Codartis.NsDepCop.Core.Interface;
 
@@ -11,12 +13,30 @@ namespace Codartis.NsDepCop.Core.Implementation
     /// <summary>
     /// Implements config file parsing.
     /// </summary>
-    public class NsDepCopConfig : INsDepCopConfig
+    public class NsDepCopConfig : IRuleConfig
     {
-        private const bool DEFAULT_IS_ENABLED_VALUE = false;
+        private const bool DEFAULT_IS_ENABLED_VALUE = true;
         private const IssueKind DEFAULT_ISSUE_KIND = IssueKind.Warning;
         private const int DEFAULT_MAX_ISSUE_REPORTED = 100;
         private const bool DEFAULT_CHILD_CAN_DEPEND_ON_PARENT_IMPLICITLY = false;
+
+        private const string ROOT_ELEMENT_NAME = "NsDepCopConfig";
+        private const string IS_ENABLED_ATTRIBUTE_NAME = "IsEnabled";
+        private const string CODE_ISSUE_KIND_ATTRIBUTE_NAME = "CodeIssueKind";
+        private const string MAX_ISSUE_COUNT_ATTRIBUTE_NAME = "MaxIssueCount";
+        private const string IMPLICIT_PARENT_DEPENDENCY_ATTRIBUTE_NAME = "ChildCanDependOnParentImplicitly";
+        private const string ALLOWED_ELEMENT_NAME = "Allowed";
+        private const string DISALLOWED_ELEMENT_NAME = "Disallowed";
+        private const string VISIBLE_MEMBERS_ELEMENT_NAME = "VisibleMembers";
+        private const string TYPE_ELEMENT_NAME = "Type";
+        private const string OF_NAMESPACE_ATTRIBUTE_NAME = "OfNamespace";
+        private const string FROM_ATTRIBUTE_NAME = "From";
+        private const string TO_ATTRIBUTE_NAME = "To";
+        private const string TYPE_NAME_ATTRIBUTE_NAME = "Name";
+
+        private readonly Dictionary<NamespaceDependencyRule, TypeNameSet> _allowedRulesBuilder;
+        private readonly HashSet<NamespaceDependencyRule> _disallowedRulesBuilder;
+        private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesByNamespaceBuilder;
 
         /// <summary>
         /// A value indicating whether analysis is enabled.
@@ -42,20 +62,24 @@ namespace Codartis.NsDepCop.Core.Implementation
         public bool ChildCanDependOnParentImplicitly { get; private set; }
 
         /// <summary>
-        /// The set of allowed dependencies.
+        /// Dictionary of allowed namespaces dependency rules. The key is a namespace dependency rule, 
+        /// the value is a set of type names defined in the target namespace and visible for the source namespace(s).
         /// </summary>
-        public ImmutableHashSet<Dependency> AllowedDependencies { get; private set; }
+        public ImmutableDictionary<NamespaceDependencyRule, TypeNameSet> AllowRules 
+            => _allowedRulesBuilder.ToImmutableDictionary();
 
         /// <summary>
-        /// The set of disallowed dependencies.
+        /// The set of disallowed dependency rules.
         /// </summary>
-        public ImmutableHashSet<Dependency> DisallowedDependencies { get; private set; }
+        public ImmutableHashSet<NamespaceDependencyRule> DisallowRules 
+            => _disallowedRulesBuilder.ToImmutableHashSet();
 
         /// <summary>
-        /// Dictionary of visible type by namespace. The Key is the name of a namespace, 
-        /// the Value is a set of type names defines in the namespace and visible outside of the namespace.
+        /// Dictionary of visible types by target namespace. The Key is a namespace specification (must be singular), 
+        /// the Value is a set of type names defined in the namespace and visible outside of the namespace.
         /// </summary>
-        public ImmutableDictionary<string, ImmutableHashSet<string>> VisibleTypesByNamespace { get; private set; }
+        public ImmutableDictionary<Namespace, TypeNameSet> VisibleTypesByNamespace
+            => _visibleTypesByNamespaceBuilder.ToImmutableDictionary();
 
         /// <summary>
         /// Initializes a new instance with default values.
@@ -65,9 +89,10 @@ namespace Codartis.NsDepCop.Core.Implementation
             IsEnabled = DEFAULT_IS_ENABLED_VALUE;
             IssueKind = DEFAULT_ISSUE_KIND;
             MaxIssueCount = DEFAULT_MAX_ISSUE_REPORTED;
-            AllowedDependencies = ImmutableHashSet.Create<Dependency>();
-            DisallowedDependencies = ImmutableHashSet.Create<Dependency>();
-            VisibleTypesByNamespace = ImmutableDictionary.Create<string, ImmutableHashSet<string>>();
+
+            _allowedRulesBuilder = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
+            _disallowedRulesBuilder = new HashSet<NamespaceDependencyRule>();
+            _visibleTypesByNamespaceBuilder = new Dictionary<Namespace, TypeNameSet>();
         }
 
         /// <summary>
@@ -85,132 +110,129 @@ namespace Codartis.NsDepCop.Core.Implementation
         /// <param name="configFilePath">The config file with full path.</param>
         private void LoadConfigFromFile(string configFilePath)
         {
-            // If no config file then analysis is switched off for the given project 
-            // (by the default IsEnabled value which is false).
+            // If no config file then analysis is switched off for the given project.
             if (!File.Exists(configFilePath))
                 return;
 
-            // Validate that it's an xml document and the root node is NsDepCopConfig.
-            var configXml = XDocument.Load(configFilePath);
-            if (configXml == null)
-                throw new Exception($"Could not load NsDepCop config file '{configFilePath}'.");
-
-            var rootElement = configXml.Element("NsDepCopConfig");
-            if (rootElement == null)
-                throw new Exception($"Error in NsDepCop config file '{configFilePath}', NsDepCopConfig root element not found.");
-
-            // Parse attributes of the root node.
-            IsEnabled = ParseAttribute(rootElement.Attribute("IsEnabled"), bool.TryParse, DEFAULT_IS_ENABLED_VALUE);
-            IssueKind = ParseAttribute(rootElement.Attribute("CodeIssueKind"), Enum.TryParse, DEFAULT_ISSUE_KIND);
-            MaxIssueCount = ParseAttribute(rootElement.Attribute("MaxIssueCount"), int.TryParse, DEFAULT_MAX_ISSUE_REPORTED);
-            ChildCanDependOnParentImplicitly = ParseAttribute(rootElement.Attribute("ChildCanDependOnParentImplicitly"),
-                bool.TryParse, DEFAULT_CHILD_CAN_DEPEND_ON_PARENT_IMPLICITLY);
-
-            AllowedDependencies = BuildDependencySet(rootElement, "Allowed");
-            DisallowedDependencies = BuildDependencySet(rootElement, "Disallowed");
-            VisibleTypesByNamespace = BuildVisibleMembersDictionary(rootElement, "VisibleMembers");
-        }
-
-        /// <summary>
-        /// Builds an immutable dictionary containing visible namespace members parsed from the given XElement root with the given element name. 
-        /// </summary>
-        /// <param name="rootElement">Root of elements to be parsed.</param>
-        /// <param name="elementName">The name of the elements to be parsed.</param>
-        /// <returns>An immutable dictionary containing visible namespace members.</returns>
-        private static ImmutableDictionary<string, ImmutableHashSet<string>> BuildVisibleMembersDictionary(XElement rootElement, string elementName)
-        {
-            var result = ImmutableDictionary.CreateBuilder<string, ImmutableHashSet<string>>();
-
-            foreach (var xElement in rootElement.Elements(elementName))
-            {
-                var namespaceName = GetAttributeValue(xElement, "OfNamespace");
-                if (namespaceName == null)
-                    throw new Exception("OfNamespace element missing.");
-
-                var visibleTypeNames = BuildVisibleTypeSet(xElement, "Type");
-                if (visibleTypeNames.Any())
-                {
-                    if (result.ContainsKey(namespaceName))
-                        result[namespaceName] = result[namespaceName].Union(visibleTypeNames);
-                    else
-                        result.Add(namespaceName, visibleTypeNames);
-                }
-            }
-
-            return result.ToImmutable();
-        }
-
-        /// <summary>
-        /// Builds an immutable hashset containing type names parsed from the given XElement root with the given element name. 
-        /// </summary>
-        /// <param name="rootElement">Root of elements to be parsed.</param>
-        /// <param name="elementName">The name of the elements to be parsed.</param>
-        /// <returns>An immutable set of type names.</returns>
-        private static ImmutableHashSet<string> BuildVisibleTypeSet(XElement rootElement, string elementName)
-        {
-            var builder = ImmutableHashSet.CreateBuilder<string>();
-
-            foreach (var xElement in rootElement.Elements(elementName))
-            {
-                var typeName = GetAttributeValue(xElement, "Name");
-                if (typeName == null)
-                    throw new Exception("Name element missing.");
-
-                if (!string.IsNullOrWhiteSpace(typeName))
-                    builder.Add(typeName);
-            }
-
-            return builder.ToImmutable();
-        }
-
-        /// <summary>
-        /// Builds an immutable hashset containing dependencies parsed from the given XElement root with the given element name. 
-        /// </summary>
-        /// <param name="rootElement">Root of elements to be parsed.</param>
-        /// <param name="elementName">The name of the elements to be parsed.</param>
-        /// <returns>An immutable set of parsed dependencies.</returns>
-        private static ImmutableHashSet<Dependency> BuildDependencySet(XElement rootElement, string elementName)
-        {
-            var builder = ImmutableHashSet.CreateBuilder<Dependency>();
-
-            foreach (var xElement in rootElement.Elements(elementName))
-            {
-                var dependency = ParseDependency(xElement);
-                if (dependency != null && !builder.Contains(dependency))
-                    builder.Add(dependency);
-            }
-
-            return builder.ToImmutable();
-        }
-
-        /// <summary>
-        /// Parse an XEelement that defines a dependency.
-        /// </summary>
-        /// <param name="xElement">An xml element.</param>
-        /// <returns>The parsed dependency, or null if could not parse.</returns>
-        private static Dependency ParseDependency(XElement xElement)
-        {
-            Dependency dependency = null;
-
             try
             {
-                var fromValue = GetAttributeValue(xElement, "From");
-                if (fromValue == null)
-                    throw new Exception("From element missing.");
+                var configXml = XDocument.Load(configFilePath, LoadOptions.SetLineInfo);
 
-                var toValue = GetAttributeValue(xElement, "To");
-                if (toValue == null)
-                    throw new Exception("To element missing.");
+                var rootElement = configXml.Element(ROOT_ELEMENT_NAME);
+                if (rootElement == null)
+                    throw new Exception($"{ROOT_ELEMENT_NAME} root element not found.");
 
-                dependency = new Dependency(fromValue, toValue);
+                ParseRootNodeAttributes(rootElement);
+                ParseChildElements(rootElement);
             }
             catch (Exception e)
             {
-                Trace.WriteLine($"Error parsing config file: element '{xElement}' is invalid. ({e.Message}) Ignoring element.",
-                    Constants.TOOL_NAME);
+                throw new Exception($"Error in NsDepCop config file '{configFilePath}': {e.Message}", e);
+            }
+        }
+
+        private void ParseRootNodeAttributes(XElement rootElement)
+        {
+            IsEnabled = ParseAttribute(rootElement, IS_ENABLED_ATTRIBUTE_NAME, bool.TryParse, DEFAULT_IS_ENABLED_VALUE);
+            IssueKind = ParseAttribute(rootElement, CODE_ISSUE_KIND_ATTRIBUTE_NAME, Enum.TryParse, DEFAULT_ISSUE_KIND);
+            MaxIssueCount = ParseAttribute(rootElement, MAX_ISSUE_COUNT_ATTRIBUTE_NAME, int.TryParse, DEFAULT_MAX_ISSUE_REPORTED);
+            ChildCanDependOnParentImplicitly = ParseAttribute(rootElement, IMPLICIT_PARENT_DEPENDENCY_ATTRIBUTE_NAME,
+                bool.TryParse, DEFAULT_CHILD_CAN_DEPEND_ON_PARENT_IMPLICITLY);
+        }
+
+        private void ParseChildElements(XElement rootElement)
+        {
+            foreach (var xElement in rootElement.Elements())
+            {
+                switch (xElement.Name.ToString())
+                {
+                    case ALLOWED_ELEMENT_NAME:
+                        ParseAllowedElement(xElement);
+                        break;
+                    case DISALLOWED_ELEMENT_NAME:
+                        ParseDisallowedElement(xElement);
+                        break;
+                    case VISIBLE_MEMBERS_ELEMENT_NAME:
+                        ParseVisibleMembersElement(xElement);
+                        break;
+                    default:
+                        Trace.WriteLine($"Unexpected element {xElement.Name} ignored.");
+                        break;
+                }
+            }
+        }
+
+        private void ParseAllowedElement(XElement xElement)
+        {
+            var allowedDependencyRule = ParseDependencyRule(xElement);
+
+            TypeNameSet visibleTypeNames = null;
+
+            var visibleMembersChild = xElement.Element(VISIBLE_MEMBERS_ELEMENT_NAME);
+            if (visibleMembersChild != null)
+            {
+                if (allowedDependencyRule.To is NamespaceTree)
+                    throw new Exception($"{GetLineInfo(xElement)}The target namespace {allowedDependencyRule.To} must be a single namespace.");
+
+                if (visibleMembersChild.Attribute(OF_NAMESPACE_ATTRIBUTE_NAME) != null)
+                    throw new Exception($"{GetLineInfo(xElement)}If {VISIBLE_MEMBERS_ELEMENT_NAME} is embedded in a dependency specification then {OF_NAMESPACE_ATTRIBUTE_NAME} attribute must not be defined.");
+
+                visibleTypeNames = ParseTypeNameSet(visibleMembersChild, TYPE_ELEMENT_NAME);
             }
 
-            return dependency;
+            _allowedRulesBuilder.AddOrUnion<NamespaceDependencyRule, TypeNameSet, string>(allowedDependencyRule, visibleTypeNames);
+        }
+
+        private void ParseDisallowedElement(XElement xElement)
+        {
+            var disallowedDependencyRule = ParseDependencyRule(xElement);
+
+            _disallowedRulesBuilder.Add(disallowedDependencyRule);
+        }
+
+        private void ParseVisibleMembersElement(XElement xElement)
+        {
+            var targetNamespaceName = GetAttributeValue(xElement, OF_NAMESPACE_ATTRIBUTE_NAME);
+            if (targetNamespaceName == null)
+                throw new Exception($"{GetLineInfo(xElement)}{OF_NAMESPACE_ATTRIBUTE_NAME} attribute missing.");
+
+            var targetNamespace = new Namespace(targetNamespaceName);
+
+            var visibleTypeNames = ParseTypeNameSet(xElement, TYPE_ELEMENT_NAME);
+            if (!visibleTypeNames.Any())
+                return;
+
+            _visibleTypesByNamespaceBuilder.AddOrUnion<Namespace, TypeNameSet, string>(targetNamespace, visibleTypeNames);
+        }
+
+        private static NamespaceDependencyRule ParseDependencyRule(XElement xElement)
+        {
+            var fromValue = GetAttributeValue(xElement, FROM_ATTRIBUTE_NAME);
+            if (fromValue == null)
+                throw new Exception($"{GetLineInfo(xElement)}{FROM_ATTRIBUTE_NAME} element missing.");
+
+            var toValue = GetAttributeValue(xElement, TO_ATTRIBUTE_NAME);
+            if (toValue == null)
+                throw new Exception($"{GetLineInfo(xElement)}{TO_ATTRIBUTE_NAME} element missing.");
+
+            return new NamespaceDependencyRule(fromValue, toValue);
+        }
+
+        private static TypeNameSet ParseTypeNameSet(XElement rootElement, string elementName)
+        {
+            var typeNameSet = new TypeNameSet();
+
+            foreach (var xElement in rootElement.Elements(elementName))
+            {
+                var typeName = GetAttributeValue(xElement, TYPE_NAME_ATTRIBUTE_NAME);
+                if (typeName == null)
+                    throw new Exception($"{GetLineInfo(xElement)}{TYPE_NAME_ATTRIBUTE_NAME} attribute missing.");
+
+                if (!string.IsNullOrWhiteSpace(typeName))
+                    typeNameSet.Add(typeName);
+            }
+
+            return typeNameSet;
         }
 
         /// <summary>
@@ -234,17 +256,20 @@ namespace Codartis.NsDepCop.Core.Implementation
         private delegate bool TryParseMethod<T>(string s, out T t);
 
         /// <summary>
-        /// Parses an attribute to the given type. Returns the given default value if the parse failed.
+        /// Parses an attribute of an element to the given type. 
+        /// Returns the given default value if the attribute is not found.
         /// </summary>
         /// <typeparam name="T">The type of the parse result.</typeparam>
-        /// <param name="attribute">An attribute object.</param>
-        /// <param name="tryParseMethod">The method that should be used for parsing. Should not throw an exception just return false on failure.</param>
-        /// <param name="defaultValue">The default value to be returned if the parse failed.</param>
-        /// <returns>The parsed value or the given default value if the parse failed.</returns>
-        private static T ParseAttribute<T>(XAttribute attribute, TryParseMethod<T> tryParseMethod, T defaultValue)
+        /// <param name="element">The element where the attribute is searched.</param>
+        /// <param name="attributeName">The name of the attribute.</param>
+        /// <param name="tryParseMethod">The method that should be used for parsing. Should return false on failure.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>The parsed value or the given default value if the attribute is not found.</returns>
+        private static T ParseAttribute<T>(XElement element, string attributeName, TryParseMethod<T> tryParseMethod, T defaultValue)
         {
             var result = defaultValue;
 
+            var attribute = element.Attribute(attributeName);
             if (attribute != null)
             {
                 T parseResult;
@@ -254,14 +279,20 @@ namespace Codartis.NsDepCop.Core.Implementation
                 }
                 else
                 {
-                    Trace.WriteLine(
-                        string.Format(
-                            "Error parsing config file: attribute name: '{0}', value: '{1}'. Using default value:'{2}'.",
-                            attribute.Name, attribute.Value, defaultValue), Constants.TOOL_NAME);
+                    throw new FormatException($"Error parsing {attribute.Name} value '{attribute.Value}'.");
                 }
             }
 
             return result;
+        }
+
+        private static string GetLineInfo(XObject xObject)
+        {
+            var xmlLineInfo = xObject as IXmlLineInfo;
+
+            return xmlLineInfo.HasLineInfo()
+                ? $"[Line: {xmlLineInfo.LineNumber}, Pos: {xmlLineInfo.LinePosition}] "
+                : string.Empty;
         }
     }
 }

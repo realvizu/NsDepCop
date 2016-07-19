@@ -54,20 +54,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
                 toType.TypeKind == TypeKind.Error)
                 return null;
 
-            // Get containing namespace for the declaring and the referenced type, in string format.
-            var fromNamespace = fromType.ContainingNamespace.ToDisplayString();
-            var toNamespace = toType.ContainingNamespace.ToDisplayString();
+            var typeDependency = new TypeDependency(
+                fromType.ContainingNamespace.ToDisplayString(), fromType.MetadataName, 
+                toType.ContainingNamespace.ToDisplayString(), toType.MetadataName);
 
-            // Check the rules whether this dependency is allowed.
-            if (typeDependencyValidator.IsAllowedDependency(fromNamespace, fromType.MetadataName, toNamespace, toType.MetadataName))
-                return null;
-
-            // Create a result item for a dependency violation.
-            return new DependencyViolation(
-                new Dependency(fromNamespace, toNamespace),
-                fromType.ToDisplayString(),
-                toType.ToDisplayString(),
-                GetSourceSegment(node));
+            return typeDependencyValidator.IsAllowedDependency(typeDependency) 
+                ? null 
+                : new DependencyViolation(typeDependency, GetSourceSegment(node));
         }
 
         /// <summary>
@@ -78,16 +71,11 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
         /// <returns>The type declaring the given extension method syntax node, or null if not found.</returns>
         private static ITypeSymbol DetermineExtensionMethodDeclaringType(SyntaxNode node, SemanticModel semanticModel)
         {
-            var symbol = semanticModel.GetSymbolInfo(node).Symbol;
-            if (symbol == null)
-                return null;
+            var methodSymbol = semanticModel.GetSymbolInfo(node).Symbol as IMethodSymbol;
 
-            var methodSymbol = symbol as IMethodSymbol;
-            if (methodSymbol == null ||
-                !methodSymbol.IsExtensionMethod)
-                return null;
-
-            return symbol.ContainingType;
+            return methodSymbol == null || !methodSymbol.IsExtensionMethod 
+                ? null 
+                : methodSymbol.ContainingType;
         }
 
         /// <summary>

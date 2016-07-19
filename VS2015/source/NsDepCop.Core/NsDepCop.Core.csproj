@@ -89,6 +89,10 @@
       <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MoreLinq, Version=1.4.18916.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.1.4.0\lib\net35\MoreLinq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
@@ -134,8 +138,12 @@
     </Compile>
     <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
     <Compile Include="Factory\ParserType.cs" />
+    <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Implementation\CacheStatistics.cs" />
+    <Compile Include="Implementation\IRuleConfig.cs" />
     <Compile Include="Implementation\ITypeDependencyValidator.cs" />
+    <Compile Include="Implementation\NamespaceSpecificationParser.cs" />
+    <Compile Include="Implementation\NamespaceTree.cs" />
     <Compile Include="Implementation\NRefactory\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\NRefactory\DependencyAnalyzerSyntaxVisitor.cs" />
     <Compile Include="Implementation\NRefactory\ITypeExtensions.cs" />
@@ -145,23 +153,23 @@
     <Compile Include="Implementation\Roslyn\IssueKindExtension.cs" />
     <Compile Include="Implementation\Roslyn\IssueKindTranslator.cs" />
     <Compile Include="Implementation\Roslyn\SyntaxNodeAnalyzer.cs" />
-    <Compile Include="Implementation\CachingTypeVisibilityValidator.cs" />
-    <Compile Include="Implementation\CachingNamespaceDependencyValidator.cs" />
+    <Compile Include="Implementation\CachingTypeDependencyValidator.cs" />
     <Compile Include="Implementation\ICacheStatisticsProvider.cs" />
+    <Compile Include="Implementation\TypeNameSet.cs" />
     <Compile Include="Interface\DependencyAnalyzerState.cs" />
-    <Compile Include="Implementation\INsDepCopConfig.cs" />
+    <Compile Include="Interface\TypeDependency.cs" />
+    <Compile Include="Implementation\Namespace.cs" />
     <Compile Include="MathHelper.cs" />
-    <Compile Include="Implementation\TypeVisibilityValidator.cs" />
-    <Compile Include="Implementation\NamespaceDependencyValidator.cs" />
     <Compile Include="Interface\IssueDescriptor.cs" />
     <Compile Include="Interface\IssueKind.cs" />
     <Compile Include="Interface\Constants.cs" />
-    <Compile Include="Interface\Dependency.cs" />
+    <Compile Include="Implementation\NamespaceDependencyRule.cs" />
     <Compile Include="Implementation\TypeDependencyValidator.cs" />
     <Compile Include="Interface\DependencyViolation.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Interface\IDependencyAnalyzer.cs" />
-    <Compile Include="Interface\NamespaceSpecification.cs" />
+    <Compile Include="Implementation\NamespaceSpecification.cs" />
+    <Compile Include="MoreLinqExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Implementation\NsDepCopConfig.cs" />
     <Compile Include="Interface\SourceSegment.cs" />

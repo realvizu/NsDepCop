@@ -19,14 +19,14 @@ namespace Codartis.NsDepCop.MsBuildTask
         private const ParserType DefaultParserType = ParserType.Roslyn;
         private const MessageImportance DefaultMessageImportance = MessageImportance.Normal;
 
-        public static readonly IssueDescriptor TaskStartedIssue =
-            new IssueDescriptor("NSDEPCOPSTART", IssueKind.Info, null, "Analysing project using {0}.");
+        public static readonly IssueDescriptor<string> TaskStartedIssue =
+            new IssueDescriptor<string>("NSDEPCOPSTART", IssueKind.Info, null, i => $"Analysing project using {i}.");
 
-        public static readonly IssueDescriptor TaskFinishedIssue =
-            new IssueDescriptor("NSDEPCOPFINISH", IssueKind.Info, null, "Analysis took: {0:mm\\:ss\\.fff}");
+        public static readonly IssueDescriptor<TimeSpan> TaskFinishedIssue =
+            new IssueDescriptor<TimeSpan>("NSDEPCOPFINISH", IssueKind.Info, null, i => $"Analysis took: {i:mm\\:ss\\.fff}");
 
-        public static readonly IssueDescriptor TaskExceptionIssue =
-            new IssueDescriptor("NSDEPCOPEX", IssueKind.Error, null, "Exception during NsDepCopTask execution: {0}");
+        public static readonly IssueDescriptor<Exception> TaskExceptionIssue =
+            new IssueDescriptor<Exception>("NSDEPCOPEX", IssueKind.Error, null, i => $"Exception during NsDepCopTask execution: {i.ToString()}");
 
         /// <summary>
         /// MsBuild task item list that contains the name and full path 
@@ -95,7 +95,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                         break;
 
                     case DependencyAnalyzerState.ConfigError:
-                        LogMsBuildEvent(Constants.ConfigExceptionIssue, dependencyAnalyzer.ConfigException.Message);
+                        LogMsBuildEvent(Constants.ConfigExceptionIssue, dependencyAnalyzer.ConfigException);
                         runWasSuccessful = false;
                         break;
 
@@ -115,7 +115,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             }
             catch (Exception e)
             {
-                LogMsBuildEvent(TaskExceptionIssue, e.ToString());
+                LogMsBuildEvent(TaskExceptionIssue, e);
                 return false;
             }
         }
@@ -150,20 +150,21 @@ namespace Codartis.NsDepCop.MsBuildTask
             }
         }
 
-        private void LogMsBuildEvent(IssueDescriptor issueDescriptor, params object[] messageParams)
+        private void LogMsBuildEvent(IssueDescriptor issueDescriptor)
         {
-            var message = issueDescriptor.MessageFormat == null
-                ? null
-                : string.Format(issueDescriptor.MessageFormat, messageParams);
+            LogMsBuildEvent(issueDescriptor, issueDescriptor.DefaultKind, null, null);
+        }
 
-            LogMsBuildEvent(issueDescriptor, issueDescriptor.DefaultKind, null, message);
+        private void LogMsBuildEvent<T>(IssueDescriptor<T> issueDescriptor, T messageParam = default(T))
+        {
+            LogMsBuildEvent(issueDescriptor, issueDescriptor.DefaultKind, null, issueDescriptor.GetDynamicDescription(messageParam));
         }
 
         private void LogMsBuildEvent(IssueDescriptor issueDescriptor, IssueKind issueKind, SourceSegment sourceSegment, string message)
         {
             var code = issueDescriptor.Id;
 
-            message = message ?? issueDescriptor.Description;
+            message = message ?? issueDescriptor.StaticDescription;
             message = "[" + Constants.TOOL_NAME + "] " + message;
 
             string path = null;
