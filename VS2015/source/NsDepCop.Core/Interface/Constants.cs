@@ -15,7 +15,7 @@ namespace Codartis.NsDepCop.Core.Interface
                 "NSDEPCOP01",
                 IssueKind.Warning,
                 "Illegal namespace reference.",
-                i => $"Illegal namespace reference: {i.TypeDependency.FromNamespaceName}->{i.TypeDependency.ToNamespaceName} (Type: {i.TypeDependency.FromTypeName}->{i.TypeDependency.ToTypeName})");
+                i => $"Illegal namespace reference: {i?.TypeDependency.FromNamespaceName}->{i?.TypeDependency.ToNamespaceName} (Type: {i?.TypeDependency.FromTypeName}->{i?.TypeDependency.ToTypeName})");
 
         public static readonly IssueDescriptor TooManyIssuesIssue = 
             new IssueDescriptor(
@@ -40,6 +40,6 @@ namespace Codartis.NsDepCop.Core.Interface
                 "NSDEPCOP05",
                 IssueKind.Error,
                 "Error loading NsDepCop config.",
-                i => $"Error loading NsDepCop config: {i.ToString()}");
+                i => $"Error loading NsDepCop config: {i?.ToString()}");
     }
 }
