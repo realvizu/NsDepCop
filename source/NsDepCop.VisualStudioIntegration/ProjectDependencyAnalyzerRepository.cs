@@ -44,9 +44,17 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static DependencyAnalyzer GetProjectAnalyzer(string projectFilePath)
         {
-            var projectAnalyzer = ProjectFileToAnalyzerMap.GetOrAdd(projectFilePath, CreateAnalyzer);
-            // TODO: no need to refresh if just added
-            projectAnalyzer.RefreshConfig();
+            var analyzerCreatedNow = false;
+            var projectAnalyzer = ProjectFileToAnalyzerMap.GetOrAdd(projectFilePath,
+                i =>
+                {
+                    analyzerCreatedNow = true;
+                    return CreateAnalyzer(i);
+                });
+
+            if (!analyzerCreatedNow)
+                projectAnalyzer.RefreshConfig();
+
             return projectAnalyzer;
         }
 
