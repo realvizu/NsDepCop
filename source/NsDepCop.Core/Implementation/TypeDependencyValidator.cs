@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
+using System.Linq;
 using Codartis.NsDepCop.Core.Interface;
+using MoreLinq;
 
 namespace Codartis.NsDepCop.Core.Implementation
 {
@@ -9,45 +10,84 @@ namespace Codartis.NsDepCop.Core.Implementation
     /// </summary>
     public class TypeDependencyValidator : ITypeDependencyValidator
     {
-        private readonly CachingNamespaceDependencyValidator _namespaceDependencyValidator;
-        private readonly CachingTypeVisibilityValidator _typeVisibilityValidator;
+        private readonly ImmutableDictionary<NamespaceDependencyRule, TypeNameSet> _allowRules;
+        private readonly ImmutableHashSet<NamespaceDependencyRule> _disallowRules;
+        private readonly ImmutableDictionary<Namespace, TypeNameSet> _visibleTypesPerNamespaces;
+        private readonly bool _childCanDependOnParentImplicitly;
 
-        public TypeDependencyValidator(
-            ImmutableHashSet<Dependency> allowedDependencies,
-            ImmutableHashSet<Dependency> disallowedDependencies,
-            bool childCanDependOnParentImplicitly,
-            ImmutableDictionary<string, ImmutableHashSet<string>> visibleTypesPerNamespaces)
+        public TypeDependencyValidator(IRuleConfig ruleConfig)
         {
-            _namespaceDependencyValidator = new CachingNamespaceDependencyValidator(
-                allowedDependencies, disallowedDependencies, childCanDependOnParentImplicitly);
-
-            _typeVisibilityValidator = new CachingTypeVisibilityValidator(visibleTypesPerNamespaces);
+            _allowRules = ruleConfig.AllowRules;
+            _disallowRules = ruleConfig.DisallowRules;
+            _visibleTypesPerNamespaces = ruleConfig.VisibleTypesByNamespace;
+            _childCanDependOnParentImplicitly = ruleConfig.ChildCanDependOnParentImplicitly;
         }
 
         /// <summary>
         /// Decides whether a dependency is allowed based on the rule configuration.
         /// </summary>
-        /// <param name="fromNamespace">The namespace that depends on the other.</param>
-        /// <param name="sourceType">The name of the source type of the dependency.</param>
-        /// <param name="toNamespace">The namespace that the other namespace depends on.</param>
-        /// <param name="targeType">The name of the type that the dependency points to.</param>
+        /// <param name="typeDependency">A dependency of two types.</param>
         /// <returns>True if the dependency is allowed, false otherwise.</returns>
-        public bool IsAllowedDependency(string fromNamespace, string sourceType, string toNamespace, string targeType)
+        public virtual bool IsAllowedDependency(TypeDependency typeDependency)
         {
-            // Inside a namespace dependencies are not restricted.
-            if (fromNamespace == toNamespace)
+            // Inside a namespace all dependencies are allowed.
+            if (typeDependency.FromNamespaceName == typeDependency.ToNamespaceName)
                 return true;
 
-            return _namespaceDependencyValidator.IsAllowedDependency(fromNamespace, toNamespace)
-                && _typeVisibilityValidator.IsTypeVisible(toNamespace, targeType);
+            var fromNamespace = new Namespace(typeDependency.FromNamespaceName);
+            var toNamespace = new Namespace(typeDependency.ToNamespaceName);
+
+            var disallowRule = GetDisallowRule(fromNamespace, toNamespace);
+            if (disallowRule != null)
+                return false;
+
+            if (IsAllowedBecauseChildCanDependOnParent(fromNamespace, toNamespace))
+                return true;
+
+            var allowRule = GetMostSpecificAllowRule(fromNamespace, toNamespace);
+            if (allowRule == null)
+                return false;
+
+            var visibleMembers = GetVisibleMembers(allowRule, toNamespace);
+            if (!visibleMembers.EmptyIfNull().Any())
+                return true;
+
+            return visibleMembers.Contains(typeDependency.ToTypeName);
         }
 
-        public IEnumerable<CacheStatistics> GetCacheStatistics()
+        public bool IsAllowedDependency(string fromNamespace, string fromType, string toNamespace, string toType)
+            => IsAllowedDependency(new TypeDependency(fromNamespace, fromType, toNamespace, toType));
+
+        private bool IsAllowedBecauseChildCanDependOnParent(Namespace fromNamespace, Namespace toNamespace)
         {
-            yield return new CacheStatistics(_namespaceDependencyValidator);
-            yield return new CacheStatistics(_typeVisibilityValidator);
+            return _childCanDependOnParentImplicitly && fromNamespace.IsSubnamespaceOf(toNamespace);
         }
 
-        
+        private NamespaceDependencyRule GetMostSpecificAllowRule(Namespace from, Namespace to)
+        {
+            return _allowRules.Keys
+                .Where(i => i.From.Matches(from) && i.To.Matches(to))
+                .MaxByOrDefault(i => i.From.GetMatchRelevance(from));
+        }
+
+        private NamespaceDependencyRule GetDisallowRule(Namespace from, Namespace to)
+        {
+            return _disallowRules
+                .FirstOrDefault(i => i.From.Matches(from) && i.To.Matches(to));
+        }
+
+        private TypeNameSet GetVisibleMembers(NamespaceDependencyRule allowRule, Namespace targetNamespace)
+        {
+            TypeNameSet allowedTypeNameSet;
+
+            if (_allowRules.TryGetValue(allowRule, out allowedTypeNameSet) &&
+                allowedTypeNameSet.EmptyIfNull().Any())
+                return allowedTypeNameSet;
+
+            if (_visibleTypesPerNamespaces.TryGetValue(targetNamespace, out allowedTypeNameSet))
+                return allowedTypeNameSet;
+
+            return null;
+        }
     }
 }

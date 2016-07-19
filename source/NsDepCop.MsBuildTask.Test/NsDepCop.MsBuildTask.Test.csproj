@@ -234,7 +234,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_ConfigFileErrorsIgnored\config.nsdepcop">
+    <Content Include="TestFiles_ConfigFileExtraElementsIgnored\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -287,6 +287,9 @@
     <Content Include="TestFiles_SameNamespaceAllowedEvenWhenVisibleMembersDefined\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="TestFiles_ConfigFileErrorCausesException\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -32,12 +32,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
         /// <param name="sourceFilePaths">A collection of the full path of source files.</param>
         /// <param name="referencedAssemblyPaths">A collection of the full path of referenced assemblies.</param>
         /// <returns>A collection of dependency violations. Empty collection if none found.</returns>
-        public override IEnumerable<DependencyViolation> AnalyzeProject(
+        protected override IEnumerable<DependencyViolation> AnalyzeProjectOverride(
             IEnumerable<string> sourceFilePaths,
             IEnumerable<string> referencedAssemblyPaths)
         {
-            EnsureValidStateForAnalysis();
-
             var referencedAssemblies = referencedAssemblyPaths.Select(i => MetadataReference.CreateFromFile(i)).ToList();
             var syntaxTrees = sourceFilePaths.Select(ParseFile).ToList();
             var compilation = CSharpCompilation.Create("NsDepCopTaskProject", syntaxTrees, referencedAssemblies);
@@ -53,8 +51,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Roslyn
                         yield return dependencyViolation;
                 }
             }
-
-            DebugDumpCacheStatistics();
         }
 
         public IEnumerable<DependencyViolation> AnalyzeNode(SyntaxNode node, SemanticModel semanticModel)

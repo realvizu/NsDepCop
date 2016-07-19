@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Text;
 
-namespace Codartis.NsDepCop.Core.Interface
+namespace Codartis.NsDepCop.Core.Implementation
 {
     /// <summary>
-    /// Represents a dependency between 2 namespace specifications.
+    /// Represents a dependency rule between 2 namespace specifications.
     /// The 'From' namespace specification depends on the 'To' namespace specification.
     /// A namespace specification can represent more than just a single namespace (eg. a subtree of namespaces).
     /// </summary>
-    public class Dependency : IEquatable<Dependency>
+    public class NamespaceDependencyRule
     {
         /// <summary>
         /// The dependency points from this namespace to the other.
@@ -25,14 +25,14 @@ namespace Codartis.NsDepCop.Core.Interface
         /// </summary>
         /// <param name="from">The source of the dependency.</param>
         /// <param name="to">The target of the dependency.</param>
-        public Dependency(NamespaceSpecification from, NamespaceSpecification to)
+        public NamespaceDependencyRule(NamespaceSpecification from, NamespaceSpecification to)
         {
             if (from == null)
                 throw new ArgumentNullException(nameof(@from));
 
             if (to == null)
                 throw new ArgumentNullException(nameof(to));
-            
+
             From = from;
             To = to;
         }
@@ -42,8 +42,8 @@ namespace Codartis.NsDepCop.Core.Interface
         /// </summary>
         /// <param name="from">A namespace specification in string format. The source of the dependency.</param>
         /// <param name="to">A namespace specification in string format. The target of the dependency.</param>
-        public Dependency(string from, string to)
-            : this(new NamespaceSpecification(from, validate: false), new NamespaceSpecification(to, validate: false))
+        public NamespaceDependencyRule(string from, string to)
+            : this(NamespaceSpecificationParser.Parse(from), NamespaceSpecificationParser.Parse(to))
         { }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Codartis.NsDepCop.Core.Interface
             return builder.ToString();
         }
 
-        public bool Equals(Dependency other)
+        public bool Equals(NamespaceDependencyRule other)
         {
             return Equals(From, other.From) && Equals(To, other.To);
         }
@@ -69,14 +69,14 @@ namespace Codartis.NsDepCop.Core.Interface
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((Dependency) obj);
+            return Equals((NamespaceDependencyRule)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((From != null ? From.GetHashCode() : 0)*397) ^ (To != null ? To.GetHashCode() : 0);
+                return ((From != null ? From.GetHashCode() : 0) * 397) ^ (To != null ? To.GetHashCode() : 0);
             }
         }
     }

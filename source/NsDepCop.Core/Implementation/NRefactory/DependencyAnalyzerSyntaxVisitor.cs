@@ -119,14 +119,14 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
             if (fromType?.Namespace == null || toType?.Namespace == null)
                 return null;
 
-            // Get containing namespace for the declaring and the referenced type, in string format.
-            var fromNamespace = fromType.Namespace;
-            var toNamespace = toType.Namespace;
+            var typeDependency = new TypeDependency(
+                fromType.Namespace, fromType.GetMetadataName(), 
+                toType.Namespace, toType.GetMetadataName());
 
             // Check the rules whether this dependency is allowed.
-            return _typeDependencyValidator.IsAllowedDependency(fromNamespace, fromType.GetMetadataName(), toNamespace, toType.GetMetadataName()) 
+            return _typeDependencyValidator.IsAllowedDependency(typeDependency) 
                 ? null 
-                : CreateDependencyViolation(node, new Dependency(fromNamespace, toNamespace), fromType, toType, _syntaxTree.FileName);
+                : CreateDependencyViolation(node, typeDependency, _syntaxTree.FileName);
         }
 
         /// <summary>
@@ -226,13 +226,10 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
         /// Creates a dependency violations object.
         /// </summary>
         /// <param name="syntaxNode">The syntax node where the violation was detected.</param>
-        /// <param name="illegalDependency">The illegal namespace dependency.</param>
-        /// <param name="referencingType">The referencing type.</param>
-        /// <param name="referencedType">The referenced type.</param>
+        /// <param name="illegalDependency">The illegal type dependency.</param>
         /// <param name="filename">The full path of the source file.</param>
         /// <returns></returns>
-        private static DependencyViolation CreateDependencyViolation(
-            AstNode syntaxNode, Dependency illegalDependency, IType referencingType, IType referencedType, string filename)
+        private static DependencyViolation CreateDependencyViolation(AstNode syntaxNode, TypeDependency illegalDependency, string filename)
         {
             var sourceSegment = new SourceSegment
             (
@@ -244,7 +241,7 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
                 filename
             );
 
-            return new DependencyViolation(illegalDependency, referencingType.FullName, referencedType.FullName, sourceSegment);
+            return new DependencyViolation(illegalDependency, sourceSegment);
         }
     }
 }

@@ -101,15 +101,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, DependencyViolation dependencyViolation, IssueKind issueKind)
         {
-            var message = string.Format(IllegalDependencyDescriptor.MessageFormat.ToString(),
-                dependencyViolation.IllegalDependency.From,
-                dependencyViolation.IllegalDependency.To,
-                dependencyViolation.ReferencingTypeName,
-                dependencyViolation.SourceSegment.Text,
-                dependencyViolation.ReferencedTypeName);
-
+            var message = Constants.IllegalDependencyIssue.GetDynamicDescription(dependencyViolation);
             var severity = issueKind.ToDiagnosticSeverity();
-
             var warningLevel = severity == DiagnosticSeverity.Error ? 0 : 1;
 
             return Diagnostic.Create(

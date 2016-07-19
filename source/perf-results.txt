@@ -9,6 +9,7 @@ NsDepCop 1.4 (release) /Roslyn      13.249      13.321
 NsDepCop 1.4 (release) /NRefactory  08.031      07.580
 NsDepCop 1.5 (release) /Roslyn      12.776      13.154
 NsDepCop 1.5 (release) /NRefactory  07.556      07.726
+NsDepCop 1.6 (release) /Roslyn      19.397   02:21.101      38.241     15.114 
 
 LinqOverCSharp\CSharpFactoryVS2010\CSharpTreeBuilder.dll, AssemblyFileVersion("0.3.0.61")	
 NsDepCop 1.2 (debug) /Roslyn		03.836
@@ -19,3 +20,4 @@ NsDepCop 1.4 (release) /Roslyn		02.435      04.007
 NsDepCop 1.4 (release) /NRefactory  02.965      02.825
 NsDepCop 1.5 (release) /Roslyn      02.390      02.500
 NsDepCop 1.5 (release) /NRefactory  02.828      02.887
+NsDepCop 1.6 (release) /Roslyn      04.674      09.635      06.555      04.399

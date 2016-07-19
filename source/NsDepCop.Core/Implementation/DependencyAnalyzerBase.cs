@@ -17,7 +17,7 @@ namespace Codartis.NsDepCop.Core.Implementation
         private DateTime _configLastReadUtc;
         private Exception _configException;
 
-        protected INsDepCopConfig Config;
+        protected NsDepCopConfig Config;
         protected ITypeDependencyValidator TypeDependencyValidator;
 
         private bool IsConfigLoaded => Config != null;
@@ -38,8 +38,14 @@ namespace Codartis.NsDepCop.Core.Implementation
             RefreshConfig();
         }
 
+        /// <summary>
+        /// Gets the name of the parser currently used.
+        /// </summary>
         public abstract string ParserName { get; }
 
+        /// <summary>
+        /// Gets the state of the analyzer object.
+        /// </summary>
         public DependencyAnalyzerState State
         {
             get
@@ -66,9 +72,17 @@ namespace Codartis.NsDepCop.Core.Implementation
         /// <param name="sourceFilePaths">A collection of the full path of source files.</param>
         /// <param name="referencedAssemblyPaths">A collection of the full path of referenced assemblies.</param>
         /// <returns>A collection of dependency violations. Empty collection if none found.</returns>
-        public abstract IEnumerable<DependencyViolation> AnalyzeProject(
+        public IEnumerable<DependencyViolation> AnalyzeProject(
             IEnumerable<string> sourceFilePaths,
-            IEnumerable<string> referencedAssemblyPaths);
+            IEnumerable<string> referencedAssemblyPaths)
+        {
+            EnsureValidStateForAnalysis();
+
+            foreach (var dependencyViolation in AnalyzeProjectOverride(sourceFilePaths, referencedAssemblyPaths))
+                yield return dependencyViolation;
+
+            DebugDumpCacheStatistics(TypeDependencyValidator);
+        }
 
         /// <summary>
         /// Loads or refreshes config from file.
@@ -93,12 +107,7 @@ namespace Codartis.NsDepCop.Core.Implementation
 
                     _configException = null;
                     Config = new NsDepCopConfig(_configFileName);
-
-                    TypeDependencyValidator = new TypeDependencyValidator(
-                        Config.AllowedDependencies,
-                        Config.DisallowedDependencies,
-                        Config.ChildCanDependOnParentImplicitly,
-                        Config.VisibleTypesByNamespace);
+                    TypeDependencyValidator = new CachingTypeDependencyValidator(Config);
                 }
             }
             catch (Exception e)
@@ -108,25 +117,29 @@ namespace Codartis.NsDepCop.Core.Implementation
             }
         }
 
+        protected abstract IEnumerable<DependencyViolation> AnalyzeProjectOverride(
+            IEnumerable<string> sourceFilePaths,
+            IEnumerable<string> referencedAssemblyPaths);
+
         private bool ConfigModifiedSinceLastRead()
         {
             return _configLastReadUtc < File.GetLastWriteTimeUtc(_configFileName);
         }
 
-        protected void EnsureValidStateForAnalysis()
+        private void EnsureValidStateForAnalysis()
         {
             if (State != DependencyAnalyzerState.Enabled)
                 throw new InvalidOperationException($"Analyzer is in {State} state.");
         }
 
-        protected void DebugDumpCacheStatistics()
+        private static void DebugDumpCacheStatistics(object o)
         {
-            foreach (var cacheStatistics in TypeDependencyValidator.GetCacheStatistics())
-            {
-                Debug.WriteLine(string.Format("{0} cache hits: {1}, misses:{2}, efficiency (hits/all): {3:P}",
-                    cacheStatistics.CacheName, cacheStatistics.HitCount, cacheStatistics.MissCount, cacheStatistics.EfficiencyPercent),
-                    Constants.TOOL_NAME);
-            }
+            var cache = o as ICacheStatisticsProvider;
+            if (cache == null)
+                return;
+
+            Debug.WriteLine($"Cache hits: {cache.HitCount}, misses:{cache.MissCount}, efficiency (hits/all): {cache.EfficiencyPercent:P}",
+                Constants.TOOL_NAME);
         }
     }
 }

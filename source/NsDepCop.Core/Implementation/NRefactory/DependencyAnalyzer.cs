@@ -33,12 +33,10 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
         /// <param name="sourceFilePaths">A collection of the full path of source files.</param>
         /// <param name="referencedAssemblyPaths">A collection of the full path of referenced assemblies.</param>
         /// <returns>A collection of dependency violations. Empty collection if none found.</returns>
-        public override IEnumerable<DependencyViolation> AnalyzeProject(
+        protected override IEnumerable<DependencyViolation> AnalyzeProjectOverride(
             IEnumerable<string> sourceFilePaths,
             IEnumerable<string> referencedAssemblyPaths)
         {
-            EnsureValidStateForAnalysis();
-
             IProjectContent project = new CSharpProjectContent();
             var syntaxTrees = new List<SyntaxTree>();
 
@@ -80,8 +78,6 @@ namespace Codartis.NsDepCop.Core.Implementation.NRefactory
                 foreach (var dependencyViolation in visitor.DependencyViolations)
                     yield return dependencyViolation;
             }
-
-            DebugDumpCacheStatistics();
         }
     }
 }

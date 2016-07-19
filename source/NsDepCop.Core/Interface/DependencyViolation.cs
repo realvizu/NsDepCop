@@ -1,24 +1,14 @@
 ﻿namespace Codartis.NsDepCop.Core.Interface
 {
     /// <summary>
-    /// Represents the info that describes a namespace dependency violation.
+    /// Describes a dependency violation between two types.
     /// </summary>
     public class DependencyViolation
     {
         /// <summary>
-        /// The illegal dependency. Contains the two namespaces.
+        /// The illegal type dependency.
         /// </summary>
-        public Dependency IllegalDependency { get; }
-
-        /// <summary>
-        /// The name of the referencing type.
-        /// </summary>
-        public string ReferencingTypeName { get; }
-
-        /// <summary>
-        /// The name of the referenced type.
-        /// </summary>
-        public string ReferencedTypeName { get; }
+        public TypeDependency TypeDependency { get; }
 
         /// <summary>
         /// Specifies the source file and the start and end positions of the text that caused this dependency violation.
@@ -28,11 +18,11 @@
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
-        public DependencyViolation(Dependency illegalDependency, string referencingTypeName, string referencedTypeName, SourceSegment sourceSegment)
+        /// <param name="typeDependency">The illegal type dependency.</param>
+        /// <param name="sourceSegment">Info about the dependency violation's location in the source.</param>
+        public DependencyViolation(TypeDependency typeDependency, SourceSegment sourceSegment)
         {
-            IllegalDependency = illegalDependency;
-            ReferencingTypeName = referencingTypeName;
-            ReferencedTypeName = referencedTypeName;
+            TypeDependency = typeDependency;
             SourceSegment = sourceSegment;
         }
 
@@ -40,14 +30,6 @@
         /// Returns the dependency violation info in readable format.
         /// </summary>
         /// <returns>The dependency violation info in readable format.</returns>
-        public override string ToString()
-        {
-            return string.Format(Constants.IllegalDependencyIssue.MessageFormat,
-                IllegalDependency.From,
-                IllegalDependency.To,
-                ReferencingTypeName,
-                SourceSegment.Text,
-                ReferencedTypeName);
-        }
+        public override string ToString() => Constants.IllegalDependencyIssue.GetDynamicDescription(this);
     }
 }
