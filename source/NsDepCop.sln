@@ -5,8 +5,11 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AB1A4FF5-D372-416A-9986-6C3548F78B3B}"
 	ProjectSection(SolutionItems) = preProject
-		include\CommonAssemblyInfo.cs = include\CommonAssemblyInfo.cs
-		include\VersionInfo.cs = include\VersionInfo.cs
+		build.cmd = build.cmd
+		measure.cmd = measure.cmd
+		perf-results.txt = perf-results.txt
+		update-version.cmd = update-version.cmd
+		update-version.ps1 = update-version.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.MsBuildTask", "NsDepCop.MsBuildTask\NsDepCop.MsBuildTask.csproj", "{2ACFCACC-FC7D-4192-9B9F-C916784D93B3}"
@@ -28,6 +31,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.VisualStudioIntegration", "NsDepCop.VisualStudioIntegration\NsDepCop.VisualStudioIntegration.csproj", "{86A0B958-2501-440C-9D82-93741CEFD6CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.TestHost", "NsDepCop.TestHost\NsDepCop.TestHost.csproj", "{2FFB4ADA-8BCB-42AE-8BF1-8CE70B011FD1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{71A874EB-DA8D-4F27-8D68-335B7EF77671}"
+	ProjectSection(SolutionItems) = preProject
+		include\CommonAssemblyInfo.cs = include\CommonAssemblyInfo.cs
+		include\VersionInfo.cs = include\VersionInfo.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -148,41 +157,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 11
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = NsDepCop.Core\\NsDepCop.Core.csproj
-		SccProjectName1 = NsDepCop.Core
-		SccLocalPath1 = NsDepCop.Core
-		SccProjectUniqueName2 = NsDepCop.MsBuildTask\\NsDepCop.MsBuildTask.csproj
-		SccProjectName2 = NsDepCop.MsBuildTask
-		SccLocalPath2 = NsDepCop.MsBuildTask
-		SccProjectUniqueName3 = NsDepCop.Setup\\NsDepCop.Setup.wixproj
-		SccProjectName3 = NsDepCop.Setup
-		SccLocalPath3 = NsDepCop.Setup
-		SccProjectUniqueName4 = NsDepCop.Setup.CustomActions\\NsDepCop.Setup.CustomActions.csproj
-		SccProjectName4 = NsDepCop.Setup.CustomActions
-		SccLocalPath4 = NsDepCop.Setup.CustomActions
-		SccProjectUniqueName5 = NsDepCop.ItemTemplate\\NsDepCop.ItemTemplate.csproj
-		SccProjectName5 = NsDepCop.ItemTemplate
-		SccLocalPath5 = NsDepCop.ItemTemplate
-		SccProjectUniqueName6 = NsDepCop.MsBuildTask.Test\\NsDepCop.MsBuildTask.Test.csproj
-		SccProjectName6 = NsDepCop.MsBuildTask.Test
-		SccLocalPath6 = NsDepCop.MsBuildTask.Test
-		SccProjectUniqueName7 = NsDepCop.Core.Test\\NsDepCop.Core.Test.csproj
-		SccProjectName7 = NsDepCop.Core.Test
-		SccLocalPath7 = NsDepCop.Core.Test
-		SccProjectUniqueName8 = NsDepCop.VisualStudioIntegration\\NsDepCop.VisualStudioIntegration.csproj
-		SccProjectName8 = NsDepCop.VisualStudioIntegration
-		SccLocalPath8 = NsDepCop.VisualStudioIntegration
-		SccProjectUniqueName9 = NsDepCop.VisualStudioIntegration.Vsix\\NsDepCop.VisualStudioIntegration.Vsix.csproj
-		SccProjectName9 = NsDepCop.VisualStudioIntegration.Vsix
-		SccLocalPath9 = NsDepCop.VisualStudioIntegration.Vsix
-		SccProjectUniqueName10 = NsDepCop.TestHost\\NsDepCop.TestHost.csproj
-		SccProjectName10 = NsDepCop.TestHost
-		SccLocalPath10 = NsDepCop.TestHost
 	EndGlobalSection
 EndGlobal
