@@ -30,7 +30,7 @@ namespace Codartis.NsDepCop.Core.Implementation
             if (validate && 
                 validator != null && 
                 !validator.Invoke(namespaceSpecificationAsString))
-                throw new FormatException("Not a valid namespace specification.");
+                throw new FormatException($"'{namespaceSpecificationAsString}' is not a valid {GetType().Name}.");
 
             NamespaceSpecificationAsString = namespaceSpecificationAsString;
         }

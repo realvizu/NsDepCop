@@ -40,6 +40,6 @@ namespace Codartis.NsDepCop.Core.Interface
                 "NSDEPCOP05",
                 IssueKind.Error,
                 "Error loading NsDepCop config.",
-                i => $"Error loading NsDepCop config: {i?.ToString()}");
+                i => $"{i?.Message}");
     }
 }

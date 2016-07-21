@@ -120,14 +120,14 @@ namespace Codartis.NsDepCop.Core.Implementation
 
                 var rootElement = configXml.Element(ROOT_ELEMENT_NAME);
                 if (rootElement == null)
-                    throw new Exception($"{ROOT_ELEMENT_NAME} root element not found.");
+                    throw new Exception($"'{ROOT_ELEMENT_NAME}' root element not found.");
 
                 ParseRootNodeAttributes(rootElement);
                 ParseChildElements(rootElement);
             }
             catch (Exception e)
             {
-                throw new Exception($"Error in NsDepCop config file '{configFilePath}': {e.Message}", e);
+                throw new Exception($"Error in '{configFilePath}': {e.Message}", e);
             }
         }
 
@@ -156,7 +156,7 @@ namespace Codartis.NsDepCop.Core.Implementation
                         ParseVisibleMembersElement(xElement);
                         break;
                     default:
-                        Trace.WriteLine($"Unexpected element {xElement.Name} ignored.");
+                        Trace.WriteLine($"Unexpected element '{xElement.Name}' ignored.");
                         break;
                 }
             }
@@ -172,10 +172,10 @@ namespace Codartis.NsDepCop.Core.Implementation
             if (visibleMembersChild != null)
             {
                 if (allowedDependencyRule.To is NamespaceTree)
-                    throw new Exception($"{GetLineInfo(xElement)}The target namespace {allowedDependencyRule.To} must be a single namespace.");
+                    throw new Exception($"{GetLineInfo(xElement)}The target namespace '{allowedDependencyRule.To}' must be a single namespace.");
 
                 if (visibleMembersChild.Attribute(OF_NAMESPACE_ATTRIBUTE_NAME) != null)
-                    throw new Exception($"{GetLineInfo(xElement)}If {VISIBLE_MEMBERS_ELEMENT_NAME} is embedded in a dependency specification then {OF_NAMESPACE_ATTRIBUTE_NAME} attribute must not be defined.");
+                    throw new Exception($"{GetLineInfo(xElement)}If {VISIBLE_MEMBERS_ELEMENT_NAME} is embedded in a dependency specification then '{OF_NAMESPACE_ATTRIBUTE_NAME}' attribute must not be defined.");
 
                 visibleTypeNames = ParseTypeNameSet(visibleMembersChild, TYPE_ELEMENT_NAME);
             }
@@ -194,9 +194,9 @@ namespace Codartis.NsDepCop.Core.Implementation
         {
             var targetNamespaceName = GetAttributeValue(xElement, OF_NAMESPACE_ATTRIBUTE_NAME);
             if (targetNamespaceName == null)
-                throw new Exception($"{GetLineInfo(xElement)}{OF_NAMESPACE_ATTRIBUTE_NAME} attribute missing.");
+                throw new Exception($"{GetLineInfo(xElement)}'{OF_NAMESPACE_ATTRIBUTE_NAME}' attribute missing.");
 
-            var targetNamespace = new Namespace(targetNamespaceName);
+            var targetNamespace = TryAndReportError(xElement, () => new Namespace(targetNamespaceName.Trim()));
 
             var visibleTypeNames = ParseTypeNameSet(xElement, TYPE_ELEMENT_NAME);
             if (!visibleTypeNames.Any())
@@ -209,13 +209,28 @@ namespace Codartis.NsDepCop.Core.Implementation
         {
             var fromValue = GetAttributeValue(xElement, FROM_ATTRIBUTE_NAME);
             if (fromValue == null)
-                throw new Exception($"{GetLineInfo(xElement)}{FROM_ATTRIBUTE_NAME} element missing.");
+                throw new Exception($"{GetLineInfo(xElement)}'{FROM_ATTRIBUTE_NAME}' attribute missing.");
 
             var toValue = GetAttributeValue(xElement, TO_ATTRIBUTE_NAME);
             if (toValue == null)
-                throw new Exception($"{GetLineInfo(xElement)}{TO_ATTRIBUTE_NAME} element missing.");
+                throw new Exception($"{GetLineInfo(xElement)}'{TO_ATTRIBUTE_NAME}' attribute missing.");
 
-            return new NamespaceDependencyRule(fromValue, toValue);
+            var fromNamespaceSpecification = TryAndReportError(xElement, () => NamespaceSpecificationParser.Parse(fromValue.Trim()));
+            var toNamespaceSpecification = TryAndReportError(xElement, () => NamespaceSpecificationParser.Parse(toValue.Trim()));
+
+            return new NamespaceDependencyRule(fromNamespaceSpecification, toNamespaceSpecification);
+        }
+
+        private static T TryAndReportError<T>(XObject xObject, Func<T> parserDelegate)
+        {
+            try
+            {
+                return parserDelegate();
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"{GetLineInfo(xObject)}{e.Message}", e);
+            }
         }
 
         private static TypeNameSet ParseTypeNameSet(XElement rootElement, string elementName)
@@ -226,10 +241,10 @@ namespace Codartis.NsDepCop.Core.Implementation
             {
                 var typeName = GetAttributeValue(xElement, TYPE_NAME_ATTRIBUTE_NAME);
                 if (typeName == null)
-                    throw new Exception($"{GetLineInfo(xElement)}{TYPE_NAME_ATTRIBUTE_NAME} attribute missing.");
+                    throw new Exception($"{GetLineInfo(xElement)}'{TYPE_NAME_ATTRIBUTE_NAME}' attribute missing.");
 
                 if (!string.IsNullOrWhiteSpace(typeName))
-                    typeNameSet.Add(typeName);
+                    typeNameSet.Add(typeName.Trim());
             }
 
             return typeNameSet;
@@ -279,7 +294,7 @@ namespace Codartis.NsDepCop.Core.Implementation
                 }
                 else
                 {
-                    throw new FormatException($"Error parsing {attribute.Name} value '{attribute.Value}'.");
+                    throw new FormatException($"Error parsing '{attribute.Name}' value '{attribute.Value}'.");
                 }
             }
 

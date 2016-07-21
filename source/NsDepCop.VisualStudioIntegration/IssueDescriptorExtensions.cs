@@ -17,7 +17,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             return new DiagnosticDescriptor(
                 issueDescriptor.Id,
                 issueDescriptor.StaticDescription,
-                issueDescriptor.GetDynamicDescription(default(TIssue)),
+                issueDescriptor.StaticDescription,
                 Constants.TOOL_NAME,
                 issueDescriptor.DefaultKind.ToDiagnosticSeverity(),
                 true,

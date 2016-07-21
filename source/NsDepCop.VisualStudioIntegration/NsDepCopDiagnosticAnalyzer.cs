@@ -6,7 +6,6 @@ using Codartis.NsDepCop.Core.Interface;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
@@ -76,7 +75,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                     break;
 
                 case DependencyAnalyzerState.ConfigError:
-                    ReportConfigException(context, projectAnalyzer.ConfigFileName, projectAnalyzer.ConfigException);
+                    ReportConfigException(context, projectAnalyzer.ConfigException);
                     break;
 
                 case DependencyAnalyzerState.Enabled:
@@ -89,7 +88,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             }
         }
 
-        private static void ReportIllegalDependencies(IEnumerable<DependencyViolation> dependencyViolations, 
+        private static void ReportIllegalDependencies(IEnumerable<DependencyViolation> dependencyViolations,
             SyntaxNodeAnalysisContext context, IssueKind issueKind)
         {
             foreach (var dependencyViolation in dependencyViolations)
@@ -99,35 +98,47 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             }
         }
 
-        private static Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, DependencyViolation dependencyViolation, IssueKind issueKind)
+        private static void ReportConfigException(SyntaxNodeAnalysisContext context, Exception exception)
         {
-            var message = Constants.IllegalDependencyIssue.GetDynamicDescription(dependencyViolation);
-            var severity = issueKind.ToDiagnosticSeverity();
-            var warningLevel = severity == DiagnosticSeverity.Error ? 0 : 1;
-
-            return Diagnostic.Create(
-                IllegalDependencyDescriptor.Id,
-                IllegalDependencyDescriptor.Category,
-                message,
-                severity: severity,
-                defaultSeverity: IllegalDependencyDescriptor.DefaultSeverity,
-                isEnabledByDefault: true,
-                warningLevel: warningLevel,
-                location: Location.Create(node.SyntaxTree, node.Span),
-                helpLink: IllegalDependencyDescriptor.HelpLinkUri,
-                title: IllegalDependencyDescriptor.Title);
-        }
-
-        private static void ReportConfigException(SyntaxNodeAnalysisContext context, string configFileName, Exception exception)
-        {
-            var diagnostic = CreateConfigExceptionDiagnostic(configFileName, exception);
+            var diagnostic = CreateConfigExceptionDiagnostic(context.Node, exception);
             context.ReportDiagnostic(diagnostic);
         }
 
-        private static Diagnostic CreateConfigExceptionDiagnostic(string configFileName, Exception exception)
+        private static Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, DependencyViolation dependencyViolation, IssueKind issueKind)
         {
-            var location = Location.Create(configFileName, new TextSpan(), new LinePositionSpan());
-            return Diagnostic.Create(ConfigExceptionDescriptor, location, exception.Message);
+            var location = Location.Create(node.SyntaxTree, node.Span);
+            var message = Constants.IllegalDependencyIssue.GetDynamicDescription(dependencyViolation);
+            return CreateDiagnostic(IllegalDependencyDescriptor, location, message, issueKind);
         }
+
+        private static Diagnostic CreateConfigExceptionDiagnostic(SyntaxNode node, Exception exception)
+        {
+            // The location should be the config.nsdepcop file, but we cannot use that because of a Roslyn limitation: 
+            // https://github.com/dotnet/roslyn/issues/6649
+            // So we report the current syntax node's location.
+            var location = Location.Create(node.SyntaxTree, node.Span);
+            var message = Constants.ConfigExceptionIssue.GetDynamicDescription(exception);
+            return CreateDiagnostic(ConfigExceptionDescriptor, location, message);
+        }
+
+        private static Diagnostic CreateDiagnostic(DiagnosticDescriptor diagnosticDescriptor, 
+            Location location, string message, IssueKind? issueKind = null)
+        {
+            var severity = issueKind?.ToDiagnosticSeverity() ?? diagnosticDescriptor.DefaultSeverity;
+
+            return Diagnostic.Create(
+                diagnosticDescriptor.Id,
+                diagnosticDescriptor.Category,
+                message,
+                severity: severity,
+                defaultSeverity: diagnosticDescriptor.DefaultSeverity,
+                isEnabledByDefault: true,
+                warningLevel: GetWarningLevel(severity),
+                location: location,
+                helpLink: diagnosticDescriptor.HelpLinkUri,
+                title: diagnosticDescriptor.Title);
+        }
+
+        private static int GetWarningLevel(DiagnosticSeverity severity) => severity == DiagnosticSeverity.Error ? 0 : 1;
     }
 }
