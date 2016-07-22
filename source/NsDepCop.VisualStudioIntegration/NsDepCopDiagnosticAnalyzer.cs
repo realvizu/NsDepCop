@@ -18,8 +18,10 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// Should Roslyn behavior change this topic must be revisited.
     /// </remarks>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class NsDepCopDiagnosticAnalyzer : DiagnosticAnalyzer
+    public class NsDepCopDiagnosticAnalyzer : DiagnosticAnalyzer, IDisposable
     {
+        private readonly ProjectDependencyAnalyzerRepository _analyzerRepository;
+
         /// <summary>
         /// Descriptor for the 'Illegal namespace dependency' diagnostic.
         /// </summary>
@@ -31,6 +33,16 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// </summary>
         private static readonly DiagnosticDescriptor ConfigExceptionDescriptor =
             Constants.ConfigExceptionIssue.ToDiagnosticDescriptor();
+
+        public NsDepCopDiagnosticAnalyzer()
+        {
+            _analyzerRepository = new ProjectDependencyAnalyzerRepository();
+        }
+
+        public void Dispose()
+        {
+            _analyzerRepository.Dispose();
+        }
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
             ImmutableArray.Create(
@@ -45,26 +57,18 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 SyntaxKind.ElementAccessExpression);
         }
 
-        private static void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
+        private void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
         {
-            if (context.Node == null ||
-                context.SemanticModel == null)
+            if (context.Node?.SyntaxTree?.FilePath == null || 
+                context.SemanticModel?.Compilation?.Assembly == null)
                 return;
 
             var syntaxNode = context.Node;
             var semanticModel = context.SemanticModel;
-
-            if (string.IsNullOrWhiteSpace(syntaxNode.SyntaxTree?.FilePath))
-                return;
-
             var sourceFilePath = syntaxNode.SyntaxTree.FilePath;
-
-            if (string.IsNullOrWhiteSpace(semanticModel.Compilation?.AssemblyName))
-                return;
-
             var assemblyName = semanticModel.Compilation.AssemblyName;
 
-            var projectAnalyzer = ProjectDependencyAnalyzerRepository.GetAnalyzer(sourceFilePath, assemblyName);
+            var projectAnalyzer = _analyzerRepository.GetAnalyzer(sourceFilePath, assemblyName);
             if (projectAnalyzer == null)
                 return;
 

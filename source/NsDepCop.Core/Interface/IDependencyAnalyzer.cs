@@ -6,7 +6,7 @@ namespace Codartis.NsDepCop.Core.Interface
     /// <summary>
     /// Defines the responsibilities of an analyzer that finds dependency violations.
     /// </summary>
-    public interface IDependencyAnalyzer
+    public interface IDependencyAnalyzer : IDisposable
     {
         /// <summary>
         /// Gets the name of the parser.

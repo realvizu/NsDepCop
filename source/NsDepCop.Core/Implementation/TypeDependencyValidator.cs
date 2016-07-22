@@ -34,8 +34,9 @@ namespace Codartis.NsDepCop.Core.Implementation
             if (typeDependency.FromNamespaceName == typeDependency.ToNamespaceName)
                 return true;
 
-            var fromNamespace = new Namespace(typeDependency.FromNamespaceName);
-            var toNamespace = new Namespace(typeDependency.ToNamespaceName);
+            // These namespace names are coming from a compiler so we don't have to validate them.
+            var fromNamespace = new Namespace(typeDependency.FromNamespaceName, validate: false);
+            var toNamespace = new Namespace(typeDependency.ToNamespaceName, validate: false);
 
             var disallowRule = GetDisallowRule(fromNamespace, toNamespace);
             if (disallowRule != null)
@@ -49,14 +50,11 @@ namespace Codartis.NsDepCop.Core.Implementation
                 return false;
 
             var visibleMembers = GetVisibleMembers(allowRule, toNamespace);
-            if (!visibleMembers.EmptyIfNull().Any())
+            if (visibleMembers == null || visibleMembers.Count == 0)
                 return true;
 
             return visibleMembers.Contains(typeDependency.ToTypeName);
         }
-
-        public bool IsAllowedDependency(string fromNamespace, string fromType, string toNamespace, string toType)
-            => IsAllowedDependency(new TypeDependency(fromNamespace, fromType, toNamespace, toType));
 
         private bool IsAllowedBecauseChildCanDependOnParent(Namespace fromNamespace, Namespace toNamespace)
         {
@@ -81,7 +79,8 @@ namespace Codartis.NsDepCop.Core.Implementation
             TypeNameSet allowedTypeNameSet;
 
             if (_allowRules.TryGetValue(allowRule, out allowedTypeNameSet) &&
-                allowedTypeNameSet.EmptyIfNull().Any())
+                allowedTypeNameSet != null &&
+                allowedTypeNameSet.Any())
                 return allowedTypeNameSet;
 
             if (_visibleTypesPerNamespaces.TryGetValue(targetNamespace, out allowedTypeNameSet))

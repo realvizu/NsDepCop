@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Codartis.NsDepCop.Core;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Implementation.Roslyn;
 using Codartis.NsDepCop.Core.Interface;
@@ -14,19 +15,32 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// <summary>
     /// Creates and stores dependency analyzers for C# projects.
     /// </summary>
-    internal static class ProjectDependencyAnalyzerRepository
+    internal class ProjectDependencyAnalyzerRepository : IDisposable
     {
         /// <summary>
         /// Cache for mapping source files to project files. The key is the source file name with full path.
         /// </summary>
-        private static readonly ConcurrentDictionary<string, string> SourceFileToProjectFileMap =
-            new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> _sourceFileToProjectFileMap;
 
         /// <summary>
         /// Cache for mapping project files to their analyzers. The key is the project file name with full path.
         /// </summary>
-        private static readonly ConcurrentDictionary<string, DependencyAnalyzer> ProjectFileToAnalyzerMap =
-            new ConcurrentDictionary<string, DependencyAnalyzer>();
+        private readonly ConcurrentDictionary<string, DependencyAnalyzer> _projectFileToAnalyzerMap;
+
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        public ProjectDependencyAnalyzerRepository()
+        {
+            _sourceFileToProjectFileMap = new ConcurrentDictionary<string, string>();
+            _projectFileToAnalyzerMap = new ConcurrentDictionary<string, DependencyAnalyzer>();
+        }
+
+        public void Dispose()
+        {
+            foreach (var dependencyAnalyzer in _projectFileToAnalyzerMap.Values)
+                dependencyAnalyzer.Dispose();
+        }
 
         /// <summary>
         /// Retrieves an up-to-date analyzer for a source file + assembly name pair.
@@ -34,7 +48,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <param name="sourceFilePath">The full path of a source file.</param>
         /// <param name="assemblyName">The name of the assembly that the source file belongs to.</param>
         /// <returns>A ProjectAnalyzer, or null if cannot be retrieved.</returns>
-        public static DependencyAnalyzer GetAnalyzer(string sourceFilePath, string assemblyName)
+        public DependencyAnalyzer GetAnalyzer(string sourceFilePath, string assemblyName)
         {
             var projectFilePath = GetProjectFilePath(sourceFilePath, assemblyName);
             return projectFilePath == null 
@@ -42,17 +56,12 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 : GetProjectAnalyzer(projectFilePath);
         }
 
-        private static DependencyAnalyzer GetProjectAnalyzer(string projectFilePath)
+        private DependencyAnalyzer GetProjectAnalyzer(string projectFilePath)
         {
-            var analyzerCreatedNow = false;
-            var projectAnalyzer = ProjectFileToAnalyzerMap.GetOrAdd(projectFilePath,
-                i =>
-                {
-                    analyzerCreatedNow = true;
-                    return CreateAnalyzer(i);
-                });
+            bool added;
+            var projectAnalyzer = _projectFileToAnalyzerMap.GetOrAdd(projectFilePath, CreateAnalyzer, out added);
 
-            if (!analyzerCreatedNow)
+            if (!added)
                 projectAnalyzer.RefreshConfig();
 
             return projectAnalyzer;
@@ -70,9 +79,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             return Path.Combine(projectFileDirectory, Constants.DEFAULT_CONFIG_FILE_NAME);
         }
 
-        private static string GetProjectFilePath(string sourceFilePath, string assemblyName)
+        private string GetProjectFilePath(string sourceFilePath, string assemblyName)
         {
-            return SourceFileToProjectFileMap.GetOrAdd(sourceFilePath, i => FindProjectFile(i, assemblyName));
+            return _sourceFileToProjectFileMap.GetOrAdd(sourceFilePath, i => FindProjectFile(i, assemblyName));
         }
 
         private static string FindProjectFile(string sourceFilePath, string assemblyName)

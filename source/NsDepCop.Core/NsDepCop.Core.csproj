@@ -104,10 +104,10 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="ConcurrentDictionaryExtensions.cs" />
     <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
     <Compile Include="Factory\ParserType.cs" />
     <Compile Include="DictionaryExtensions.cs" />
-    <Compile Include="Implementation\CacheStatistics.cs" />
     <Compile Include="Implementation\IRuleConfig.cs" />
     <Compile Include="Implementation\ITypeDependencyValidator.cs" />
     <Compile Include="Implementation\NamespaceSpecificationParser.cs" />

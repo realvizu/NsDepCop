@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Codartis.NsDepCop.Core.Interface;
 
 namespace Codartis.NsDepCop.Core.Implementation
@@ -13,6 +14,7 @@ namespace Codartis.NsDepCop.Core.Implementation
     public abstract class DependencyAnalyzerBase : IDependencyAnalyzer
     {
         private readonly string _configFileName;
+        private readonly ReaderWriterLockSlim _configRefreshLock;
         private bool _configFileExists;
         private DateTime _configLastReadUtc;
         private Exception _configException;
@@ -35,7 +37,13 @@ namespace Codartis.NsDepCop.Core.Implementation
         protected DependencyAnalyzerBase(string configFileName)
         {
             _configFileName = configFileName;
+            _configRefreshLock = new ReaderWriterLockSlim();
             RefreshConfig();
+        }
+
+        public void Dispose()
+        {
+            _configRefreshLock.Dispose();
         }
 
         /// <summary>
@@ -62,7 +70,7 @@ namespace Codartis.NsDepCop.Core.Implementation
                 if (!IsConfigLoaded && IsConfigErroneous)
                     return DependencyAnalyzerState.ConfigError;
 
-                throw new Exception("Inconsistent DependencyAnalyzerState state.");
+                throw new Exception("Inconsistent DependencyAnalyzer state.");
             }
         }
 
@@ -72,22 +80,51 @@ namespace Codartis.NsDepCop.Core.Implementation
         /// <param name="sourceFilePaths">A collection of the full path of source files.</param>
         /// <param name="referencedAssemblyPaths">A collection of the full path of referenced assemblies.</param>
         /// <returns>A collection of dependency violations. Empty collection if none found.</returns>
+        /// <remarks>Mutually exclusive with RefreshConfig, guarded by ReaderWriterLock.</remarks>
         public IEnumerable<DependencyViolation> AnalyzeProject(
             IEnumerable<string> sourceFilePaths,
             IEnumerable<string> referencedAssemblyPaths)
         {
-            EnsureValidStateForAnalysis();
+            _configRefreshLock.EnterReadLock();
 
-            foreach (var dependencyViolation in AnalyzeProjectOverride(sourceFilePaths, referencedAssemblyPaths))
-                yield return dependencyViolation;
+            try
+            {
+                EnsureValidStateForAnalysis();
 
-            DebugDumpCacheStatistics(TypeDependencyValidator);
+                foreach (var dependencyViolation in AnalyzeProjectOverride(sourceFilePaths, referencedAssemblyPaths))
+                    yield return dependencyViolation;
+
+                DebugDumpCacheStatistics(TypeDependencyValidator);
+            }
+            finally
+            {
+                _configRefreshLock.ExitReadLock();
+            }
         }
 
         /// <summary>
         /// Loads or refreshes config from file.
         /// </summary>
+        /// <remarks>Mutually exclusive with AnalyzeProject, guarded by ReaderWriterLock.</remarks>
         public void RefreshConfig()
+        {
+            _configRefreshLock.EnterWriteLock();
+
+            try
+            {
+                RefreshConfigPrivate();
+            }
+            finally
+            {
+                _configRefreshLock.ExitWriteLock();
+            }
+        }
+
+        protected abstract IEnumerable<DependencyViolation> AnalyzeProjectOverride(
+            IEnumerable<string> sourceFilePaths,
+            IEnumerable<string> referencedAssemblyPaths);
+
+        private void RefreshConfigPrivate()
         {
             _configFileExists = File.Exists(_configFileName);
 
@@ -116,10 +153,6 @@ namespace Codartis.NsDepCop.Core.Implementation
                 Config = null;
             }
         }
-
-        protected abstract IEnumerable<DependencyViolation> AnalyzeProjectOverride(
-            IEnumerable<string> sourceFilePaths,
-            IEnumerable<string> referencedAssemblyPaths);
 
         private bool ConfigModifiedSinceLastRead()
         {

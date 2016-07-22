@@ -13,29 +13,43 @@ namespace Codartis.NsDepCop.TestHost
     /// </summary>
     internal class Program
     {
+        private  const int RepeatsDefault = 4;
+
         public static int Main(string[] args)
         {
-            if (args.Length < 1 || args.Length > 2)
+            if (args.Length < 1 || args.Length > 3)
             {
                 Usage();
                 return -1;
             }
 
             var parserType = GetParserType(args);
+            var repeats = GetRepeats(args);
 
             var csProjFileName = args[0];
             var csProjParser = new CsProjParser(csProjFileName);
             var configFileName = Path.Combine(Path.GetDirectoryName(csProjFileName), "config.nsdepcop");
 
-            Console.WriteLine($"Analysing {csProjFileName} with {parserType}...");
+            Console.WriteLine($"Analysing {csProjFileName} with {parserType}, repeats={repeats} ...");
 
             var runTimeSpans = new List<TimeSpan>();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < repeats; i++)
                 runTimeSpans.Add(AnalyseCsProj(parserType, configFileName, csProjParser));
 
             DumpRunTimes(runTimeSpans);
 
             return 0;
+        }
+
+        private static int GetRepeats(string[] args)
+        {
+            int repeats = RepeatsDefault;
+            if (args.Length == 3)
+            {
+                if (!int.TryParse(args[2], out repeats))
+                    Console.WriteLine($"Cannot parse '{args[2]}' to repeat number.");
+            }
+            return repeats;
         }
 
         private static ParserType GetParserType(string [] args)
@@ -74,14 +88,16 @@ namespace Codartis.NsDepCop.TestHost
 
         private static void DumpRunTimes(List<TimeSpan> runTimeSpans)
         {
-            var averageTimeSpan = TimeSpan.FromMilliseconds(runTimeSpans.Skip(1).Average(i => i.TotalMilliseconds));
-            Console.WriteLine($"Average run time (skipping 1st):{averageTimeSpan:mm\\:ss\\.fff}");
+            var minRunTimeSpan = TimeSpan.FromMilliseconds(runTimeSpans.Min(i => i.TotalMilliseconds));
+            Console.WriteLine($"Min run time: {minRunTimeSpan:mm\\:ss\\.fff}");
         }
 
         private static void Usage()
         {
             Console.WriteLine("Usage:");
-            Console.WriteLine($"  {Assembly.GetExecutingAssembly().GetName().Name} <CsProjFileName>");
+            Console.WriteLine($"  {Assembly.GetExecutingAssembly().GetName().Name} <CsProjFileName> [<ParserType>] [<Repeats>]");
+            Console.WriteLine($"  ParserTypes: {ParserType.Roslyn}, {ParserType.NRefactory}");
+            Console.WriteLine($"  Repeats default = {RepeatsDefault}");
         }
     }
 }

@@ -76,14 +76,28 @@ namespace Codartis.NsDepCop.MsBuildTask
             {
                 Debug.WriteLine("Execute started...", Constants.TOOL_NAME);
                 DebugDumpInputParameters();
-                var startTime = DateTime.Now;
 
                 _currentMessageImportance = ParseMessageImportance(GetValueOfTaskItem(InfoImportance));
+
                 var parserName = GetValueOfTaskItem(Parser);
                 var configFileName = Path.Combine(BaseDirectory.ItemSpec, Constants.DEFAULT_CONFIG_FILE_NAME);
-                var runWasSuccessful = true;
 
-                var dependencyAnalyzer = DependencyAnalyzerFactory.Create(parserName, configFileName, DefaultParserType);
+                return ExecuteAnalysis(parserName, configFileName);
+            }
+            catch (Exception e)
+            {
+                LogMsBuildEvent(TaskExceptionIssue, e);
+                return false;
+            }
+        }
+
+        private bool ExecuteAnalysis(string parserName, string configFileName)
+        {
+            var runWasSuccessful = true;
+            var startTime = DateTime.Now;
+
+            using (var dependencyAnalyzer = DependencyAnalyzerFactory.Create(parserName, configFileName, DefaultParserType))
+            {
                 switch (dependencyAnalyzer.State)
                 {
                     case DependencyAnalyzerState.NoConfigFile:
@@ -102,6 +116,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                     case DependencyAnalyzerState.Enabled:
                         LogMsBuildEvent(TaskStartedIssue, dependencyAnalyzer.ParserName);
                         var errorIssueDetected = AnalyzeProjectAndReportIssues(dependencyAnalyzer);
+
                         runWasSuccessful = !errorIssueDetected;
                         var endTime = DateTime.Now;
                         LogMsBuildEvent(TaskFinishedIssue, endTime - startTime);
@@ -110,14 +125,9 @@ namespace Codartis.NsDepCop.MsBuildTask
                     default:
                         throw new Exception($"Unexpected DependencyAnalyzerState: {dependencyAnalyzer.State}");
                 }
+            }
 
-                return runWasSuccessful;
-            }
-            catch (Exception e)
-            {
-                LogMsBuildEvent(TaskExceptionIssue, e);
-                return false;
-            }
+            return runWasSuccessful;
         }
 
         private bool AnalyzeProjectAndReportIssues(IDependencyAnalyzer dependencyAnalyzer)
