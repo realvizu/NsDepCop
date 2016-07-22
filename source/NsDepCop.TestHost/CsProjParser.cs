@@ -11,12 +11,17 @@ namespace Codartis.NsDepCop.TestHost
     /// </summary>
     internal class CsProjParser
     {
+        private static readonly List<string> ReferenceDirectories = new List<string>
+        {
+            @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2",
+            @"C:\Program Files (x86)\Microsoft SDKs\Expression\Blend\.NETFramework\v4.5\Libraries"
+        };
+
         private const string Xmlns = "http://schemas.microsoft.com/developer/msbuild/2003";
 
         private readonly string _csProjFilePath;
         private readonly string _csProjDirectoryPath;
         private readonly string _mscorlibFilePath;
-        private readonly string _frameworkAssemblyPath;
         private List<string> _sourceFilePaths;
         private List<string> _referencedAssemblyPaths;
 
@@ -26,7 +31,6 @@ namespace Codartis.NsDepCop.TestHost
             _csProjDirectoryPath = Path.GetDirectoryName(csProjFilePath);
 
             _mscorlibFilePath = typeof(int).Assembly.Location;
-            _frameworkAssemblyPath = Path.GetDirectoryName(_mscorlibFilePath);
 
             ParseCsProjFile();
         }
@@ -40,20 +44,62 @@ namespace Codartis.NsDepCop.TestHost
             if (document.Root == null)
                 throw new Exception($"Error loading {_csProjFilePath}");
 
-            _sourceFilePaths = document.Root
+            _sourceFilePaths = ExtractSourceFilePaths(document);
+
+            _referencedAssemblyPaths = new[] { _mscorlibFilePath }
+                .Union(GetFileReferencesWithoutHintPath(document))
+                .Union(GetFileReferencesWithHintPath(document))
+                .Union(ExtractProjectReferences(document))
+                .ToList();
+        }
+
+        private List<string> ExtractSourceFilePaths(XDocument document)
+        {
+            return document.Root
                 .Elements(GetXName("ItemGroup"))
                 .Elements(GetXName("Compile"))
                 .Attributes("Include")
                 .Select(i => Path.Combine(_csProjDirectoryPath, i.Value))
                 .ToList();
+        }
 
-            var fileReferences = document.Root
+        private IEnumerable<string> GetFileReferencesWithoutHintPath(XDocument document)
+        {
+            return document.Root
                 .Elements(GetXName("ItemGroup"))
                 .Elements(GetXName("Reference"))
+                .Where(i=>!i.Elements(GetXName("HintPath")).Any())
                 .Attributes("Include")
-                .Select(i => Path.Combine(_frameworkAssemblyPath, $"{i.Value}.dll"));
+                .Select(i => $"{GetAssemblyFileName(i.Value)}.dll")
+                .SelectMany(CombineWithPossiblePaths)
+                .Where(File.Exists);
+        }
 
-            var projectReferences = document.Root
+        private static IEnumerable<string> CombineWithPossiblePaths(string s)
+        {
+            return ReferenceDirectories.Select(i => Path.Combine(i, s));
+        }
+
+        private static string GetAssemblyFileName(string i)
+        {
+            var spaceIndex = i.IndexOf(',');
+            return spaceIndex >= 0 
+                ? i.Substring(0, spaceIndex) 
+                : i;
+        }
+
+        private IEnumerable<string> GetFileReferencesWithHintPath(XDocument document)
+        {
+            return document.Root
+                .Elements(GetXName("ItemGroup"))
+                .Elements(GetXName("Reference"))
+                .Elements(GetXName("HintPath"))
+                .Select(i => Path.Combine(_csProjDirectoryPath, $"{i.Value}"));
+        }
+
+        private IEnumerable<string> ExtractProjectReferences(XDocument document)
+        {
+            return document.Root
                 .Elements(GetXName("ItemGroup"))
                 .Elements(GetXName("ProjectReference"))
                 .Select(i => Path.Combine(_csProjDirectoryPath, 
@@ -61,15 +107,12 @@ namespace Codartis.NsDepCop.TestHost
                     "obj\\debug",
                     i.Element(GetXName("Name")).Value + ".dll"));
 
-            _referencedAssemblyPaths = new[] { _mscorlibFilePath }
-                .Union(fileReferences)
-                .Union(projectReferences)
-                .ToList();
+
         }
 
         private static XName GetXName(string name)
         {
-            return System.Xml.Linq.XName.Get(name, Xmlns);
+            return XName.Get(name, Xmlns);
         }
     }
 }
