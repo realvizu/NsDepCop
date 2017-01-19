@@ -1,10 +1,15 @@
-**NsDepCop is a static analysis tool that lets you enforce namespace dependency rules in your C# projects.**  
+# NsDepCop - Namespace dependency checker tool for C# #
+
+
+[![Build status](https://ci.appveyor.com/api/projects/status/dm7q6tdwxv4xv85r?svg=true)](https://ci.appveyor.com/project/realvizu/nsdepcop)
+
+NsDepCop is a static analysis tool that lets you enforce namespace dependency rules in your C# projects.
 No more unplanned or unnoticed dependencies in your system.
 * **MSBuild integration**  
   * Reports issues at each build. Use it on your build server.
 * **Visual Studio integration**  
   * Highlights issues in the code editor as you type the code.
-
+  
 ----
 
 This project was moved from [CodePlex](https://nsdepcop.codeplex.com). 
@@ -32,4 +37,4 @@ This project was moved from [CodePlex](https://nsdepcop.codeplex.com).
 
 ----
 
-Follow me on twitter **@realvizu**
+Follow me on twitter [@realvizu](https://twitter.com/realvizu)
