@@ -1,0 +1,31 @@
+image: Visual Studio 2015
+
+version: 1.6.{build}.0
+
+configuration: Release
+
+install:
+- ps: (New-Object Net.WebClient).DownloadString("https://raw.githubusercontent.com/realvizu/Tools/master/Build/buildtools.ps1") | Invoke-Expression
+
+assembly_info:
+  patch: true
+  file: source\include\VersionInfo.cs
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+
+before_build:
+# vsixmanifest file must be specified with full path.
+- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.VisualStudioIntegration.Vsix\source.extension.vsixmanifest $env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
+- cmd: nuget restore -Verbosity quiet source\NsDepCop.sln
+
+build:
+  project: source\NsDepCop.sln
+  verbosity: minimal
+
+test:
+  assemblies: '**\*Test.dll'
+
+artifacts:
+- path: source\NsDepCop.Setup\bin\Release\NsDepCop.msi
+- path: source\NsDepCop.VisualStudioIntegration.Vsix\bin\Release\NsDepCop.vsix
