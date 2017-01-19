@@ -7,8 +7,9 @@ No more unplanned or unnoticed dependencies in your system.
 
 ----
 
-This project was moved from [CodePlex](https://nsdepcop.codeplex.com).  
-[Releases](https://nsdepcop.codeplex.com/releases), [documentation](https://nsdepcop.codeplex.com/documentation), [discussions](https://nsdepcop.codeplex.com/discussions) and [issues](https://nsdepcop.codeplex.com/workitem/list/basic) are still there.
+This project was moved from [CodePlex](https://nsdepcop.codeplex.com). 
+* Source code and Issues are here in GitHub
+* [Documentation](https://nsdepcop.codeplex.com/documentation) is still at CodePlex.
 
 ----
 
