@@ -16,7 +16,7 @@ assembly_info:
   file: source\include\VersionInfo.cs
   assembly_version: '{version}'
   assembly_file_version: '{version}'
-  assembly_informational_version: '{version}$(versionpostfix)'
+  assembly_informational_version: '$(shortversion)$(versionpostfix)'
 
 before_build:
 # vsixmanifest file must be specified with full path.
