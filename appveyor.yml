@@ -1,6 +1,10 @@
 image: Visual Studio 2015
 
-version: '1.6.0'
+environment:
+  shortversion: '1.6.0'
+  prereleasetag: '-beta1'
+
+version: '$(shortversion).{build}'
 
 configuration: Release
 
@@ -10,13 +14,13 @@ install:
 assembly_info:
   patch: true
   file: source\include\VersionInfo.cs
-  assembly_version: '{version}.{build}'
-  assembly_file_version: '{version}.{build}'
-  assembly_informational_version: '{version}-beta1'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '$(shortversion)$(prereleasetag)'
 
 before_build:
 # vsixmanifest file must be specified with full path.
-- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.VisualStudioIntegration.Vsix\source.extension.vsixmanifest $env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
+- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.VisualStudioIntegration.Vsix\source.extension.vsixmanifest $(shortversion) -ErrorAction Stop
 - cmd: nuget restore -Verbosity quiet source\NsDepCop.sln
 
 build:
