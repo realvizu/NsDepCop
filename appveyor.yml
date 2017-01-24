@@ -2,7 +2,7 @@ image: Visual Studio 2015
 
 environment:
   shortversion: '1.6.0'
-  versionpostfix: ''
+  informationalversion: '1.6.0'
 
 version: '$(shortversion).{build}'
 
@@ -16,7 +16,7 @@ assembly_info:
   file: source\include\VersionInfo.cs
   assembly_version: '{version}'
   assembly_file_version: '{version}'
-  assembly_informational_version: '$(shortversion)$(versionpostfix)'
+  assembly_informational_version: '$(informationalversion)'
 
 before_build:
 # vsixmanifest file must be specified with full path.
