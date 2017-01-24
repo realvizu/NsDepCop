@@ -20,7 +20,7 @@ assembly_info:
 
 before_build:
 # vsixmanifest file must be specified with full path.
-- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.VisualStudioIntegration.Vsix\source.extension.vsixmanifest $(shortversion) -ErrorAction Stop
+- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.VisualStudioIntegration.Vsix\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
 - cmd: nuget restore -Verbosity quiet source\NsDepCop.sln
 
 build:
