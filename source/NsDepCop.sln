@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{71A8
 		include\VersionInfo.cs = include\VersionInfo.cs
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.NuGet", "NsDepCop.NuGet\NsDepCop.NuGet.csproj", "{0FB37BF6-7E56-4974-829D-917AB6207257}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,18 @@ Global
 		{2FFB4ADA-8BCB-42AE-8BF1-8CE70B011FD1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2FFB4ADA-8BCB-42AE-8BF1-8CE70B011FD1}.Release|x86.ActiveCfg = Release|Any CPU
 		{2FFB4ADA-8BCB-42AE-8BF1-8CE70B011FD1}.Release|x86.Build.0 = Release|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Debug|x86.Build.0 = Debug|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Release|x86.ActiveCfg = Release|Any CPU
+		{0FB37BF6-7E56-4974-829D-917AB6207257}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

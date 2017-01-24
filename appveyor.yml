@@ -2,6 +2,9 @@ image: Visual Studio 2015
 
 version: 1.6.{build}.0
 
+environment:
+  informationalversion: 1.6.0-beta1
+
 configuration: Release
 
 install:
@@ -12,7 +15,7 @@ assembly_info:
   file: source\include\VersionInfo.cs
   assembly_version: '{version}'
   assembly_file_version: '{version}'
-  assembly_informational_version: '{version}'
+  assembly_informational_version: '{informationalversion}'
 
 before_build:
 # vsixmanifest file must be specified with full path.
@@ -27,5 +30,6 @@ test:
   assemblies: '**\*Test.dll'
 
 artifacts:
-- path: source\NsDepCop.Setup\bin\Release\NsDepCop.msi
-- path: source\NsDepCop.VisualStudioIntegration.Vsix\bin\Release\NsDepCop.vsix
+- path: source\NsDepCop.Setup\bin\{configuration}\NsDepCop.msi
+- path: source\NsDepCop.VisualStudioIntegration.Vsix\bin\{configuration}\NsDepCop.vsix
+- path: source\NsDepCop.NuGet\bin\{configuration}\NsDepCop*.nupkg

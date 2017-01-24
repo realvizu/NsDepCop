@@ -2,4 +2,4 @@
 
 [assembly: AssemblyCompany("Codartis")]
 [assembly: AssemblyProduct("NsDepCop")]
-[assembly: AssemblyCopyright("Copyright © Codartis 2013-2016")]
+[assembly: AssemblyCopyright("Copyright © 2013-2017 Ferenc Vizkeleti")]

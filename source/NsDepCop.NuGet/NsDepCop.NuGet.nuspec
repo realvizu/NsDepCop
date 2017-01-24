@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NsDepCop</id>
+        <version>$version$</version>
+        <title>NsDepCop - Namespace Dependency Checker Tool for C#</title>
+        <description>Static code analysis tool to enforce namespace dependency rules in C# projects.</description>
+        <authors>Ferenc Vizkeleti</authors>
+        <owners>Ferenc Vizkeleti</owners>
+        <projectUrl>https://github.com/realvizu/NsDepCop</projectUrl>
+        <licenseUrl>https://github.com/realvizu/NsDepCop/blob/VS2015/LICENSE</licenseUrl>
+        <iconUrl>https://github.com/realvizu/NsDepCop/blob/VS2015/images/icons/NsDepCop_256.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <copyright>$copyright$</copyright>
+        <tags>static code analysis tool C# csharp namespace dependency dependencies enforce rule</tags>
+    </metadata>
+    <files>
+        <file src="bin\$configuration$\*.dll" target="tools" exclude="bin\$configuration$\NsDepCop.NuGet.dll" />
+        <file src="NsDepCop.targets" target="build" />
+    </files>
+</package>
