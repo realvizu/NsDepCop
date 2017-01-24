@@ -2,7 +2,7 @@ image: Visual Studio 2015
 
 environment:
   shortversion: '1.6.0'
-  versionpostfix: '-beta1'
+  versionpostfix: ''
 
 version: '$(shortversion).{build}'
 
