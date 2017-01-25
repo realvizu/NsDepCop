@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NsDepCopConfig IsEnabled="true" CodeIssueKind="Error" ChildCanDependOnParentImplicitly="true">
     <Allowed From="*" To="System.*" />
-    <Allowed From="*" To="MoreLinq" />
+    <!--<Allowed From="*" To="MoreLinq" />-->
     
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Interface" />
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.NRefactory">

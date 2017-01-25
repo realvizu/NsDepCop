@@ -2,6 +2,6 @@
 <NsDepCopConfig IsEnabled="true" CodeIssueKind="Error" ChildCanDependOnParentImplicitly="true">
     <Allowed From="*" To="System.*" /> 
     <Allowed From="Codartis.NsDepCop.MsBuildTask" To="Codartis.NsDepCop.Core.Interface" />
-    <Allowed From="Codartis.NsDepCop.MsBuildTask" To="Codartis.NsDepCop.Core.Factory" />
+    <!--<Allowed From="Codartis.NsDepCop.MsBuildTask" To="Codartis.NsDepCop.Core.Factory" />-->
     <Allowed From="Codartis.NsDepCop.MsBuildTask" To="Microsoft.Build.*" />
 </NsDepCopConfig>
