@@ -9,7 +9,7 @@
         <owners>Ferenc Vizkeleti</owners>
         <projectUrl>https://github.com/realvizu/NsDepCop</projectUrl>
         <licenseUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/VS2015/LICENSE</licenseUrl>
-        <iconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/VS2015/images/icons/NsDepCop_256.png</iconUrl>
+        <iconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/VS2015/images/icons/NsDepCop_128.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <developmentDependency>true</developmentDependency>
         <copyright>$copyright$</copyright>
