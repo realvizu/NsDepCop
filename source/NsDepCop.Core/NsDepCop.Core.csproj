@@ -106,10 +106,9 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Factory\ConfiguredAnalyzerFactory.cs" />
-    <Compile Include="Implementation\Analysis\IAnalyzerFactory.cs" />
-    <Compile Include="Implementation\Analysis\ConfiguredAnalyzer.cs" />
-    <Compile Include="Interface\Analysis\IConfiguredAnalyzer.cs" />
+    <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
+    <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
+    <Compile Include="Interface\Analysis\IDependencyAnalyzer.cs" />
     <Compile Include="Interface\Analysis\ISemanticModel.cs" />
     <Compile Include="Interface\Analysis\ISyntaxNode.cs" />
     <Compile Include="Util\ObjectWrapper.cs" />
@@ -118,27 +117,26 @@
     <Compile Include="Interface\Config\IConfigProvider.cs" />
     <Compile Include="Interface\Config\ConfigDefaults.cs" />
     <Compile Include="Implementation\Config\ProjectConfig.cs" />
-    <Compile Include="Factory\ConfigProviderFactory.cs" />
     <Compile Include="Implementation\Config\FileConfigProviderBase.cs" />
     <Compile Include="Interface\Config\IProjectConfig.cs" />
     <Compile Include="Interface\Config\Importance.cs" />
     <Compile Include="Interface\Analysis\IssueDefinitions.cs" />
     <Compile Include="Util\ConcurrentDictionaryExtensions.cs" />
-    <Compile Include="Factory\AnalyzerFactory.cs" />
+    <Compile Include="Implementation\Analysis\AnalyzerAlgorithmFactory.cs" />
     <Compile Include="Interface\Config\Parsers.cs" />
     <Compile Include="Util\DictionaryExtensions.cs" />
     <Compile Include="Interface\Config\IRuleConfig.cs" />
     <Compile Include="Implementation\Analysis\ITypeDependencyValidator.cs" />
     <Compile Include="Interface\Config\NamespaceSpecificationParser.cs" />
     <Compile Include="Interface\Config\NamespaceTree.cs" />
-    <Compile Include="Implementation\Analysis\NRefactory\NRefactoryDependencyAnalyzer.cs" />
+    <Compile Include="Implementation\Analysis\NRefactory\NRefactoryAnalyzerLogic.cs" />
     <Compile Include="Implementation\Analysis\NRefactory\DependencyAnalyzerSyntaxVisitor.cs" />
     <Compile Include="Implementation\Analysis\NRefactory\ITypeExtensions.cs" />
-    <Compile Include="Implementation\Analysis\Roslyn\RoslynDependencyAnalyzer.cs" />
-    <Compile Include="Implementation\Analysis\DependencyAnalyzerBase.cs" />
+    <Compile Include="Implementation\Analysis\Roslyn\RoslynAnalyzerLogic.cs" />
+    <Compile Include="Implementation\Analysis\AnalyzerLogicBase.cs" />
     <Compile Include="Implementation\Analysis\Roslyn\DependencyAnalyzerSyntaxVisitor.cs" />
-    <Compile Include="Implementation\Analysis\Roslyn\IssueKindExtension.cs" />
-    <Compile Include="Implementation\Analysis\Roslyn\IssueKindTranslator.cs" />
+    <Compile Include="Interface\Analysis\Roslyn\IssueKindExtension.cs" />
+    <Compile Include="Interface\Analysis\Roslyn\IssueKindTranslator.cs" />
     <Compile Include="Implementation\Analysis\Roslyn\SyntaxNodeAnalyzer.cs" />
     <Compile Include="Implementation\Analysis\CachingTypeDependencyValidator.cs" />
     <Compile Include="Util\ICacheStatisticsProvider.cs" />
@@ -154,7 +152,7 @@
     <Compile Include="Implementation\Analysis\TypeDependencyValidator.cs" />
     <Compile Include="Interface\Analysis\DependencyViolation.cs" />
     <Compile Include="Util\EnumerableExtensions.cs" />
-    <Compile Include="Interface\Analysis\IDependencyAnalyzer.cs" />
+    <Compile Include="Interface\Analysis\IDependencyAnalyzerLogic.cs" />
     <Compile Include="Interface\Config\NamespaceSpecification.cs" />
     <Compile Include="Util\MoreLinqExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
-using Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Roslyn;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
@@ -11,7 +11,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <summary>
         /// Format string to create a help link for diagnostics. The parameter is the diagnostic's code in full UPPERCASE.
         /// </summary>
-        private const string HELP_LINK_FORMAT = @"https://nsdepcop.codeplex.com/wikipage?title=Diagnostics#{0}";
+        private const string HelpLinkFormat = @"https://nsdepcop.codeplex.com/wikipage?title=Diagnostics#{0}";
 
         public static DiagnosticDescriptor ToDiagnosticDescriptor<TIssue>(this IssueDescriptor<TIssue> issueDescriptor)
         {
@@ -27,7 +27,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static string GetHelpLink(string issueDescriptorId)
         {
-            return string.Format(HELP_LINK_FORMAT, issueDescriptorId.ToUpper(CultureInfo.InvariantCulture));
+            return string.Format(HelpLinkFormat, issueDescriptorId.ToUpper(CultureInfo.InvariantCulture));
         }
     }
 }

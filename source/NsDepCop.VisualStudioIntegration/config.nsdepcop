@@ -1,14 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NsDepCopConfig IsEnabled="true" CodeIssueKind="Error">
     <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="System.*" />
-    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Microsoft.CodeAnalysis.*" />
+
     <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.Util" />
     <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.Interface.*" />
     <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.Factory" />
-    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn">
-        <VisibleMembers>
-            <Type Name="RoslynDependencyAnalyzer" />
-            <Type Name="IssueKindExtension" />
-        </VisibleMembers>
-    </Allowed>
+
+    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Microsoft.CodeAnalysis.*" />
 </NsDepCopConfig>

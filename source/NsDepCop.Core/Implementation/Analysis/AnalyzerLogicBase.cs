@@ -11,12 +11,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// <summary>
     /// Abstract base class for dependency analyzer implementations.
     /// </summary>
-    public abstract class DependencyAnalyzerBase : IDependencyAnalyzer
+    public abstract class AnalyzerLogicBase : IDependencyAnalyzerLogic
     {
         protected readonly IRuleConfig Config;
         protected readonly ITypeDependencyValidator TypeDependencyValidator;
 
-        protected DependencyAnalyzerBase(IRuleConfig config)
+        protected AnalyzerLogicBase(IRuleConfig config)
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));

@@ -4,7 +4,7 @@
     <Allowed From="*" To="MoreLinq" />
     <Allowed From="Codartis.NsDepCop.Core.*" To="Codartis.NsDepCop.Core.Util" />
 
-    <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis" To="Codartis.NsDepCop.Core.Interface.Config" />
+    <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis.*" To="Codartis.NsDepCop.Core.Interface.Config" />
 
     <Allowed From="Codartis.NsDepCop.Core.Implementation.Config" To="Codartis.NsDepCop.Core.Interface.Config" />
     <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.*" To="Codartis.NsDepCop.Core.Interface.*" />
@@ -12,23 +12,23 @@
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Interface.*"/>
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.Analysis">
         <VisibleMembers>
-            <Type Name="ConfiguredAnalyzer" />
-            <Type Name="IAnalyzerFactory" />
-        </VisibleMembers>
-    </Allowed>
-    <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory">
-        <VisibleMembers>
-            <Type Name="NRefactoryDependencyAnalyzer" />
-        </VisibleMembers>
-    </Allowed>
-    <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn">
-        <VisibleMembers>
-            <Type Name="RoslynDependencyAnalyzer" />
+            <Type Name="DependencyAnalyzer" />
         </VisibleMembers>
     </Allowed>
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.Config">
         <VisibleMembers>
             <Type Name="XmlFileConfigProvider" />
+        </VisibleMembers>
+    </Allowed>
+
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis" To="Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory">
+        <VisibleMembers>
+            <Type Name="NRefactoryAnalyzerLogic" />
+        </VisibleMembers>
+    </Allowed>
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis" To="Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn">
+        <VisibleMembers>
+            <Type Name="RoslynAnalyzerLogic" />
         </VisibleMembers>
     </Allowed>
 

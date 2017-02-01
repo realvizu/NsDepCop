@@ -68,8 +68,8 @@ namespace Codartis.NsDepCop.TestHost
         {
             var startTime = DateTime.Now;
 
-            var configuredAnalyzer = new ConfiguredAnalyzerFactory().CreateFromXmlConfigFile(configFileName, parser);
-            var dependencyViolations = configuredAnalyzer.AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths).ToList();
+            var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, parser);
+            var dependencyViolations = dependencyAnalyzer.AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths).ToList();
 
             var endTime = DateTime.Now;
             var elapsedTimeSpan = endTime - startTime;

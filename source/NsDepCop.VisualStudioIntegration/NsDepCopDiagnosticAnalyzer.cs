@@ -70,27 +70,27 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             var sourceFilePath = syntaxNode.SyntaxTree.FilePath;
             var assemblyName = semanticModel.Compilation.AssemblyName;
 
-            var configuredAnalyzer = _analyzerProvider.GetConfiguredAnalyzer(sourceFilePath, assemblyName);
-            if (configuredAnalyzer == null)
+            var dependencyAnalyzer = _analyzerProvider.GetDependencyAnalyzer(sourceFilePath, assemblyName);
+            if (dependencyAnalyzer == null)
                 return;
 
-            switch (configuredAnalyzer.ConfigState)
+            switch (dependencyAnalyzer.ConfigState)
             {
                 case ConfigState.NoConfigFile:
                 case ConfigState.Disabled:
                     break;
 
                 case ConfigState.ConfigError:
-                    ReportConfigException(context, configuredAnalyzer.ConfigException);
+                    ReportConfigException(context, dependencyAnalyzer.ConfigException);
                     break;
 
                 case ConfigState.Enabled:
-                    var dependencyViolations = configuredAnalyzer.AnalyzeSyntaxNode(new RoslynSyntaxNode(syntaxNode), new RoslynSemanticModel(semanticModel));
-                    ReportIllegalDependencies(dependencyViolations, context, configuredAnalyzer.Config.IssueKind);
+                    var dependencyViolations = dependencyAnalyzer.AnalyzeSyntaxNode(new RoslynSyntaxNode(syntaxNode), new RoslynSemanticModel(semanticModel));
+                    ReportIllegalDependencies(dependencyViolations, context, dependencyAnalyzer.Config.IssueKind);
                     break;
 
                 default:
-                    throw new Exception($"Unexpected ConfigState {configuredAnalyzer.ConfigState}");
+                    throw new Exception($"Unexpected ConfigState {dependencyAnalyzer.ConfigState}");
             }
         }
 

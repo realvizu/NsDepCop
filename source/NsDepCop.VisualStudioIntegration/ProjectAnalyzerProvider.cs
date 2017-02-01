@@ -24,9 +24,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private readonly ConcurrentDictionary<string, string> _sourceFileToProjectFileMap;
 
         /// <summary>
-        /// Cache for mapping project files to their corresponding config and analyzer. The key is the project file name with full path.
+        /// Cache for mapping project files to their corresponding dependency analyzer. The key is the project file name with full path.
         /// </summary>
-        private readonly ConcurrentDictionary<string, IConfiguredAnalyzer> _projectFileToConfigAnalyzerMap;
+        private readonly ConcurrentDictionary<string, IDependencyAnalyzer> _projectFileToDependencyAnalyzerMap;
 
         /// <summary>
         /// Creates a new instance.
@@ -34,13 +34,13 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         public ProjectAnalyzerProvider()
         {
             _sourceFileToProjectFileMap = new ConcurrentDictionary<string, string>();
-            _projectFileToConfigAnalyzerMap = new ConcurrentDictionary<string, IConfiguredAnalyzer>();
+            _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IDependencyAnalyzer>();
         }
 
         public void Dispose()
         {
-            foreach (var configuredAnalyzer in _projectFileToConfigAnalyzerMap.Values)
-                configuredAnalyzer.Dispose();
+            foreach (var dependencyAnalyzer in _projectFileToDependencyAnalyzerMap.Values)
+                dependencyAnalyzer.Dispose();
         }
 
         /// <summary>
@@ -49,34 +49,34 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <param name="sourceFilePath">The full path of a source file.</param>
         /// <param name="assemblyName">The name of the assembly that the source file belongs to.</param>
         /// <returns>A ProjectAnalyzer, or null if cannot be retrieved.</returns>
-        public IConfiguredAnalyzer GetConfiguredAnalyzer(string sourceFilePath, string assemblyName)
+        public IDependencyAnalyzer GetDependencyAnalyzer(string sourceFilePath, string assemblyName)
         {
             var projectFilePath = GetProjectFilePath(sourceFilePath, assemblyName);
             if (projectFilePath == null )
                 return null;
 
-            var configuredAnalyzer = GetConfiguredAnalyzer(projectFilePath);
-            if (configuredAnalyzer.ConfigState != ConfigState.Enabled)
+            var dependencyAnalyzer = GetDependencyAnalyzer(projectFilePath);
+            if (dependencyAnalyzer.ConfigState != ConfigState.Enabled)
                 return null;
 
-            return configuredAnalyzer;
+            return dependencyAnalyzer;
         }
 
-        private IConfiguredAnalyzer GetConfiguredAnalyzer(string projectFilePath)
+        private IDependencyAnalyzer GetDependencyAnalyzer(string projectFilePath)
         {
             bool added;
-            var configuredAnalyzer = _projectFileToConfigAnalyzerMap.GetOrAdd(projectFilePath, CreateConfiguredAnalyzer, out added);
+            var dependencyAnalyzer = _projectFileToDependencyAnalyzerMap.GetOrAdd(projectFilePath, CreateDependencyAnalyzer, out added);
 
             if (!added)
-                configuredAnalyzer.RefreshConfig();
+                dependencyAnalyzer.RefreshConfig();
 
-            return configuredAnalyzer;
+            return dependencyAnalyzer;
         }
 
-        private static IConfiguredAnalyzer CreateConfiguredAnalyzer(string projectFilePath)
+        private static IDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
         {
             var configFileName = CreateConfigFileName(projectFilePath);
-            return new ConfiguredAnalyzerFactory().CreateFromXmlConfigFile(configFileName, Parsers.Roslyn);
+            return DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, Parsers.Roslyn);
         }
 
         private static string CreateConfigFileName(string projectFilePath)

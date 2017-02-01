@@ -12,9 +12,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
     /// <summary>
     /// Dependency analyzer implemented with NRefactory.
     /// </summary>
-    public class NRefactoryDependencyAnalyzer : DependencyAnalyzerBase
+    public class NRefactoryAnalyzerLogic : AnalyzerLogicBase
     {
-        public NRefactoryDependencyAnalyzer(IProjectConfig config) 
+        public NRefactoryAnalyzerLogic(IProjectConfig config) 
             : base(config)
         {
         }

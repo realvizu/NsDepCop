@@ -81,10 +81,10 @@ namespace Codartis.NsDepCop.MsBuildTask
                 // TODO: use these values as defaults
 
                 var configFileName = Path.Combine(BaseDirectory.ItemSpec, ProductConstants.DefaultConfigFileName);
-                using (var configuredAnalyzer = new ConfiguredAnalyzerFactory().CreateFromXmlConfigFile(configFileName))
+                using (var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName))
                 {
-                    _currentConfig = configuredAnalyzer.Config;
-                    return ExecuteAnalysis(configuredAnalyzer);
+                    _currentConfig = dependencyAnalyzer.Config;
+                    return ExecuteAnalysis(dependencyAnalyzer);
                 }
             }
             catch (Exception e)
@@ -94,11 +94,11 @@ namespace Codartis.NsDepCop.MsBuildTask
             }
         }
 
-        private bool ExecuteAnalysis(IConfiguredAnalyzer configuredAnalyzer)
+        private bool ExecuteAnalysis(IDependencyAnalyzer dependencyAnalyzer)
         {
             var runWasSuccessful = true;
 
-            switch (configuredAnalyzer.ConfigState)
+            switch (dependencyAnalyzer.ConfigState)
             {
                 case ConfigState.NoConfigFile:
                     LogMsBuildEvent(IssueDefinitions.NoConfigFileIssue);
@@ -109,16 +109,16 @@ namespace Codartis.NsDepCop.MsBuildTask
                     break;
 
                 case ConfigState.ConfigError:
-                    LogMsBuildEvent(IssueDefinitions.ConfigExceptionIssue, configuredAnalyzer.ConfigException);
+                    LogMsBuildEvent(IssueDefinitions.ConfigExceptionIssue, dependencyAnalyzer.ConfigException);
                     runWasSuccessful = false;
                     break;
 
                 case ConfigState.Enabled:
                     var startTime = DateTime.Now;
-                    var config = configuredAnalyzer.Config;
+                    var config = dependencyAnalyzer.Config;
                     LogMsBuildEvent(TaskStartedIssue, config.Parser.ToString());
 
-                    var dependencyViolations = configuredAnalyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths).ToList();
+                    var dependencyViolations = dependencyAnalyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths).ToList();
                     ReportIssuesToMsBuild(dependencyViolations, config.IssueKind, config.MaxIssueCount);
                     var errorIssueDetected = dependencyViolations.Any() && config.IssueKind == IssueKind.Error;
 
@@ -129,7 +129,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                     break;
 
                 default:
-                    throw new Exception($"Unexpected ConfigState: {configuredAnalyzer.ConfigState}");
+                    throw new Exception($"Unexpected ConfigState: {dependencyAnalyzer.ConfigState}");
             }
 
             return runWasSuccessful;

@@ -13,9 +13,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
     /// <summary>
     /// Dependency analyzer implemented with Roslyn.
     /// </summary>
-    public class RoslynDependencyAnalyzer : DependencyAnalyzerBase
+    public class RoslynAnalyzerLogic : AnalyzerLogicBase
     {
-        public RoslynDependencyAnalyzer(IProjectConfig config)
+        public RoslynAnalyzerLogic(IProjectConfig config)
             : base(config)
         {
         }

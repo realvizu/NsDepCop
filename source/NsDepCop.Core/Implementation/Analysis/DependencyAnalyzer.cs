@@ -9,22 +9,19 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// <summary>
     /// A dependency analyzer that manages its own config.
     /// </summary>
-    public class ConfiguredAnalyzer : IConfiguredAnalyzer
+    public class DependencyAnalyzer : IDependencyAnalyzer
     {
         private readonly ReaderWriterLockSlim _configRefreshLock;
         private readonly IConfigProvider _configProvider;
-        private readonly IAnalyzerFactory _analyzerFactory;
         private readonly Parsers? _overridingParser;
 
         private IProjectConfig _config;
-        private IDependencyAnalyzer _dependencyAnalyzer;
+        private IDependencyAnalyzerLogic _dependencyAnalyzerLogic;
 
-        public ConfiguredAnalyzer(IConfigProvider configProvider, IAnalyzerFactory analyzerFactory,
-            Parsers? overridingParser = null)
+        public DependencyAnalyzer(IConfigProvider configProvider, Parsers? overridingParser = null)
         {
             _configRefreshLock = new ReaderWriterLockSlim();
             _configProvider = configProvider;
-            _analyzerFactory = analyzerFactory;
             _overridingParser = overridingParser;
 
             UpdateConfigAndAnalyzer();
@@ -45,7 +42,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
             try
             {
-                return _dependencyAnalyzer.AnalyzeProject(sourceFilePaths, referencedAssemblyPaths);
+                return _dependencyAnalyzerLogic.AnalyzeProject(sourceFilePaths, referencedAssemblyPaths);
             }
             finally
             {
@@ -59,7 +56,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
             try
             {
-                return _dependencyAnalyzer.AnalyzeSyntaxNode(syntaxNode, semanticModel);
+                return _dependencyAnalyzerLogic.AnalyzeSyntaxNode(syntaxNode, semanticModel);
             }
             finally
             {
@@ -88,7 +85,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             _config = GetConfig();
 
             if (oldConfig != _config)
-                _dependencyAnalyzer = CreateDependencyAnalyzer();
+                _dependencyAnalyzerLogic = CreateDependencyAnalyzer();
         }
 
         private IProjectConfig GetConfig()
@@ -103,10 +100,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             return config;
         }
 
-        private IDependencyAnalyzer CreateDependencyAnalyzer()
+        private IDependencyAnalyzerLogic CreateDependencyAnalyzer()
         {
             return ConfigState == ConfigState.Enabled
-                ? _analyzerFactory.CreateDependencyAnalyzer(Config)
+                ? AnalyzerAlgorithmFactory.Create(Config)
                 : null;
         }
     }
