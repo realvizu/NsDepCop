@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using Codartis.NsDepCop.Core.Implementation.Roslyn;
-using Codartis.NsDepCop.Core.Interface;
+using Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn;
+using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Roslyn;
+using Codartis.NsDepCop.Core.Interface.Config;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -20,28 +22,28 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class NsDepCopDiagnosticAnalyzer : DiagnosticAnalyzer, IDisposable
     {
-        private readonly ProjectDependencyAnalyzerRepository _analyzerRepository;
+        private readonly ProjectAnalyzerProvider _analyzerProvider;
 
         /// <summary>
         /// Descriptor for the 'Illegal namespace dependency' diagnostic.
         /// </summary>
         private static readonly DiagnosticDescriptor IllegalDependencyDescriptor =
-            Constants.IllegalDependencyIssue.ToDiagnosticDescriptor();
+            IssueDefinitions.IllegalDependencyIssue.ToDiagnosticDescriptor();
 
         /// <summary>
         /// Descriptor for the 'Config exception' diagnostic.
         /// </summary>
         private static readonly DiagnosticDescriptor ConfigExceptionDescriptor =
-            Constants.ConfigExceptionIssue.ToDiagnosticDescriptor();
+            IssueDefinitions.ConfigExceptionIssue.ToDiagnosticDescriptor();
 
         public NsDepCopDiagnosticAnalyzer()
         {
-            _analyzerRepository = new ProjectDependencyAnalyzerRepository();
+            _analyzerProvider = new ProjectAnalyzerProvider();
         }
 
         public void Dispose()
         {
-            _analyzerRepository.Dispose();
+            _analyzerProvider.Dispose();
         }
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
@@ -68,27 +70,27 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             var sourceFilePath = syntaxNode.SyntaxTree.FilePath;
             var assemblyName = semanticModel.Compilation.AssemblyName;
 
-            var projectAnalyzer = _analyzerRepository.GetAnalyzer(sourceFilePath, assemblyName);
-            if (projectAnalyzer == null)
+            var configuredAnalyzer = _analyzerProvider.GetConfiguredAnalyzer(sourceFilePath, assemblyName);
+            if (configuredAnalyzer == null)
                 return;
 
-            switch (projectAnalyzer.State)
+            switch (configuredAnalyzer.ConfigState)
             {
-                case DependencyAnalyzerState.NoConfigFile:
-                case DependencyAnalyzerState.Disabled:
+                case ConfigState.NoConfigFile:
+                case ConfigState.Disabled:
                     break;
 
-                case DependencyAnalyzerState.ConfigError:
-                    ReportConfigException(context, projectAnalyzer.ConfigException);
+                case ConfigState.ConfigError:
+                    ReportConfigException(context, configuredAnalyzer.ConfigException);
                     break;
 
-                case DependencyAnalyzerState.Enabled:
-                    var dependencyViolations = projectAnalyzer.AnalyzeNode(syntaxNode, semanticModel);
-                    ReportIllegalDependencies(dependencyViolations, context, projectAnalyzer.DependencyViolationIssueKind);
+                case ConfigState.Enabled:
+                    var dependencyViolations = configuredAnalyzer.AnalyzeSyntaxNode(new RoslynSyntaxNode(syntaxNode), new RoslynSemanticModel(semanticModel));
+                    ReportIllegalDependencies(dependencyViolations, context, configuredAnalyzer.Config.IssueKind);
                     break;
 
                 default:
-                    throw new Exception($"Unexpected DependencyAnalyzerState {projectAnalyzer.State}");
+                    throw new Exception($"Unexpected ConfigState {configuredAnalyzer.ConfigState}");
             }
         }
 
@@ -111,7 +113,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private static Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, DependencyViolation dependencyViolation, IssueKind issueKind)
         {
             var location = Location.Create(node.SyntaxTree, node.Span);
-            var message = Constants.IllegalDependencyIssue.GetDynamicDescription(dependencyViolation);
+            var message = IssueDefinitions.IllegalDependencyIssue.GetDynamicDescription(dependencyViolation);
             return CreateDiagnostic(IllegalDependencyDescriptor, location, message, issueKind);
         }
 
@@ -121,7 +123,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             // https://github.com/dotnet/roslyn/issues/6649
             // So we report the current syntax node's location.
             var location = Location.Create(node.SyntaxTree, node.Span);
-            var message = Constants.ConfigExceptionIssue.GetDynamicDescription(exception);
+            var message = IssueDefinitions.ConfigExceptionIssue.GetDynamicDescription(exception);
             return CreateDiagnostic(ConfigExceptionDescriptor, location, message);
         }
 

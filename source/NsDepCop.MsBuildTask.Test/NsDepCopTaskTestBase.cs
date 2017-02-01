@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Codartis.NsDepCop.Core;
+using Codartis.NsDepCop.Core.Util;
 using Microsoft.Build.Framework;
 
 namespace Codartis.NsDepCop.MsBuildTask.Test

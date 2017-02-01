@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
-using Codartis.NsDepCop.Core.Implementation.Roslyn;
+using Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn;
 using Codartis.NsDepCop.Core.Interface;
+using Codartis.NsDepCop.Core.Interface.Analysis;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
@@ -18,7 +19,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 issueDescriptor.Id,
                 issueDescriptor.StaticDescription,
                 issueDescriptor.StaticDescription,
-                Constants.TOOL_NAME,
+                ProductConstants.ToolName,
                 issueDescriptor.DefaultKind.ToDiagnosticSeverity(),
                 true,
                 helpLinkUri: GetHelpLink(issueDescriptor.Id));

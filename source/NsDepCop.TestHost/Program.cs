@@ -4,7 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Codartis.NsDepCop.Core.Factory;
-using Codartis.NsDepCop.Core.Interface;
+using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Config;
 
 namespace Codartis.NsDepCop.TestHost
 {
@@ -52,9 +53,9 @@ namespace Codartis.NsDepCop.TestHost
             return repeats;
         }
 
-        private static ParserType GetParserType(string [] args)
+        private static Parsers GetParserType(string [] args)
         {
-            var parserType = ParserType.Roslyn;
+            var parserType = Parsers.Roslyn;
             if (args.Length == 2)
             {
                 if (!Enum.TryParse(args[1], out parserType))
@@ -63,12 +64,12 @@ namespace Codartis.NsDepCop.TestHost
             return parserType;
         }
 
-        private static TimeSpan AnalyseCsProj(ParserType parserType, string configFileName, CsProjParser csProjParser)
+        private static TimeSpan AnalyseCsProj(Parsers parser, string configFileName, CsProjParser csProjParser)
         {
             var startTime = DateTime.Now;
 
-            var analyzer = DependencyAnalyzerFactory.Create(parserType, configFileName);
-            var dependencyViolations = analyzer.AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths).ToList();
+            var configuredAnalyzer = new ConfiguredAnalyzerFactory().CreateFromXmlConfigFile(configFileName, parser);
+            var dependencyViolations = configuredAnalyzer.AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths).ToList();
 
             var endTime = DateTime.Now;
             var elapsedTimeSpan = endTime - startTime;
@@ -83,7 +84,7 @@ namespace Codartis.NsDepCop.TestHost
         {
             Console.WriteLine($"DependencyViolations.Count={dependencyViolations.Count}");
             foreach (var dependencyViolation in dependencyViolations)
-                Console.WriteLine(Constants.IllegalDependencyIssue.GetDynamicDescription(dependencyViolation));
+                Console.WriteLine(IssueDefinitions.IllegalDependencyIssue.GetDynamicDescription(dependencyViolation));
         }
 
         private static void DumpRunTimes(List<TimeSpan> runTimeSpans)
@@ -96,7 +97,7 @@ namespace Codartis.NsDepCop.TestHost
         {
             Console.WriteLine("Usage:");
             Console.WriteLine($"  {Assembly.GetExecutingAssembly().GetName().Name} <CsProjFileName> [<ParserType>] [<Repeats>]");
-            Console.WriteLine($"  ParserTypes: {ParserType.Roslyn}, {ParserType.NRefactory}");
+            Console.WriteLine($"  ParserTypes: {Parsers.Roslyn}, {Parsers.NRefactory}");
             Console.WriteLine($"  Repeats default = {RepeatsDefault}");
         }
     }

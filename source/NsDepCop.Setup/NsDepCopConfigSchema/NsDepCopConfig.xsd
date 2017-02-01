@@ -46,10 +46,31 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="MaxIssueCount" type="xs:int" use="optional">
+                <xs:annotation>
+                    <xs:documentation>
+                        Sets the maximum number of issues reported from a project. After reaching this number analysis stops. Default is 100.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="ChildCanDependOnParentImplicitly" type="xs:boolean" use="optional">
                 <xs:annotation>
                     <xs:documentation>
-                        Set to true to enable types to depend on any other types defined in parent namespaces. Default: false (for backward compatibility).
+                        Set to true to enable types to depend on any other types defined in parent namespaces. Default is false (for backward compatibility).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="InfoImportance" type="MessageImportance" use="optional">
+                <xs:annotation>
+                    <xs:documentation>
+                        Sets the importance level of NsDepCop information messages: Low, Normal (default), High. This setting combined with MsBuild verbosity will determine whether information messages show up in the output or not.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="Parser" type="Parsers" use="optional">
+                <xs:annotation>
+                    <xs:documentation>
+                        Sets the parser to use: Roslyn (default) or NRefactory.
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
@@ -61,6 +82,21 @@
             <xs:enumeration value="Info" />
             <xs:enumeration value="Warning" />
             <xs:enumeration value="Error" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="MessageImportance" >
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Low" />
+            <xs:enumeration value="Normal" />
+            <xs:enumeration value="High" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="Parsers" >
+        <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="Roslyn" />
+            <xs:enumeration value="NRefactory" />
         </xs:restriction>
     </xs:simpleType>
 
@@ -127,7 +163,7 @@
         <xs:attribute name="Name" type="xs:string" use="required">
             <xs:annotation>
                 <xs:documentation>
-                    A type name without namespace qualification. (Generic type names in metadata format, eg: List`1)
+                    A type name without namespace qualification. Generic type names must be in metadata format (eg: List`1).
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>

@@ -70,7 +70,7 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="ProjectDependencyAnalyzerRepository.cs" />
+    <Compile Include="ProjectAnalyzerProvider.cs" />
     <Compile Include="IssueDescriptorExtensions.cs" />
     <Compile Include="NsDepCopDiagnosticAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

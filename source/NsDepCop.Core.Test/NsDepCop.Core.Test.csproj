@@ -62,13 +62,13 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Implementation\NamespaceSpecificationTests.cs" />
-    <Compile Include="Implementation\NamespaceTreeTests.cs" />
-    <Compile Include="Implementation\RuleConfigBuilder.cs" />
-    <Compile Include="Implementation\TypeDependencyValidatorExtensions.cs" />
-    <Compile Include="Implementation\TypeDependencyValidatorTests.cs" />
-    <Compile Include="Implementation\NamespaceSpecificationParserTests.cs" />
-    <Compile Include="Implementation\NamespaceTests.cs" />
+    <Compile Include="Interface\Config\NamespaceSpecificationTests.cs" />
+    <Compile Include="Interface\Config\NamespaceTreeTests.cs" />
+    <Compile Include="Implementation\Analysis\RuleConfigBuilder.cs" />
+    <Compile Include="Implementation\Analysis\TypeDependencyValidatorExtensions.cs" />
+    <Compile Include="Implementation\Analysis\TypeDependencyValidatorTests.cs" />
+    <Compile Include="Interface\Config\NamespaceSpecificationParserTests.cs" />
+    <Compile Include="Interface\Config\NamespaceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
