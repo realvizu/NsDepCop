@@ -82,28 +82,16 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         private void UpdateConfigAndAnalyzer()
         {
             var oldConfig = _config;
-            _config = GetConfig();
+            _config = _configProvider.Config;
 
             if (oldConfig != _config)
-                _dependencyAnalyzerLogic = CreateDependencyAnalyzer();
+                _dependencyAnalyzerLogic = CreateDependencyAnalyzerLogic();
         }
 
-        private IProjectConfig GetConfig()
-        {
-            var config = _configProvider.Config;
-
-            if (_overridingParser != null && 
-                config != null && 
-                config.Parser != _overridingParser.Value)
-                config = config.WithParser(_overridingParser.Value);
-
-            return config;
-        }
-
-        private IDependencyAnalyzerLogic CreateDependencyAnalyzer()
+        private IDependencyAnalyzerLogic CreateDependencyAnalyzerLogic()
         {
             return ConfigState == ConfigState.Enabled
-                ? AnalyzerAlgorithmFactory.Create(Config)
+                ? AnalyzerLogicFactory.Create(Config)
                 : null;
         }
     }

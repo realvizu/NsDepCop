@@ -108,6 +108,7 @@
     </Compile>
     <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
+    <Compile Include="Implementation\Config\ProjectConfigBuilder.cs" />
     <Compile Include="Interface\Analysis\IDependencyAnalyzer.cs" />
     <Compile Include="Interface\Analysis\ISemanticModel.cs" />
     <Compile Include="Interface\Analysis\ISyntaxNode.cs" />
@@ -122,7 +123,7 @@
     <Compile Include="Interface\Config\Importance.cs" />
     <Compile Include="Interface\Analysis\IssueDefinitions.cs" />
     <Compile Include="Util\ConcurrentDictionaryExtensions.cs" />
-    <Compile Include="Implementation\Analysis\AnalyzerAlgorithmFactory.cs" />
+    <Compile Include="Implementation\Analysis\AnalyzerLogicFactory.cs" />
     <Compile Include="Interface\Config\Parsers.cs" />
     <Compile Include="Util\DictionaryExtensions.cs" />
     <Compile Include="Interface\Config\IRuleConfig.cs" />

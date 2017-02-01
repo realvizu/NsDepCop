@@ -8,46 +8,38 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// </summary>
     internal class ProjectConfig : IProjectConfig
     {
-        public bool IsEnabled { get; set; }
-        public IssueKind IssueKind { get; set; }
-        public Importance InfoImportance { get; set; }
-        public Parsers Parser { get; set; }
+        public bool IsEnabled { get; }
+        public IssueKind IssueKind { get; }
+        public Importance InfoImportance { get; }
+        public Parsers Parser { get; }
 
-        public bool ChildCanDependOnParentImplicitly { get; set; }
-        public ImmutableDictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; set; }
-        public ImmutableHashSet<NamespaceDependencyRule> DisallowRules { get; set; }
-        public ImmutableDictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; set; }
-        public int MaxIssueCount { get; set; }
+        public bool ChildCanDependOnParentImplicitly { get; }
+        public ImmutableDictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
+        public ImmutableHashSet<NamespaceDependencyRule> DisallowRules { get; }
+        public ImmutableDictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+        public int MaxIssueCount { get; }
 
-        public ProjectConfig()
+        public ProjectConfig(
+            bool isEnabled,
+            IssueKind issueKind,
+            Importance infoImportance,
+            Parsers parser,
+            bool childCanDependOnParentImplicitly,
+            ImmutableDictionary<NamespaceDependencyRule, TypeNameSet> allowRules,
+            ImmutableHashSet<NamespaceDependencyRule> disallowRules,
+            ImmutableDictionary<Namespace, TypeNameSet> visibleTypesByNamespace,
+            int maxIssueCount)
         {
-            IsEnabled = ConfigDefaults.IsEnabled;
-            IssueKind = ConfigDefaults.IssueKind;
-            InfoImportance = ConfigDefaults.InfoImportance;
-            Parser = ConfigDefaults.Parser;
+            IsEnabled = isEnabled;
+            IssueKind = issueKind;
+            InfoImportance = infoImportance;
+            Parser = parser;
 
-            ChildCanDependOnParentImplicitly = ConfigDefaults.ChildCanDependOnParentImplicitly;
-            AllowRules = ImmutableDictionary<NamespaceDependencyRule, TypeNameSet>.Empty;
-            DisallowRules = ImmutableHashSet<NamespaceDependencyRule>.Empty;
-            VisibleTypesByNamespace = ImmutableDictionary<Namespace, TypeNameSet>.Empty;
-            MaxIssueCount = ConfigDefaults.MaxIssueReported;
+            ChildCanDependOnParentImplicitly = childCanDependOnParentImplicitly;
+            AllowRules = allowRules;
+            DisallowRules = disallowRules;
+            VisibleTypesByNamespace = visibleTypesByNamespace;
+            MaxIssueCount = maxIssueCount;
         }
-
-        public ProjectConfig(IProjectConfig projectConfig)
-        {
-            IsEnabled = projectConfig.IsEnabled;
-            IssueKind = projectConfig.IssueKind;
-            InfoImportance = projectConfig.InfoImportance;
-            Parser = projectConfig.Parser;
-
-            ChildCanDependOnParentImplicitly = projectConfig.ChildCanDependOnParentImplicitly;
-            AllowRules = projectConfig.AllowRules;
-            DisallowRules = projectConfig.DisallowRules;
-            VisibleTypesByNamespace = projectConfig.VisibleTypesByNamespace;
-            MaxIssueCount = projectConfig.MaxIssueCount;
-        }
-
-        public IProjectConfig WithParser(Parsers parser) => new ProjectConfig(this) { Parser = parser };
-        public IProjectConfig WithInfoImportance(Importance infoImportance) => new ProjectConfig(this) { InfoImportance = infoImportance };
     }
 }

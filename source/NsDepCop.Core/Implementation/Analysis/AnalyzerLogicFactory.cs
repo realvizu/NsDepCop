@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// <summary>
     /// Creates dependency analyzer objects.
     /// </summary>
-    public static class AnalyzerAlgorithmFactory
+    public static class AnalyzerLogicFactory
     {
         public static IDependencyAnalyzerLogic Create(IProjectConfig config)
         {

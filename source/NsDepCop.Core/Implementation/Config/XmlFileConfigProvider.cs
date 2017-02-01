@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
@@ -32,25 +29,20 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private const string ToAttributeName = "To";
         private const string TypeNameAttributeName = "Name";
 
-        private ProjectConfig _config;
-        private Dictionary<NamespaceDependencyRule, TypeNameSet> _allowedRulesBuilder;
-        private HashSet<NamespaceDependencyRule> _disallowedRulesBuilder;
-        private Dictionary<Namespace, TypeNameSet> _visibleTypesByNamespaceBuilder;
+        private readonly Parsers? _overridingParser;
 
         /// <summary>
         /// Initializes a new instance from a config file.
         /// </summary>
-        public XmlFileConfigProvider(string configFilePath)
+        public XmlFileConfigProvider(string configFilePath, Parsers? overridingParser = null)
             : base(configFilePath)
         {
+            _overridingParser = overridingParser;
         }
 
         protected override IProjectConfig GetConfig()
         {
-            _config = new ProjectConfig();
-            _allowedRulesBuilder = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
-            _disallowedRulesBuilder = new HashSet<NamespaceDependencyRule>();
-            _visibleTypesByNamespaceBuilder = new Dictionary<Namespace, TypeNameSet>();
+            var configBuilder = new ProjectConfigBuilder(_overridingParser);
 
             try
             {
@@ -60,46 +52,43 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 if (rootElement == null)
                     throw new Exception($"'{RootElementName}' root element not found.");
 
-                ParseRootNodeAttributes(rootElement);
-                ParseChildElements(rootElement);
+                ParseRootNodeAttributes(rootElement, configBuilder);
+                ParseChildElements(rootElement, configBuilder);
             }
             catch (Exception e)
             {
                 throw new Exception($"Error in '{ConfigFilePath}': {e.Message}", e);
             }
 
-            _config.AllowRules = _allowedRulesBuilder.ToImmutableDictionary();
-            _config.DisallowRules = _disallowedRulesBuilder.ToImmutableHashSet();
-            _config.VisibleTypesByNamespace = _visibleTypesByNamespaceBuilder.ToImmutableDictionary();
-
-            return _config;
+            return configBuilder.ToProjectConfig();
         }
 
-        private void ParseRootNodeAttributes(XElement rootElement)
+        private static void ParseRootNodeAttributes(XElement rootElement, ProjectConfigBuilder configBuilder)
         {
-            _config.IsEnabled = ParseAttribute(rootElement, IsEnabledAttributeName, bool.TryParse, ConfigDefaults.IsEnabled);
-            _config.IssueKind = ParseAttribute(rootElement, CodeIssueKindAttributeName, Enum.TryParse, ConfigDefaults.IssueKind);
-            _config.MaxIssueCount = ParseAttribute(rootElement, MaxIssueCountAttributeName, int.TryParse, ConfigDefaults.MaxIssueReported);
-            _config.ChildCanDependOnParentImplicitly = ParseAttribute(rootElement, ImplicitParentDependencyAttributeName,
-                bool.TryParse, ConfigDefaults.ChildCanDependOnParentImplicitly);
-            _config.InfoImportance = ParseAttribute(rootElement, InfoImportanceAttributeName, Enum.TryParse, ConfigDefaults.InfoImportance);
-            _config.Parser = ParseAttribute(rootElement, ParserAttributeName, Enum.TryParse, ConfigDefaults.Parser);
+            configBuilder.SetIsEnabled(ParseAttribute(rootElement, IsEnabledAttributeName, bool.TryParse, ConfigDefaults.IsEnabled));
+            configBuilder.SetIssueKind(ParseAttribute(rootElement, CodeIssueKindAttributeName, Enum.TryParse, ConfigDefaults.IssueKind));
+            configBuilder.SetInfoImportance(ParseAttribute(rootElement, InfoImportanceAttributeName, Enum.TryParse, ConfigDefaults.InfoImportance));
+            configBuilder.SetParser(ParseAttribute(rootElement, ParserAttributeName, Enum.TryParse, ConfigDefaults.Parser));
+
+            configBuilder.SetChildCanDependOnParentImplicitly(ParseAttribute(rootElement, ImplicitParentDependencyAttributeName,
+                bool.TryParse, ConfigDefaults.ChildCanDependOnParentImplicitly));
+            configBuilder.SetMaxIssueCount(ParseAttribute(rootElement, MaxIssueCountAttributeName, int.TryParse, ConfigDefaults.MaxIssueReported));
         }
 
-        private void ParseChildElements(XElement rootElement)
+        private static void ParseChildElements(XElement rootElement, ProjectConfigBuilder configBuilder)
         {
             foreach (var xElement in rootElement.Elements())
             {
                 switch (xElement.Name.ToString())
                 {
                     case AllowedElementName:
-                        ParseAllowedElement(xElement);
+                        ParseAllowedElement(xElement, configBuilder);
                         break;
                     case DisallowedElementName:
-                        ParseDisallowedElement(xElement);
+                        ParseDisallowedElement(xElement, configBuilder);
                         break;
                     case VisibleMembersElementName:
-                        ParseVisibleMembersElement(xElement);
+                        ParseVisibleMembersElement(xElement, configBuilder);
                         break;
                     default:
                         Trace.WriteLine($"Unexpected element '{xElement.Name}' ignored.");
@@ -108,7 +97,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             }
         }
 
-        private void ParseAllowedElement(XElement xElement)
+        private static void ParseAllowedElement(XElement xElement, ProjectConfigBuilder configBuilder)
         {
             var allowedDependencyRule = ParseDependencyRule(xElement);
 
@@ -126,17 +115,17 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 visibleTypeNames = ParseTypeNameSet(visibleMembersChild, TypeElementName);
             }
 
-            _allowedRulesBuilder.AddOrUnion<NamespaceDependencyRule, TypeNameSet, string>(allowedDependencyRule, visibleTypeNames);
+            configBuilder.AddAllowRule(allowedDependencyRule, visibleTypeNames);
         }
 
-        private void ParseDisallowedElement(XElement xElement)
+        private static void ParseDisallowedElement(XElement xElement, ProjectConfigBuilder configBuilder)
         {
             var disallowedDependencyRule = ParseDependencyRule(xElement);
 
-            _disallowedRulesBuilder.Add(disallowedDependencyRule);
+            configBuilder.AddDisallowRule(disallowedDependencyRule);
         }
 
-        private void ParseVisibleMembersElement(XElement xElement)
+        private static void ParseVisibleMembersElement(XElement xElement, ProjectConfigBuilder configBuilder)
         {
             var targetNamespaceName = GetAttributeValue(xElement, OfNamespaceAttributeName);
             if (targetNamespaceName == null)
@@ -148,7 +137,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (!visibleTypeNames.Any())
                 return;
 
-            _visibleTypesByNamespaceBuilder.AddOrUnion<Namespace, TypeNameSet, string>(targetNamespace, visibleTypeNames);
+            configBuilder.AddVisibleTypesByNamespace(targetNamespace, visibleTypeNames);
         }
 
         private static NamespaceDependencyRule ParseDependencyRule(XElement xElement)

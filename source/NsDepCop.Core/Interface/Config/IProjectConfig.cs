@@ -25,9 +25,5 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// The type of parser used by the analyzer.
         /// </summary>
         Parsers Parser { get; }
-
-        IProjectConfig WithParser(Parsers parser);
-
-        IProjectConfig WithInfoImportance(Importance infoImportance);
     }
 }
