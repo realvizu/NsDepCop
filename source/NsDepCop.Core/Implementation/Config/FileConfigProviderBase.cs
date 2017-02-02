@@ -5,70 +5,87 @@ using Codartis.NsDepCop.Core.Interface.Config;
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
     /// <summary>
-    /// Abstract base class for file based config implementation classes.
-    /// Can refresh the config if the file changes.
+    /// Abstract base class for file based config implementations.
     /// </summary>
     internal abstract class FileConfigProviderBase : IConfigProvider
     {
-        public IProjectConfig Config { get; private set; }
+        private readonly string _configFilePath;
+        private readonly object _isInitializedLock = new object();
+        private bool _isInitialized;
 
-        protected string ConfigFilePath { get; }
         private bool _configFileExists;
-        private DateTime _configLastReadUtc;
+        private DateTime _configLastLoadUtc;
+        private IProjectConfig _config;
         private Exception _configException;
-
-        private bool IsConfigLoaded => Config != null;
-        private bool IsConfigErroneous => _configException != null;
-
-        public Exception ConfigException => _configException;
 
         protected FileConfigProviderBase(string configFilePath)
         {
-            ConfigFilePath = configFilePath;
-            RefreshConfig();
+            _configFilePath = configFilePath;
         }
 
-        /// <summary>
-        /// Gets the state of the analyzer object.
-        /// </summary>
+        private bool IsConfigLoaded => _config != null;
+        private bool IsConfigErroneous => _configException != null;
+
+        public IProjectConfig Config
+        {
+            get
+            {
+                lock (_isInitializedLock)
+                {
+                    if (!_isInitialized)
+                        Initialize();
+
+                    return _config;
+                }
+            }
+        }
+
         public ConfigState ConfigState
         {
             get
             {
-                if (!_configFileExists)
-                    return ConfigState.NoConfigFile;
+                lock (_isInitializedLock)
+                {
+                    if (!_isInitialized)
+                        Initialize();
 
-                if (IsConfigLoaded && !Config.IsEnabled)
-                    return ConfigState.Disabled;
+                    return GetConfigState();
+                }
+            }
+        }
 
-                if (IsConfigLoaded && Config.IsEnabled)
-                    return ConfigState.Enabled;
+        public Exception ConfigException
+        {
+            get
+            {
+                lock (_isInitializedLock)
+                {
+                    if (!_isInitialized)
+                        Initialize();
 
-                if (!IsConfigLoaded && IsConfigErroneous)
-                    return ConfigState.ConfigError;
-
-                throw new Exception("Inconsistent DependencyAnalyzer state.");
+                    return _configException;
+                }
             }
         }
 
         public void RefreshConfig()
         {
-            _configFileExists = File.Exists(ConfigFilePath);
+            _configFileExists = File.Exists(_configFilePath);
 
             if (!_configFileExists)
             {
                 _configException = null;
+                _config = null;
                 return;
             }
 
             try
             {
-                // Read the config if it was never read, or whenever the file changes.
-                if (!IsConfigLoaded || ConfigModifiedSinceLastRead())
+                if (!IsConfigLoaded || ConfigModifiedSinceLastLoad())
                 {
-                    _configLastReadUtc = DateTime.UtcNow;
+                    _configLastLoadUtc = DateTime.UtcNow;
                     _configException = null;
-                    Config = GetConfig();
+                    _config = LoadConfig(_configFilePath);
                 }
             }
             catch (Exception e)
@@ -77,8 +94,34 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             }
         }
 
-        protected abstract IProjectConfig GetConfig();
+        protected abstract IProjectConfig LoadConfig(string configFilePath);
 
-        private bool ConfigModifiedSinceLastRead() => _configLastReadUtc < File.GetLastWriteTimeUtc(ConfigFilePath);
+        private void Initialize()
+        {
+            _isInitialized = true;
+            RefreshConfig();
+        }
+
+        private ConfigState GetConfigState()
+        {
+            if (!_configFileExists)
+                return ConfigState.NoConfigFile;
+
+            if (IsConfigLoaded && !Config.IsEnabled)
+                return ConfigState.Disabled;
+
+            if (IsConfigLoaded && Config.IsEnabled)
+                return ConfigState.Enabled;
+
+            if (!IsConfigLoaded && IsConfigErroneous)
+                return ConfigState.ConfigError;
+
+            throw new Exception("Inconsistent DependencyAnalyzer state.");
+        }
+
+        private bool ConfigModifiedSinceLastLoad()
+        {
+            return _configLastLoadUtc < File.GetLastWriteTimeUtc(_configFilePath);
+        }
     }
 }

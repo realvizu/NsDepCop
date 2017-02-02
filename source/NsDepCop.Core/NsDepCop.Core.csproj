@@ -109,6 +109,7 @@
     <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\Config\ProjectConfigBuilder.cs" />
+    <Compile Include="Implementation\Config\XmlConfigParser.cs" />
     <Compile Include="Interface\Analysis\IDependencyAnalyzer.cs" />
     <Compile Include="Interface\Analysis\ISemanticModel.cs" />
     <Compile Include="Interface\Analysis\ISyntaxNode.cs" />

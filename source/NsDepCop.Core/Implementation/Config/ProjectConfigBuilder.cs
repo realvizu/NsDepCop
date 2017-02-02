@@ -25,7 +25,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesByNamespace;
         private int _maxIssueCount;
 
-        public ProjectConfigBuilder(Parsers? overridingParser)
+        public ProjectConfigBuilder(Parsers? overridingParser = null)
         {
             _isParserOverridden = overridingParser.HasValue;
 
@@ -70,6 +70,22 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 );
         }
 
+        public ProjectConfigBuilder Combine(IProjectConfig projectConfig)
+        {
+            SetIsEnabled(projectConfig.IsEnabled);
+            SetIssueKind(projectConfig.IssueKind);
+            SetInfoImportance(projectConfig.InfoImportance);
+            SetParser(projectConfig.Parser);
+
+            SetChildCanDependOnParentImplicitly(projectConfig.ChildCanDependOnParentImplicitly);
+            AddAllowRules(projectConfig.AllowRules);
+            AddDisallowRules(projectConfig.DisallowRules);
+            AddVisibleTypesByNamespace(projectConfig.VisibleTypesByNamespace);
+            SetMaxIssueCount(projectConfig.MaxIssueCount);
+
+            return this;
+        }
+
         public ProjectConfigBuilder SetIsEnabled(bool isEnabled)
         {
             _isEnabled = isEnabled;
@@ -108,15 +124,36 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             return this;
         }
 
+        private ProjectConfigBuilder AddAllowRules(IEnumerable<KeyValuePair<NamespaceDependencyRule, TypeNameSet>> allowRules)
+        {
+            foreach (var keyValuePair in allowRules)
+                AddAllowRule(keyValuePair.Key, keyValuePair.Value);
+            return this;
+        }
+
         public ProjectConfigBuilder AddDisallowRule(NamespaceDependencyRule namespaceDependencyRule)
         {
             _disallowRules.Add(namespaceDependencyRule);
             return this;
         }
 
+        private ProjectConfigBuilder AddDisallowRules(IEnumerable<NamespaceDependencyRule> disallowRules)
+        {
+            foreach (var namespaceDependencyRule in disallowRules)
+                AddDisallowRule(namespaceDependencyRule);
+            return this;
+        }
+
         public ProjectConfigBuilder AddVisibleTypesByNamespace(Namespace ns, TypeNameSet typeNameSet)
         {
             _visibleTypesByNamespace.AddOrUnion<Namespace, TypeNameSet, string>(ns, typeNameSet);
+            return this;
+        }
+
+        private ProjectConfigBuilder AddVisibleTypesByNamespace(IEnumerable<KeyValuePair<Namespace, TypeNameSet>> visibleTypesByNamespace)
+        {
+            foreach (var keyValuePair in visibleTypesByNamespace)
+                AddVisibleTypesByNamespace(keyValuePair.Key, keyValuePair.Value);
             return this;
         }
 
