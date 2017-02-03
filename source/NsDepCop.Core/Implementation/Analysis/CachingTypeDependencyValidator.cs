@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// <summary>
     /// Validates type dependencies to a set of allowed/disallowed rules and caches the results.
     /// </summary>
-    public class CachingTypeDependencyValidator : TypeDependencyValidator, ICacheStatisticsProvider
+    internal class CachingTypeDependencyValidator : TypeDependencyValidator, ICacheStatisticsProvider
     {
         private readonly ConcurrentDictionary<TypeDependency, bool> _dependencyValidationCache;
 

@@ -12,7 +12,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
     /// <summary>
     /// Finds type dependencies in source code using Roslyn as the parser.
     /// </summary>
-    public class RoslynTypeDependencyEnumerator : ITypeDependencyEnumerator
+    internal class RoslynTypeDependencyEnumerator : ITypeDependencyEnumerator
     {
         public IEnumerable<TypeDependency> GetTypeDependencies(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {

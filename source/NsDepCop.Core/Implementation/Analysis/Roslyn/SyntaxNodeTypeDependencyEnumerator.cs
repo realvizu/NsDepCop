@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
     /// <summary>
     /// Static helper class that enumerates type dependencies for a syntax node.
     /// </summary>
-    public static class SyntaxNodeTypeDependencyEnumerator
+    internal static class SyntaxNodeTypeDependencyEnumerator
     {
         /// <summary>
         /// Returns type dependencies for a syntax node.

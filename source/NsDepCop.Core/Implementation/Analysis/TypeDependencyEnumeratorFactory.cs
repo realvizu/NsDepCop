@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// <summary>
     /// Creates type dependency enumerator objects.
     /// </summary>
-    public static class TypeDependencyEnumeratorFactory
+    internal static class TypeDependencyEnumeratorFactory
     {
         public static ITypeDependencyEnumerator Create(Parsers parser)
         {

@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
-    public static class IssueDescriptorExtensions
+    internal static class IssueDescriptorExtensions
     {
         /// <summary>
         /// Format string to create a help link for diagnostics. The parameter is the diagnostic's code in full UPPERCASE.

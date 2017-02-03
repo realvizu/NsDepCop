@@ -12,7 +12,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
     /// <summary>
     /// Finds type dependencies in source code using NRefactory as the parser.
     /// </summary>
-    public class NRefactoryTypeDependencyEnumerator : ITypeDependencyEnumerator
+    internal class NRefactoryTypeDependencyEnumerator : ITypeDependencyEnumerator
     {
         public IEnumerable<TypeDependency> GetTypeDependencies(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {

@@ -3,7 +3,7 @@
 namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
 {
     // ReSharper disable once InconsistentNaming
-    public static class ITypeExtensions
+    internal static class ITypeExtensions
     {
         /// <summary>
         /// Returns the name of an NRefactory type in reflection style, eg. MyGeneric`1

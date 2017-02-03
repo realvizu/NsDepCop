@@ -3,7 +3,7 @@ namespace Codartis.NsDepCop.Core.Interface.Config
     /// <summary>
     /// Defines the default values of the config properties.
     /// </summary>
-    public static class ConfigDefaults
+    internal static class ConfigDefaults
     {
         public const bool IsEnabled = true;
         public const IssueKind IssueKind = Config.IssueKind.Warning;

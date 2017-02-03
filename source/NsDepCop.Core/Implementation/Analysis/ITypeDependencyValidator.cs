@@ -5,7 +5,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// <summary>
     /// Determines whether a type-to-type dependency is allowed or not.
     /// </summary>
-    public interface ITypeDependencyValidator
+    internal interface ITypeDependencyValidator
     {
         /// <summary>
         /// Decides whether a dependency is allowed based on the rule configuration.
