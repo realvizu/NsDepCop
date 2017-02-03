@@ -64,7 +64,7 @@
     </Compile>
     <Compile Include="Interface\Config\NamespaceSpecificationTests.cs" />
     <Compile Include="Interface\Config\NamespaceTreeTests.cs" />
-    <Compile Include="Implementation\Analysis\RuleConfigBuilder.cs" />
+    <Compile Include="Implementation\Analysis\DependencyRulesBuilder.cs" />
     <Compile Include="Implementation\Analysis\TypeDependencyValidatorExtensions.cs" />
     <Compile Include="Implementation\Analysis\TypeDependencyValidatorTests.cs" />
     <Compile Include="Interface\Config\NamespaceSpecificationParserTests.cs" />

@@ -47,10 +47,7 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// <returns>True if this namespace specification matches the given namespace.</returns>
         public bool Matches(Namespace ns) => GetMatchRelevance(ns) > 0;
 
-        public override string ToString()
-        {
-            return NamespaceSpecificationAsString;
-        }
+        public override string ToString() => NamespaceSpecificationAsString;
 
         public bool Equals(NamespaceSpecification other)
         {

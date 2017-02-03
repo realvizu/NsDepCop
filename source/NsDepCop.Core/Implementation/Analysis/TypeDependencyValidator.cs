@@ -16,12 +16,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         private readonly ImmutableDictionary<Namespace, TypeNameSet> _visibleTypesPerNamespaces;
         private readonly bool _childCanDependOnParentImplicitly;
 
-        public TypeDependencyValidator(IRuleConfig ruleConfig)
+        public TypeDependencyValidator(IDependencyRules dependencyRules)
         {
-            _allowRules = ruleConfig.AllowRules;
-            _disallowRules = ruleConfig.DisallowRules;
-            _visibleTypesPerNamespaces = ruleConfig.VisibleTypesByNamespace;
-            _childCanDependOnParentImplicitly = ruleConfig.ChildCanDependOnParentImplicitly;
+            _allowRules = dependencyRules.AllowRules;
+            _disallowRules = dependencyRules.DisallowRules;
+            _visibleTypesPerNamespaces = dependencyRules.VisibleTypesByNamespace;
+            _childCanDependOnParentImplicitly = dependencyRules.ChildCanDependOnParentImplicitly;
         }
 
         /// <summary>

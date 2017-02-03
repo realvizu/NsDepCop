@@ -7,18 +7,17 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
 {
     /// <summary>
-    /// Static helper class that implements the dependency analysis logic for a syntax node.
+    /// Static helper class that enumerates type dependencies for a syntax node.
     /// </summary>
-    public static class SyntaxNodeAnalyzer
+    public static class SyntaxNodeTypeDependencyEnumerator
     {
         /// <summary>
-        /// Performs namespace dependency analysis for a SyntaxNode.
+        /// Returns type dependencies for a syntax node.
         /// </summary>
         /// <param name="node">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the current document.</param>
-        /// <param name="typeDependencyValidator">The validator that decides whether a dependency is allowed.</param>
-        /// <returns>A list of dependency violations. Can be empty.</returns>
-        public static IEnumerable<DependencyViolation> Analyze(SyntaxNode node, SemanticModel semanticModel, ITypeDependencyValidator typeDependencyValidator)
+        /// <returns>A list of type dependencies. Can be empty.</returns>
+        public static IEnumerable<TypeDependency> GetTypeDependencies(SyntaxNode node, SemanticModel semanticModel)
         {
             // Determine the type that contains the current syntax node.
             var enclosingType = DetermineEnclosingType(node, semanticModel);
@@ -27,40 +26,35 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
 
             // Determine the type referenced by the symbol represented by the current syntax node.
             var referencedType = DetermineReferencedType(node, semanticModel);
-            var referencedTypeDependencyViolation = ValidateDependency(enclosingType, referencedType, node, typeDependencyValidator);
-            if (referencedTypeDependencyViolation != null)
-                yield return referencedTypeDependencyViolation;
+            var referencedTypeDependency = CreateTypeDependency(enclosingType, referencedType, node);
+            if (referencedTypeDependency != null)
+                yield return referencedTypeDependency.Value;
 
             // If this is an extension method invocation then determine the type declaring the extension method.
             var declaringType = DetermineExtensionMethodDeclaringType(node, semanticModel);
-            var declaringTypeDependencyViolation = ValidateDependency(enclosingType, declaringType, node, typeDependencyValidator);
-            if (declaringTypeDependencyViolation != null)
-                yield return declaringTypeDependencyViolation;
+            var declaringTypeDependency = CreateTypeDependency(enclosingType, declaringType, node);
+            if (declaringTypeDependency != null)
+                yield return declaringTypeDependency.Value;
         }
 
         /// <summary>
-        /// Validates whether a type is allowed to reference another. Returns a DependencyViolation if not allowed.
+        /// Returns a type dependency object for the given types.
         /// </summary>
         /// <param name="fromType">The referring type.</param>
         /// <param name="toType">The referenced type.</param>
         /// <param name="node">The syntax node currently analyzed.</param>
-        /// <param name="typeDependencyValidator">The validator that decides whether a dependency is allowed.</param>
-        /// <returns>A DependencyViolation if the dependency is not allowed. Null otherwise.</returns>
-        private static DependencyViolation ValidateDependency(ITypeSymbol fromType, ITypeSymbol toType,
-            SyntaxNode node, ITypeDependencyValidator typeDependencyValidator)
+        /// <returns>A type dependency object or null of cound not create one.</returns>
+        private static TypeDependency? CreateTypeDependency(ITypeSymbol fromType, ITypeSymbol toType, SyntaxNode node)
         {
             if (fromType == null || 
                 toType?.ContainingNamespace == null || 
                 toType.TypeKind == TypeKind.Error)
                 return null;
 
-            var typeDependency = new TypeDependency(
+            return new TypeDependency(
                 fromType.ContainingNamespace.ToDisplayString(), fromType.MetadataName, 
-                toType.ContainingNamespace.ToDisplayString(), toType.MetadataName);
-
-            return typeDependencyValidator.IsAllowedDependency(typeDependency) 
-                ? null 
-                : new DependencyViolation(typeDependency, GetSourceSegment(node));
+                toType.ContainingNamespace.ToDisplayString(), toType.MetadataName,
+                GetSourceSegment(node));
         }
 
         /// <summary>

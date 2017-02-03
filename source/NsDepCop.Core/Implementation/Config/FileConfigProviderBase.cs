@@ -15,7 +15,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         private bool _configFileExists;
         private DateTime _configLastLoadUtc;
-        private IProjectConfig _config;
+        private IAnalyzerConfig _config;
         private Exception _configException;
 
         protected FileConfigProviderBase(string configFilePath)
@@ -26,7 +26,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private bool IsConfigLoaded => _config != null;
         private bool IsConfigErroneous => _configException != null;
 
-        public IProjectConfig Config
+        public IAnalyzerConfig Config
         {
             get
             {
@@ -94,7 +94,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             }
         }
 
-        protected abstract IProjectConfig LoadConfig(string configFilePath);
+        protected abstract IAnalyzerConfig LoadConfig(string configFilePath);
 
         private void Initialize()
         {

@@ -4,7 +4,7 @@
     /// Represents a namespace tree, eg. 'System.IO.*'
     /// </summary>
     /// <remarks>
-    /// The 'any namespace' is also a namespace tree that contains every namespace.
+    /// The 'any namespace' (represented by a star '*') is also a namespace tree that contains every namespace.
     /// </remarks>
     public sealed class NamespaceTree : NamespaceSpecification
     {

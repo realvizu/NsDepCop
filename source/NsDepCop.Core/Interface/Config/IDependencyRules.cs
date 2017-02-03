@@ -3,9 +3,9 @@
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
-    /// Represents the dependency rule configuration.
+    /// Describes dependency rules.
     /// </summary>
-    public interface IRuleConfig
+    public interface IDependencyRules
     {
         /// <summary>
         /// True means that all child namespaces can depend on any of their parent namespaces without an explicit Allowed rule.
@@ -27,14 +27,9 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         ImmutableHashSet<NamespaceDependencyRule> DisallowRules { get; }
 
         /// <summary>
-        /// Dictionary of visible types by target namespace. The Key is the name of a namespace, 
-        /// the Value is a set of type names defined in the namespace and visible outside of the namespace.
+        /// Dictionary of visible types by target namespace. The key is the name of a namespace, 
+        /// the value is a set of type names defined in the namespace and visible outside of the namespace.
         /// </summary>
         ImmutableDictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
-
-        /// <summary>
-        /// The max number of issues reported.
-        /// </summary>
-        int MaxIssueCount { get; }
     }
 }

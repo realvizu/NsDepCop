@@ -7,56 +7,47 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
     /// <summary>
     /// Helper class for unit testing. Enables rule config building.
     /// </summary>
-    internal class RuleConfigBuilder : IRuleConfig
+    internal class DependencyRulesBuilder : IDependencyRules
     {
         private bool _childCanDependOnParentImplicitly;
         private readonly Dictionary<NamespaceDependencyRule, TypeNameSet> _allowedDependencies;
         private readonly HashSet<NamespaceDependencyRule> _disallowedDependencies;
         private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesByTargetNamespace;
-        private int _maxIssueCount;
 
-        public RuleConfigBuilder()
+        public DependencyRulesBuilder()
         {
             _childCanDependOnParentImplicitly = ConfigDefaults.ChildCanDependOnParentImplicitly;
             _allowedDependencies = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
             _disallowedDependencies = new HashSet<NamespaceDependencyRule>();
             _visibleTypesByTargetNamespace = new Dictionary<Namespace, TypeNameSet>();
-            _maxIssueCount = ConfigDefaults.MaxIssueReported;
         }
 
         public bool ChildCanDependOnParentImplicitly => _childCanDependOnParentImplicitly;
         public ImmutableDictionary<NamespaceDependencyRule, TypeNameSet> AllowRules => _allowedDependencies.ToImmutableDictionary();
         public ImmutableHashSet<NamespaceDependencyRule> DisallowRules => _disallowedDependencies.ToImmutableHashSet();
         public ImmutableDictionary<Namespace, TypeNameSet> VisibleTypesByNamespace => _visibleTypesByTargetNamespace.ToImmutableDictionary();
-        public int MaxIssueCount => _maxIssueCount;
 
-        public RuleConfigBuilder SetChildCanDependOnParentImplicitly(bool value)
+        public DependencyRulesBuilder SetChildCanDependOnParentImplicitly(bool value)
         {
             _childCanDependOnParentImplicitly = value;
             return this;
         }
 
-        public RuleConfigBuilder AddAllowed(string from, string to, params string[] typeNames)
+        public DependencyRulesBuilder AddAllowed(string from, string to, params string[] typeNames)
         {
             _allowedDependencies.Add(new NamespaceDependencyRule(from, to), new TypeNameSet(typeNames));
             return this;
         }
 
-        public RuleConfigBuilder AddDisallowed(string from, string to)
+        public DependencyRulesBuilder AddDisallowed(string from, string to)
         {
             _disallowedDependencies.Add(new NamespaceDependencyRule(from, to));
             return this;
         }
 
-        public RuleConfigBuilder AddVisibleMembers(string targetNamespace, params string[] typeNames)
+        public DependencyRulesBuilder AddVisibleMembers(string targetNamespace, params string[] typeNames)
         {
             _visibleTypesByTargetNamespace.Add(new Namespace(targetNamespace), new TypeNameSet(typeNames));
-            return this;
-        }
-
-        public RuleConfigBuilder SetMaxIssueCount(int value)
-        {
-            _maxIssueCount = value;
             return this;
         }
     }

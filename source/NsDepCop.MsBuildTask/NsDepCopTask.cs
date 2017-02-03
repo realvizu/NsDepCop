@@ -58,7 +58,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// </summary>
         public ITaskItem InfoImportance { get; set; }
 
-        private IProjectConfig _currentConfig;
+        private IAnalyzerConfig _currentConfig;
 
         private IEnumerable<string> SourceFilePaths => Compile.ToList().Select(i => i.ItemSpec);
         private IEnumerable<string> ReferencedAssemblyPaths => ReferencePath.ToList().Select(i => i.ItemSpec);
@@ -118,9 +118,9 @@ namespace Codartis.NsDepCop.MsBuildTask
                     var config = dependencyAnalyzer.Config;
                     LogMsBuildEvent(TaskStartedIssue, config.Parser.ToString());
 
-                    var dependencyViolations = dependencyAnalyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths).ToList();
-                    ReportIssuesToMsBuild(dependencyViolations, config.IssueKind, config.MaxIssueCount);
-                    var errorIssueDetected = dependencyViolations.Any() && config.IssueKind == IssueKind.Error;
+                    var illegalDependencies = dependencyAnalyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths).ToList();
+                    ReportIssuesToMsBuild(illegalDependencies, config.IssueKind, config.MaxIssueCount);
+                    var errorIssueDetected = illegalDependencies.Any() && config.IssueKind == IssueKind.Error;
 
                     runWasSuccessful = !errorIssueDetected;
 
@@ -135,12 +135,12 @@ namespace Codartis.NsDepCop.MsBuildTask
             return runWasSuccessful;
         }
 
-        private void ReportIssuesToMsBuild(IEnumerable<DependencyViolation> dependencyViolations, IssueKind issueKind, int maxIssueCount)
+        private void ReportIssuesToMsBuild(IEnumerable<TypeDependency> illegalDependencies, IssueKind issueKind, int maxIssueCount)
         {
             var issuesReported = 0;
-            foreach (var dependencyViolation in dependencyViolations)
+            foreach (var typeDependency in illegalDependencies)
             {
-                LogMsBuildEvent(IssueDefinitions.IllegalDependencyIssue, issueKind, dependencyViolation.SourceSegment, dependencyViolation.ToString());
+                LogMsBuildEvent(IssueDefinitions.IllegalDependencyIssue, issueKind, typeDependency.SourceSegment, typeDependency.ToString());
 
                 issuesReported++;
 

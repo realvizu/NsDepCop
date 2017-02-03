@@ -9,15 +9,10 @@ using ICSharpCode.NRefactory.TypeSystem;
 namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
 {
     /// <summary>
-    /// Traverses a syntax tree and collects dependency violations.
+    /// Traverses a syntax tree and enumerates type dependencies.
     /// </summary>
-    internal class DependencyAnalyzerSyntaxVisitor : DepthFirstAstVisitor
+    internal class TypeDependencyEnumeratorSyntaxVisitor : DepthFirstAstVisitor
     {
-        /// <summary>
-        /// Represents the project that the analysis is working on.
-        /// </summary>
-        private readonly ICompilation _compilation;
-
         /// <summary>
         /// The syntax tree that this visitor operates on.
         /// </summary>
@@ -29,29 +24,16 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
         private readonly CSharpAstResolver _resolver;
 
         /// <summary>
-        /// The validator that decides whether a dependency is allowed.
+        /// The collection of type dependencies that the syntax visitor found.
         /// </summary>
-        private readonly ITypeDependencyValidator _typeDependencyValidator;
-
-        /// <summary>
-        /// The maximum number of issues to report before stopping analysis.
-        /// </summary>
-        private readonly int _maxIssueCount;
-
-        /// <summary>
-        /// The collection of dependency violations that the syntax visitor found.
-        /// </summary>
-        public List<DependencyViolation> DependencyViolations { get; }
+        public List<TypeDependency> TypeDependencies { get; }
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="compilation">The representation of the current project.</param>
         /// <param name="syntaxTree">The syntax tree that this visitor operates on.</param>
-        /// <param name="typeDependencyValidator">The validator that decides whether a dependency is allowed.</param>
-        /// <param name="maxIssueCount">The maximum number of issues to report before stopping analysis.</param>
-        public DependencyAnalyzerSyntaxVisitor(ICompilation compilation, SyntaxTree syntaxTree, 
-            ITypeDependencyValidator typeDependencyValidator, int maxIssueCount)
+        public TypeDependencyEnumeratorSyntaxVisitor(ICompilation compilation, SyntaxTree syntaxTree)
         {
             if (compilation == null)
                 throw new ArgumentNullException(nameof(compilation));
@@ -59,35 +41,24 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
             if (syntaxTree == null)
                 throw new ArgumentNullException(nameof(syntaxTree));
 
-            if (typeDependencyValidator == null)
-                throw new ArgumentNullException(nameof(typeDependencyValidator));
-
-            _compilation = compilation;
             _syntaxTree = syntaxTree;
-            _typeDependencyValidator = typeDependencyValidator;
-            _maxIssueCount = maxIssueCount;
+            _resolver = new CSharpAstResolver(compilation, _syntaxTree);
 
-            _resolver = new CSharpAstResolver(_compilation, _syntaxTree);
-
-            DependencyViolations = new List<DependencyViolation>();
+            TypeDependencies = new List<TypeDependency>();
         }
 
         public override void VisitIdentifier(Identifier identifier)
         {
-            var newDependencyViolations = AnalyzeSyntaxNode(identifier).ToList();
-            if (!newDependencyViolations.Any() || DependencyViolations.Count >= _maxIssueCount)
-                return;
-
-            var maxElementsToAdd = Math.Min(_maxIssueCount - DependencyViolations.Count, newDependencyViolations.Count);
-            DependencyViolations.AddRange(newDependencyViolations.Take(maxElementsToAdd));
+            foreach (var typeDependency in GetTypeDependencies(identifier))
+                TypeDependencies.Add(typeDependency);
         }
 
         /// <summary>
-        /// Performs namespace dependency analysis for a syntax tree node.
+        /// Finds type dependencies for a syntax tree node.
         /// </summary>
         /// <param name="node">A syntax tree node.</param>
-        /// <returns>A list of dependency violations. Can be empty.</returns>
-        private IEnumerable<DependencyViolation> AnalyzeSyntaxNode(AstNode node)
+        /// <returns>A list of type dependencies. Can be empty.</returns>
+        private IEnumerable<TypeDependency> GetTypeDependencies(AstNode node)
         {
             // Determine the type that contains the current syntax node.
             var enclosingType = DetermineEnclosingType(node, _resolver);
@@ -96,37 +67,33 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
 
             // Determine the type referenced by the symbol represented by the current syntax node.
             var referencedType = DetermineReferencedType(node, _resolver);
-            var referencedTypeDependencyViolation = ValidateDependency(enclosingType, referencedType, node);
-            if (referencedTypeDependencyViolation != null)
-                yield return referencedTypeDependencyViolation;
+            var referencedTypeDependency = GetTypeDependency(enclosingType, referencedType, node);
+            if (referencedTypeDependency != null)
+                yield return referencedTypeDependency.Value;
 
             // If this is an extension method invocation then determine the type declaring the extension method.
             var declaringType = DetermineExtensionMethodDeclaringType(node, _resolver);
-            var declaringTypeDependencyViolation = ValidateDependency(enclosingType, declaringType, node);
-            if (declaringTypeDependencyViolation != null)
-                yield return declaringTypeDependencyViolation;
+            var declaringTypeDependency = GetTypeDependency(enclosingType, declaringType, node);
+            if (declaringTypeDependency != null)
+                yield return declaringTypeDependency.Value;
         }
 
         /// <summary>
-        /// Validates whether a type is allowed to reference another. Returns a DependencyViolation if not allowed.
+        /// Returns a type dependency object for the given types.
         /// </summary>
         /// <param name="fromType">The referring type.</param>
         /// <param name="toType">The referenced type.</param>
         /// <param name="node">The syntax node currently analyzed.</param>
-        /// <returns>A DependencyViolation if the dependency is not allowed. Null otherwise.</returns>
-        private DependencyViolation ValidateDependency(IType fromType, IType toType, AstNode node)
+        /// <returns>A type dependency object or null of could not create one.</returns>
+        private TypeDependency? GetTypeDependency(IType fromType, IType toType, AstNode node)
         {
             if (fromType?.Namespace == null || toType?.Namespace == null)
                 return null;
 
-            var typeDependency = new TypeDependency(
-                fromType.Namespace, fromType.GetMetadataName(), 
-                toType.Namespace, toType.GetMetadataName());
-
-            // Check the rules whether this dependency is allowed.
-            return _typeDependencyValidator.IsAllowedDependency(typeDependency) 
-                ? null 
-                : CreateDependencyViolation(node, typeDependency, _syntaxTree.FileName);
+            return new TypeDependency(
+                fromType.Namespace, fromType.GetMetadataName(),
+                toType.Namespace, toType.GetMetadataName(), 
+                GetSourceSegment(node, _syntaxTree.FileName));
         }
 
         /// <summary>
@@ -141,7 +108,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
                 return null;
 
             var csharpInvocationResolveResult = resolver.Resolve(node.Parent.Parent) as CSharpInvocationResolveResult;
-            if (csharpInvocationResolveResult == null  ||
+            if (csharpInvocationResolveResult == null ||
                 !csharpInvocationResolveResult.IsExtensionMethodInvocation ||
                 csharpInvocationResolveResult.Member == null)
                 return null;
@@ -181,8 +148,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
         {
             // Find the type declaration that contains the current syntax node.
             var typeDeclarationSyntaxNode = node.Ancestors.FirstOrDefault(i => i is TypeDeclaration);
-            return typeDeclarationSyntaxNode == null 
-                ? null 
+            return typeDeclarationSyntaxNode == null
+                ? null
                 : DetermineTypeOfAstNode(typeDeclarationSyntaxNode, resolver);
         }
 
@@ -223,15 +190,14 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
         }
 
         /// <summary>
-        /// Creates a dependency violations object.
+        /// Creates a source segment object for an AST node.
         /// </summary>
-        /// <param name="syntaxNode">The syntax node where the violation was detected.</param>
-        /// <param name="illegalDependency">The illegal type dependency.</param>
+        /// <param name="syntaxNode">The syntax node where the type dependency was detected.</param>
         /// <param name="filename">The full path of the source file.</param>
-        /// <returns></returns>
-        private static DependencyViolation CreateDependencyViolation(AstNode syntaxNode, TypeDependency illegalDependency, string filename)
+        /// <returns>A source segment object.</returns>
+        private static SourceSegment GetSourceSegment(AstNode syntaxNode, string filename)
         {
-            var sourceSegment = new SourceSegment
+            return new SourceSegment
             (
                 syntaxNode.StartLocation.Line,
                 syntaxNode.StartLocation.Column,
@@ -240,8 +206,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
                 syntaxNode.ToString(),
                 filename
             );
-
-            return new DependencyViolation(illegalDependency, sourceSegment);
         }
     }
 }

@@ -23,12 +23,12 @@
 
     <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis" To="Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory">
         <VisibleMembers>
-            <Type Name="NRefactoryAnalyzerLogic" />
+            <Type Name="NRefactoryTypeDependencyEnumerator" />
         </VisibleMembers>
     </Allowed>
     <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis" To="Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn">
         <VisibleMembers>
-            <Type Name="RoslynAnalyzerLogic" />
+            <Type Name="RoslynTypeDependencyEnumerator" />
         </VisibleMembers>
     </Allowed>
 

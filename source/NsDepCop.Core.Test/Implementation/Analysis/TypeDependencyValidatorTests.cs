@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void NoRule_SameNamespaceIsAlwaysAllowed()
         {
-            var ruleConfig = new RuleConfigBuilder();
+            var ruleConfig = new DependencyRulesBuilder();
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
             dependencyValidator.IsAllowedDependency("N", "C1", "N", "C2").ShouldBeTrue();
@@ -19,7 +19,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void NoRule_EverythingIsDisallowed_ExceptSameNamespace()
         {
-            var ruleConfig = new RuleConfigBuilder();
+            var ruleConfig = new DependencyRulesBuilder();
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
             dependencyValidator.IsAllowedDependency("N1", "C1", "N2", "C2").ShouldBeFalse();
@@ -28,7 +28,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void AllowRule()
         {
-            var ruleConfig = new RuleConfigBuilder()
+            var ruleConfig = new DependencyRulesBuilder()
                 .AddAllowed("S", "T");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
@@ -40,7 +40,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void AllowRule_WithSubnamespace()
         {
-            var ruleConfig = new RuleConfigBuilder()
+            var ruleConfig = new DependencyRulesBuilder()
                 .AddAllowed("S.*", "T.*");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
@@ -54,7 +54,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void AllowRule_WithAnyNamespace()
         {
-            var ruleConfig = new RuleConfigBuilder()
+            var ruleConfig = new DependencyRulesBuilder()
                 .AddAllowed("*", "*");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
@@ -66,7 +66,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void AllowRuleWithVisibleMembers_AffectsOnlyAllowRuleSource()
         {
-            var ruleConfig = new RuleConfigBuilder()
+            var ruleConfig = new DependencyRulesBuilder()
                 .AddAllowed("S1", "T", "C1", "C2")
                 .AddAllowed("S2", "T");
 
@@ -83,7 +83,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void AllowRule_GlobalVisibleMembers_AffectsAllRuleSources()
         {
-            var ruleConfig = new RuleConfigBuilder()
+            var ruleConfig = new DependencyRulesBuilder()
                 .AddAllowed("S1", "T")
                 .AddAllowed("S2", "T")
                 .AddVisibleMembers("T", "C1", "C2");
@@ -101,7 +101,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void DisallowRule()
         {
-            var ruleConfig = new RuleConfigBuilder()
+            var ruleConfig = new DependencyRulesBuilder()
                 .AddDisallowed("S", "T");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
@@ -111,7 +111,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void DisallowRule_StrongerThanAllowRule()
         {
-            var ruleConfig = new RuleConfigBuilder()
+            var ruleConfig = new DependencyRulesBuilder()
                 .AddAllowed("S", "T")
                 .AddDisallowed("S", "T");
 
@@ -122,7 +122,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void ChildCanDependOnParentImplicitly()
         {
-            var ruleConfig = new RuleConfigBuilder()
+            var ruleConfig = new DependencyRulesBuilder()
                 .SetChildCanDependOnParentImplicitly(true);
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
@@ -133,7 +133,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void ChildCanDependOnParentImplicitly_ButDisallowWins()
         {
-            var ruleConfig = new RuleConfigBuilder()
+            var ruleConfig = new DependencyRulesBuilder()
                 .SetChildCanDependOnParentImplicitly(true)
                 .AddDisallowed("N1.N2", "N1");
 
@@ -145,7 +145,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [TestMethod]
         public void ChildCanDependOnParentImplicitly_ButDisallowWins_WithWildcard()
         {
-            var ruleConfig = new RuleConfigBuilder()
+            var ruleConfig = new DependencyRulesBuilder()
                 .SetChildCanDependOnParentImplicitly(true)
                 .AddDisallowed("N1.*", "N1");
 

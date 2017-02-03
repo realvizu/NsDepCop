@@ -4,9 +4,9 @@ using Codartis.NsDepCop.Core.Interface.Config;
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
     /// <summary>
-    /// Describes the config for a C# project. Immutable.
+    /// Describes the config for a dependency analyzer. Immutable.
     /// </summary>
-    internal class ProjectConfig : IProjectConfig
+    internal class AnalyzerConfig : IAnalyzerConfig
     {
         public bool IsEnabled { get; }
         public IssueKind IssueKind { get; }
@@ -19,7 +19,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public ImmutableDictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
         public int MaxIssueCount { get; }
 
-        public ProjectConfig(
+        public AnalyzerConfig(
             bool isEnabled,
             IssueKind issueKind,
             Importance infoImportance,

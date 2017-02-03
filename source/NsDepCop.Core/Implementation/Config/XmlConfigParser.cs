@@ -28,9 +28,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private const string ToAttributeName = "To";
         private const string TypeNameAttributeName = "Name";
 
-        public static IProjectConfig ParseXmlConfig(XDocument configXml)
+        public static IAnalyzerConfig ParseXmlConfig(XDocument configXml)
         {
-            var configBuilder = new ProjectConfigBuilder();
+            var configBuilder = new AnalyzerConfigBuilder();
 
             var rootElement = configXml.Element(RootElementName);
             if (rootElement == null)
@@ -42,7 +42,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             return configBuilder.ToProjectConfig();
         }
 
-        private static void ParseRootNodeAttributes(XElement rootElement, ProjectConfigBuilder configBuilder)
+        private static void ParseRootNodeAttributes(XElement rootElement, AnalyzerConfigBuilder configBuilder)
         {
             configBuilder.SetIsEnabled(ParseAttribute(rootElement, IsEnabledAttributeName, bool.TryParse, ConfigDefaults.IsEnabled));
             configBuilder.SetIssueKind(ParseAttribute(rootElement, CodeIssueKindAttributeName, Enum.TryParse, ConfigDefaults.IssueKind));
@@ -54,7 +54,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             configBuilder.SetMaxIssueCount(ParseAttribute(rootElement, MaxIssueCountAttributeName, int.TryParse, ConfigDefaults.MaxIssueReported));
         }
 
-        private static void ParseChildElements(XElement rootElement, ProjectConfigBuilder configBuilder)
+        private static void ParseChildElements(XElement rootElement, AnalyzerConfigBuilder configBuilder)
         {
             foreach (var xElement in rootElement.Elements())
             {
@@ -76,7 +76,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             }
         }
 
-        private static void ParseAllowedElement(XElement xElement, ProjectConfigBuilder configBuilder)
+        private static void ParseAllowedElement(XElement xElement, AnalyzerConfigBuilder configBuilder)
         {
             var allowedDependencyRule = ParseDependencyRule(xElement);
 
@@ -97,14 +97,14 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             configBuilder.AddAllowRule(allowedDependencyRule, visibleTypeNames);
         }
 
-        private static void ParseDisallowedElement(XElement xElement, ProjectConfigBuilder configBuilder)
+        private static void ParseDisallowedElement(XElement xElement, AnalyzerConfigBuilder configBuilder)
         {
             var disallowedDependencyRule = ParseDependencyRule(xElement);
 
             configBuilder.AddDisallowRule(disallowedDependencyRule);
         }
 
-        private static void ParseVisibleMembersElement(XElement xElement, ProjectConfigBuilder configBuilder)
+        private static void ParseVisibleMembersElement(XElement xElement, AnalyzerConfigBuilder configBuilder)
         {
             var targetNamespaceName = GetAttributeValue(xElement, OfNamespaceAttributeName);
             if (targetNamespaceName == null)

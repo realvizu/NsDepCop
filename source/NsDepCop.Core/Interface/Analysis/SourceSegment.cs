@@ -35,15 +35,6 @@
         /// </summary>
         public string Path { get; private set; }
 
-        /// <summary>
-        /// Initializes a new instance.
-        /// </summary>
-        /// <param name="startLine"></param>
-        /// <param name="startColumn"></param>
-        /// <param name="endLine"></param>
-        /// <param name="endColumn"></param>
-        /// <param name="text"></param>
-        /// <param name="path"></param>
         public SourceSegment(int startLine, int startColumn, int endLine, int endColumn, string text, string path)
         {
             StartLine = startLine;

@@ -1,33 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
+using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Analysis
 {
     /// <summary>
-    /// A dependency analyzer that manages its own config.
+    /// Finds illegal type dependencies according to a dependency rule set.
     /// </summary>
     public class DependencyAnalyzer : IDependencyAnalyzer
     {
         private readonly ReaderWriterLockSlim _configRefreshLock;
         private readonly IConfigProvider _configProvider;
-        private readonly Parsers? _overridingParser;
 
-        private IProjectConfig _config;
-        private IDependencyAnalyzerLogic _dependencyAnalyzerLogic;
+        private IAnalyzerConfig _config;
+        private ITypeDependencyValidator _typeDependencyValidator;
+        private ITypeDependencyEnumerator _typeDependencyEnumerator;
 
-        public DependencyAnalyzer(IConfigProvider configProvider, Parsers? overridingParser = null)
+        public DependencyAnalyzer(IConfigProvider configProvider)
         {
             _configRefreshLock = new ReaderWriterLockSlim();
             _configProvider = configProvider;
-            _overridingParser = overridingParser;
 
-            UpdateConfigAndAnalyzer();
+            UpdateConfig();
         }
 
-        public IProjectConfig Config => _config;
+        public IAnalyzerConfig Config => _config;
         public ConfigState ConfigState => _configProvider.ConfigState;
         public Exception ConfigException => _configProvider.ConfigException;
 
@@ -36,13 +39,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             _configRefreshLock?.Dispose();
         }
 
-        public IEnumerable<DependencyViolation> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
+        public IEnumerable<TypeDependency> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {
             _configRefreshLock.EnterReadLock();
 
             try
             {
-                return _dependencyAnalyzerLogic.AnalyzeProject(sourceFilePaths, referencedAssemblyPaths);
+                return FindDependencyViolations(sourceFilePaths, referencedAssemblyPaths);
             }
             finally
             {
@@ -50,13 +53,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             }
         }
 
-        public IEnumerable<DependencyViolation> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
+        public IEnumerable<TypeDependency> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
         {
             _configRefreshLock.EnterReadLock();
 
             try
             {
-                return _dependencyAnalyzerLogic.AnalyzeSyntaxNode(syntaxNode, semanticModel);
+                return FindDependencyViolations(syntaxNode, semanticModel);
             }
             finally
             {
@@ -71,7 +74,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             try
             {
                 _configProvider.RefreshConfig();
-                UpdateConfigAndAnalyzer();
+                UpdateConfig();
             }
             finally
             {
@@ -79,20 +82,62 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             }
         }
 
-        private void UpdateConfigAndAnalyzer()
+        private void UpdateConfig()
         {
             var oldConfig = _config;
             _config = _configProvider.Config;
 
             if (oldConfig != _config)
-                _dependencyAnalyzerLogic = CreateDependencyAnalyzerLogic();
+            {
+                UpdateAnalyzerLogic();
+            }
         }
 
-        private IDependencyAnalyzerLogic CreateDependencyAnalyzerLogic()
+        private void UpdateAnalyzerLogic()
         {
-            return ConfigState == ConfigState.Enabled
-                ? AnalyzerLogicFactory.Create(Config)
-                : null;
+            if (ConfigState == ConfigState.Enabled)
+            {
+                _typeDependencyValidator = new CachingTypeDependencyValidator(_config);
+                _typeDependencyEnumerator = TypeDependencyEnumeratorFactory.Create(_config.Parser);
+            }
+            else
+            {
+                _typeDependencyEnumerator = null;
+            }
+        }
+
+        private IEnumerable<TypeDependency> FindDependencyViolations(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
+        {
+            var illegalTypeDependencies = _typeDependencyEnumerator
+                .GetTypeDependencies(sourceFilePaths, referencedAssemblyPaths)
+                .Where(i => !_typeDependencyValidator.IsAllowedDependency(i))
+                .ToList();
+#if DEBUG
+            DebugDumpCacheStatistics(_typeDependencyValidator);
+#endif
+            return illegalTypeDependencies;
+        }
+
+        private IEnumerable<TypeDependency> FindDependencyViolations(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
+        {
+            var illegalTypeDependencies = _typeDependencyEnumerator
+                .GetTypeDependencies(syntaxNode, semanticModel)
+                .Where(i => !_typeDependencyValidator.IsAllowedDependency(i))
+                .ToList();
+#if DEBUG
+            DebugDumpCacheStatistics(_typeDependencyValidator);
+#endif
+            return illegalTypeDependencies;
+        }
+
+        private static void DebugDumpCacheStatistics(object o)
+        {
+            var cache = o as ICacheStatisticsProvider;
+            if (cache == null)
+                return;
+
+            Debug.WriteLine($"Cache hits: {cache.HitCount}, misses:{cache.MissCount}, efficiency (hits/all): {cache.EfficiencyPercent:P}",
+                ProductConstants.ToolName);
         }
     }
 }

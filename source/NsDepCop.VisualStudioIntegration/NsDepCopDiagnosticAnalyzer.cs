@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Roslyn;
 using Codartis.NsDepCop.Core.Interface.Config;
@@ -85,8 +84,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                     break;
 
                 case ConfigState.Enabled:
-                    var dependencyViolations = dependencyAnalyzer.AnalyzeSyntaxNode(new RoslynSyntaxNode(syntaxNode), new RoslynSemanticModel(semanticModel));
-                    ReportIllegalDependencies(dependencyViolations, context, dependencyAnalyzer.Config.IssueKind);
+                    var illegalDependencies = dependencyAnalyzer.AnalyzeSyntaxNode(new RoslynSyntaxNode(syntaxNode), new RoslynSemanticModel(semanticModel));
+                    ReportIllegalDependencies(illegalDependencies, context, dependencyAnalyzer.Config.IssueKind);
                     break;
 
                 default:
@@ -94,12 +93,12 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             }
         }
 
-        private static void ReportIllegalDependencies(IEnumerable<DependencyViolation> dependencyViolations,
+        private static void ReportIllegalDependencies(IEnumerable<TypeDependency> illegalDependencies,
             SyntaxNodeAnalysisContext context, IssueKind issueKind)
         {
-            foreach (var dependencyViolation in dependencyViolations)
+            foreach (var typeDependency in illegalDependencies)
             {
-                var diagnostic = CreateIllegalDependencyDiagnostic(context.Node, dependencyViolation, issueKind);
+                var diagnostic = CreateIllegalDependencyDiagnostic(context.Node, typeDependency, issueKind);
                 context.ReportDiagnostic(diagnostic);
             }
         }
@@ -110,10 +109,11 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             context.ReportDiagnostic(diagnostic);
         }
 
-        private static Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, DependencyViolation dependencyViolation, IssueKind issueKind)
+        private static Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, TypeDependency typeDependency, IssueKind issueKind)
         {
+            // TODO: get location from typeDependency.SourceSegment?
             var location = Location.Create(node.SyntaxTree, node.Span);
-            var message = IssueDefinitions.IllegalDependencyIssue.GetDynamicDescription(dependencyViolation);
+            var message = IssueDefinitions.IllegalDependencyIssue.GetDynamicDescription(typeDependency);
             return CreateDiagnostic(IllegalDependencyDescriptor, location, message, issueKind);
         }
 

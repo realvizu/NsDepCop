@@ -1,22 +1,27 @@
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
-    /// The configuration used for a project.
+    /// The configuration for an analyzer.
     /// </summary>
-    public interface IProjectConfig : IRuleConfig
+    public interface IAnalyzerConfig : IDependencyRules
     {
         /// <summary>
-        /// A value indicating whether analysis is enabled.
+        /// Gets a value indicating whether analysis is enabled.
         /// </summary>
         bool IsEnabled { get; }
 
         /// <summary>
-        /// A value representing the severity of an issue.
+        /// Gets the severity of the reported issues.
         /// </summary>
         IssueKind IssueKind { get; }
 
         /// <summary>
-        /// The importance level of NsDepCop information messages. 
+        /// Gets the max number of issues reported.
+        /// </summary>
+        int MaxIssueCount { get; }
+
+        /// <summary>
+        /// Gets the importance level of information messages. 
         /// Influences whether messages are emitted or suppressed by the host.
         /// </summary>
         Importance InfoImportance { get; }

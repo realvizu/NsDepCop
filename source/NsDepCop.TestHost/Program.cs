@@ -69,22 +69,22 @@ namespace Codartis.NsDepCop.TestHost
             var startTime = DateTime.Now;
 
             var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, parser);
-            var dependencyViolations = dependencyAnalyzer.AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths).ToList();
+            var illegalDependencies = dependencyAnalyzer.AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths).ToList();
 
             var endTime = DateTime.Now;
             var elapsedTimeSpan = endTime - startTime;
             Console.WriteLine($"Analysis took: {elapsedTimeSpan:mm\\:ss\\.fff}");
 
-            DumpDependencyViolations(dependencyViolations);
+            DumpIllegalDependencies(illegalDependencies);
 
             return elapsedTimeSpan;
         }
 
-        private static void DumpDependencyViolations(IReadOnlyCollection<DependencyViolation> dependencyViolations)
+        private static void DumpIllegalDependencies(IReadOnlyCollection<TypeDependency> typeDependencies)
         {
-            Console.WriteLine($"DependencyViolations.Count={dependencyViolations.Count}");
-            foreach (var dependencyViolation in dependencyViolations)
-                Console.WriteLine(IssueDefinitions.IllegalDependencyIssue.GetDynamicDescription(dependencyViolation));
+            Console.WriteLine($"Illegal dependencies count={typeDependencies.Count}");
+            foreach (var typeDependency in typeDependencies)
+                Console.WriteLine(IssueDefinitions.IllegalDependencyIssue.GetDynamicDescription(typeDependency));
         }
 
         private static void DumpRunTimes(List<TimeSpan> runTimeSpans)

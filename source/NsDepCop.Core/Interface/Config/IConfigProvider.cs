@@ -3,14 +3,14 @@
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
-    /// Provides config info from a repository.
+    /// Provides config info and config state.
     /// </summary>
     public interface IConfigProvider
     {
         /// <summary>
-        /// The config info extracted from the config repository.
+        /// Get the config used by the analyzers.
         /// </summary>
-        IProjectConfig Config { get; }
+        IAnalyzerConfig Config { get; }
 
         /// <summary>
         /// Gets the state of the config.

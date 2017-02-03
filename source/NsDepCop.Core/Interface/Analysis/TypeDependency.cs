@@ -1,4 +1,6 @@
-﻿namespace Codartis.NsDepCop.Core.Interface.Analysis
+﻿using System;
+
+namespace Codartis.NsDepCop.Core.Interface.Analysis
 {
     /// <summary>
     /// Describes a dependency between two types.
@@ -26,18 +28,35 @@
         public string ToTypeName { get; }
 
         /// <summary>
-        /// Initializes a new instance.
+        /// The source segment where the dependency was found.
         /// </summary>
-        public TypeDependency(string fromNamespaceName, string fromTypeName, string toNamespaceName, string toTypeName)
+        public SourceSegment SourceSegment { get; }
+
+        public TypeDependency(string fromNamespaceName, string fromTypeName, string toNamespaceName, string toTypeName, SourceSegment sourceSegment)
         {
+            if (string.IsNullOrWhiteSpace(fromNamespaceName))
+                throw new ArgumentException("Should not be null or whitespace.", nameof(fromNamespaceName));
+
+            if (string.IsNullOrWhiteSpace(fromTypeName))
+                throw new ArgumentException("Should not be null or whitespace.", nameof(fromTypeName));
+
+            if (string.IsNullOrWhiteSpace(toNamespaceName))
+                throw new ArgumentException("Should not be null or whitespace.", nameof(toNamespaceName));
+
+            if (string.IsNullOrWhiteSpace(toTypeName))
+                throw new ArgumentException("Should not be null or whitespace.", nameof(toTypeName));
+
+            if (sourceSegment == null)
+                throw new ArgumentNullException(nameof(sourceSegment));
+
             FromNamespaceName = fromNamespaceName;
             FromTypeName = fromTypeName;
             ToNamespaceName = toNamespaceName;
             ToTypeName = toTypeName;
+            SourceSegment = sourceSegment;
         }
 
-        public override string ToString() 
-            => $"{FromNamespaceName}.{FromTypeName}->{ToNamespaceName}.{ToTypeName}";
+        public override string ToString() => $"{FromNamespaceName}.{FromTypeName}->{ToNamespaceName}.{ToTypeName}";
 
         public bool Equals(TypeDependency other)
         {

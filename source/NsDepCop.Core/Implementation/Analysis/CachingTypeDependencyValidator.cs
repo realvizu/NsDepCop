@@ -17,12 +17,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         public int HitCount { get; private set; }
         public int MissCount { get; private set; }
 
-        public CachingTypeDependencyValidator(IRuleConfig ruleConfig)
-            : base(ruleConfig)
+        public CachingTypeDependencyValidator(IDependencyRules dependencyRules)
+            : base(dependencyRules)
         {
             _dependencyValidationCache = new ConcurrentDictionary<TypeDependency, bool>();
-            HitCount = 0;
-            MissCount = 0;
         }
 
         public double EfficiencyPercent => MathHelper.CalculatePercent(HitCount, HitCount + MissCount);

@@ -4,16 +4,16 @@ using Codartis.NsDepCop.Core.Interface.Config;
 namespace Codartis.NsDepCop.Core.Interface.Analysis
 {
     /// <summary>
-    /// Defines issue descriptors.
+    /// Defines the types of issues that the tool can report.
     /// </summary>
     public static class IssueDefinitions
     {
-        public static readonly IssueDescriptor<DependencyViolation> IllegalDependencyIssue =
-            new IssueDescriptor<DependencyViolation>(
+        public static readonly IssueDescriptor<TypeDependency> IllegalDependencyIssue =
+            new IssueDescriptor<TypeDependency>(
                 "NSDEPCOP01",
                 IssueKind.Warning,
                 "Illegal namespace reference.",
-                i => $"Illegal namespace reference: {i?.TypeDependency.FromNamespaceName}->{i?.TypeDependency.ToNamespaceName} (Type: {i?.TypeDependency.FromTypeName}->{i?.TypeDependency.ToTypeName})");
+                i => $"Illegal namespace reference: {i.FromNamespaceName}->{i.ToNamespaceName} (Type: {i.FromTypeName}->{i.ToTypeName})");
 
         public static readonly IssueDescriptor TooManyIssuesIssue = 
             new IssueDescriptor(

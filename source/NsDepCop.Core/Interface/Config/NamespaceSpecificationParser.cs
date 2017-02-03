@@ -7,10 +7,12 @@ namespace Codartis.NsDepCop.Core.Interface.Config
     {
         /// <summary>
         /// Creates a namespace specification from a string representation.
-        /// Throws an exception if the string cannot be parsed.
         /// </summary>
         /// <param name="namespaceSpecificationAsString">A namespace specification in string format.</param>
         /// <returns>The namespace specification created from the given string.</returns>
+        /// <remarks>
+        /// Throws an exception if the string cannot be parsed.
+        /// </remarks>
         public static NamespaceSpecification Parse(string namespaceSpecificationAsString)
         {
             return namespaceSpecificationAsString.EndsWith(NamespaceTree.AnyNamespaceMarker) 
