@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
@@ -45,7 +43,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
             try
             {
-                return FindDependencyViolations(sourceFilePaths, referencedAssemblyPaths);
+                return GetIllegalDependencies(_typeDependencyEnumerator.GetTypeDependencies(sourceFilePaths, referencedAssemblyPaths));
             }
             finally
             {
@@ -59,13 +57,15 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
             try
             {
-                return FindDependencyViolations(syntaxNode, semanticModel);
+                return GetIllegalDependencies(_typeDependencyEnumerator.GetTypeDependencies(syntaxNode, semanticModel));
             }
             finally
             {
                 _configRefreshLock.ExitReadLock();
             }
         }
+
+        public ICacheStatisticsProvider GetCacheStatistics() => _typeDependencyValidator as ICacheStatisticsProvider;
 
         public void RefreshConfig()
         {
@@ -80,6 +80,11 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             {
                 _configRefreshLock.ExitWriteLock();
             }
+        }
+
+        private IEnumerable<TypeDependency> GetIllegalDependencies(IEnumerable<TypeDependency> typeDependencies)
+        {
+            return typeDependencies.Where(i => !_typeDependencyValidator.IsAllowedDependency(i)).Take(Config.MaxIssueCount);
         }
 
         private void UpdateConfig()
@@ -104,40 +109,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             {
                 _typeDependencyEnumerator = null;
             }
-        }
-
-        private IEnumerable<TypeDependency> FindDependencyViolations(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
-        {
-            var illegalTypeDependencies = _typeDependencyEnumerator
-                .GetTypeDependencies(sourceFilePaths, referencedAssemblyPaths)
-                .Where(i => !_typeDependencyValidator.IsAllowedDependency(i))
-                .ToList();
-#if DEBUG
-            DebugDumpCacheStatistics(_typeDependencyValidator);
-#endif
-            return illegalTypeDependencies;
-        }
-
-        private IEnumerable<TypeDependency> FindDependencyViolations(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
-        {
-            var illegalTypeDependencies = _typeDependencyEnumerator
-                .GetTypeDependencies(syntaxNode, semanticModel)
-                .Where(i => !_typeDependencyValidator.IsAllowedDependency(i))
-                .ToList();
-#if DEBUG
-            DebugDumpCacheStatistics(_typeDependencyValidator);
-#endif
-            return illegalTypeDependencies;
-        }
-
-        private static void DebugDumpCacheStatistics(object o)
-        {
-            var cache = o as ICacheStatisticsProvider;
-            if (cache == null)
-                return;
-
-            Debug.WriteLine($"Cache hits: {cache.HitCount}, misses:{cache.MissCount}, efficiency (hits/all): {cache.EfficiencyPercent:P}",
-                ProductConstants.ToolName);
         }
     }
 }

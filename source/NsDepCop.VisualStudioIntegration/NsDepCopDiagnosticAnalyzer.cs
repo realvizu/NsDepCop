@@ -84,8 +84,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                     break;
 
                 case ConfigState.Enabled:
+                    var config = dependencyAnalyzer.Config;
                     var illegalDependencies = dependencyAnalyzer.AnalyzeSyntaxNode(new RoslynSyntaxNode(syntaxNode), new RoslynSemanticModel(semanticModel));
-                    ReportIllegalDependencies(illegalDependencies, context, dependencyAnalyzer.Config.IssueKind);
+                    ReportIllegalDependencies(illegalDependencies, context, config.IssueKind, config.MaxIssueCount);
                     break;
 
                 default:
@@ -94,13 +95,18 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         }
 
         private static void ReportIllegalDependencies(IEnumerable<TypeDependency> illegalDependencies,
-            SyntaxNodeAnalysisContext context, IssueKind issueKind)
+            SyntaxNodeAnalysisContext context, IssueKind issueKind, int maxIssueCount)
         {
+            var issueCount = 0;
             foreach (var typeDependency in illegalDependencies)
             {
                 var diagnostic = CreateIllegalDependencyDiagnostic(context.Node, typeDependency, issueKind);
                 context.ReportDiagnostic(diagnostic);
+                issueCount++;
             }
+
+            if (issueCount == maxIssueCount)
+                context.ReportDiagnostic(CreateTooManyIssueDiagnostic(context.Node));
         }
 
         private static void ReportConfigException(SyntaxNodeAnalysisContext context, Exception exception)
@@ -117,6 +123,12 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             return CreateDiagnostic(IllegalDependencyDescriptor, location, message, issueKind);
         }
 
+        private static Diagnostic CreateTooManyIssueDiagnostic(SyntaxNode node)
+        {
+            var location = Location.Create(node.SyntaxTree, node.Span);
+            var message = IssueDefinitions.TooManyIssuesIssue.StaticDescription;
+            return CreateDiagnostic(IllegalDependencyDescriptor, location, message);
+        }
         private static Diagnostic CreateConfigExceptionDiagnostic(SyntaxNode node, Exception exception)
         {
             // The location should be the config.nsdepcop file, but we cannot use that because of a Roslyn limitation: 

@@ -9,6 +9,7 @@ using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.MsBuildTask
 {
@@ -118,10 +119,8 @@ namespace Codartis.NsDepCop.MsBuildTask
                     var config = dependencyAnalyzer.Config;
                     LogMsBuildEvent(TaskStartedIssue, config.Parser.ToString());
 
-                    var illegalDependencies = dependencyAnalyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths).ToList();
-                    ReportIssuesToMsBuild(illegalDependencies, config.IssueKind, config.MaxIssueCount);
-                    var errorIssueDetected = illegalDependencies.Any() && config.IssueKind == IssueKind.Error;
-
+                    var issuesReported = AnalyzeProject(dependencyAnalyzer, config);
+                    var errorIssueDetected = issuesReported > 0 && config.IssueKind == IssueKind.Error;
                     runWasSuccessful = !errorIssueDetected;
 
                     var endTime = DateTime.Now;
@@ -135,22 +134,23 @@ namespace Codartis.NsDepCop.MsBuildTask
             return runWasSuccessful;
         }
 
-        private void ReportIssuesToMsBuild(IEnumerable<TypeDependency> illegalDependencies, IssueKind issueKind, int maxIssueCount)
+        private int AnalyzeProject(IDependencyAnalyzer dependencyAnalyzer, IAnalyzerConfig config)
         {
-            var issuesReported = 0;
-            foreach (var typeDependency in illegalDependencies)
+            var illegalDependencies = dependencyAnalyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths);
+
+            var issueCount = 0;
+            foreach (var illegalDependency in illegalDependencies)
             {
-                LogMsBuildEvent(IssueDefinitions.IllegalDependencyIssue, issueKind, typeDependency.SourceSegment, typeDependency.ToString());
-
-                issuesReported++;
-
-                // Too many issues stop the analysis.
-                if (issuesReported == maxIssueCount)
-                {
-                    LogMsBuildEvent(IssueDefinitions.TooManyIssuesIssue);
-                    break;
-                }
+                LogMsBuildEvent(IssueDefinitions.IllegalDependencyIssue, config.IssueKind, illegalDependency.SourceSegment, illegalDependency.ToString());
+                issueCount++;
             }
+
+            if (issueCount == config.MaxIssueCount)
+                LogMsBuildEvent(IssueDefinitions.TooManyIssuesIssue);
+
+            DebugDumpCacheStatistics(dependencyAnalyzer.GetCacheStatistics());
+
+            return issueCount;
         }
 
         private void LogMsBuildEvent(IssueDescriptor issueDescriptor)
@@ -238,6 +238,15 @@ namespace Codartis.NsDepCop.MsBuildTask
             Debug.WriteLine($"  Compile[{Compile.Length}]", ProductConstants.ToolName);
             Compile.ToList().ForEach(i => Debug.WriteLine($"    {i.ItemSpec}", ProductConstants.ToolName));
             Debug.WriteLine($"  BaseDirectory={BaseDirectory.ItemSpec}", ProductConstants.ToolName);
+        }
+
+        private static void DebugDumpCacheStatistics(ICacheStatisticsProvider cache)
+        {
+            if (cache == null)
+                return;
+
+            Debug.WriteLine($"Cache hits: {cache.HitCount}, misses:{cache.MissCount}, efficiency (hits/all): {cache.EfficiencyPercent:P}",
+                ProductConstants.ToolName);
         }
     }
 }

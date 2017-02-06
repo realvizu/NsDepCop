@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Interface.Analysis
 {
@@ -24,5 +25,11 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
         /// <param name="semanticModel">The semantic model of the project being analyzed.</param>
         /// <returns>A collection of illegal dependencies. Empty collection if none found.</returns>
         IEnumerable<TypeDependency> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel);
+
+        /// <summary>
+        /// Returns an object that provides cache statistics about the analyzer.
+        /// </summary>
+        /// <returns>A cache statictics provider object. Can be null if the analyzer does not implement caching.</returns>
+        ICacheStatisticsProvider GetCacheStatistics();
     }
 }
