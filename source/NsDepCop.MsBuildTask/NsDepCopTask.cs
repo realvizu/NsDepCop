@@ -2,7 +2,6 @@
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Core.Factory;
@@ -59,7 +58,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// </summary>
         public ITaskItem InfoImportance { get; set; }
 
-        private IAnalyzerConfig _currentConfig;
+        private MessageImportance _infoImportance;
 
         private IEnumerable<string> SourceFilePaths => Compile.ToList().Select(i => i.ItemSpec);
         private IEnumerable<string> ReferencedAssemblyPaths => ReferencePath.ToList().Select(i => i.ItemSpec);
@@ -74,117 +73,138 @@ namespace Codartis.NsDepCop.MsBuildTask
         {
             try
             {
-                Debug.WriteLine("Execute started...", ProductConstants.ToolName);
-                DebugDumpInputParameters();
+                LogDiagnosticMessages(GetInputParameterDiagnosticMessages());
 
-                var messageImportance = ParseMessageImportance(GetValueOfTaskItem(InfoImportance));
-                var parserName = GetValueOfTaskItem(Parser);
+                var infoImportance = Parse<Importance>(InfoImportance.GetValue());
+                var parser = Parse<Parsers>(Parser.GetValue());
                 // TODO: use these values as defaults
 
                 var configFileName = Path.Combine(BaseDirectory.ItemSpec, ProductConstants.DefaultConfigFileName);
                 using (var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName))
                 {
-                    _currentConfig = dependencyAnalyzer.Config;
-                    return ExecuteAnalysis(dependencyAnalyzer);
+                    var runWasSuccessful = true;
+
+                    switch (dependencyAnalyzer.State)
+                    {
+                        case AnalyzerState.NoConfigFile:
+                            LogIssue(IssueDefinitions.NoConfigFileIssue);
+                            break;
+
+                        case AnalyzerState.Disabled:
+                            LogIssue(IssueDefinitions.ConfigDisabledIssue);
+                            break;
+
+                        case AnalyzerState.ConfigError:
+                            LogIssue(IssueDefinitions.ConfigExceptionIssue, dependencyAnalyzer.ConfigException);
+                            runWasSuccessful = false;
+                            break;
+
+                        case AnalyzerState.Enabled:
+                            runWasSuccessful = ExecuteAnalysis(dependencyAnalyzer);
+                            break;
+
+                        default:
+                            throw new Exception($"Unexpected ConfigState: {dependencyAnalyzer.State}");
+                    }
+
+                    return runWasSuccessful;
                 }
             }
             catch (Exception e)
             {
-                LogMsBuildEvent(TaskExceptionIssue, e);
+                LogIssue(TaskExceptionIssue, e);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Executes dependency analysis on the project.
+        /// </summary>
+        /// <param name="dependencyAnalyzer">The dependency analyzer object.</param>
+        /// <returns>True if the analysis was 'green', ie. no error issues found.</returns>
         private bool ExecuteAnalysis(IDependencyAnalyzer dependencyAnalyzer)
         {
-            var runWasSuccessful = true;
+            var config = dependencyAnalyzer.Config;
 
-            switch (dependencyAnalyzer.ConfigState)
-            {
-                case ConfigState.NoConfigFile:
-                    LogMsBuildEvent(IssueDefinitions.NoConfigFileIssue);
-                    break;
+            _infoImportance = config.InfoImportance.ToMessageImportance();
 
-                case ConfigState.Disabled:
-                    LogMsBuildEvent(IssueDefinitions.ConfigDisabledIssue);
-                    break;
+            // TODO: measure the performance impact of producing diagnostic messages even if they are not logged
+            dependencyAnalyzer.DiagnosticMessageHandler = LogDiagnosticMessage;
 
-                case ConfigState.ConfigError:
-                    LogMsBuildEvent(IssueDefinitions.ConfigExceptionIssue, dependencyAnalyzer.ConfigException);
-                    runWasSuccessful = false;
-                    break;
+            var startTime = DateTime.Now;
+            LogIssue(TaskStartedIssue, config.Parser.ToString());
 
-                case ConfigState.Enabled:
-                    var startTime = DateTime.Now;
-                    var config = dependencyAnalyzer.Config;
-                    LogMsBuildEvent(TaskStartedIssue, config.Parser.ToString());
+            var illegalDependencies = dependencyAnalyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths);
+            var issuesReported = ReportIllegalDependencies(illegalDependencies, config.IssueKind, config.MaxIssueCount);
 
-                    var issuesReported = AnalyzeProject(dependencyAnalyzer, config);
-                    var errorIssueDetected = issuesReported > 0 && config.IssueKind == IssueKind.Error;
-                    runWasSuccessful = !errorIssueDetected;
+            var endTime = DateTime.Now;
+            LogIssue(TaskFinishedIssue, endTime - startTime);
 
-                    var endTime = DateTime.Now;
-                    LogMsBuildEvent(TaskFinishedIssue, endTime - startTime);
-                    break;
+            LogDiagnosticMessages(GetCacheStatisticsMessage(dependencyAnalyzer));
 
-                default:
-                    throw new Exception($"Unexpected ConfigState: {dependencyAnalyzer.ConfigState}");
-            }
-
-            return runWasSuccessful;
+            var errorIssueDetected = issuesReported > 0 && config.IssueKind == IssueKind.Error;
+            return !errorIssueDetected;
         }
 
-        private int AnalyzeProject(IDependencyAnalyzer dependencyAnalyzer, IAnalyzerConfig config)
+        /// <summary>
+        /// Reports illegal dependencies to the host.
+        /// </summary>
+        /// <param name="illegalDependencies">The illegal type dependencies.</param>
+        /// <param name="issueKind">The severity of the illegal dependencies.</param>
+        /// <param name="maxIssueCount">The max number of issues to report.</param>
+        /// <returns>The number of issues reported.</returns>
+        private int ReportIllegalDependencies(IEnumerable<TypeDependency> illegalDependencies, IssueKind issueKind, int maxIssueCount)
         {
-            var illegalDependencies = dependencyAnalyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths);
-
             var issueCount = 0;
             foreach (var illegalDependency in illegalDependencies)
             {
-                LogMsBuildEvent(IssueDefinitions.IllegalDependencyIssue, config.IssueKind, illegalDependency.SourceSegment, illegalDependency.ToString());
+                LogIssue(IssueDefinitions.IllegalDependencyIssue, illegalDependency.ToString(), issueKind, illegalDependency.SourceSegment);
                 issueCount++;
             }
 
-            if (issueCount == config.MaxIssueCount)
-                LogMsBuildEvent(IssueDefinitions.TooManyIssuesIssue);
-
-            DebugDumpCacheStatistics(dependencyAnalyzer.GetCacheStatistics());
+            if (issueCount == maxIssueCount)
+                LogIssue(IssueDefinitions.TooManyIssuesIssue);
 
             return issueCount;
         }
 
-        private void LogMsBuildEvent(IssueDescriptor issueDescriptor)
+        private void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T messageParam = default(T))
         {
-            LogMsBuildEvent(issueDescriptor, issueDescriptor.DefaultKind, null, null);
+            LogIssue(issueDescriptor, issueDescriptor.GetDynamicDescription(messageParam));
         }
 
-        private void LogMsBuildEvent<T>(IssueDescriptor<T> issueDescriptor, T messageParam = default(T))
+        private void LogIssue(IssueDescriptor issueDescriptor, string message = null, IssueKind? issueKind = null, SourceSegment sourceSegment = null)
         {
-            LogMsBuildEvent(issueDescriptor, issueDescriptor.DefaultKind, null, issueDescriptor.GetDynamicDescription(messageParam));
-        }
-
-        private void LogMsBuildEvent(IssueDescriptor issueDescriptor, IssueKind issueKind, SourceSegment sourceSegment, string message)
-        {
-            var code = issueDescriptor.Id;
+            issueKind = issueKind ?? issueDescriptor.DefaultKind;
 
             message = message ?? issueDescriptor.StaticDescription;
             message = "[" + ProductConstants.ToolName + "] " + message;
 
-            string path = null;
-            int startLine = 0;
-            int startColumn = 0;
-            int endLine = 0;
-            int endColumn = 0;
+            var code = issueDescriptor.Id;
 
-            if (sourceSegment != null)
-            {
-                path = sourceSegment.Path;
-                startLine = sourceSegment.StartLine;
-                startColumn = sourceSegment.StartColumn;
-                endLine = sourceSegment.EndLine;
-                endColumn = sourceSegment.EndColumn;
-            }
+            var path = sourceSegment?.Path;
+            var startLine = sourceSegment?.StartLine ?? 0;
+            var startColumn = sourceSegment?.StartColumn ?? 0;
+            var endLine = sourceSegment?.EndLine ?? 0;
+            var endColumn = sourceSegment?.EndColumn ?? 0;
 
+            LogBuildEvent(issueKind.Value, message, _infoImportance, code, path, startLine, startColumn, endLine, endColumn);
+        }
+
+        private void LogDiagnosticMessages(IEnumerable<string> messages)
+        {
+            foreach (var message in messages)
+                LogDiagnosticMessage(message);
+        }
+
+        private void LogDiagnosticMessage(string message)
+        {
+            LogBuildEvent(IssueKind.Info, message, MessageImportance.Low);
+        }
+
+        private void LogBuildEvent(IssueKind issueKind, string message, MessageImportance messageImportance, string code = null,
+            string path = null, int startLine = 0, int startColumn = 0, int endLine = 0, int endColumn = 0)
+        {
             switch (issueKind)
             {
                 case IssueKind.Error:
@@ -199,54 +219,40 @@ namespace Codartis.NsDepCop.MsBuildTask
 
                 default:
                     BuildEngine.LogMessageEvent(new BuildMessageEventArgs(
-                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, ProductConstants.ToolName, ToMessageImportance(_currentConfig?.InfoImportance)));
+                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, ProductConstants.ToolName, messageImportance));
                     break;
             }
         }
 
-        private MessageImportance ToMessageImportance(Importance? infoImportance)
+        private IEnumerable<string> GetInputParameterDiagnosticMessages()
         {
-            switch (infoImportance)
-            {
-                case Importance.Low:
-                    return MessageImportance.Low;
-                case Importance.High:
-                    return MessageImportance.High;
-                default:
-                    return MessageImportance.Normal;
-            }
+            yield return $"{ProductConstants.ToolName} started with parameters:";
+
+            yield return $"  ReferencePath[{ReferencePath.Length}]";
+            foreach (var message in ReferencePath.Select(i => $"    {i.ItemSpec}"))
+                yield return message;
+
+            yield return $"  Compile[{Compile.Length}]";
+            foreach (var message in Compile.Select(i => $"    {i.ItemSpec}"))
+                yield return message;
+
+            yield return $"  BaseDirectory={BaseDirectory.ItemSpec}";
         }
 
-        private static MessageImportance? ParseMessageImportance(string infoImportanceString)
+        private static IEnumerable<string> GetCacheStatisticsMessage(ICacheStatisticsProvider cache)
         {
-            MessageImportance result;
-            if (Enum.TryParse(infoImportanceString, out result))
+            if (cache != null)
+                yield return $"Cache hits: {cache.HitCount}, misses:{cache.MissCount}, efficiency (hits/all): {cache.EfficiencyPercent:P}";
+        }
+
+        private static TEnum? Parse<TEnum>(string valueAsString)
+            where TEnum : struct
+        {
+            TEnum result;
+            if (Enum.TryParse(valueAsString, out result))
                 return result;
 
             return null;
-        }
-
-        private static string GetValueOfTaskItem(ITaskItem taskItem)
-        {
-            return taskItem?.ItemSpec;
-        }
-
-        private void DebugDumpInputParameters()
-        {
-            Debug.WriteLine($"  ReferencePath[{ReferencePath.Length}]", ProductConstants.ToolName);
-            ReferencePath.ToList().ForEach(i => Debug.WriteLine($"    {i.ItemSpec}", ProductConstants.ToolName));
-            Debug.WriteLine($"  Compile[{Compile.Length}]", ProductConstants.ToolName);
-            Compile.ToList().ForEach(i => Debug.WriteLine($"    {i.ItemSpec}", ProductConstants.ToolName));
-            Debug.WriteLine($"  BaseDirectory={BaseDirectory.ItemSpec}", ProductConstants.ToolName);
-        }
-
-        private static void DebugDumpCacheStatistics(ICacheStatisticsProvider cache)
-        {
-            if (cache == null)
-                return;
-
-            Debug.WriteLine($"Cache hits: {cache.HitCount}, misses:{cache.MissCount}, efficiency (hits/all): {cache.EfficiencyPercent:P}",
-                ProductConstants.ToolName);
         }
     }
 }

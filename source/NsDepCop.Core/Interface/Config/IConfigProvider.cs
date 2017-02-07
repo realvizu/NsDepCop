@@ -13,9 +13,9 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         IAnalyzerConfig Config { get; }
 
         /// <summary>
-        /// Gets the state of the config.
+        /// Gets the state of the analyzer.
         /// </summary>
-        ConfigState ConfigState { get; }
+        AnalyzerState State { get; }
 
         /// <summary>
         /// Gets the config exception (if any). Returns null if there was no exception.

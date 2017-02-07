@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Analysis
 {
@@ -17,8 +16,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         private readonly IConfigProvider _configProvider;
 
         private IAnalyzerConfig _config;
-        private ITypeDependencyValidator _typeDependencyValidator;
+        private CachingTypeDependencyValidator _typeDependencyValidator;
         private ITypeDependencyEnumerator _typeDependencyEnumerator;
+
+        public Action<string> DiagnosticMessageHandler { get; set; }
 
         public DependencyAnalyzer(IConfigProvider configProvider)
         {
@@ -29,8 +30,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         }
 
         public IAnalyzerConfig Config => _config;
-        public ConfigState ConfigState => _configProvider.ConfigState;
+        public AnalyzerState State => _configProvider.State;
         public Exception ConfigException => _configProvider.ConfigException;
+
+        public int HitCount => _typeDependencyValidator?.HitCount ?? 0;
+        public int MissCount => _typeDependencyValidator?.MissCount ?? 0;
+        public double EfficiencyPercent => _typeDependencyValidator?.EfficiencyPercent ?? 0;
 
         public void Dispose()
         {
@@ -65,8 +70,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             }
         }
 
-        public ICacheStatisticsProvider GetCacheStatistics() => _typeDependencyValidator as ICacheStatisticsProvider;
-
         public void RefreshConfig()
         {
             _configRefreshLock.EnterWriteLock();
@@ -100,7 +103,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
         private void UpdateAnalyzerLogic()
         {
-            if (ConfigState == ConfigState.Enabled)
+            if (State == AnalyzerState.Enabled)
             {
                 _typeDependencyValidator = new CachingTypeDependencyValidator(_config);
                 _typeDependencyEnumerator = TypeDependencyEnumeratorFactory.Create(_config.Parser);

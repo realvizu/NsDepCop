@@ -1,9 +1,9 @@
 ﻿namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
-    /// Enumerates the possible states of a config.
+    /// Enumerates the possible states of an analyzer.
     /// </summary>
-    public enum ConfigState
+    public enum AnalyzerState
     {
         Enabled,
         Disabled,

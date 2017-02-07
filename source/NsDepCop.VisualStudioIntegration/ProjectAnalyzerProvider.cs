@@ -56,7 +56,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 return null;
 
             var dependencyAnalyzer = GetDependencyAnalyzer(projectFilePath);
-            if (dependencyAnalyzer.ConfigState != ConfigState.Enabled)
+            if (dependencyAnalyzer.State != AnalyzerState.Enabled)
                 return null;
 
             return dependencyAnalyzer;

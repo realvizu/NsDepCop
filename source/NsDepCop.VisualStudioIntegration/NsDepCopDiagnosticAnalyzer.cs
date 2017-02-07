@@ -73,24 +73,24 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             if (dependencyAnalyzer == null)
                 return;
 
-            switch (dependencyAnalyzer.ConfigState)
+            switch (dependencyAnalyzer.State)
             {
-                case ConfigState.NoConfigFile:
-                case ConfigState.Disabled:
+                case AnalyzerState.NoConfigFile:
+                case AnalyzerState.Disabled:
                     break;
 
-                case ConfigState.ConfigError:
+                case AnalyzerState.ConfigError:
                     ReportConfigException(context, dependencyAnalyzer.ConfigException);
                     break;
 
-                case ConfigState.Enabled:
+                case AnalyzerState.Enabled:
                     var config = dependencyAnalyzer.Config;
                     var illegalDependencies = dependencyAnalyzer.AnalyzeSyntaxNode(new RoslynSyntaxNode(syntaxNode), new RoslynSemanticModel(semanticModel));
                     ReportIllegalDependencies(illegalDependencies, context, config.IssueKind, config.MaxIssueCount);
                     break;
 
                 default:
-                    throw new Exception($"Unexpected ConfigState {dependencyAnalyzer.ConfigState}");
+                    throw new Exception($"Unexpected ConfigState {dependencyAnalyzer.State}");
             }
         }
 

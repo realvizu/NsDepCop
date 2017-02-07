@@ -816,6 +816,8 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
 
             var mockBuildEngine = MockRepository.GenerateStrictMock<IBuildEngine>();
 
+            ExpectAnyDiagnosticEvents(mockBuildEngine);
+
             if (specification.ExpectStartEvent)
                 ExpectStartEvent(mockBuildEngine);
 
@@ -835,6 +837,13 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             return nsDepCopTask;
         }
 
+        private static void ExpectAnyDiagnosticEvents(IBuildEngine mockBuildEngine)
+        {
+            mockBuildEngine
+                .Expect(i => i.LogMessageEvent(Arg<BuildMessageEventArgs>.Matches(e => e.Importance == MessageImportance.Low)))
+                .Repeat.Any();
+        }
+
         /// <summary>
         /// Creates the specified expectations on a mock IBuildEngine.
         /// </summary>
@@ -849,29 +858,29 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             {
                 switch (expectedLogEntry.IssueKind)
                 {
-                case (IssueKind.Info):
-                    mockBuildEngine
-                        .Expect(i => i.LogMessageEvent(Arg<BuildMessageEventArgs>
-                            .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
-                        .Repeat.Once();
-                    break;
+                    case (IssueKind.Info):
+                        mockBuildEngine
+                            .Expect(i => i.LogMessageEvent(Arg<BuildMessageEventArgs>
+                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
+                            .Repeat.Once();
+                        break;
 
-                case (IssueKind.Warning):
-                    mockBuildEngine
-                        .Expect(i => i.LogWarningEvent(Arg<BuildWarningEventArgs>
-                            .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
-                        .Repeat.Once();
-                    break;
+                    case (IssueKind.Warning):
+                        mockBuildEngine
+                            .Expect(i => i.LogWarningEvent(Arg<BuildWarningEventArgs>
+                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
+                            .Repeat.Once();
+                        break;
 
-                case (IssueKind.Error):
-                    mockBuildEngine
-                        .Expect(i => i.LogErrorEvent(Arg<BuildErrorEventArgs>
-                            .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
-                        .Repeat.Once();
-                    break;
+                    case (IssueKind.Error):
+                        mockBuildEngine
+                            .Expect(i => i.LogErrorEvent(Arg<BuildErrorEventArgs>
+                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
+                            .Repeat.Once();
+                        break;
 
-                default:
-                    throw new Exception($"Unexpected IssueKind: {expectedLogEntry.IssueKind}");
+                    default:
+                        throw new Exception($"Unexpected IssueKind: {expectedLogEntry.IssueKind}");
                 }
             }
         }
@@ -913,7 +922,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         {
             ExpectEvents(mockBuildEngine, new[]
             {
-                    new LogEntryParameters { IssueKind = NsDepCopTask.TaskStartedIssue.DefaultKind, Code = NsDepCopTask.TaskStartedIssue.Id },
+                new LogEntryParameters { IssueKind = NsDepCopTask.TaskStartedIssue.DefaultKind, Code = NsDepCopTask.TaskStartedIssue.Id },
             });
         }
 
@@ -925,7 +934,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         {
             ExpectEvents(mockBuildEngine, new[]
             {
-                    new LogEntryParameters { IssueKind = NsDepCopTask.TaskFinishedIssue.DefaultKind, Code = NsDepCopTask.TaskFinishedIssue.Id },
+                new LogEntryParameters { IssueKind = NsDepCopTask.TaskFinishedIssue.DefaultKind, Code = NsDepCopTask.TaskFinishedIssue.Id },
             });
         }
     }

@@ -59,8 +59,10 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="ImportanceExtensions.cs" />
     <Compile Include="NsDepCopTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaskItemExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">

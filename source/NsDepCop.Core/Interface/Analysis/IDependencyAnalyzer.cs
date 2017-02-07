@@ -8,7 +8,7 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
     /// <summary>
     /// Analyzes dependencies in source code based on a config.
     /// </summary>
-    public interface IDependencyAnalyzer : IConfigProvider, IDisposable
+    public interface IDependencyAnalyzer : IConfigProvider, IDiagnosticProvider, ICacheStatisticsProvider, IDisposable
     {
         /// <summary>
         /// Analyses a project (source files and referenced assemblies) and returns illegal dependencies (according to the rules described in the config).
@@ -25,11 +25,5 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
         /// <param name="semanticModel">The semantic model of the project being analyzed.</param>
         /// <returns>A collection of illegal dependencies. Empty collection if none found.</returns>
         IEnumerable<TypeDependency> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel);
-
-        /// <summary>
-        /// Returns an object that provides cache statistics about the analyzer.
-        /// </summary>
-        /// <returns>A cache statictics provider object. Can be null if the analyzer does not implement caching.</returns>
-        ICacheStatisticsProvider GetCacheStatistics();
     }
 }

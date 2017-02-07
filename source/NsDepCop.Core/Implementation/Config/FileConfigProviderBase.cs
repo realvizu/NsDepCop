@@ -40,7 +40,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             }
         }
 
-        public ConfigState ConfigState
+        public AnalyzerState State
         {
             get
             {
@@ -49,7 +49,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                     if (!_isInitialized)
                         Initialize();
 
-                    return GetConfigState();
+                    return GetState();
                 }
             }
         }
@@ -102,19 +102,19 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             RefreshConfig();
         }
 
-        private ConfigState GetConfigState()
+        private AnalyzerState GetState()
         {
             if (!_configFileExists)
-                return ConfigState.NoConfigFile;
+                return AnalyzerState.NoConfigFile;
 
             if (IsConfigLoaded && !Config.IsEnabled)
-                return ConfigState.Disabled;
+                return AnalyzerState.Disabled;
 
             if (IsConfigLoaded && Config.IsEnabled)
-                return ConfigState.Enabled;
+                return AnalyzerState.Enabled;
 
             if (!IsConfigLoaded && IsConfigErroneous)
-                return ConfigState.ConfigError;
+                return AnalyzerState.ConfigError;
 
             throw new Exception("Inconsistent DependencyAnalyzer state.");
         }

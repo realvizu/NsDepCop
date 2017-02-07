@@ -113,6 +113,7 @@
     <Compile Include="Interface\Analysis\IDependencyAnalyzer.cs" />
     <Compile Include="Interface\Analysis\ISemanticModel.cs" />
     <Compile Include="Interface\Analysis\ISyntaxNode.cs" />
+    <Compile Include="Util\IDiagnosticProvider.cs" />
     <Compile Include="Util\ObjectWrapper.cs" />
     <Compile Include="Interface\Analysis\Roslyn\RoslynSemanticModel.cs" />
     <Compile Include="Interface\Analysis\Roslyn\RoslynSyntaxNode.cs" />
@@ -140,9 +141,9 @@
     <Compile Include="Interface\Analysis\Roslyn\IssueKindTranslator.cs" />
     <Compile Include="Implementation\Analysis\Roslyn\SyntaxNodeTypeDependencyEnumerator.cs" />
     <Compile Include="Implementation\Analysis\CachingTypeDependencyValidator.cs" />
-    <Compile Include="Util\ICacheStatisticsProvider.cs" />
+    <Compile Include="Util\ICacheStatistics.cs" />
     <Compile Include="Interface\Config\TypeNameSet.cs" />
-    <Compile Include="Interface\Config\ConfigState.cs" />
+    <Compile Include="Interface\Config\AnalyzerState.cs" />
     <Compile Include="Interface\Analysis\TypeDependency.cs" />
     <Compile Include="Interface\Config\Namespace.cs" />
     <Compile Include="Util\MathHelper.cs" />
