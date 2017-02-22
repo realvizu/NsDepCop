@@ -14,17 +14,17 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     {
         private readonly ReaderWriterLockSlim _configRefreshLock;
         private readonly IConfigProvider _configProvider;
+        private readonly Action<string> _diagnosticMessageHandler;
 
         private IAnalyzerConfig _config;
         private CachingTypeDependencyValidator _typeDependencyValidator;
         private ITypeDependencyEnumerator _typeDependencyEnumerator;
 
-        public Action<string> DiagnosticMessageHandler { get; set; }
-
-        public DependencyAnalyzer(IConfigProvider configProvider)
+        public DependencyAnalyzer(IConfigProvider configProvider, Action<string> diagnosticMessageHandler = null)
         {
             _configRefreshLock = new ReaderWriterLockSlim();
             _configProvider = configProvider;
+            _diagnosticMessageHandler = diagnosticMessageHandler;
 
             UpdateConfig();
         }
@@ -105,7 +105,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         {
             if (State == AnalyzerState.Enabled)
             {
-                _typeDependencyValidator = new CachingTypeDependencyValidator(_config);
+                _typeDependencyValidator = new CachingTypeDependencyValidator(_config, _diagnosticMessageHandler);
                 _typeDependencyEnumerator = TypeDependencyEnumeratorFactory.Create(_config.Parser);
             }
             else

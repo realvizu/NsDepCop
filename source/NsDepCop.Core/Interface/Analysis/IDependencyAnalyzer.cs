@@ -8,7 +8,7 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
     /// <summary>
     /// Analyzes dependencies in source code based on a config.
     /// </summary>
-    public interface IDependencyAnalyzer : IConfigProvider, IDiagnosticProvider, ICacheStatisticsProvider, IDisposable
+    public interface IDependencyAnalyzer : IConfigProvider, ICacheStatisticsProvider, IDisposable
     {
         /// <summary>
         /// Analyses a project (source files and referenced assemblies) and returns illegal dependencies (according to the rules described in the config).

@@ -80,7 +80,8 @@ namespace Codartis.NsDepCop.MsBuildTask
                 // TODO: use these values as defaults
 
                 var configFileName = Path.Combine(BaseDirectory.ItemSpec, ProductConstants.DefaultConfigFileName);
-                using (var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName))
+                using (var dependencyAnalyzer = 
+                    DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, diagnosticMessageHandler: LogDiagnosticMessage))
                 {
                     var runWasSuccessful = true;
 
@@ -128,9 +129,6 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             _infoImportance = config.InfoImportance.ToMessageImportance();
 
-            // TODO: measure the performance impact of producing diagnostic messages even if they are not logged
-            dependencyAnalyzer.DiagnosticMessageHandler = LogDiagnosticMessage;
-
             var startTime = DateTime.Now;
             LogIssue(TaskStartedIssue, config.Parser.ToString());
 
@@ -176,12 +174,9 @@ namespace Codartis.NsDepCop.MsBuildTask
         private void LogIssue(IssueDescriptor issueDescriptor, string message = null, IssueKind? issueKind = null, SourceSegment sourceSegment = null)
         {
             issueKind = issueKind ?? issueDescriptor.DefaultKind;
-
             message = message ?? issueDescriptor.StaticDescription;
-            message = "[" + ProductConstants.ToolName + "] " + message;
 
             var code = issueDescriptor.Id;
-
             var path = sourceSegment?.Path;
             var startLine = sourceSegment?.StartLine ?? 0;
             var startColumn = sourceSegment?.StartColumn ?? 0;
@@ -205,6 +200,8 @@ namespace Codartis.NsDepCop.MsBuildTask
         private void LogBuildEvent(IssueKind issueKind, string message, MessageImportance messageImportance, string code = null,
             string path = null, int startLine = 0, int startColumn = 0, int endLine = 0, int endColumn = 0)
         {
+            message = "[" + ProductConstants.ToolName + "] " + message;
+
             switch (issueKind)
             {
                 case IssueKind.Error:
@@ -229,12 +226,12 @@ namespace Codartis.NsDepCop.MsBuildTask
             yield return $"{ProductConstants.ToolName} started with parameters:";
 
             yield return $"  ReferencePath[{ReferencePath.Length}]";
-            foreach (var message in ReferencePath.Select(i => $"    {i.ItemSpec}"))
-                yield return message;
+            foreach (var taskItem in ReferencePath)
+                yield return $"    {taskItem.ItemSpec}";
 
             yield return $"  Compile[{Compile.Length}]";
-            foreach (var message in Compile.Select(i => $"    {i.ItemSpec}"))
-                yield return message;
+            foreach (var taskItem in Compile)
+                yield return $"    {taskItem.ItemSpec}";
 
             yield return $"  BaseDirectory={BaseDirectory.ItemSpec}";
         }
@@ -242,7 +239,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         private static IEnumerable<string> GetCacheStatisticsMessage(ICacheStatisticsProvider cache)
         {
             if (cache != null)
-                yield return $"Cache hits: {cache.HitCount}, misses:{cache.MissCount}, efficiency (hits/all): {cache.EfficiencyPercent:P}";
+                yield return $"Cache hits: {cache.HitCount}, misses: {cache.MissCount}, efficiency (hits/all): {cache.EfficiencyPercent:P}";
         }
 
         private static TEnum? Parse<TEnum>(string valueAsString)

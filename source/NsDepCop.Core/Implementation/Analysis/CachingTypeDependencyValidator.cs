@@ -1,6 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Diagnostics;
-using Codartis.NsDepCop.Core.Interface;
+﻿using System;
+using System.Collections.Concurrent;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
@@ -13,14 +12,16 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     internal class CachingTypeDependencyValidator : TypeDependencyValidator, ICacheStatisticsProvider
     {
         private readonly ConcurrentDictionary<TypeDependency, bool> _dependencyValidationCache;
+        private readonly Action<string> _diagnosticMessageHandler;
 
         public int HitCount { get; private set; }
         public int MissCount { get; private set; }
 
-        public CachingTypeDependencyValidator(IDependencyRules dependencyRules)
+        public CachingTypeDependencyValidator(IDependencyRules dependencyRules, Action<string> diagnosticMessageHandler)
             : base(dependencyRules)
         {
             _dependencyValidationCache = new ConcurrentDictionary<TypeDependency, bool>();
+            _diagnosticMessageHandler = diagnosticMessageHandler;
         }
 
         public double EfficiencyPercent => MathHelper.CalculatePercent(HitCount, HitCount + MissCount);
@@ -36,20 +37,16 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             if (added)
             {
                 MissCount++;
-
-                Debug.WriteLine($"Dependency {typeDependency} added to cache as {isAllowedDependency}.",
-                    ProductConstants.ToolName);
+                _diagnosticMessageHandler?.Invoke($"Dependency {typeDependency} added to cache as {isAllowedDependency}.");
             }
             else
             {
                 HitCount++;
-
-                Debug.WriteLine(
-                    $"Cache hit: dependency {typeDependency} is {isAllowedDependency}.",
-                    ProductConstants.ToolName);
+                _diagnosticMessageHandler?.Invoke($"Cache hit: dependency {typeDependency} is {isAllowedDependency}.");
             }
 
             return isAllowedDependency;
         }
+
     }
 }

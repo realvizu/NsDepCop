@@ -113,7 +113,6 @@
     <Compile Include="Interface\Analysis\IDependencyAnalyzer.cs" />
     <Compile Include="Interface\Analysis\ISemanticModel.cs" />
     <Compile Include="Interface\Analysis\ISyntaxNode.cs" />
-    <Compile Include="Util\IDiagnosticProvider.cs" />
     <Compile Include="Util\ObjectWrapper.cs" />
     <Compile Include="Interface\Analysis\Roslyn\RoslynSemanticModel.cs" />
     <Compile Include="Interface\Analysis\Roslyn\RoslynSyntaxNode.cs" />
