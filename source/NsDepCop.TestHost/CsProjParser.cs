@@ -63,7 +63,7 @@ namespace Codartis.NsDepCop.TestHost
                 .ToList();
         }
 
-        private IEnumerable<string> GetFileReferencesWithoutHintPath(XDocument document)
+        private static IEnumerable<string> GetFileReferencesWithoutHintPath(XDocument document)
         {
             return document.Root
                 .Elements(GetXName("ItemGroup"))
@@ -106,13 +106,8 @@ namespace Codartis.NsDepCop.TestHost
                     Path.GetDirectoryName(i.Attribute("Include").Value),
                     "obj\\debug",
                     i.Element(GetXName("Name")).Value + ".dll"));
-
-
         }
 
-        private static XName GetXName(string name)
-        {
-            return XName.Get(name, Xmlns);
-        }
+        private static XName GetXName(string name) => XName.Get(name, Xmlns);
     }
 }

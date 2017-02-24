@@ -14,11 +14,12 @@ namespace Codartis.NsDepCop.TestHost
     /// </summary>
     internal class Program
     {
-        private  const int RepeatsDefault = 4;
+        private const int RepeatsDefault = 4;
+        private static bool _isVerbose = false;
 
         public static int Main(string[] args)
         {
-            if (args.Length < 1 || args.Length > 3)
+            if (args.Length < 1 || args.Length > 4)
             {
                 Usage();
                 return -1;
@@ -26,6 +27,7 @@ namespace Codartis.NsDepCop.TestHost
 
             var parserType = GetParserType(args);
             var repeats = GetRepeats(args);
+            _isVerbose = GetIsVerbose(args);
 
             var csProjFileName = args[0];
             var csProjParser = new CsProjParser(csProjFileName);
@@ -45,7 +47,7 @@ namespace Codartis.NsDepCop.TestHost
         private static int GetRepeats(string[] args)
         {
             int repeats = RepeatsDefault;
-            if (args.Length == 3)
+            if (args.Length >= 3)
             {
                 if (!int.TryParse(args[2], out repeats))
                     Console.WriteLine($"Cannot parse '{args[2]}' to repeat number.");
@@ -56,7 +58,7 @@ namespace Codartis.NsDepCop.TestHost
         private static Parsers GetParserType(string [] args)
         {
             var parserType = Parsers.Roslyn;
-            if (args.Length == 2)
+            if (args.Length >= 2)
             {
                 if (!Enum.TryParse(args[1], out parserType))
                     Console.WriteLine($"Cannot parse '{args[1]}' ParserType, using {parserType} as default.");
@@ -64,11 +66,16 @@ namespace Codartis.NsDepCop.TestHost
             return parserType;
         }
 
+        private static bool GetIsVerbose(string[] args)
+        {
+            return args.Any(i => string.Compare(i, "-v", StringComparison.InvariantCultureIgnoreCase) == 0);
+        }
+
         private static TimeSpan AnalyseCsProj(Parsers parser, string configFileName, CsProjParser csProjParser)
         {
             var startTime = DateTime.Now;
 
-            var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, parser);
+            var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, parser, LogDiagnosticMessage);
             var illegalDependencies = dependencyAnalyzer.AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths).ToList();
 
             var endTime = DateTime.Now;
@@ -78,6 +85,11 @@ namespace Codartis.NsDepCop.TestHost
             DumpIllegalDependencies(illegalDependencies);
 
             return elapsedTimeSpan;
+        }
+
+        private static void LogDiagnosticMessage(string message)
+        {
+            if (_isVerbose) Console.WriteLine(message);
         }
 
         private static void DumpIllegalDependencies(IReadOnlyCollection<TypeDependency> typeDependencies)
