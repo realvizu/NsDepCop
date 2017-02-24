@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
+using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Roslyn;
 using Codartis.NsDepCop.Core.Interface.Config;
@@ -11,7 +13,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
     /// <summary>
-    /// This diagnostic analyzer is invoked by Visual Studio/Roslyn an it reports namespace dependency issues to the VS IDE.
+    /// This diagnostic analyzer is invoked by Visual Studio/Roslyn and it reports namespace dependency issues to the VS IDE.
     /// </summary>
     /// <remarks>
     /// The supporting classes (eg. ProjectAnalyzerConfigRepository) are not thread safe! 
@@ -37,7 +39,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public NsDepCopDiagnosticAnalyzer()
         {
-            _analyzerProvider = new ProjectAnalyzerProvider();
+            _analyzerProvider = new ProjectAnalyzerProvider(LogDiagnosticMessages);
         }
 
         public void Dispose()
@@ -56,6 +58,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 SyntaxKind.IdentifierName,
                 SyntaxKind.GenericName,
                 SyntaxKind.ElementAccessExpression);
+
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         }
 
         private void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
@@ -76,6 +80,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             switch (dependencyAnalyzer.State)
             {
                 case AnalyzerState.NoConfigFile:
+                    break;
+
                 case AnalyzerState.Disabled:
                     break;
 
@@ -158,5 +164,10 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         }
 
         private static int GetWarningLevel(DiagnosticSeverity severity) => severity == DiagnosticSeverity.Error ? 0 : 1;
+
+        private static void LogDiagnosticMessages(string message)
+        {
+            Debug.WriteLine($"[{ProductConstants.ToolName}] {message}");
+        }
     }
 }

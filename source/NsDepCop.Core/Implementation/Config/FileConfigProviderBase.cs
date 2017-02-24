@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// </summary>
     internal abstract class FileConfigProviderBase : IConfigProvider
     {
-        private readonly string _configFilePath;
+        protected readonly string ConfigFilePath;
         private readonly object _isInitializedLock = new object();
         private bool _isInitialized;
 
@@ -20,7 +20,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         protected FileConfigProviderBase(string configFilePath)
         {
-            _configFilePath = configFilePath;
+            ConfigFilePath = configFilePath;
         }
 
         private bool IsConfigLoaded => _config != null;
@@ -70,7 +70,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public void RefreshConfig()
         {
-            _configFileExists = File.Exists(_configFilePath);
+            _configFileExists = File.Exists(ConfigFilePath);
 
             if (!_configFileExists)
             {
@@ -85,7 +85,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 {
                     _configLastLoadUtc = DateTime.UtcNow;
                     _configException = null;
-                    _config = LoadConfig(_configFilePath);
+                    _config = LoadConfig(ConfigFilePath);
                 }
             }
             catch (Exception e)
@@ -121,7 +121,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         private bool ConfigModifiedSinceLastLoad()
         {
-            return _configLastLoadUtc < File.GetLastWriteTimeUtc(_configFilePath);
+            return _configLastLoadUtc < File.GetLastWriteTimeUtc(ConfigFilePath);
         }
     }
 }

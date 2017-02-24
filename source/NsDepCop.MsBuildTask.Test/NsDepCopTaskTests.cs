@@ -625,6 +625,41 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [TestMethod]
+        public void Execute_MaxIssueCountEqualsIssueCount()
+        {
+            const string sourceFileName = "MaxIssueCountEqualsIssueCount.cs";
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_MaxIssueCountEqualsIssueCount",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
+                        Path = sourceFileName,
+                        StartLine = 7,
+                        StartColumn = 17,
+                        EndLine = 7,
+                        EndColumn = 23
+                    },
+                    new LogEntryParameters
+                    {
+                        IssueKind = IssueKind.Warning,
+                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
+                        Path = sourceFileName,
+                        StartLine = 8,
+                        StartColumn = 17,
+                        EndLine = 8,
+                        EndColumn = 23
+                    },
+                    LogEntryParameters.FromIssueDescriptor(IssueDefinitions.TooManyIssuesIssue),
+                },
+            });
+        }
+
+        [TestMethod]
         public void Execute_NoSourceFiles()
         {
             ExecuteWithAllAnalyzers(new TestCaseSpecification

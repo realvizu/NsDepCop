@@ -42,7 +42,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             else
             {
                 HitCount++;
-                _diagnosticMessageHandler?.Invoke($"Cache hit: dependency {typeDependency} is {isAllowedDependency}.");
             }
 
             return isAllowedDependency;

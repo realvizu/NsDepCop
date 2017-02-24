@@ -97,6 +97,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
             if (oldConfig != _config)
             {
+                _diagnosticMessageHandler?.Invoke($"Config updated by {_configProvider}");
                 UpdateAnalyzerLogic();
             }
         }

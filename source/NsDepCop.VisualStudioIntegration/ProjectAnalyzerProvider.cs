@@ -29,12 +29,18 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private readonly ConcurrentDictionary<string, IDependencyAnalyzer> _projectFileToDependencyAnalyzerMap;
 
         /// <summary>
+        /// Callback for emitting diagnostic messages;
+        /// </summary>
+        private readonly Action<string> _diagnosticMessageHandler;
+
+        /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public ProjectAnalyzerProvider()
+        public ProjectAnalyzerProvider(Action<string> diagnosticMessageHandler = null)
         {
             _sourceFileToProjectFileMap = new ConcurrentDictionary<string, string>();
             _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IDependencyAnalyzer>();
+            _diagnosticMessageHandler = diagnosticMessageHandler;
         }
 
         public void Dispose()
@@ -73,10 +79,14 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             return dependencyAnalyzer;
         }
 
-        private static IDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
+        private IDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
         {
             var configFileName = CreateConfigFileName(projectFilePath);
-            return DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, Parsers.Roslyn);
+            var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, Parsers.Roslyn, _diagnosticMessageHandler);
+
+            _diagnosticMessageHandler?.Invoke($"DependencyAnalyzer created for '{projectFilePath}', AnalyzerState={dependencyAnalyzer.State}");
+
+            return dependencyAnalyzer;
         }
 
         private static string CreateConfigFileName(string projectFilePath)
@@ -90,7 +100,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             return _sourceFileToProjectFileMap.GetOrAdd(sourceFilePath, i => FindProjectFile(i, assemblyName));
         }
 
-        private static string FindProjectFile(string sourceFilePath, string assemblyName)
+        private string FindProjectFile(string sourceFilePath, string assemblyName)
         {
             try
             {
@@ -102,7 +112,10 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                     foreach (var projectFilePath in candidateProjectFiles)
                     {
                         if (IsProjectFileForAssembly(projectFilePath, assemblyName))
+                        {
+                            _diagnosticMessageHandler?.Invoke($"Project file for '{sourceFilePath}' is '{projectFilePath}'.");
                             return projectFilePath;
+                        }
                     }
 
                     var parentDirectory = Directory.GetParent(directoryPath);

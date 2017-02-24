@@ -146,6 +146,9 @@
     <Content Include="TestFiles_SameNamespaceAllowedEvenWhenVisibleMembersDefined\SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="TestFiles_MaxIssueCountEqualsIssueCount\MaxIssueCountEqualsIssueCount.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="TestTaskItem.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -291,6 +294,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="TestFiles_ConfigFileErrorCausesException\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFiles_MaxIssueCountEqualsIssueCount\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
