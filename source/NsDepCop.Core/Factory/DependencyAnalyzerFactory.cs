@@ -14,7 +14,7 @@ namespace Codartis.NsDepCop.Core.Factory
         public static IDependencyAnalyzer CreateFromXmlConfigFile(string configFilePath, Parsers? overridingParser = null,
             Action<string> diagnosticMessageHandler = null)
         {
-            var configProvider = new XmlFileConfigProvider(configFilePath, overridingParser);
+            var configProvider = new XmlFileConfigProvider(configFilePath, overridingParser, diagnosticMessageHandler);
             return new DependencyAnalyzer(configProvider, diagnosticMessageHandler);
         }
     }

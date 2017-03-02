@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
@@ -30,5 +32,11 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// The type of parser used by the analyzer.
         /// </summary>
         Parsers Parser { get; }
+
+        /// <summary>
+        /// Dumps the config into a collection of strings.
+        /// </summary>
+        /// <returns>A collection of strings containing the config values.</returns>
+        IEnumerable<string> DumpToStrings();
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using Codartis.NsDepCop.Core.Interface.Config;
 
@@ -40,6 +41,51 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             DisallowRules = disallowRules;
             VisibleTypesByNamespace = visibleTypesByNamespace;
             MaxIssueCount = maxIssueCount;
+        }
+
+        public IEnumerable<string> DumpToStrings()
+        {
+            yield return $"IsEnabled={IsEnabled}";
+            yield return $"IssueKind={IssueKind}";
+            yield return $"InfoImportance={InfoImportance}";
+            yield return $"Parser={Parser}";
+
+            yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
+            foreach (var s in DumpAllowRulesToStrings()) yield return s;
+            foreach (var s in DumpDisallowRulesToStrings()) yield return s;
+            foreach (var s in DumpVisibleTypesByNamespaceToStrings()) yield return s;
+            yield return $"MaxIssueCount={MaxIssueCount}";
+        }
+
+        private IEnumerable<string> DumpAllowRulesToStrings()
+        {
+            yield return $"AllowRules={AllowRules.Count}";
+            foreach (var allowRule in AllowRules)
+            {
+                yield return $"  {allowRule.Key}";
+                if (allowRule.Value != null)
+                    foreach (var typeName in allowRule.Value)
+                        yield return $"    {typeName}";
+            }
+        }
+
+        private IEnumerable<string> DumpDisallowRulesToStrings()
+        {
+            yield return $"DisallowRules={DisallowRules.Count}";
+            foreach (var disallowRule in DisallowRules)
+                yield return $"  {disallowRule}";
+        }
+
+        private IEnumerable<string> DumpVisibleTypesByNamespaceToStrings()
+        {
+            yield return $"VisibleTypesByNamespace={VisibleTypesByNamespace.Count}";
+            foreach (var visibleTypesByNamespace in VisibleTypesByNamespace)
+            {
+                yield return $"  {visibleTypesByNamespace.Key}";
+                if (visibleTypesByNamespace.Value != null)
+                    foreach (var typeName in visibleTypesByNamespace.Value)
+                        yield return $"    {typeName}";
+            }
         }
     }
 }

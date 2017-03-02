@@ -12,8 +12,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// </summary>
     internal class DependencyAnalyzer : IDependencyAnalyzer
     {
-        private readonly ReaderWriterLockSlim _configRefreshLock;
         private readonly IConfigProvider _configProvider;
+        private readonly ReaderWriterLockSlim _configRefreshLock;
         private readonly Action<string> _diagnosticMessageHandler;
 
         private IAnalyzerConfig _config;
@@ -22,8 +22,11 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
         public DependencyAnalyzer(IConfigProvider configProvider, Action<string> diagnosticMessageHandler = null)
         {
-            _configRefreshLock = new ReaderWriterLockSlim();
+            if (configProvider == null)
+                throw new ArgumentNullException(nameof(configProvider));
+
             _configProvider = configProvider;
+            _configRefreshLock = new ReaderWriterLockSlim();
             _diagnosticMessageHandler = diagnosticMessageHandler;
 
             UpdateConfig();
@@ -48,6 +51,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
             try
             {
+                EnsureValidStateForAnalysis();
                 return GetIllegalDependencies(_typeDependencyEnumerator.GetTypeDependencies(sourceFilePaths, referencedAssemblyPaths));
             }
             finally
@@ -62,6 +66,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
             try
             {
+                EnsureValidStateForAnalysis();
                 return GetIllegalDependencies(_typeDependencyEnumerator.GetTypeDependencies(syntaxNode, semanticModel));
             }
             finally
@@ -96,10 +101,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             _config = _configProvider.Config;
 
             if (oldConfig != _config)
-            {
-                _diagnosticMessageHandler?.Invoke($"Config updated by {_configProvider}");
                 UpdateAnalyzerLogic();
-            }
         }
 
         private void UpdateAnalyzerLogic()
@@ -113,6 +115,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             {
                 _typeDependencyEnumerator = null;
             }
+        }
+
+        private void EnsureValidStateForAnalysis()
+        {
+            if (_configProvider.State != AnalyzerState.Enabled)
+                throw new InvalidOperationException($"Cannot analyze project because the analyzer state is {_configProvider.State}.");
         }
     }
 }
