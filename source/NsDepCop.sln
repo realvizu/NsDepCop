@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.VisualStudioIntegr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.VisualStudioIntegration", "NsDepCop.VisualStudioIntegration\NsDepCop.VisualStudioIntegration.csproj", "{86A0B958-2501-440C-9D82-93741CEFD6CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.TestHost", "NsDepCop.TestHost\NsDepCop.TestHost.csproj", "{2FFB4ADA-8BCB-42AE-8BF1-8CE70B011FD1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.ConsoleHost", "NsDepCop.ConsoleHost\NsDepCop.ConsoleHost.csproj", "{2FFB4ADA-8BCB-42AE-8BF1-8CE70B011FD1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{71A874EB-DA8D-4F27-8D68-335B7EF77671}"
 	ProjectSection(SolutionItems) = preProject

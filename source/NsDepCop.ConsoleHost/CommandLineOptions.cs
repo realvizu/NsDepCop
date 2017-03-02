@@ -3,7 +3,7 @@ using Codartis.NsDepCop.Core.Interface.Config;
 using CommandLine;
 using CommandLine.Text;
 
-namespace Codartis.NsDepCop.TestHost
+namespace Codartis.NsDepCop.ConsoleHost
 {
     /// <summary>
     /// Describes the command line options.
