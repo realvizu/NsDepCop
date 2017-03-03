@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Threading;
+using System.Xml.Linq;
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Config;
 using FluentAssertions;
@@ -70,6 +71,8 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             var configProvider = new XmlFileConfigProvider(path);
             configProvider.State.Should().Be(AnalyzerState.Enabled);
 
+            Thread.Sleep(1000);
+
             Delete(path);
             CreateConfigFile(path, "false");
 
@@ -87,6 +90,8 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 
             var configProvider = new XmlFileConfigProvider(path);
             configProvider.State.Should().Be(AnalyzerState.Enabled);
+
+            Thread.Sleep(1000);
 
             Delete(path);
             CreateConfigFile(path, "maybe");
