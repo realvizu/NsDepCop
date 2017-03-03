@@ -15,13 +15,15 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public int StartColumn;
         public int EndLine;
         public int EndColumn;
+        public Importance? InfoImportance;
 
-        public static LogEntryParameters FromIssueDescriptor(IssueDescriptor issueDescriptor)
+        public static LogEntryParameters FromIssueDescriptor(IssueDescriptor issueDescriptor, Importance? infoImportance = null)
         {
             return new LogEntryParameters
             {
                 Code = issueDescriptor.Id,
-                IssueKind = issueDescriptor.DefaultKind
+                IssueKind = issueDescriptor.DefaultKind,
+                InfoImportance = infoImportance
             };
         }
     }

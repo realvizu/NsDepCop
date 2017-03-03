@@ -112,6 +112,23 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [TestMethod]
+        public void Execute_ConfigInfoImportanceIsHigh()
+        {
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_ConfigInfoImportanceIsHigh",
+                SourceFileNames = new[] { "ConfigInfoImportanceIsHigh.cs" },
+                ExpectStartEvent = false,
+                ExpectEndEvent = false,
+                ExpectedLogEntries = new[]
+                {
+                    LogEntryParameters.FromIssueDescriptor(NsDepCopTask.TaskStartedIssue, Importance.High),
+                    LogEntryParameters.FromIssueDescriptor(NsDepCopTask.TaskFinishedIssue, Importance.High),
+                }
+            });
+        }
+
+        [TestMethod]
         public void Execute_AllowedDependency()
         {
             ExecuteWithAllAnalyzers(new TestCaseSpecification
@@ -861,7 +878,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             if (specification.ExpectEndEvent)
                 ExpectEndEvent(mockBuildEngine);
 
-            var nsDepCopTask = new NsDepCopTask()
+            var nsDepCopTask = new NsDepCopTask
             {
                 BaseDirectory = new TestTaskItem(baseDirectory),
                 Compile = CreateTaskItems(CreateFullPathFileNames(baseDirectory, specification.SourceFileNames)),
@@ -893,21 +910,21 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             {
                 switch (expectedLogEntry.IssueKind)
                 {
-                    case (IssueKind.Info):
+                    case IssueKind.Info:
                         mockBuildEngine
                             .Expect(i => i.LogMessageEvent(Arg<BuildMessageEventArgs>
                                 .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
                             .Repeat.Once();
                         break;
 
-                    case (IssueKind.Warning):
+                    case IssueKind.Warning:
                         mockBuildEngine
                             .Expect(i => i.LogWarningEvent(Arg<BuildWarningEventArgs>
                                 .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
                             .Repeat.Once();
                         break;
 
-                    case (IssueKind.Error):
+                    case IssueKind.Error:
                         mockBuildEngine
                             .Expect(i => i.LogErrorEvent(Arg<BuildErrorEventArgs>
                                 .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
@@ -930,9 +947,33 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         /// <returns>True if the given log entry equals to the expected log entry.</returns>
         private static bool LogEntryEqualsExpected(dynamic logEntry, LogEntryParameters expectedLogEntry, string baseDirecytory, bool skipLocationValidation)
         {
-            return logEntry.Code == expectedLogEntry.Code
-                && logEntry.File == FileNameToFullPath(baseDirecytory, expectedLogEntry.Path)
-                && (skipLocationValidation || LocationEqualsExpected(logEntry, expectedLogEntry));
+            return LogEntryHasExpectedCode(logEntry, expectedLogEntry)
+                && LogEntryHasExpectedFile(logEntry, expectedLogEntry, baseDirecytory)
+                && LogEntryHasExpectedImportance(logEntry, expectedLogEntry)
+                && LogEntryHasExpectedLocation(logEntry, expectedLogEntry, skipLocationValidation);
+        }
+
+        private static bool LogEntryHasExpectedCode(dynamic logEntry, LogEntryParameters expectedLogEntry)
+        {
+            return logEntry.Code == expectedLogEntry.Code;
+        }
+
+        private static bool LogEntryHasExpectedFile(dynamic logEntry, LogEntryParameters expectedLogEntry, string baseDirecytory)
+        {
+            return logEntry.File == FileNameToFullPath(baseDirecytory, expectedLogEntry.Path);
+        }
+
+        private static bool LogEntryHasExpectedImportance(dynamic logEntry, LogEntryParameters expectedLogEntry)
+        {
+            return !(logEntry is BuildMessageEventArgs)
+                || !expectedLogEntry.InfoImportance.HasValue
+                || expectedLogEntry.InfoImportance.Value.ToMessageImportance() == logEntry.Importance;
+        }
+
+        private static bool LogEntryHasExpectedLocation(dynamic logEntry, LogEntryParameters expectedLogEntry, bool skipLocationValidation)
+        {
+            return skipLocationValidation 
+                || LocationEqualsExpected(logEntry, expectedLogEntry);
         }
 
         /// <summary>
