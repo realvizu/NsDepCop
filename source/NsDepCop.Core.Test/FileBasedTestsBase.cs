@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Codartis.NsDepCop.Core.Test.Implementation.Config
+namespace Codartis.NsDepCop.Core.Test
 {
     /// <summary>
     /// Abstract base class for test classes that manipulate test files.
@@ -14,7 +14,11 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Assert.IsNotNull(assemblyDirectory);
-            var path = Path.Combine(assemblyDirectory, @"Implementation\Config", this.GetType().Name, filename);
+
+            const string namespacePrefix = "Codartis.NsDepCop.Core.Test.";
+            var namespacePostfix = GetType().FullName.Remove(0, namespacePrefix.Length).Replace('.', '\\');
+
+            var path = Path.Combine(assemblyDirectory, namespacePostfix, filename);
             return path;
         }
 
