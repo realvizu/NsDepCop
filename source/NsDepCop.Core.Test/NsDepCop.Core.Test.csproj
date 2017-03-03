@@ -124,12 +124,6 @@
     <None Include="Implementation\Config\XmlFileConfigProviderTests\Disabled.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Implementation\Config\XmlFileConfigProviderTests\RefreshConfig_EnabledToConfigError.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Implementation\Config\XmlFileConfigProviderTests\RefreshConfig_EnabledToDisabled.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Implementation\Config\XmlFileConfigProviderTests\RoslynParser.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

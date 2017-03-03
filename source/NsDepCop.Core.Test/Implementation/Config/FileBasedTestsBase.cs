@@ -18,30 +18,21 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             return path;
         }
 
-        protected static bool TryRename(string fromFilename, string toFilename)
+        protected static void Rename(string fromFilename, string toFilename)
         {
-            try
+            if (File.Exists(fromFilename))
             {
+                if (File.Exists(toFilename))
+                    throw new InvalidOperationException($"Cannot rename '{fromFilename}' to '{toFilename}' because it already exists.");
+
                 File.Move(fromFilename, toFilename);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
             }
         }
 
-        protected static bool TryDelete(string filename)
+        protected static void Delete(string filename)
         {
-            try
-            {
+            if (File.Exists(filename))
                 File.Delete(filename);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
     }
 }

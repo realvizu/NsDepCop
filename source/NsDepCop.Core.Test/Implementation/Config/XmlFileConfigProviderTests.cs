@@ -64,12 +64,14 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var path = GetTestFilePath("RefreshConfig_EnabledToDisabled.nsdepcop");
 
-            SetIsEnabled(path, "true");
+            Delete(path);
+            CreateConfigFile(path, "true");
 
             var configProvider = new XmlFileConfigProvider(path);
             configProvider.State.Should().Be(AnalyzerState.Enabled);
 
-            SetIsEnabled(path, "false");
+            Delete(path);
+            CreateConfigFile(path, "false");
 
             configProvider.RefreshConfig();
             configProvider.State.Should().Be(AnalyzerState.Disabled);
@@ -80,12 +82,14 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var path = GetTestFilePath("RefreshConfig_EnabledToConfigError.nsdepcop");
 
-            SetIsEnabled(path, "true");
+            Delete(path);
+            CreateConfigFile(path, "true");
 
             var configProvider = new XmlFileConfigProvider(path);
             configProvider.State.Should().Be(AnalyzerState.Enabled);
 
-            SetIsEnabled(path, "maybe");
+            Delete(path);
+            CreateConfigFile(path, "maybe");
 
             configProvider.RefreshConfig();
             configProvider.State.Should().Be(AnalyzerState.ConfigError);
@@ -96,7 +100,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var path = GetTestFilePath("RefreshConfig_NoConfigToEnabled.nsdepcop");
 
-            TryDelete(path);
+            Delete(path);
 
             var configProvider = new XmlFileConfigProvider(path);
             configProvider.State.Should().Be(AnalyzerState.NoConfigFile);
@@ -112,22 +116,16 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var path = GetTestFilePath("RefreshConfig_EnabledToNoConfig.nsdepcop");
 
+            Delete(path);
             CreateConfigFile(path, "true");
 
             var configProvider = new XmlFileConfigProvider(path);
             configProvider.State.Should().Be(AnalyzerState.Enabled);
 
-            TryDelete(path);
+            Delete(path);
 
             configProvider.RefreshConfig();
             configProvider.State.Should().Be(AnalyzerState.NoConfigFile);
-        }
-
-        private static void SetIsEnabled(string path, string isEnabledString)
-        {
-            var document = XDocument.Load(path);
-            document.Root.Attribute("IsEnabled").SetValue(isEnabledString);
-            document.Save(path);
         }
 
         private static void CreateConfigFile(string path, string isEnabledString)
