@@ -1,7 +1,7 @@
 ﻿using System;
 using Codartis.NsDepCop.Core.Interface.Config;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
 
 namespace Codartis.NsDepCop.Core.Test.Interface.Config
 {
@@ -11,15 +11,15 @@ namespace Codartis.NsDepCop.Core.Test.Interface.Config
         [TestMethod]
         public void Parse_Namespace()
         {
-            NamespaceSpecificationParser.Parse(".").ShouldEqual(new Namespace("."));
-            NamespaceSpecificationParser.Parse("A.B").ShouldEqual(new Namespace("A.B"));
+            NamespaceSpecificationParser.Parse(".").Should().Be(new Namespace("."));
+            NamespaceSpecificationParser.Parse("A.B").Should().Be(new Namespace("A.B"));
         }
 
         [TestMethod]
         public void Parse_NamespaceTree()
         {
-            NamespaceSpecificationParser.Parse("*").ShouldEqual(new NamespaceTree("*"));
-            NamespaceSpecificationParser.Parse("A.*").ShouldEqual(new NamespaceTree("A.*"));
+            NamespaceSpecificationParser.Parse("*").Should().Be(new NamespaceTree("*"));
+            NamespaceSpecificationParser.Parse("A.*").Should().Be(new NamespaceTree("A.*"));
         }
 
         [TestMethod]

@@ -1,0 +1,3 @@
+﻿<NsDepCopConfig>
+    <Allowed From=".." To="N2" />
+</NsDepCopConfig>

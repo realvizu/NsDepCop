@@ -21,6 +21,17 @@ namespace Codartis.NsDepCop.Core.Util
         }
 
         /// <summary>
+        /// Returns a value indicating that the collection is null or empty.
+        /// </summary>
+        /// <typeparam name="T">Any type.</typeparam>
+        /// <param name="collection">A collection.</param>
+        /// <returns>True if the collection is null or empty. False if it is not empty.</returns>
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection)
+        {
+            return collection == null || !collection.Any();
+        }
+
+        /// <summary>
         /// Converts a collection into a single string by concatenating the string representation of the collection elements 
         /// using optional separator and wrapper strings.
         /// </summary>

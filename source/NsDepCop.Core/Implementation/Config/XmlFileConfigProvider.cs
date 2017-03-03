@@ -27,7 +27,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             try
             {
                 var configXml = XDocument.Load(ConfigFilePath, LoadOptions.SetLineInfo);
-                var config = XmlConfigParser.ParseXmlConfig(configXml);
+                var config = XmlConfigParser.Parse(configXml);
 
                 return new AnalyzerConfigBuilder(_overridingParser).Combine(config).ToProjectConfig();
             }

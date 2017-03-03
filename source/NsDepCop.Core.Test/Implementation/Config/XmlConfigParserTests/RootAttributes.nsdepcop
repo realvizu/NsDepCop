@@ -1,0 +1,8 @@
+﻿<NsDepCopConfig
+    IsEnabled="true"
+    CodeIssueKind="Error"
+    MaxIssueCount="42"
+    ChildCanDependOnParentImplicitly="true"
+    InfoImportance="Normal"
+    Parser="Roslyn">
+</NsDepCopConfig>

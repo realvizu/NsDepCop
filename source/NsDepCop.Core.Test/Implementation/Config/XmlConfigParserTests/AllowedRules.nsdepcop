@@ -1,0 +1,14 @@
+﻿<NsDepCopConfig>
+    <Allowed From="N1" To="N2"/>
+    <Allowed From="N3" To="N4">
+        <VisibleMembers>
+            <Type Name="T1"/>
+            <Type Name="T2"/>
+        </VisibleMembers>
+    </Allowed>
+    <Allowed From="N5" To="N6">
+        <!-- Empty type name set means no restriction. -->
+        <VisibleMembers>
+        </VisibleMembers>
+    </Allowed>
+</NsDepCopConfig>

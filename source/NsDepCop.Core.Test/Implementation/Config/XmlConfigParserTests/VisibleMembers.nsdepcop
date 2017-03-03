@@ -1,0 +1,14 @@
+﻿<NsDepCopConfig>
+    <VisibleMembers OfNamespace="N1">
+        <Type Name="T1"/>
+        <Type Name="T2"/>
+    </VisibleMembers>
+
+    <VisibleMembers OfNamespace="N2">
+        <Type Name="T3"/>
+    </VisibleMembers>
+
+    <!-- Empty type name set means no restriction. -->
+    <VisibleMembers OfNamespace="N3">
+    </VisibleMembers>
+</NsDepCopConfig>

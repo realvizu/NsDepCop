@@ -1,7 +1,6 @@
 ﻿using Microsoft.Build.Framework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
-using SoftwareApproach.TestingExtensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,6 +9,7 @@ using System.Reflection;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
+using FluentAssertions;
 
 namespace Codartis.NsDepCop.MsBuildTask.Test
 {
@@ -825,14 +825,14 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 Debug.WriteLine("--> Running test with NRefactory...");
                 var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);
                 nsDepCopTask.Parser = new TestTaskItem(Parsers.NRefactory.ToString());
-                nsDepCopTask.Execute().ShouldEqual(specification.ExpectedReturnValue);
+                nsDepCopTask.Execute().Should().Be(specification.ExpectedReturnValue);
                 nsDepCopTask.BuildEngine.VerifyAllExpectations();
             }
             {
                 Debug.WriteLine("--> Running test with Roslyn...");
                 var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);
                 nsDepCopTask.Parser = new TestTaskItem(Parsers.Roslyn.ToString());
-                nsDepCopTask.Execute().ShouldEqual(specification.ExpectedReturnValue);
+                nsDepCopTask.Execute().Should().Be(specification.ExpectedReturnValue);
                 nsDepCopTask.BuildEngine.VerifyAllExpectations();
             }
         }

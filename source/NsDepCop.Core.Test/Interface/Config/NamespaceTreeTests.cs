@@ -1,7 +1,7 @@
 ﻿using System;
 using Codartis.NsDepCop.Core.Interface.Config;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
 
 namespace Codartis.NsDepCop.Core.Test.Interface.Config
 {
@@ -11,8 +11,8 @@ namespace Codartis.NsDepCop.Core.Test.Interface.Config
         [TestMethod]
         public void Create_Works()
         {
-            new NamespaceTree("*").ToString().ShouldEqual("*");
-            new NamespaceTree("A.*").ToString().ShouldEqual("A.*");
+            new NamespaceTree("*").ToString().Should().Be("*");
+            new NamespaceTree("A.*").ToString().Should().Be("A.*");
         }
 
         [TestMethod]
@@ -39,14 +39,14 @@ namespace Codartis.NsDepCop.Core.Test.Interface.Config
         [TestMethod]
         public void Equals_Works()
         {
-            (new NamespaceTree("A.*") == new NamespaceTree("A.*")).ShouldBeTrue();
-            (new NamespaceTree("A.*") == new NamespaceTree("B.*")).ShouldBeFalse();
+            (new NamespaceTree("A.*") == new NamespaceTree("A.*")).Should().BeTrue();
+            (new NamespaceTree("A.*") == new NamespaceTree("B.*")).Should().BeFalse();
         }
 
         [TestMethod]
         public void AnyNamespace_IsEqualToOtherInstanceOfAnyNamespace()
         {
-            (new NamespaceTree("*") == NamespaceTree.AnyNamespace).ShouldBeTrue();
+            (new NamespaceTree("*") == NamespaceTree.AnyNamespace).Should().BeTrue();
         }
     }
 }

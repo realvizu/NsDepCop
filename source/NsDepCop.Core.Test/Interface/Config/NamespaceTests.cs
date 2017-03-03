@@ -1,7 +1,7 @@
 ﻿using System;
 using Codartis.NsDepCop.Core.Interface.Config;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
 
 namespace Codartis.NsDepCop.Core.Test.Interface.Config
 {
@@ -11,16 +11,16 @@ namespace Codartis.NsDepCop.Core.Test.Interface.Config
         [TestMethod]
         public void Create_Works()
         {
-            new Namespace("A").ToString().ShouldEqual("A");
-            new Namespace("A.B").ToString().ShouldEqual("A.B");
-            new Namespace(".").ToString().ShouldEqual(".");
+            new Namespace("A").ToString().Should().Be("A");
+            new Namespace("A.B").ToString().Should().Be("A.B");
+            new Namespace(".").ToString().Should().Be(".");
         }
 
         [TestMethod]
         public void Create_GlobalNamespaceRepresentationNormalized()
         {
-            new Namespace("<global namespace>").ToString().ShouldEqual(".");
-            new Namespace("").ToString().ShouldEqual(".");
+            new Namespace("<global namespace>").ToString().Should().Be(".");
+            new Namespace("").ToString().Should().Be(".");
         }
 
         [TestMethod]
@@ -47,30 +47,30 @@ namespace Codartis.NsDepCop.Core.Test.Interface.Config
         [TestMethod]
         public void IsSubnamespaceOf_Works()
         {
-            new Namespace("A").IsSubnamespaceOf(new Namespace(".")).ShouldBeTrue();
-            new Namespace("A.B").IsSubnamespaceOf(new Namespace(".")).ShouldBeTrue();
+            new Namespace("A").IsSubnamespaceOf(new Namespace(".")).Should().BeTrue();
+            new Namespace("A.B").IsSubnamespaceOf(new Namespace(".")).Should().BeTrue();
 
-            new Namespace("A.B").IsSubnamespaceOf(new Namespace("A")).ShouldBeTrue();
-            new Namespace("A.B.C").IsSubnamespaceOf(new Namespace("A")).ShouldBeTrue();
+            new Namespace("A.B").IsSubnamespaceOf(new Namespace("A")).Should().BeTrue();
+            new Namespace("A.B.C").IsSubnamespaceOf(new Namespace("A")).Should().BeTrue();
 
-            new Namespace(".").IsSubnamespaceOf(new Namespace("A")).ShouldBeFalse();
-            new Namespace("A").IsSubnamespaceOf(new Namespace("A")).ShouldBeFalse();
-            new Namespace("A").IsSubnamespaceOf(new Namespace("A.B")).ShouldBeFalse();
+            new Namespace(".").IsSubnamespaceOf(new Namespace("A")).Should().BeFalse();
+            new Namespace("A").IsSubnamespaceOf(new Namespace("A")).Should().BeFalse();
+            new Namespace("A").IsSubnamespaceOf(new Namespace("A.B")).Should().BeFalse();
         }
 
         [TestMethod]
         public void Equals_Works()
         {
-            (new Namespace("A") == new Namespace("A")).ShouldBeTrue();
-            (new Namespace("A") == new Namespace("B")).ShouldBeFalse();
+            (new Namespace("A") == new Namespace("A")).Should().BeTrue();
+            (new Namespace("A") == new Namespace("B")).Should().BeFalse();
 
-            (new Namespace(".") == Namespace.GlobalNamespace).ShouldBeTrue();
+            (new Namespace(".") == Namespace.GlobalNamespace).Should().BeTrue();
         }
 
         [TestMethod]
         public void GlobalNamespace_IsEqualToOtherInstanceOfGlobalNamespace()
         {
-            (new Namespace(".") == Namespace.GlobalNamespace).ShouldBeTrue();
+            (new Namespace(".") == Namespace.GlobalNamespace).Should().BeTrue();
         }
     }
 }

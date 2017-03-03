@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
@@ -28,7 +29,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private const string ToAttributeName = "To";
         private const string TypeNameAttributeName = "Name";
 
-        public static IAnalyzerConfig ParseXmlConfig(XDocument configXml)
+        public static IAnalyzerConfig Parse(XDocument configXml)
         {
             var configBuilder = new AnalyzerConfigBuilder();
 
@@ -80,19 +81,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             var allowedDependencyRule = ParseDependencyRule(xElement);
 
-            TypeNameSet visibleTypeNames = null;
-
-            var visibleMembersChild = xElement.Element(VisibleMembersElementName);
-            if (visibleMembersChild != null)
-            {
-                if (allowedDependencyRule.To is NamespaceTree)
-                    throw new Exception($"{GetLineInfo(xElement)}The target namespace '{allowedDependencyRule.To}' must be a single namespace.");
-
-                if (visibleMembersChild.Attribute(OfNamespaceAttributeName) != null)
-                    throw new Exception($"{GetLineInfo(xElement)}If {VisibleMembersElementName} is embedded in a dependency specification then '{OfNamespaceAttributeName}' attribute must not be defined.");
-
-                visibleTypeNames = ParseTypeNameSet(visibleMembersChild, TypeElementName);
-            }
+            var visibleTypeNames = ParseVisibleMembersInsideAllowedRule(xElement, allowedDependencyRule);
+            if (visibleTypeNames.IsNullOrEmpty())
+                visibleTypeNames = null;
 
             configBuilder.AddAllowRule(allowedDependencyRule, visibleTypeNames);
         }
@@ -102,6 +93,21 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             var disallowedDependencyRule = ParseDependencyRule(xElement);
 
             configBuilder.AddDisallowRule(disallowedDependencyRule);
+        }
+
+        private static TypeNameSet ParseVisibleMembersInsideAllowedRule(XElement xElement, NamespaceDependencyRule allowedRule)
+        {
+            var visibleMembersChild = xElement.Element(VisibleMembersElementName);
+            if (visibleMembersChild == null)
+                return null;
+
+            if (allowedRule.To is NamespaceTree)
+                throw new Exception($"{GetLineInfo(xElement)}The target namespace '{allowedRule.To}' must be a single namespace.");
+
+            if (visibleMembersChild.Attribute(OfNamespaceAttributeName) != null)
+                throw new Exception($"{GetLineInfo(xElement)}If {VisibleMembersElementName} is embedded in a dependency specification then '{OfNamespaceAttributeName}' attribute must not be defined.");
+
+            return ParseTypeNameSet(visibleMembersChild, TypeElementName);
         }
 
         private static void ParseVisibleMembersElement(XElement xElement, AnalyzerConfigBuilder configBuilder)

@@ -1,0 +1,4 @@
+﻿<NsDepCopConfig>
+    <Disallowed From="N1" To="N2"/>
+    <Disallowed From="N3" To="N4"/>
+</NsDepCopConfig>

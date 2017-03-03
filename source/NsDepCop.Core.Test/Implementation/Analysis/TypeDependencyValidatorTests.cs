@@ -1,6 +1,6 @@
 ﻿using Codartis.NsDepCop.Core.Implementation.Analysis;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
 
 namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
 {
@@ -13,7 +13,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             var ruleConfig = new DependencyRulesBuilder();
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("N", "C1", "N", "C2").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("N", "C1", "N", "C2").Should().BeTrue();
         }
 
         [TestMethod]
@@ -22,7 +22,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             var ruleConfig = new DependencyRulesBuilder();
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("N1", "C1", "N2", "C2").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("N1", "C1", "N2", "C2").Should().BeFalse();
         }
 
         [TestMethod]
@@ -32,9 +32,9 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
                 .AddAllowed("S", "T");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("S", "C1", "T", "C2").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S1", "C1", "T", "C2").ShouldBeFalse();
-            dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("S", "C1", "T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S1", "C1", "T", "C2").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").Should().BeFalse();
         }
 
         [TestMethod]
@@ -44,11 +44,11 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
                 .AddAllowed("S.*", "T.*");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("S", "C1", "T", "C2").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S.S1", "C1", "T", "C2").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S", "C1", "T.T1", "C2").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S1", "C1", "T", "C2").ShouldBeFalse();
-            dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("S", "C1", "T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S.S1", "C1", "T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S", "C1", "T.T1", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S1", "C1", "T", "C2").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").Should().BeFalse();
         }
 
         [TestMethod]
@@ -58,9 +58,9 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
                 .AddAllowed("*", "*");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("S", "C1", "T", "C2").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S1", "C1", "T", "C2").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("S", "C1", "T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S1", "C1", "T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").Should().BeTrue();
         }
 
         [TestMethod]
@@ -71,13 +71,13 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
                 .AddAllowed("S2", "T");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C1").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C2").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C3").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C1").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C3").Should().BeFalse();
 
-            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C1").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C2").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C3").ShouldBeTrue();
+            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C1").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C3").Should().BeTrue();
         }
 
         [TestMethod]
@@ -89,13 +89,13 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
                 .AddVisibleMembers("T", "C1", "C2");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C1").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C2").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C3").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C1").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S1", "C", "T", "C3").Should().BeFalse();
 
-            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C1").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C2").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C3").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C1").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S2", "C", "T", "C3").Should().BeFalse();
         }
 
         [TestMethod]
@@ -105,7 +105,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
                 .AddDisallowed("S", "T");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("S", "C", "T", "C1").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("S", "C", "T", "C1").Should().BeFalse();
         }
 
         [TestMethod]
@@ -116,7 +116,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
                 .AddDisallowed("S", "T");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("S", "C", "T", "C1").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("S", "C", "T", "C1").Should().BeFalse();
         }
 
         [TestMethod]
@@ -126,8 +126,8 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
                 .SetChildCanDependOnParentImplicitly(true);
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("N1.N2", "C", "N1", "C1").ShouldBeTrue();
-            dependencyValidator.IsAllowedDependency("N1", "C", "N1.N2", "C1").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("N1.N2", "C", "N1", "C1").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("N1", "C", "N1.N2", "C1").Should().BeFalse();
         }
 
         [TestMethod]
@@ -138,8 +138,8 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
                 .AddDisallowed("N1.N2", "N1");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("N1.N2", "C", "N1", "C1").ShouldBeFalse();
-            dependencyValidator.IsAllowedDependency("N1", "C", "N1.N2", "C1").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("N1.N2", "C", "N1", "C1").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("N1", "C", "N1.N2", "C1").Should().BeFalse();
         }
 
         [TestMethod]
@@ -150,8 +150,8 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
                 .AddDisallowed("N1.*", "N1");
 
             var dependencyValidator = new TypeDependencyValidator(ruleConfig);
-            dependencyValidator.IsAllowedDependency("N1.N2", "C", "N1", "C1").ShouldBeFalse();
-            dependencyValidator.IsAllowedDependency("N1", "C", "N1.N2", "C1").ShouldBeFalse();
+            dependencyValidator.IsAllowedDependency("N1.N2", "C", "N1", "C1").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("N1", "C", "N1.N2", "C1").Should().BeFalse();
         }
     }
 }

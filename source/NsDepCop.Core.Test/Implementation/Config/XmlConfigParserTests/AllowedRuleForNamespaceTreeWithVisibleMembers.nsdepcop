@@ -1,0 +1,7 @@
+﻿<NsDepCopConfig>
+    <Allowed From="N1" To="*">
+        <VisibleMembers>
+            <Type Name="T1"/>
+        </VisibleMembers>
+    </Allowed>
+</NsDepCopConfig>
