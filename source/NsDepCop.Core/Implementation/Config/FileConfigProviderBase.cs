@@ -12,6 +12,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     {
         protected readonly string ConfigFilePath;
         protected Action<string> DiagnosticMessageHandler;
+
         private readonly object _isInitializedLock = new object();
         private bool _isInitialized;
 
@@ -123,14 +124,14 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (!_configFileExists)
                 return AnalyzerState.NoConfigFile;
 
+            if (IsConfigErroneous)
+                return AnalyzerState.ConfigError;
+
             if (IsConfigLoaded && !Config.IsEnabled)
                 return AnalyzerState.Disabled;
 
             if (IsConfigLoaded && Config.IsEnabled)
                 return AnalyzerState.Enabled;
-
-            if (!IsConfigLoaded && IsConfigErroneous)
-                return AnalyzerState.ConfigError;
 
             throw new Exception("Inconsistent DependencyAnalyzer state.");
         }

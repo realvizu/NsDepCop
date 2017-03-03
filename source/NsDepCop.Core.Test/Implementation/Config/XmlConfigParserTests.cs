@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
 using System.Xml.Linq;
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Config;
@@ -10,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 {
     [TestClass]
-    public class XmlConfigParserTests
+    public class XmlConfigParserTests : FileBasedTestsBase
     {
         [TestMethod]
         public void Parse_RootAttributes()
@@ -155,11 +153,9 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             a.ShouldThrow<Exception>().WithMessage("*Error parsing 'IsEnabled' value*");
         }
 
-        private static XDocument LoadXml(string filename)
+        private XDocument LoadXml(string filename)
         {
-            var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Assert.IsNotNull(assemblyDirectory);
-            var path = Path.Combine(assemblyDirectory, @"Implementation\Config\XmlConfigParserTests", filename);
+            var path = GetTestFilePath(filename);
             return XDocument.Load(path);
         }
     }

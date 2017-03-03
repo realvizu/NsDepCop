@@ -66,7 +66,9 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Implementation\Config\FileBasedTestsBase.cs" />
     <Compile Include="Implementation\Config\XmlConfigParserTests.cs" />
+    <Compile Include="Implementation\Config\XmlFileConfigProviderTests.cs" />
     <Compile Include="Interface\Config\NamespaceSpecificationTests.cs" />
     <Compile Include="Interface\Config\NamespaceTreeTests.cs" />
     <Compile Include="Implementation\Analysis\DependencyRulesBuilder.cs" />
@@ -119,6 +121,24 @@
     <None Include="Implementation\Config\XmlConfigParserTests\DisallowedRules.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Implementation\Config\XmlFileConfigProviderTests\Disabled.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\XmlFileConfigProviderTests\RefreshConfig_EnabledToConfigError.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\XmlFileConfigProviderTests\RefreshConfig_EnabledToDisabled.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\XmlFileConfigProviderTests\RoslynParser.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\XmlFileConfigProviderTests\Erronous.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\XmlFileConfigProviderTests\Enabled.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -131,6 +151,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
