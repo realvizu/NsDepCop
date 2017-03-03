@@ -65,16 +65,13 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var path = GetTestFilePath("RefreshConfig_EnabledToDisabled.nsdepcop");
 
-            Delete(path);
-            CreateConfigFile(path, "true");
+            SetIsEnabled(path, "true");
 
             var configProvider = new XmlFileConfigProvider(path);
             configProvider.State.Should().Be(AnalyzerState.Enabled);
 
-            Thread.Sleep(1000);
-
-            Delete(path);
-            CreateConfigFile(path, "false");
+            Thread.Sleep(10);
+            SetIsEnabled(path, "false");
 
             configProvider.RefreshConfig();
             configProvider.State.Should().Be(AnalyzerState.Disabled);
@@ -85,16 +82,13 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var path = GetTestFilePath("RefreshConfig_EnabledToConfigError.nsdepcop");
 
-            Delete(path);
-            CreateConfigFile(path, "true");
+            SetIsEnabled(path, "true");
 
             var configProvider = new XmlFileConfigProvider(path);
             configProvider.State.Should().Be(AnalyzerState.Enabled);
 
-            Thread.Sleep(1000);
-
-            Delete(path);
-            CreateConfigFile(path, "maybe");
+            Thread.Sleep(10);
+            SetIsEnabled(path, "maybe");
 
             configProvider.RefreshConfig();
             configProvider.State.Should().Be(AnalyzerState.ConfigError);
@@ -136,6 +130,13 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         private static void CreateConfigFile(string path, string isEnabledString)
         {
             var document = XDocument.Parse($"<NsDepCopConfig IsEnabled='{isEnabledString}'/>");
+            document.Save(path);
+        }
+
+        private static void SetIsEnabled(string path, string isEnabledString)
+        {
+            var document = XDocument.Load(path);
+            document.Root.Attribute("IsEnabled").SetValue(isEnabledString);
             document.Save(path);
         }
     }
