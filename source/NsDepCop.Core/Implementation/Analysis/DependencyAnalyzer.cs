@@ -10,6 +10,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// <summary>
     /// Finds illegal type dependencies according to a dependency rule set.
     /// </summary>
+    /// <remarks>
+    /// Uses read-writer lock to avoid config refresh while running analysis.
+    /// </remarks>
     internal class DependencyAnalyzer : IDependencyAnalyzer
     {
         private readonly IConfigProvider _configProvider;

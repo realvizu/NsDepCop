@@ -1,125 +1,54 @@
 ﻿using System;
 using System.IO;
 using Codartis.NsDepCop.Core.Interface.Config;
-using MoreLinq;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
     /// <summary>
     /// Abstract base class for file based config implementations.
+    /// Reloads only if the file changed.
     /// </summary>
-    internal abstract class FileConfigProviderBase : IConfigProvider
+    /// <remarks>
+    /// Base class ensures that all operations are executed in an atomic way so no extra locking needed.
+    /// </remarks>
+    internal abstract class FileConfigProviderBase : ConfigProviderBase
     {
-        protected readonly string ConfigFilePath;
-        protected Action<string> DiagnosticMessageHandler;
-
-        private readonly object _isInitializedLock = new object();
-        private bool _isInitialized;
-
         private bool _configFileExists;
         private DateTime _configLastLoadUtc;
-        private IAnalyzerConfig _config;
-        private Exception _configException;
+
+        public string ConfigFilePath { get; }
 
         protected FileConfigProviderBase(string configFilePath, Action<string> diagnosticMessageHandler = null)
+            : base(diagnosticMessageHandler)
         {
             ConfigFilePath = configFilePath;
-            DiagnosticMessageHandler = diagnosticMessageHandler;
         }
 
-        private bool IsConfigLoaded => _config != null;
-        private bool IsConfigErroneous => _configException != null;
-
-        public IAnalyzerConfig Config
-        {
-            get
-            {
-                lock (_isInitializedLock)
-                {
-                    if (!_isInitialized)
-                        Initialize();
-
-                    return _config;
-                }
-            }
-        }
-
-        public AnalyzerState State
-        {
-            get
-            {
-                lock (_isInitializedLock)
-                {
-                    if (!_isInitialized)
-                        Initialize();
-
-                    return GetState();
-                }
-            }
-        }
-
-        public Exception ConfigException
-        {
-            get
-            {
-                lock (_isInitializedLock)
-                {
-                    if (!_isInitialized)
-                        Initialize();
-
-                    return _configException;
-                }
-            }
-        }
-
-        public void RefreshConfig()
+        protected override IAnalyzerConfig GetConfig()
         {
             _configFileExists = File.Exists(ConfigFilePath);
 
             if (!_configFileExists)
             {
-                _configException = null;
-                _config = null;
                 DiagnosticMessageHandler?.Invoke($"Config file '{ConfigFilePath}' not found.");
-                return;
+                return null;
             }
 
-            try
-            {
-                if (!IsConfigLoaded || ConfigModifiedSinceLastLoad())
-                {
-                    if (!IsConfigLoaded)
-                        DiagnosticMessageHandler?.Invoke($"Loading config file '{ConfigFilePath}' for the first time.");
-                    else
-                        DiagnosticMessageHandler?.Invoke($"Reloading modified config file '{ConfigFilePath}'.");
+            if (IsConfigLoaded && !ConfigModifiedSinceLastLoad())
+                return Config;
 
-                    _configLastLoadUtc = DateTime.UtcNow;
-                    _configException = null;
-                    _config = LoadConfig();
+            if (!IsConfigLoaded)
+                DiagnosticMessageHandler?.Invoke($"Loading config file '{ConfigFilePath}' for the first time.");
+            else
+                DiagnosticMessageHandler?.Invoke($"Reloading modified config file '{ConfigFilePath}'.");
 
-                    if (DiagnosticMessageHandler != null)
-                    {
-                        DiagnosticMessageHandler.Invoke($"Config file '{ConfigFilePath}' loaded.");
-                        DumpConfigToDiagnosticOutput();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                _configException = e;
-                DiagnosticMessageHandler?.Invoke($"Config file '{ConfigFilePath}' exception: {e}");
-            }
+            _configLastLoadUtc = DateTime.UtcNow;
+            return LoadConfigFromFile(ConfigFilePath);
         }
 
-        protected abstract IAnalyzerConfig LoadConfig();
+        protected abstract IAnalyzerConfig LoadConfigFromFile(string configFilePath);
 
-        private void Initialize()
-        {
-            _isInitialized = true;
-            RefreshConfig();
-        }
-
-        private AnalyzerState GetState()
+        protected override AnalyzerState GetState()
         {
             if (!_configFileExists)
                 return AnalyzerState.NoConfigFile;
@@ -133,17 +62,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (IsConfigLoaded && Config.IsEnabled)
                 return AnalyzerState.Enabled;
 
-            throw new Exception("Inconsistent DependencyAnalyzer state.");
+            throw new Exception("Inconsistent analyzer state.");
         }
 
         private bool ConfigModifiedSinceLastLoad()
         {
             return _configLastLoadUtc < File.GetLastWriteTimeUtc(ConfigFilePath);
-        }
-
-        private void DumpConfigToDiagnosticOutput()
-        {
-            _config.DumpToStrings().ForEach(i => DiagnosticMessageHandler.Invoke($"  {i}"));
         }
     }
 }

@@ -109,6 +109,9 @@
     <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
+    <Compile Include="Util\FileFinder.cs" />
+    <Compile Include="Implementation\Config\ConfigProviderBase.cs" />
+    <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProvider.cs" />
     <Compile Include="Implementation\Config\XmlConfigParser.cs" />
     <Compile Include="Interface\Analysis\IDependencyAnalyzer.cs" />
     <Compile Include="Interface\Analysis\ISemanticModel.cs" />

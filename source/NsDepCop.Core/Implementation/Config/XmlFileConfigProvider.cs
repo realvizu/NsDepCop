@@ -22,18 +22,18 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public override string ToString() => $"XmlFileConfigProvider({ConfigFilePath})";
 
-        protected override IAnalyzerConfig LoadConfig()
+        protected override IAnalyzerConfig LoadConfigFromFile(string configFilePath)
         {
             try
             {
-                var configXml = XDocument.Load(ConfigFilePath, LoadOptions.SetLineInfo);
+                var configXml = XDocument.Load(configFilePath, LoadOptions.SetLineInfo);
                 var config = XmlConfigParser.Parse(configXml);
 
-                return new AnalyzerConfigBuilder(_overridingParser).Combine(config).ToProjectConfig();
+                return new AnalyzerConfigBuilder(_overridingParser).Combine(config).ToAnalyzerConfig();
             }
             catch (Exception e)
             {
-                throw new Exception($"Error in '{ConfigFilePath}': {e.Message}", e);
+                throw new Exception($"Error in '{configFilePath}': {e.Message}", e);
             }
         }
     }

@@ -40,7 +40,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             ParseRootNodeAttributes(rootElement, configBuilder);
             ParseChildElements(rootElement, configBuilder);
 
-            return configBuilder.ToProjectConfig();
+            return configBuilder.ToAnalyzerConfig();
         }
 
         private static void ParseRootNodeAttributes(XElement rootElement, AnalyzerConfigBuilder configBuilder)

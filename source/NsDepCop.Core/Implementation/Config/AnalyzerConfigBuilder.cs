@@ -55,7 +55,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             _maxIssueCount = analyzerConfig.MaxIssueCount;
         }
 
-        public IAnalyzerConfig ToProjectConfig()
+        public IAnalyzerConfig ToAnalyzerConfig()
         {
             return new AnalyzerConfig(
                 _isEnabled,

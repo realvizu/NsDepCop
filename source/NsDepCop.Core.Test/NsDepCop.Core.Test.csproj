@@ -68,6 +68,8 @@
     </Compile>
     <Compile Include="Factory\DependencyAnalyzerFactoryTests.cs" />
     <Compile Include="FileBasedTestsBase.cs" />
+    <Compile Include="Implementation\Config\AnalyzerConfigBuilderTests.cs" />
+    <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests.cs" />
     <Compile Include="Implementation\Config\XmlConfigParserTests.cs" />
     <Compile Include="Implementation\Config\XmlFileConfigProviderTests.cs" />
     <Compile Include="Interface\Config\NamespaceSpecificationTests.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="Interface\Config\NamespaceSpecificationParserTests.cs" />
     <Compile Include="Interface\Config\NamespaceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\FileFinderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">
@@ -90,6 +93,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Factory\DependencyAnalyzerFactoryTests\RoslynParser.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Attributes_MissingDoesNotOverwrite\Level2\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Attributes_MissingDoesNotOverwrite\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Attributes_LowerLevelWins\Level2\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Attributes_LowerLevelWins\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Rules_Merged\Level2\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Rules_Merged\Level2\Level1\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\XmlConfigParserTests\AllowedRuleForNamespaceWithVisibleMembersWithOfNamespaceAttribute.nsdepcop">
@@ -155,7 +176,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Util\FileFinderTests\Level3\Level2\Level1\Test.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Util\FileFinderTests\Level3\Test.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
