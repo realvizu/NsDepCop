@@ -11,9 +11,11 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         {
         }
 
-        public TypeNameSet(IEnumerable<string> collection) 
+        public TypeNameSet(IEnumerable<string> collection)
             : base(collection)
         {
         }
+
+        public override string ToString() => $"{{{string.Join(",", this)}}}";
     }
 }

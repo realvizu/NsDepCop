@@ -9,27 +9,17 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// </summary>
     internal sealed class XmlFileConfigProvider : FileConfigProviderBase
     {
-        private readonly Parsers? _overridingParser;
-
         public XmlFileConfigProvider(string configFilePath, Parsers? overridingParser = null, Action<string> diagnosticMessageHandler = null)
-            : base(configFilePath, diagnosticMessageHandler)
+            : base(configFilePath, overridingParser, diagnosticMessageHandler)
         {
-            _overridingParser = overridingParser;
-
-            if (overridingParser != null)
-                diagnosticMessageHandler?.Invoke($"Parser overridden with {overridingParser}.");
         }
 
-        public override string ToString() => $"XmlFileConfigProvider({ConfigFilePath})";
-
-        protected override IAnalyzerConfig LoadConfigFromFile(string configFilePath)
+        protected override AnalyzerConfigBuilder LoadConfigFromFile(string configFilePath)
         {
             try
             {
                 var configXml = XDocument.Load(configFilePath, LoadOptions.SetLineInfo);
-                var config = XmlConfigParser.Parse(configXml);
-
-                return new AnalyzerConfigBuilder(_overridingParser).Combine(config).ToAnalyzerConfig();
+                return XmlConfigParser.Parse(configXml, OverridingParser);
             }
             catch (Exception e)
             {

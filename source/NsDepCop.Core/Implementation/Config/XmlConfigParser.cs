@@ -29,9 +29,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private const string ToAttributeName = "To";
         private const string TypeNameAttributeName = "Name";
 
-        public static IAnalyzerConfig Parse(XDocument configXml)
+        public static AnalyzerConfigBuilder Parse(XDocument configXml, Parsers? overridingParser = null)
         {
-            var configBuilder = new AnalyzerConfigBuilder();
+            var configBuilder = new AnalyzerConfigBuilder(overridingParser);
 
             var rootElement = configXml.Element(RootElementName);
             if (rootElement == null)
@@ -40,19 +40,17 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             ParseRootNodeAttributes(rootElement, configBuilder);
             ParseChildElements(rootElement, configBuilder);
 
-            return configBuilder.ToAnalyzerConfig();
+            return configBuilder;
         }
 
         private static void ParseRootNodeAttributes(XElement rootElement, AnalyzerConfigBuilder configBuilder)
         {
-            configBuilder.SetIsEnabled(ParseAttribute(rootElement, IsEnabledAttributeName, bool.TryParse, ConfigDefaults.IsEnabled));
-            configBuilder.SetIssueKind(ParseAttribute(rootElement, CodeIssueKindAttributeName, Enum.TryParse, ConfigDefaults.IssueKind));
-            configBuilder.SetInfoImportance(ParseAttribute(rootElement, InfoImportanceAttributeName, Enum.TryParse, ConfigDefaults.InfoImportance));
-            configBuilder.SetParser(ParseAttribute(rootElement, ParserAttributeName, Enum.TryParse, ConfigDefaults.Parser));
-
-            configBuilder.SetChildCanDependOnParentImplicitly(ParseAttribute(rootElement, ImplicitParentDependencyAttributeName,
-                bool.TryParse, ConfigDefaults.ChildCanDependOnParentImplicitly));
-            configBuilder.SetMaxIssueCount(ParseAttribute(rootElement, MaxIssueCountAttributeName, int.TryParse, ConfigDefaults.MaxIssueReported));
+            configBuilder.SetIsEnabled(ParseAttribute<bool>(rootElement, IsEnabledAttributeName, bool.TryParse));
+            configBuilder.SetIssueKind(ParseAttribute<IssueKind>(rootElement, CodeIssueKindAttributeName, Enum.TryParse));
+            configBuilder.SetInfoImportance(ParseAttribute<Importance>(rootElement, InfoImportanceAttributeName, Enum.TryParse));
+            configBuilder.SetParser(ParseAttribute<Parsers>(rootElement, ParserAttributeName, Enum.TryParse));
+            configBuilder.SetChildCanDependOnParentImplicitly(ParseAttribute<bool>(rootElement, ImplicitParentDependencyAttributeName, bool.TryParse));
+            configBuilder.SetMaxIssueCount(ParseAttribute<int>(rootElement, MaxIssueCountAttributeName, int.TryParse));
         }
 
         private static void ParseChildElements(XElement rootElement, AnalyzerConfigBuilder configBuilder)
@@ -192,33 +190,25 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         /// <summary>
         /// Parses an attribute of an element to the given type. 
-        /// Returns the given default value if the attribute is not found.
+        /// Returns null if the attribute is not found.
         /// </summary>
         /// <typeparam name="T">The type of the parse result.</typeparam>
         /// <param name="element">The element where the attribute is searched.</param>
         /// <param name="attributeName">The name of the attribute.</param>
         /// <param name="tryParseMethod">The method that should be used for parsing. Should return false on failure.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns>The parsed value or the given default value if the attribute is not found.</returns>
-        private static T ParseAttribute<T>(XElement element, string attributeName, TryParseMethod<T> tryParseMethod, T defaultValue)
+        /// <returns>The parsed value or null if the attribute is not found.</returns>
+        private static T? ParseAttribute<T>(XElement element, string attributeName, TryParseMethod<T> tryParseMethod)
+            where T : struct 
         {
-            var result = defaultValue;
-
             var attribute = element.Attribute(attributeName);
-            if (attribute != null)
-            {
-                T parseResult;
-                if (tryParseMethod(attribute.Value, out parseResult))
-                {
-                    result = parseResult;
-                }
-                else
-                {
-                    throw new FormatException($"Error parsing '{attribute.Name}' value '{attribute.Value}'.");
-                }
-            }
+            if (attribute == null)
+                return null;
 
-            return result;
+            T parseResult;
+            if (tryParseMethod(attribute.Value, out parseResult))
+                return parseResult;
+
+            throw new FormatException($"{GetLineInfo(element)}Error parsing '{attribute.Name}' value '{attribute.Value}'.");
         }
 
         private static string GetLineInfo(XObject xObject)

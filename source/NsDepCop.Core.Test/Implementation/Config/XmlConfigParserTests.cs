@@ -11,16 +11,29 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
     public class XmlConfigParserTests : FileBasedTestsBase
     {
         [TestMethod]
+        public void Parse_NoRootAttributes()
+        {
+            var xDocument = LoadXml("NoRootAttributes.nsdepcop");
+            var configBuilder = XmlConfigParser.Parse(xDocument);
+            configBuilder.IsEnabled.Should().BeNull();
+            configBuilder.IssueKind.Should().BeNull();
+            configBuilder.MaxIssueCount.Should().BeNull();
+            configBuilder.ChildCanDependOnParentImplicitly.Should().BeNull();
+            configBuilder.InfoImportance.Should().BeNull();
+            configBuilder.Parser.Should().BeNull();
+        }
+
+        [TestMethod]
         public void Parse_RootAttributes()
         {
             var xDocument = LoadXml("RootAttributes.nsdepcop");
-            var config = XmlConfigParser.Parse(xDocument);
-            config.IsEnabled.Should().BeTrue();
-            config.IssueKind.ShouldBeEquivalentTo(IssueKind.Error);
-            config.MaxIssueCount.ShouldBeEquivalentTo(42);
-            config.ChildCanDependOnParentImplicitly.Should().BeTrue();
-            config.InfoImportance.ShouldBeEquivalentTo(Importance.Normal);
-            config.Parser.ShouldBeEquivalentTo(Parsers.Roslyn);
+            var configBuilder = XmlConfigParser.Parse(xDocument);
+            configBuilder.IsEnabled.Should().BeTrue();
+            configBuilder.IssueKind.ShouldBeEquivalentTo(IssueKind.Error);
+            configBuilder.MaxIssueCount.ShouldBeEquivalentTo(42);
+            configBuilder.ChildCanDependOnParentImplicitly.Should().BeTrue();
+            configBuilder.InfoImportance.ShouldBeEquivalentTo(Importance.Normal);
+            configBuilder.Parser.ShouldBeEquivalentTo(Parsers.Roslyn);
         }
 
         [TestMethod]

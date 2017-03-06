@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
-using MoreLinq;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
@@ -14,113 +12,96 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     {
         private readonly bool _isParserOverridden;
 
-        private bool _isEnabled;
-        private IssueKind _issueKind;
-        private Importance _infoImportance;
-        private Parsers _parser;
+        public bool? IsEnabled { get; private set; }
+        public IssueKind? IssueKind { get; private set; }
+        public Importance? InfoImportance { get; private set; }
+        public Parsers? Parser { get; private set; }
 
-        private bool _childCanDependOnParentImplicitly;
-        private readonly Dictionary<NamespaceDependencyRule, TypeNameSet> _allowRules;
-        private readonly HashSet<NamespaceDependencyRule> _disallowRules;
-        private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesByNamespace;
-        private int _maxIssueCount;
+        public bool? ChildCanDependOnParentImplicitly { get; private set; }
+        public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get;  }
+        public HashSet<NamespaceDependencyRule> DisallowRules { get;  }
+        public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get;  }
+        public int? MaxIssueCount { get; private set; }
 
         public AnalyzerConfigBuilder(Parsers? overridingParser = null)
         {
             _isParserOverridden = overridingParser.HasValue;
+            Parser = overridingParser;
 
-            _isEnabled = ConfigDefaults.IsEnabled;
-            _issueKind = ConfigDefaults.IssueKind;
-            _infoImportance = ConfigDefaults.InfoImportance;
-            _parser = overridingParser ?? ConfigDefaults.Parser;
-
-            _childCanDependOnParentImplicitly = ConfigDefaults.ChildCanDependOnParentImplicitly;
-            _allowRules = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
-            _disallowRules = new HashSet<NamespaceDependencyRule>();
-            _visibleTypesByNamespace = new Dictionary<Namespace, TypeNameSet>();
-            _maxIssueCount = ConfigDefaults.MaxIssueReported;
-        }
-
-        public AnalyzerConfigBuilder(IAnalyzerConfig analyzerConfig)
-        {
-            _isEnabled = analyzerConfig.IsEnabled;
-            _issueKind = analyzerConfig.IssueKind;
-            _infoImportance = analyzerConfig.InfoImportance;
-            _parser = analyzerConfig.Parser;
-
-            _childCanDependOnParentImplicitly = analyzerConfig.ChildCanDependOnParentImplicitly;
-            _allowRules = analyzerConfig.AllowRules.ToDictionary(i => i.Key, i => i.Value);
-            _disallowRules = analyzerConfig.DisallowRules.ToHashSet();
-            _visibleTypesByNamespace = analyzerConfig.VisibleTypesByNamespace.ToDictionary(i => i.Key, i => i.Value);
-            _maxIssueCount = analyzerConfig.MaxIssueCount;
+            AllowRules = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
+            DisallowRules = new HashSet<NamespaceDependencyRule>();
+            VisibleTypesByNamespace = new Dictionary<Namespace, TypeNameSet>();
         }
 
         public IAnalyzerConfig ToAnalyzerConfig()
         {
             return new AnalyzerConfig(
-                _isEnabled,
-                _issueKind,
-                _infoImportance,
-                _parser,
-                _childCanDependOnParentImplicitly,
-                _allowRules.ToImmutableDictionary(),
-                _disallowRules.ToImmutableHashSet(),
-                _visibleTypesByNamespace.ToImmutableDictionary(),
-                _maxIssueCount
+                IsEnabled ?? ConfigDefaults.IsEnabled,
+                IssueKind ?? ConfigDefaults.IssueKind,
+                InfoImportance ?? ConfigDefaults.InfoImportance,
+                Parser ?? ConfigDefaults.Parser,
+                ChildCanDependOnParentImplicitly ?? ConfigDefaults.ChildCanDependOnParentImplicitly,
+                AllowRules.ToImmutableDictionary(),
+                DisallowRules.ToImmutableHashSet(),
+                VisibleTypesByNamespace.ToImmutableDictionary(),
+                MaxIssueCount ?? ConfigDefaults.MaxIssueCount
                 );
         }
 
-        public AnalyzerConfigBuilder Combine(IAnalyzerConfig analyzerConfig)
+        public AnalyzerConfigBuilder Combine(AnalyzerConfigBuilder analyzerConfigBuilder)
         {
-            SetIsEnabled(analyzerConfig.IsEnabled);
-            SetIssueKind(analyzerConfig.IssueKind);
-            SetInfoImportance(analyzerConfig.InfoImportance);
-            SetParser(analyzerConfig.Parser);
+            SetIsEnabled(analyzerConfigBuilder.IsEnabled);
+            SetIssueKind(analyzerConfigBuilder.IssueKind);
+            SetInfoImportance(analyzerConfigBuilder.InfoImportance);
+            SetParser(analyzerConfigBuilder.Parser);
 
-            SetChildCanDependOnParentImplicitly(analyzerConfig.ChildCanDependOnParentImplicitly);
-            AddAllowRules(analyzerConfig.AllowRules);
-            AddDisallowRules(analyzerConfig.DisallowRules);
-            AddVisibleTypesByNamespace(analyzerConfig.VisibleTypesByNamespace);
-            SetMaxIssueCount(analyzerConfig.MaxIssueCount);
+            SetChildCanDependOnParentImplicitly(analyzerConfigBuilder.ChildCanDependOnParentImplicitly);
+            AddAllowRules(analyzerConfigBuilder.AllowRules);
+            AddDisallowRules(analyzerConfigBuilder.DisallowRules);
+            AddVisibleTypesByNamespace(analyzerConfigBuilder.VisibleTypesByNamespace);
+            SetMaxIssueCount(analyzerConfigBuilder.MaxIssueCount);
 
             return this;
         }
 
-        public AnalyzerConfigBuilder SetIsEnabled(bool isEnabled)
+        public AnalyzerConfigBuilder SetIsEnabled(bool? isEnabled)
         {
-            _isEnabled = isEnabled;
+            if (isEnabled.HasValue)
+                IsEnabled = isEnabled;
             return this;
         }
 
-        public AnalyzerConfigBuilder SetIssueKind(IssueKind issueKind)
+        public AnalyzerConfigBuilder SetIssueKind(IssueKind? issueKind)
         {
-            _issueKind = issueKind;
+            if (issueKind.HasValue)
+                IssueKind = issueKind;
             return this;
         }
 
-        public AnalyzerConfigBuilder SetInfoImportance(Importance infoImportance)
+        public AnalyzerConfigBuilder SetInfoImportance(Importance? infoImportance)
         {
-            _infoImportance = infoImportance;
+            if (infoImportance.HasValue)
+                InfoImportance = infoImportance;
             return this;
         }
 
-        public AnalyzerConfigBuilder SetParser(Parsers parser)
+        public AnalyzerConfigBuilder SetParser(Parsers? parser)
         {
-            if (!_isParserOverridden)
-                _parser = parser;
-
+            if (parser.HasValue && !_isParserOverridden)
+                Parser = parser;
             return this;
         }
 
-        public AnalyzerConfigBuilder SetChildCanDependOnParentImplicitly(bool childCanDependOnParentImplicitly)
+        public AnalyzerConfigBuilder SetChildCanDependOnParentImplicitly(bool? childCanDependOnParentImplicitly)
         {
-            _childCanDependOnParentImplicitly = childCanDependOnParentImplicitly;
+            if (childCanDependOnParentImplicitly.HasValue)
+                ChildCanDependOnParentImplicitly = childCanDependOnParentImplicitly;
             return this;
         }
 
         public AnalyzerConfigBuilder AddAllowRule(NamespaceDependencyRule namespaceDependencyRule, TypeNameSet typeNameSet = null)
         {
-            _allowRules.AddOrUnion<NamespaceDependencyRule, TypeNameSet, string>(namespaceDependencyRule, typeNameSet);
+            AllowRules.AddOrUnion<NamespaceDependencyRule, TypeNameSet, string>(namespaceDependencyRule, typeNameSet);
             return this;
         }
 
@@ -133,7 +114,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public AnalyzerConfigBuilder AddDisallowRule(NamespaceDependencyRule namespaceDependencyRule)
         {
-            _disallowRules.Add(namespaceDependencyRule);
+            DisallowRules.Add(namespaceDependencyRule);
             return this;
         }
 
@@ -146,7 +127,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public AnalyzerConfigBuilder AddVisibleTypesByNamespace(Namespace ns, TypeNameSet typeNameSet)
         {
-            _visibleTypesByNamespace.AddOrUnion<Namespace, TypeNameSet, string>(ns, typeNameSet);
+            VisibleTypesByNamespace.AddOrUnion<Namespace, TypeNameSet, string>(ns, typeNameSet);
             return this;
         }
 
@@ -157,9 +138,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             return this;
         }
 
-        public AnalyzerConfigBuilder SetMaxIssueCount(int maxIssueCount)
+        public AnalyzerConfigBuilder SetMaxIssueCount(int? maxIssueCount)
         {
-            _maxIssueCount = maxIssueCount;
+            if (maxIssueCount.HasValue)
+                MaxIssueCount = maxIssueCount;
             return this;
         }
     }

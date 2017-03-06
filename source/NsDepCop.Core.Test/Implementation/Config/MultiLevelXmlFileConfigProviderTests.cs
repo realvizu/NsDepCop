@@ -31,8 +31,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.IssueKind.Should().Be(IssueKind.Info);
         }
 
-        // TODO: fix
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Attributes_MissingDoesNotOverwrite()
         {
             var folder = GetTestFilePath(@"Attributes_MissingDoesNotOverwrite\Level2\Level1");

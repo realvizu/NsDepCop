@@ -17,19 +17,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     internal class MultiLevelXmlFileConfigProvider : ConfigProviderBase
     {
         private readonly string _projectFolder;
-        private readonly Parsers? _overridingParser;
-        private readonly Action<string> _diagnosticMessageHandler;
         private List<XmlFileConfigProvider> _fileConfigProviders;
 
         public MultiLevelXmlFileConfigProvider(string projectFolder, Parsers? overridingParser = null, Action<string> diagnosticMessageHandler = null)
+            :base(overridingParser, diagnosticMessageHandler)
         {
             _projectFolder = projectFolder;
-            _overridingParser = overridingParser;
-            _diagnosticMessageHandler = diagnosticMessageHandler;
             _fileConfigProviders = new List<XmlFileConfigProvider>();
-
-            if (overridingParser != null)
-                diagnosticMessageHandler?.Invoke($"Parser overridden with {overridingParser}.");
         }
 
         protected override AnalyzerState GetState()
@@ -49,27 +43,27 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             throw new Exception("Inconsistent DependencyAnalyzer state.");
         }
 
-        protected override IAnalyzerConfig GetConfig()
+        protected override AnalyzerConfigBuilder BuildConfig()
         {
             _fileConfigProviders = CreateConfigProviders();
 
-            var configBuilder = new AnalyzerConfigBuilder(_overridingParser);
+            var configBuilder = new AnalyzerConfigBuilder(OverridingParser);
 
             foreach (var configProvider in Enumerable.Reverse(_fileConfigProviders))
             {
-                _diagnosticMessageHandler?.Invoke($"Found config file: '{configProvider.ConfigFilePath}'");
+                DiagnosticMessageHandler?.Invoke($"Found config file: '{configProvider.ConfigFilePath}'");
 
                 if (configProvider.State == AnalyzerState.Enabled)
-                    configBuilder.Combine(configProvider.Config);
+                    configBuilder.Combine(configProvider.ConfigBuilder);
             }
 
-            return configBuilder.ToAnalyzerConfig();
+            return configBuilder;
         }
 
         private List<XmlFileConfigProvider> CreateConfigProviders()
         {
             return FileFinder.FindInParentFolders(ProductConstants.DefaultConfigFileName, _projectFolder)
-                .Select(configFilePath => new XmlFileConfigProvider(configFilePath, _overridingParser, _diagnosticMessageHandler))
+                .Select(configFilePath => new XmlFileConfigProvider(configFilePath, OverridingParser, DiagnosticMessageHandler))
                 .ToList();
         }
     }

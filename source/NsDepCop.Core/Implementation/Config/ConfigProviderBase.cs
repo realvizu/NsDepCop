@@ -13,21 +13,41 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// </remarks>
     internal abstract class ConfigProviderBase : IConfigProvider
     {
-        protected readonly Action<string> DiagnosticMessageHandler;
+        protected Parsers? OverridingParser { get; }
+        protected Action<string> DiagnosticMessageHandler { get; }
 
         private readonly object _lockObject = new object();
         private bool _isInitialized;
 
+        private AnalyzerConfigBuilder _configBuilder;
         private IAnalyzerConfig _config;
         private Exception _configException;
 
-        protected ConfigProviderBase(Action<string> diagnosticMessageHandler = null)
+        protected ConfigProviderBase(Parsers? overridingParser, Action<string> diagnosticMessageHandler)
         {
+            OverridingParser = overridingParser;
             DiagnosticMessageHandler = diagnosticMessageHandler;
+
+            if (overridingParser != null)
+                diagnosticMessageHandler?.Invoke($"Parser overridden with {overridingParser}.");
         }
 
         protected bool IsConfigLoaded => _config != null;
         protected bool IsConfigErroneous => _configException != null;
+
+        public AnalyzerConfigBuilder ConfigBuilder
+        {
+            get
+            {
+                lock (_lockObject)
+                {
+                    if (!_isInitialized)
+                        Initialize();
+
+                    return _configBuilder;
+                }
+            }
+        }
 
         public IAnalyzerConfig Config
         {
@@ -77,7 +97,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             {
                 try
                 {
-                    _config = GetConfig();
+                    _configBuilder = BuildConfig();
+                    _config = ConfigBuilder?.ToAnalyzerConfig();
                     DumpConfigToDiagnosticOutput();
                 }
                 catch (Exception e)
@@ -88,8 +109,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             }
         }
 
-        protected abstract IAnalyzerConfig GetConfig();
         protected abstract AnalyzerState GetState();
+
+        protected abstract AnalyzerConfigBuilder BuildConfig();
 
         private void Initialize()
         {

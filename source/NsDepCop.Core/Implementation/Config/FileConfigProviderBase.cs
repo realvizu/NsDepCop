@@ -18,35 +18,11 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public string ConfigFilePath { get; }
 
-        protected FileConfigProviderBase(string configFilePath, Action<string> diagnosticMessageHandler = null)
-            : base(diagnosticMessageHandler)
+        protected FileConfigProviderBase(string configFilePath, Parsers? overridingParser, Action<string> diagnosticMessageHandler)
+            : base(overridingParser, diagnosticMessageHandler)
         {
             ConfigFilePath = configFilePath;
         }
-
-        protected override IAnalyzerConfig GetConfig()
-        {
-            _configFileExists = File.Exists(ConfigFilePath);
-
-            if (!_configFileExists)
-            {
-                DiagnosticMessageHandler?.Invoke($"Config file '{ConfigFilePath}' not found.");
-                return null;
-            }
-
-            if (IsConfigLoaded && !ConfigModifiedSinceLastLoad())
-                return Config;
-
-            if (!IsConfigLoaded)
-                DiagnosticMessageHandler?.Invoke($"Loading config file '{ConfigFilePath}' for the first time.");
-            else
-                DiagnosticMessageHandler?.Invoke($"Reloading modified config file '{ConfigFilePath}'.");
-
-            _configLastLoadUtc = DateTime.UtcNow;
-            return LoadConfigFromFile(ConfigFilePath);
-        }
-
-        protected abstract IAnalyzerConfig LoadConfigFromFile(string configFilePath);
 
         protected override AnalyzerState GetState()
         {
@@ -64,6 +40,30 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
             throw new Exception("Inconsistent analyzer state.");
         }
+
+        protected override AnalyzerConfigBuilder BuildConfig()
+        {
+            _configFileExists = File.Exists(ConfigFilePath);
+
+            if (!_configFileExists)
+            {
+                DiagnosticMessageHandler?.Invoke($"Config file '{ConfigFilePath}' not found.");
+                return null;
+            }
+
+            if (IsConfigLoaded && !ConfigModifiedSinceLastLoad())
+                return ConfigBuilder;
+
+            if (!IsConfigLoaded)
+                DiagnosticMessageHandler?.Invoke($"Loading config file '{ConfigFilePath}' for the first time.");
+            else
+                DiagnosticMessageHandler?.Invoke($"Reloading modified config file '{ConfigFilePath}'.");
+
+            _configLastLoadUtc = DateTime.UtcNow;
+             return LoadConfigFromFile(ConfigFilePath);
+        }
+
+        protected abstract AnalyzerConfigBuilder LoadConfigFromFile(string configFilePath);
 
         private bool ConfigModifiedSinceLastLoad()
         {

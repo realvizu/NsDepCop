@@ -131,6 +131,10 @@
     <None Include="Implementation\Config\XmlConfigParserTests\InvalidNamespaceString.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Implementation\Config\XmlConfigParserTests\NoRootAttributes.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Implementation\Config\XmlConfigParserTests\VisibleMembersTypeNameAttributeMissing.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
