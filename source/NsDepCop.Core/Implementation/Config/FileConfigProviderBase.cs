@@ -41,29 +41,31 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             throw new Exception("Inconsistent analyzer state.");
         }
 
-        protected override AnalyzerConfigBuilder BuildConfig()
+        protected override AnalyzerConfigBuilder GetConfigBuilder()
         {
             _configFileExists = File.Exists(ConfigFilePath);
-
             if (!_configFileExists)
             {
                 DiagnosticMessageHandler?.Invoke($"Config file '{ConfigFilePath}' not found.");
                 return null;
             }
 
-            if (IsConfigLoaded && !ConfigModifiedSinceLastLoad())
-                return ConfigBuilder;
-
-            if (!IsConfigLoaded)
-                DiagnosticMessageHandler?.Invoke($"Loading config file '{ConfigFilePath}' for the first time.");
-            else
-                DiagnosticMessageHandler?.Invoke($"Reloading modified config file '{ConfigFilePath}'.");
-
             _configLastLoadUtc = DateTime.UtcNow;
-             return LoadConfigFromFile(ConfigFilePath);
+            return LoadConfigFromFile(ConfigFilePath);
+        }
+
+        protected override bool IsRefreshNeeded()
+        {
+            return ConfigCreatedOrDeleted()
+                || ConfigModifiedSinceLastLoad();
         }
 
         protected abstract AnalyzerConfigBuilder LoadConfigFromFile(string configFilePath);
+
+        private bool ConfigCreatedOrDeleted()
+        {
+            return _configFileExists != File.Exists(ConfigFilePath);
+        }
 
         private bool ConfigModifiedSinceLastLoad()
         {

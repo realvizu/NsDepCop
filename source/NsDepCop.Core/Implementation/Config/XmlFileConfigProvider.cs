@@ -14,6 +14,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
         }
 
+        public override string ToString() => $"XmlConfig:'{ConfigFilePath}'";
+
         protected override AnalyzerConfigBuilder LoadConfigFromFile(string configFilePath)
         {
             try

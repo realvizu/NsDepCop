@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Codartis.NsDepCop.Core.Util
@@ -13,10 +14,14 @@ namespace Codartis.NsDepCop.Core.Util
         /// </summary>
         /// <param name="filenameToFind">The filename to find.</param>
         /// <param name="startingFolderPath">The search starts in this folder (inclusive).</param>
-        /// <param name="maxLevel">The maximum levels of folders to search before stopping. Null means unlimited. (Search stops in root folder.)</param>
+        /// <param name="maxLevel">The maximum number of folder levels to search before stopping. 
+        /// Must be > 0 or null. Null means unlimited, i.e. search stops in root folder.</param>
         /// <returns>The collection of full paths of the found files.</returns>
         public static IEnumerable<string> FindInParentFolders(string filenameToFind, string startingFolderPath, int? maxLevel = null)
         {
+            if (maxLevel.HasValue && maxLevel.Value <= 0)
+                throw new ArgumentException("Must be > 0", nameof(maxLevel));
+
             var level = 0;
             var folderPath = startingFolderPath;
 
@@ -37,7 +42,7 @@ namespace Codartis.NsDepCop.Core.Util
             return maxLevel.HasValue
                    && level >= maxLevel.Value;
         }
-    
+
         private static string GetFilePath(string folderPath, string filename)
         {
             try

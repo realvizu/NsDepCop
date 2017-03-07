@@ -20,8 +20,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private bool _isInitialized;
 
         private AnalyzerConfigBuilder _configBuilder;
-        private IAnalyzerConfig _config;
         private Exception _configException;
+        private IAnalyzerConfig _config;
+        private AnalyzerState _state;
 
         protected ConfigProviderBase(Parsers? overridingParser, Action<string> diagnosticMessageHandler)
         {
@@ -72,7 +73,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                     if (!_isInitialized)
                         Initialize();
 
-                    return GetState();
+                    return _state;
                 }
             }
         }
@@ -95,28 +96,49 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             lock (_lockObject)
             {
-                try
+                if (IsRefreshNeeded())
                 {
-                    _configBuilder = BuildConfig();
-                    _config = ConfigBuilder?.ToAnalyzerConfig();
-                    DumpConfigToDiagnosticOutput();
-                }
-                catch (Exception e)
-                {
-                    _configException = e;
-                    DiagnosticMessageHandler?.Invoke($"RefreshConfig exception: {e}");
+                    DiagnosticMessageHandler?.Invoke($"Reloading config {this}.");
+                    BuildConfig();
                 }
             }
         }
 
         protected abstract AnalyzerState GetState();
-
-        protected abstract AnalyzerConfigBuilder BuildConfig();
+        protected abstract AnalyzerConfigBuilder GetConfigBuilder();
+        protected virtual bool IsRefreshNeeded() => true;
 
         private void Initialize()
         {
             _isInitialized = true;
-            RefreshConfig();
+            DiagnosticMessageHandler?.Invoke($"Loading config {this}.");
+            BuildConfig();
+        }
+
+        private void BuildConfig()
+        {
+            try
+            {
+                _configBuilder = GetConfigBuilder();
+
+                _configException = null;
+                _config = ConfigBuilder?.ToAnalyzerConfig();
+                _state = GetState();
+
+                DumpConfigToDiagnosticOutput();
+            }
+            catch (Exception e)
+            {
+                _configException = e;
+                _config = null;
+                _state = AnalyzerState.ConfigError;
+
+                DiagnosticMessageHandler?.Invoke($"BuildConfig exception: {e}");
+            }
+            finally
+            {
+                DiagnosticMessageHandler?.Invoke($"Config state={_state}");
+            }
         }
 
         private void DumpConfigToDiagnosticOutput()

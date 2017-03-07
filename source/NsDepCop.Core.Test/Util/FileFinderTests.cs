@@ -1,4 +1,6 @@
-﻿using Codartis.NsDepCop.Core.Util;
+﻿using System;
+using System.Linq;
+using Codartis.NsDepCop.Core.Util;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -29,6 +31,13 @@ namespace Codartis.NsDepCop.Core.Test.Util
         {
             var filePaths = FileFinder.FindInParentFolders("test.txt", GetTestFilePath(@"NoSuchFolder"), 3);
             filePaths.Should().HaveCount(0);
+        }
+
+        [TestMethod]
+        public void FindInParentFolders_MaxLevelsIsZero_ThrowsArgumentException()
+        {
+            Action a = () => FileFinder.FindInParentFolders("test.txt", GetTestFilePath("whatever"), 0).ToList();
+            a.ShouldThrow<ArgumentException>().WithMessage("*must be > 0*");
         }
     }
 }

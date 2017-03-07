@@ -82,11 +82,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private IDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
         {
             var configFileName = CreateConfigFileName(projectFilePath);
-            var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, Parsers.Roslyn, _diagnosticMessageHandler);
-
-            _diagnosticMessageHandler?.Invoke($"DependencyAnalyzer created for '{projectFilePath}', AnalyzerState={dependencyAnalyzer.State}");
-
-            return dependencyAnalyzer;
+            return  DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, Parsers.Roslyn, _diagnosticMessageHandler);
         }
 
         private static string CreateConfigFileName(string projectFilePath)
