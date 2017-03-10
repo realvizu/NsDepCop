@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Codartis.NsDepCop.Core.Interface.Config;
 
@@ -15,8 +16,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     {
         private bool _configFileExists;
         private DateTime _configLastLoadUtc;
+        private ConfigLoadResult _lastConfigLoadResult;
 
         public string ConfigFilePath { get; }
+        public AnalyzerConfigBuilder ConfigBuilder { get; private set; }
 
         protected FileConfigProviderBase(string configFilePath, Parsers? overridingParser, Action<string> diagnosticMessageHandler)
             : base(overridingParser, diagnosticMessageHandler)
@@ -24,52 +27,65 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             ConfigFilePath = configFilePath;
         }
 
-        protected override AnalyzerState GetState()
+        public bool HasConfigFileChanged()
         {
-            if (!_configFileExists)
-                return AnalyzerState.NoConfigFile;
-
-            if (IsConfigErroneous)
-                return AnalyzerState.ConfigError;
-
-            if (IsConfigLoaded && !Config.IsEnabled)
-                return AnalyzerState.Disabled;
-
-            if (IsConfigLoaded && Config.IsEnabled)
-                return AnalyzerState.Enabled;
-
-            throw new Exception("Inconsistent analyzer state.");
+            return ConfigFileCreatedOrDeleted() 
+                || ConfigFileModifiedSinceLastLoad();
         }
 
-        protected override AnalyzerConfigBuilder GetConfigBuilder()
+        protected override ConfigLoadResult LoadConfigCore()
         {
-            _configFileExists = File.Exists(ConfigFilePath);
-            if (!_configFileExists)
+            _lastConfigLoadResult = LoadConfigFromFile();
+            return _lastConfigLoadResult;
+        }
+
+        protected override ConfigLoadResult RefreshConfigCore()
+        {
+            if (! HasConfigFileChanged())
+                return  _lastConfigLoadResult;
+
+            DiagnosticMessageHandler?.Invoke($"Refreshing config {this}.");
+            return LoadConfigCore();
+        }
+
+        private ConfigLoadResult LoadConfigFromFile()
+        {
+            try
             {
-                DiagnosticMessageHandler?.Invoke($"Config file '{ConfigFilePath}' not found.");
-                return null;
+                _configFileExists = File.Exists(ConfigFilePath);
+                if (!_configFileExists)
+                {
+                    DiagnosticMessageHandler?.Invoke($"Config file '{ConfigFilePath}' not found.");
+                    return ConfigLoadResult.CreateWithNoConfig();
+                }
+
+                _configLastLoadUtc = DateTime.UtcNow;
+
+                ConfigBuilder = CreateConfigBuilderFromFile(ConfigFilePath);
+
+                Debug.Assert(ConfigBuilder != null);
+                var config = ConfigBuilder.ToAnalyzerConfig();
+
+                return ConfigLoadResult.CreateWithConfig(config);
             }
-
-            _configLastLoadUtc = DateTime.UtcNow;
-            return LoadConfigFromFile(ConfigFilePath);
+            catch (Exception e)
+            {
+                DiagnosticMessageHandler?.Invoke($"BuildConfig exception: {e}");
+                return ConfigLoadResult.CreateWithError(e);
+            }
         }
 
-        protected override bool IsRefreshNeeded()
-        {
-            return ConfigCreatedOrDeleted()
-                || ConfigModifiedSinceLastLoad();
-        }
+        protected abstract AnalyzerConfigBuilder CreateConfigBuilderFromFile(string configFilePath);
 
-        protected abstract AnalyzerConfigBuilder LoadConfigFromFile(string configFilePath);
-
-        private bool ConfigCreatedOrDeleted()
+        private bool ConfigFileCreatedOrDeleted()
         {
             return _configFileExists != File.Exists(ConfigFilePath);
         }
 
-        private bool ConfigModifiedSinceLastLoad()
+        private bool ConfigFileModifiedSinceLastLoad()
         {
-            return _configLastLoadUtc < File.GetLastWriteTimeUtc(ConfigFilePath);
+            return File.Exists(ConfigFilePath) 
+                && _configLastLoadUtc < File.GetLastWriteTimeUtc(ConfigFilePath);
         }
     }
 }

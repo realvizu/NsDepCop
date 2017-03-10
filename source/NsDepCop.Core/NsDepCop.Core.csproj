@@ -109,7 +109,8 @@
     <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
-    <Compile Include="Util\FileFinder.cs" />
+    <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
+    <Compile Include="Util\FileHelper.cs" />
     <Compile Include="Implementation\Config\ConfigProviderBase.cs" />
     <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProvider.cs" />
     <Compile Include="Implementation\Config\XmlConfigParser.cs" />
@@ -145,7 +146,7 @@
     <Compile Include="Implementation\Analysis\CachingTypeDependencyValidator.cs" />
     <Compile Include="Util\ICacheStatistics.cs" />
     <Compile Include="Interface\Config\TypeNameSet.cs" />
-    <Compile Include="Interface\Config\AnalyzerState.cs" />
+    <Compile Include="Interface\Config\AnalyzerConfigState.cs" />
     <Compile Include="Interface\Analysis\TypeDependency.cs" />
     <Compile Include="Interface\Config\Namespace.cs" />
     <Compile Include="Util\MathHelper.cs" />

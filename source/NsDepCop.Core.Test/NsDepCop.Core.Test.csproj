@@ -72,6 +72,7 @@
     <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests.cs" />
     <Compile Include="Implementation\Config\XmlConfigParserTests.cs" />
     <Compile Include="Implementation\Config\XmlFileConfigProviderTests.cs" />
+    <Compile Include="Implementation\Config\XmlFileConfigTestBase.cs" />
     <Compile Include="Interface\Config\NamespaceSpecificationTests.cs" />
     <Compile Include="Interface\Config\NamespaceTreeTests.cs" />
     <Compile Include="Implementation\Analysis\DependencyRulesBuilder.cs" />
@@ -80,7 +81,7 @@
     <Compile Include="Interface\Config\NamespaceSpecificationParserTests.cs" />
     <Compile Include="Interface\Config\NamespaceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\FileFinderTests.cs" />
+    <Compile Include="Util\FileHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">
@@ -105,6 +106,42 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Attributes_LowerLevelWins\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_EnabledToConfigError\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_EnabledToConfigError\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_EnabledToDisabled\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_EnabledToDisabled\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigEnabled\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigEnabled\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabled\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabled\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RoslynParser\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigError\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigError\Level2\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigError\Level2\Level1\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Rules_Merged\Level2\config.nsdepcop">
@@ -181,13 +218,23 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Util\FileFinderTests\Level3\Level2\Level1\Test.txt">
+    <Content Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\NoConfig\Level2\Level1\placeholder.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Util\FileFinderTests\Level3\Test.txt">
+    <Content Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_EnabledToNoConfig\Level2\Level1\placeholder.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_NoConfigToEnabled\Level2\Level1\placeholder.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Util\FileHelperTests\Level3\Level2\Level1\Test.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Util\FileHelperTests\Level3\Test.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

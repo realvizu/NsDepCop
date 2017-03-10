@@ -6,74 +6,49 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 {
     /// <summary>
     /// Abstract base class for config provider implementations.
-    /// Loads the config when properties are first accessed.
     /// </summary>
     /// <remarks>
-    /// Uses locking to make every operation atomic (including property reads).
+    /// Uses locking to ensure that no property can be read while refreshing the config.
     /// </remarks>
     internal abstract class ConfigProviderBase : IConfigProvider
     {
+        /// <summary>
+        /// This lock ensures that no property can be read while refreshing the config.
+        /// </summary>
+        private readonly object _refreshLockObject = new object();
+
+        private bool _isInitialized;
+        private ConfigLoadResult _configLoadResult;
+
         protected Parsers? OverridingParser { get; }
         protected Action<string> DiagnosticMessageHandler { get; }
-
-        private readonly object _lockObject = new object();
-        private bool _isInitialized;
-
-        private AnalyzerConfigBuilder _configBuilder;
-        private Exception _configException;
-        private IAnalyzerConfig _config;
-        private AnalyzerState _state;
 
         protected ConfigProviderBase(Parsers? overridingParser, Action<string> diagnosticMessageHandler)
         {
             OverridingParser = overridingParser;
             DiagnosticMessageHandler = diagnosticMessageHandler;
-
-            if (overridingParser != null)
-                diagnosticMessageHandler?.Invoke($"Parser overridden with {overridingParser}.");
-        }
-
-        protected bool IsConfigLoaded => _config != null;
-        protected bool IsConfigErroneous => _configException != null;
-
-        public AnalyzerConfigBuilder ConfigBuilder
-        {
-            get
-            {
-                lock (_lockObject)
-                {
-                    if (!_isInitialized)
-                        Initialize();
-
-                    return _configBuilder;
-                }
-            }
         }
 
         public IAnalyzerConfig Config
         {
             get
             {
-                lock (_lockObject)
+                lock (_refreshLockObject)
                 {
-                    if (!_isInitialized)
-                        Initialize();
-
-                    return _config;
+                    EnsureInitialized();
+                    return _configLoadResult.Config;
                 }
             }
         }
 
-        public AnalyzerState State
+        public AnalyzerConfigState ConfigState
         {
             get
             {
-                lock (_lockObject)
+                lock (_refreshLockObject)
                 {
-                    if (!_isInitialized)
-                        Initialize();
-
-                    return _state;
+                    EnsureInitialized();
+                    return _configLoadResult.ConfigState;
                 }
             }
         }
@@ -82,68 +57,53 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             get
             {
-                lock (_lockObject)
+                lock (_refreshLockObject)
                 {
-                    if (!_isInitialized)
-                        Initialize();
-
-                    return _configException;
+                    EnsureInitialized();
+                    return _configLoadResult.ConfigException;
                 }
             }
         }
 
         public void RefreshConfig()
         {
-            lock (_lockObject)
+            lock (_refreshLockObject)
             {
-                if (IsRefreshNeeded())
-                {
-                    DiagnosticMessageHandler?.Invoke($"Reloading config {this}.");
-                    BuildConfig();
-                }
-            }
-        }
+                EnsureInitialized();
 
-        protected abstract AnalyzerState GetState();
-        protected abstract AnalyzerConfigBuilder GetConfigBuilder();
-        protected virtual bool IsRefreshNeeded() => true;
-
-        private void Initialize()
-        {
-            _isInitialized = true;
-            DiagnosticMessageHandler?.Invoke($"Loading config {this}.");
-            BuildConfig();
-        }
-
-        private void BuildConfig()
-        {
-            try
-            {
-                _configBuilder = GetConfigBuilder();
-
-                _configException = null;
-                _config = ConfigBuilder?.ToAnalyzerConfig();
-                _state = GetState();
+                _configLoadResult = RefreshConfigCore();
 
                 DumpConfigToDiagnosticOutput();
             }
-            catch (Exception e)
-            {
-                _configException = e;
-                _config = null;
-                _state = AnalyzerState.ConfigError;
+        }
 
-                DiagnosticMessageHandler?.Invoke($"BuildConfig exception: {e}");
-            }
-            finally
-            {
-                DiagnosticMessageHandler?.Invoke($"Config state={_state}");
-            }
+        protected abstract ConfigLoadResult LoadConfigCore();
+        protected abstract ConfigLoadResult RefreshConfigCore();
+
+        private void EnsureInitialized()
+        {
+            if (_isInitialized)
+                return;
+
+            _isInitialized = true;
+
+            DiagnosticMessageHandler?.Invoke($"Loading config {this}");
+            _configLoadResult = LoadConfigCore();
+
+            DumpConfigToDiagnosticOutput();
         }
 
         private void DumpConfigToDiagnosticOutput()
         {
-            _config?.DumpToStrings().ForEach(i => DiagnosticMessageHandler?.Invoke($"  {i}"));
+            DiagnosticMessageHandler?.Invoke($"ConfigState={_configLoadResult.ConfigState} ({this})");
+
+            if (_configLoadResult.Config != null)
+            {
+                if (OverridingParser.HasValue)
+                    DiagnosticMessageHandler?.Invoke($"Parser overridden with {OverridingParser.Value}.");
+
+                _configLoadResult.Config?.DumpToStrings().ForEach(i => DiagnosticMessageHandler?.Invoke($"  {i}"));
+            }
         }
     }
 }

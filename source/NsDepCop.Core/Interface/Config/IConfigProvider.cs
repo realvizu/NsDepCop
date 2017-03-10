@@ -8,17 +8,17 @@ namespace Codartis.NsDepCop.Core.Interface.Config
     public interface IConfigProvider
     {
         /// <summary>
-        /// Get the config used by the analyzers.
+        /// Gets the config used by the analyzers.
         /// </summary>
         IAnalyzerConfig Config { get; }
 
         /// <summary>
-        /// Gets the state of the analyzer.
+        /// Gets the state of the analyzer's config.
         /// </summary>
-        AnalyzerState State { get; }
+        AnalyzerConfigState ConfigState { get; }
 
         /// <summary>
-        /// Gets the config exception (if any). Returns null if there was no exception.
+        /// Gets the config exception or null if there was no exception.
         /// </summary>
         Exception ConfigException { get; }
 

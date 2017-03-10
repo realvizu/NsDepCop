@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Xml.Linq;
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Config;
 using FluentAssertions;
@@ -9,46 +8,50 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 {
     [TestClass]
-    public class XmlFileConfigProviderTests : FileBasedTestsBase
+    public class XmlFileConfigProviderTests : XmlFileConfigTestBase
     {
         [TestMethod]
-        public void GetState_ConfigNotFound()
+        public void Properties_ConfigNotFound()
         {
             var path = GetTestFilePath("NonExisting.nsdepcop");
             var configProvider = CreateConfigProvider(path);
-            configProvider.State.Should().Be(AnalyzerState.NoConfigFile);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.NoConfig);
             configProvider.ConfigException.Should().BeNull();
+            configProvider.Config.Should().BeNull();
         }
 
         [TestMethod]
-        public void GetState_ConfigEnabled()
+        public void Properties_ConfigEnabled()
         {
             var path = GetTestFilePath("Enabled.nsdepcop");
             var configProvider = CreateConfigProvider(path);
-            configProvider.State.Should().Be(AnalyzerState.Enabled);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             configProvider.ConfigException.Should().BeNull();
+            configProvider.Config.Should().NotBeNull();
         }
 
         [TestMethod]
-        public void GetState_ConfigDisabled()
+        public void Properties_ConfigDisabled()
         {
             var path = GetTestFilePath("Disabled.nsdepcop");
             var configProvider = CreateConfigProvider(path);
-            configProvider.State.Should().Be(AnalyzerState.Disabled);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Disabled);
             configProvider.ConfigException.Should().BeNull();
+            configProvider.Config.Should().BeNull();
         }
 
         [TestMethod]
-        public void GetState_ConfigError()
+        public void Properties_ConfigError()
         {
             var path = GetTestFilePath("Erronous.nsdepcop");
             var configProvider = CreateConfigProvider(path);
-            configProvider.State.Should().Be(AnalyzerState.ConfigError);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.ConfigError);
             configProvider.ConfigException.Should().NotBeNull();
+            configProvider.Config.Should().BeNull();
         }
 
         [TestMethod]
-        public void GetParser_OverridingParser()
+        public void OverridingParser()
         {
             var path = GetTestFilePath("RoslynParser.nsdepcop");
             {
@@ -62,6 +65,20 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         }
 
         [TestMethod]
+        public void RefreshConfig_Unchanged()
+        {
+            var path = GetTestFilePath("Enabled.nsdepcop");
+
+            var configProvider = CreateConfigProvider(path);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
+            var savedConfig = configProvider.Config;
+
+            configProvider.RefreshConfig();
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
+            configProvider.Config.Should().Be(savedConfig);
+        }
+
+        [TestMethod]
         public void RefreshConfig_EnabledToDisabled()
         {
             var path = GetTestFilePath("RefreshConfig_EnabledToDisabled.nsdepcop");
@@ -69,13 +86,13 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             SetIsEnabled(path, "true");
 
             var configProvider = CreateConfigProvider(path);
-            configProvider.State.Should().Be(AnalyzerState.Enabled);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
 
             Thread.Sleep(10);
             SetIsEnabled(path, "false");
 
             configProvider.RefreshConfig();
-            configProvider.State.Should().Be(AnalyzerState.Disabled);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Disabled);
         }
 
         [TestMethod]
@@ -86,13 +103,13 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             SetIsEnabled(path, "true");
 
             var configProvider = CreateConfigProvider(path);
-            configProvider.State.Should().Be(AnalyzerState.Enabled);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
 
             Thread.Sleep(10);
             SetIsEnabled(path, "maybe");
 
             configProvider.RefreshConfig();
-            configProvider.State.Should().Be(AnalyzerState.ConfigError);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.ConfigError);
         }
 
         [TestMethod]
@@ -103,12 +120,12 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             Delete(path);
 
             var configProvider = CreateConfigProvider(path);
-            configProvider.State.Should().Be(AnalyzerState.NoConfigFile);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.NoConfig);
 
             CreateConfigFile(path, "true");
 
             configProvider.RefreshConfig();
-            configProvider.State.Should().Be(AnalyzerState.Enabled);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
         }
 
         [TestMethod]
@@ -120,31 +137,16 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             CreateConfigFile(path, "true");
 
             var configProvider = CreateConfigProvider(path);
-            configProvider.State.Should().Be(AnalyzerState.Enabled);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
 
             Delete(path);
 
             configProvider.RefreshConfig();
-            configProvider.State.Should().Be(AnalyzerState.NoConfigFile);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.NoConfig);
         }
 
-        private static XmlFileConfigProvider CreateConfigProvider(string path, Parsers? overridingParser = null)
-        {
-            return new XmlFileConfigProvider(path, overridingParser, Console.WriteLine);
-        }
-
-        private static void CreateConfigFile(string path, string isEnabledString)
-        {
-            var document = XDocument.Parse($"<NsDepCopConfig IsEnabled='{isEnabledString}'/>");
-            document.Save(path);
-        }
-
-        private static void SetIsEnabled(string path, string isEnabledString)
-        {
-            var document = XDocument.Load(path);
-            document.Root.Attribute("IsEnabled").SetValue(isEnabledString);
-            document.Save(path);
-        }
+        private static XmlFileConfigProvider CreateConfigProvider(string path, Parsers? overridingParser = null) 
+            => new XmlFileConfigProvider(path, overridingParser, Console.WriteLine);
     }
 }
 

@@ -36,7 +36,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         }
 
         public IAnalyzerConfig Config => _config;
-        public AnalyzerState State => _configProvider.State;
+        public AnalyzerConfigState ConfigState => _configProvider.ConfigState;
         public Exception ConfigException => _configProvider.ConfigException;
 
         public int HitCount => _typeDependencyValidator?.HitCount ?? 0;
@@ -103,13 +103,15 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             var oldConfig = _config;
             _config = _configProvider.Config;
 
-            if (oldConfig != _config)
-                UpdateAnalyzerLogic();
+            if (oldConfig == _config)
+                return;
+
+            UpdateAnalyzerLogic();
         }
 
         private void UpdateAnalyzerLogic()
         {
-            if (State == AnalyzerState.Enabled)
+            if (ConfigState == AnalyzerConfigState.Enabled)
             {
                 _typeDependencyValidator = new CachingTypeDependencyValidator(_config, _diagnosticMessageHandler);
                 _typeDependencyEnumerator = TypeDependencyEnumeratorFactory.Create(_config.Parser);
@@ -122,8 +124,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
         private void EnsureValidStateForAnalysis()
         {
-            if (_configProvider.State != AnalyzerState.Enabled)
-                throw new InvalidOperationException($"Cannot analyze project because the analyzer state is {_configProvider.State}.");
+            if (_configProvider.ConfigState != AnalyzerConfigState.Enabled)
+                throw new InvalidOperationException($"Cannot analyze project because the analyzer state is {_configProvider.ConfigState}.");
         }
     }
 }

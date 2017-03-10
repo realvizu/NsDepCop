@@ -1,77 +1,101 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using Codartis.NsDepCop.Core.Interface;
-//using Codartis.NsDepCop.Core.Interface.Config;
-//using Codartis.NsDepCop.Core.Util;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Codartis.NsDepCop.Core.Interface;
+using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 
-//namespace Codartis.NsDepCop.Core.Implementation.Config
-//{
-//    /// <summary>
-//    /// Traverses the source tree and reads all config files to create a composite config.
-//    /// Starts from the specified folder and traverses the folder tree upwards till the root is reached.
-//    /// </summary>
-//    /// <remarks>
-//    /// Base class ensures that all operations are executed in an atomic way so no extra locking needed.
-//    /// </remarks>
-//    internal class MultiLevelXmlFileConfigProvider : ConfigProviderBase
-//    {
-//        /// <summary>
-//        /// Just a precaution to avoid runaway folder traversals.
-//        /// </summary>
-//        private const int MaxFolderLevelsToTraverse = 10;
+namespace Codartis.NsDepCop.Core.Implementation.Config
+{
+    /// <summary>
+    /// Traverses the source tree and reads all config files to create a composite config.
+    /// Starts from the specified folder and traverses the folder tree upwards till the root is reached.
+    /// </summary>
+    /// <remarks>
+    /// Base class ensures that all operations are executed in an atomic way so no extra locking needed.
+    /// </remarks>
+    internal sealed class MultiLevelXmlFileConfigProvider : ConfigProviderBase
+    {
+        /// <summary>
+        /// Just a precaution to avoid runaway folder traversals.
+        /// </summary>
+        private const int MaxFolderLevelsToTraverse = 10;
 
-//        private readonly string _projectFolder;
-//        private Dictionary<string, XmlFileConfigProvider> _fileConfigProvidersByConfigPath;
+        private ConfigLoadResult _lastConfigLoadResult;
 
-//        public MultiLevelXmlFileConfigProvider(string projectFolder, Parsers? overridingParser = null, Action<string> diagnosticMessageHandler = null)
-//            :base(overridingParser, diagnosticMessageHandler)
-//        {
-//            _projectFolder = projectFolder;
-//            _fileConfigProvidersByConfigPath = new Dictionary<string, XmlFileConfigProvider>();
-//        }
+        public string ProjectFolder { get; }
 
-//        public override string ToString() => $"MultiLevelXmlConfig:'{_projectFolder}'";
+        /// <summary>
+        /// The collection of all file config providers that must be composed to a single config.
+        /// Already sorted from most general (closer to root folder) to most specific (the project folder).
+        /// </summary>
+        private readonly List<XmlFileConfigProvider> _fileConfigProviders;
 
-//        protected override AnalyzerState GetState()
-//        {
-//            if (!_fileConfigProviders.Any())
-//                return AnalyzerState.NoConfigFile;
+        public MultiLevelXmlFileConfigProvider(string projectFolder, Parsers? overridingParser = null, Action<string> diagnosticMessageHandler = null)
+            : base(overridingParser, diagnosticMessageHandler)
+        {
+            ProjectFolder = projectFolder;
+            _fileConfigProviders = CreateConfigProviders();
+        }
 
-//            if (_fileConfigProviders.Any(i => i.ConfigException != null))
-//                return AnalyzerState.ConfigError;
+        public override string ToString() => $"MultiLevelXmlConfig:'{ProjectFolder}'";
 
-//            if (IsConfigLoaded && !Config.IsEnabled)
-//                return AnalyzerState.Disabled;
+        protected override ConfigLoadResult LoadConfigCore()
+        {
+            _lastConfigLoadResult = CombineFileConfigProviders();
+            return _lastConfigLoadResult;
+        }
 
-//            if (IsConfigLoaded && Config.IsEnabled)
-//                return AnalyzerState.Enabled;
+        protected override ConfigLoadResult RefreshConfigCore()
+        {
+            if (!AnyChildConfigChanged())
+                return _lastConfigLoadResult;
 
-//            throw new Exception("Inconsistent DependencyAnalyzer state.");
-//        }
+            DiagnosticMessageHandler?.Invoke($"Refreshing config {this}.");
 
-//        protected override AnalyzerConfigBuilder GetConfigBuilder()
-//        {
-//            _fileConfigProviders = CreateConfigProviders();
+            foreach (var configProvider in _fileConfigProviders)
+                configProvider.RefreshConfig();
 
-//            var configBuilder = new AnalyzerConfigBuilder(OverridingParser);
+            return LoadConfigCore();
+        }
 
-//            foreach (var configProvider in Enumerable.Reverse(_fileConfigProviders))
-//            {
-//                DiagnosticMessageHandler?.Invoke($"Found config file: '{configProvider.ConfigFilePath}'");
+        private ConfigLoadResult CombineFileConfigProviders()
+        {
+            var configBuilder = new AnalyzerConfigBuilder(OverridingParser);
 
-//                if (configProvider.State == AnalyzerState.Enabled)
-//                    configBuilder.Combine(configProvider.ConfigBuilder);
-//            }
+            var anyConfigFound = false;
+            foreach (var childConfigProvider in _fileConfigProviders)
+            {
+                var childConfigState = childConfigProvider.ConfigState;
+                switch (childConfigState)
+                {
+                    case AnalyzerConfigState.NoConfig:
+                        break;
 
-//            return configBuilder;
-//        }
+                    case AnalyzerConfigState.Enabled:
+                    case AnalyzerConfigState.Disabled:
+                        anyConfigFound = true;
+                        configBuilder.Combine(childConfigProvider.ConfigBuilder);
+                        break;
 
-//        private List<XmlFileConfigProvider> CreateConfigProviders()
-//        {
-//            return FileFinder.FindInParentFolders(ProductConstants.DefaultConfigFileName, _projectFolder, MaxFolderLevelsToTraverse)
-//                .Select(configFilePath => new XmlFileConfigProvider(configFilePath, OverridingParser, DiagnosticMessageHandler))
-//                .ToList();
-//        }
-//    }
-//}
+                    case AnalyzerConfigState.ConfigError:
+                        return ConfigLoadResult.CreateWithError(childConfigProvider.ConfigException);
+
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(childConfigState), childConfigState, null);
+                }
+            }
+
+            return anyConfigFound
+                ? ConfigLoadResult.CreateWithConfig(configBuilder.ToAnalyzerConfig())
+                : ConfigLoadResult.CreateWithNoConfig();
+        }
+
+        private bool AnyChildConfigChanged() => _fileConfigProviders.Any(i => i.HasConfigFileChanged());
+
+        private List<XmlFileConfigProvider> CreateConfigProviders()
+        {
+            return FileHelper.GetFilenameWithFolderPaths(ProductConstants.DefaultConfigFileName, ProjectFolder, MaxFolderLevelsToTraverse).OrderBy(i => i.Length).Select(i => new XmlFileConfigProvider(i, OverridingParser, DiagnosticMessageHandler)).ToList();
+        }
+    }
+}

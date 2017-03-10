@@ -85,27 +85,27 @@ namespace Codartis.NsDepCop.MsBuildTask
                 {
                     var runWasSuccessful = true;
 
-                    switch (dependencyAnalyzer.State)
+                    switch (dependencyAnalyzer.ConfigState)
                     {
-                        case AnalyzerState.NoConfigFile:
+                        case AnalyzerConfigState.NoConfig:
                             LogIssue(IssueDefinitions.NoConfigFileIssue);
                             break;
 
-                        case AnalyzerState.Disabled:
+                        case AnalyzerConfigState.Disabled:
                             LogIssue(IssueDefinitions.ConfigDisabledIssue);
                             break;
 
-                        case AnalyzerState.ConfigError:
+                        case AnalyzerConfigState.ConfigError:
                             LogIssue(IssueDefinitions.ConfigExceptionIssue, dependencyAnalyzer.ConfigException);
                             runWasSuccessful = false;
                             break;
 
-                        case AnalyzerState.Enabled:
+                        case AnalyzerConfigState.Enabled:
                             runWasSuccessful = ExecuteAnalysis(dependencyAnalyzer);
                             break;
 
                         default:
-                            throw new Exception($"Unexpected ConfigState: {dependencyAnalyzer.State}");
+                            throw new Exception($"Unexpected ConfigState: {dependencyAnalyzer.ConfigState}");
                     }
 
                     return runWasSuccessful;

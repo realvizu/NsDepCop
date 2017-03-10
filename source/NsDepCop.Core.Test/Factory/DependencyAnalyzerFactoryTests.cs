@@ -13,7 +13,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         {
             var configFilePath = GetTestFilePath("RoslynParser.nsdepcop");
             var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFilePath);
-            dependencyAnalyzer.State.Should().Be(AnalyzerState.Enabled);
+            dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.Parser.Should().Be(Parsers.Roslyn);
         }
 
@@ -22,7 +22,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         {
             var configFilePath = GetTestFilePath("RoslynParser.nsdepcop");
             var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFilePath, Parsers.NRefactory);
-            dependencyAnalyzer.State.Should().Be(AnalyzerState.Enabled);
+            dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.Parser.Should().Be(Parsers.NRefactory);
         }
     }
