@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using Codartis.NsDepCop.TestUtil;
 
 namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 {

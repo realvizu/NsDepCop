@@ -2,6 +2,7 @@
 using System.Xml.Linq;
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

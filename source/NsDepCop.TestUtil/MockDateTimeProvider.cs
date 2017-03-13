@@ -1,7 +1,7 @@
 ﻿using System;
 using Codartis.NsDepCop.Core.Util;
 
-namespace Codartis.NsDepCop.VisualStudioIntegration.Test
+namespace Codartis.NsDepCop.TestUtil
 {
     /// <summary>
     /// Implements a date time provider for testing purposes.

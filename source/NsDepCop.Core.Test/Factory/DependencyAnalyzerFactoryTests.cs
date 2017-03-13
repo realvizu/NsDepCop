@@ -1,5 +1,6 @@
 ﻿using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

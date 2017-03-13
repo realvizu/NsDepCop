@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

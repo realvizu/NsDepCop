@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.NuGet", "NsDepCop.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.VisualStudioIntegration.Test", "NsDepCop.VisualStudioIntegration.Test\NsDepCop.VisualStudioIntegration.Test.csproj", "{7BF36CB7-19D8-42B9-B319-F5567116B320}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.TestUtil", "NsDepCop.TestUtil\NsDepCop.TestUtil.csproj", "{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -181,6 +183,18 @@ Global
 		{7BF36CB7-19D8-42B9-B319-F5567116B320}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7BF36CB7-19D8-42B9-B319-F5567116B320}.Release|x86.ActiveCfg = Release|Any CPU
 		{7BF36CB7-19D8-42B9-B319-F5567116B320}.Release|x86.Build.0 = Release|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|x86.Build.0 = Debug|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|x86.ActiveCfg = Release|Any CPU
+		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
