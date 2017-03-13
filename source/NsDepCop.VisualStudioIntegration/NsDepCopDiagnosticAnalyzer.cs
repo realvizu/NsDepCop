@@ -23,7 +23,10 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class NsDepCopDiagnosticAnalyzer : DiagnosticAnalyzer, IDisposable
     {
-        private readonly ProjectAnalyzerProvider _analyzerProvider;
+        private static readonly TimeSpan AnalyzerCachingTimeSpan = TimeSpan.FromMilliseconds(1000);
+
+        private readonly ICsprojResolver _csprojResolver;
+        private readonly IDependencyAnalyzerProvider _analyzerProvider;
 
         /// <summary>
         /// Descriptor for the 'Illegal namespace dependency' diagnostic.
@@ -39,7 +42,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public NsDepCopDiagnosticAnalyzer()
         {
-            _analyzerProvider = new ProjectAnalyzerProvider(LogDiagnosticMessages);
+            _csprojResolver = new CachingCsprojResolver(LogDiagnosticMessages);
+            _analyzerProvider = new CachingDependencyAnalyzerProvider(AnalyzerCachingTimeSpan, LogDiagnosticMessages);
         }
 
         public void Dispose()
@@ -73,7 +77,11 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             var sourceFilePath = syntaxNode.SyntaxTree.FilePath;
             var assemblyName = semanticModel.Compilation.AssemblyName;
 
-            var dependencyAnalyzer = _analyzerProvider.GetDependencyAnalyzer(sourceFilePath, assemblyName);
+            var csprojFilePath = _csprojResolver.GetCsprojFile(sourceFilePath, assemblyName);
+            if (csprojFilePath == null)
+                return;
+
+            var dependencyAnalyzer = _analyzerProvider.GetDependencyAnalyzer(csprojFilePath);
             if (dependencyAnalyzer == null)
                 return;
 

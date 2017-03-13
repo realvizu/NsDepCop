@@ -71,9 +71,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             {
                 EnsureInitialized();
 
+                var oldConfig = Config;
+
                 _configLoadResult = RefreshConfigCore();
 
-                DumpConfigToDiagnosticOutput();
+                if (oldConfig != Config)
+                    DumpConfigToDiagnosticOutput();
             }
         }
 
