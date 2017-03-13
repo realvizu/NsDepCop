@@ -4,7 +4,6 @@ using System.IO;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
@@ -16,20 +15,18 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     internal class DependencyAnalyzerProvider : IDependencyAnalyzerProvider
     {
         private readonly IDependencyAnalyzerFactory _dependencyAnalyzerFactory;
-        private readonly Action<string> _diagnosticMessageHandler;
 
         /// <summary>
         /// Maps project files to their corresponding dependency analyzer. The key is the project file name with full path.
         /// </summary>
         private readonly ConcurrentDictionary<string, IDependencyAnalyzer> _projectFileToDependencyAnalyzerMap;
 
-        public DependencyAnalyzerProvider(IDependencyAnalyzerFactory dependencyAnalyzerFactory, Action<string> diagnosticMessageHandler = null)
+        public DependencyAnalyzerProvider(IDependencyAnalyzerFactory dependencyAnalyzerFactory)
         {
             if (dependencyAnalyzerFactory == null)
                 throw new ArgumentNullException(nameof(dependencyAnalyzerFactory));
 
             _dependencyAnalyzerFactory = dependencyAnalyzerFactory;
-            _diagnosticMessageHandler = diagnosticMessageHandler;
             _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IDependencyAnalyzer>();
         }
 
@@ -56,7 +53,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private IDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
         {
             var configFileName = CreateConfigFileName(projectFilePath);
-            return _dependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, Parsers.Roslyn, _diagnosticMessageHandler);
+            return _dependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName);
         }
 
         private static string CreateConfigFileName(string projectFilePath)

@@ -34,14 +34,14 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
 
         public TypeDependency(string fromNamespaceName, string fromTypeName, string toNamespaceName, string toTypeName, SourceSegment sourceSegment)
         {
-            if (string.IsNullOrWhiteSpace(fromNamespaceName))
-                throw new ArgumentException("Should not be null or whitespace.", nameof(fromNamespaceName));
+            if (fromNamespaceName == null)
+                throw new ArgumentNullException(nameof(fromNamespaceName));
 
             if (string.IsNullOrWhiteSpace(fromTypeName))
                 throw new ArgumentException("Should not be null or whitespace.", nameof(fromTypeName));
 
-            if (string.IsNullOrWhiteSpace(toNamespaceName))
-                throw new ArgumentException("Should not be null or whitespace.", nameof(toNamespaceName));
+            if (toNamespaceName==null)
+                throw new ArgumentNullException(nameof(toNamespaceName));
 
             if (string.IsNullOrWhiteSpace(toTypeName))
                 throw new ArgumentException("Should not be null or whitespace.", nameof(toTypeName));

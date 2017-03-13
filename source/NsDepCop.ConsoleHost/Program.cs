@@ -14,7 +14,6 @@ namespace Codartis.NsDepCop.ConsoleHost
     /// </summary>
     internal class Program
     {
-        private static readonly DependencyAnalyzerFactory DependencyAnalyzerFactory = new DependencyAnalyzerFactory();
         private static bool _isVerbose;
 
         public static int Main(string[] args)
@@ -47,7 +46,8 @@ namespace Codartis.NsDepCop.ConsoleHost
         {
             var startTime = DateTime.Now;
 
-            var dependencyAnalyzer = DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, overridingParser, LogDiagnosticMessage);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogDiagnosticMessage).OverrideParser(overridingParser);
+            var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName);
             var illegalDependencies = dependencyAnalyzer.AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths).ToList();
 
             var endTime = DateTime.Now;

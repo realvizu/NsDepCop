@@ -8,9 +8,11 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <summary>
     /// Builds analyzer config objects.
     /// </summary>
-    internal class AnalyzerConfigBuilder
+    internal class AnalyzerConfigBuilder : IConfigInitializer<AnalyzerConfigBuilder>
     {
-        private readonly bool _isParserOverridden;
+        public Parsers? OverridingParser { get; private set; }
+        public Parsers? DefaultParser { get; private set; }
+        public Importance? DefaultInfoImportance { get; private set; }
 
         public bool? IsEnabled { get; private set; }
         public IssueKind? IssueKind { get; private set; }
@@ -23,11 +25,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get;  }
         public int? MaxIssueCount { get; private set; }
 
-        public AnalyzerConfigBuilder(Parsers? overridingParser = null)
+        public AnalyzerConfigBuilder()
         {
-            _isParserOverridden = overridingParser.HasValue;
-            Parser = overridingParser;
-
             AllowRules = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
             DisallowRules = new HashSet<NamespaceDependencyRule>();
             VisibleTypesByNamespace = new Dictionary<Namespace, TypeNameSet>();
@@ -38,8 +37,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             return new AnalyzerConfig(
                 IsEnabled ?? ConfigDefaults.IsEnabled,
                 IssueKind ?? ConfigDefaults.IssueKind,
-                InfoImportance ?? ConfigDefaults.InfoImportance,
-                Parser ?? ConfigDefaults.Parser,
+                InfoImportance ?? DefaultInfoImportance ?? ConfigDefaults.InfoImportance,
+                GetParser() ?? DefaultParser ?? ConfigDefaults.Parser,
                 ChildCanDependOnParentImplicitly ?? ConfigDefaults.ChildCanDependOnParentImplicitly,
                 AllowRules.ToImmutableDictionary(),
                 DisallowRules.ToImmutableHashSet(),
@@ -47,6 +46,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 MaxIssueCount ?? ConfigDefaults.MaxIssueCount
                 );
         }
+
+        private Parsers? GetParser() => OverridingParser.HasValue ? OverridingParser : Parser;
 
         public AnalyzerConfigBuilder Combine(AnalyzerConfigBuilder analyzerConfigBuilder)
         {
@@ -61,6 +62,24 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             AddVisibleTypesByNamespace(analyzerConfigBuilder.VisibleTypesByNamespace);
             SetMaxIssueCount(analyzerConfigBuilder.MaxIssueCount);
 
+            return this;
+        }
+
+        public AnalyzerConfigBuilder OverrideParser(Parsers? overridingParser)
+        {
+            OverridingParser = overridingParser;
+            return this;
+        }
+
+        public AnalyzerConfigBuilder SetDefaultParser(Parsers? defaultParser)
+        {
+            DefaultParser = defaultParser;
+            return this;
+        }
+
+        public AnalyzerConfigBuilder SetDefaultInfoImportance(Importance? defaultInfoImportance)
+        {
+            DefaultInfoImportance = defaultInfoImportance;
             return this;
         }
 
@@ -87,7 +106,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public AnalyzerConfigBuilder SetParser(Parsers? parser)
         {
-            if (parser.HasValue && !_isParserOverridden)
+            if (parser.HasValue)
                 Parser = parser;
             return this;
         }

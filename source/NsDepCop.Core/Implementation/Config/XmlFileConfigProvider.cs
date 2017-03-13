@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Xml.Linq;
-using Codartis.NsDepCop.Core.Interface.Config;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
@@ -12,8 +11,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// </remarks>
     internal sealed class XmlFileConfigProvider : FileConfigProviderBase
     {
-        public XmlFileConfigProvider(string configFilePath, Parsers? overridingParser = null, Action<string> diagnosticMessageHandler = null)
-            : base(configFilePath, overridingParser, diagnosticMessageHandler)
+        public XmlFileConfigProvider(string configFilePath, Action<string> diagnosticMessageHandler = null)
+            : base(configFilePath, diagnosticMessageHandler)
         {
         }
 
@@ -22,7 +21,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         protected override AnalyzerConfigBuilder CreateConfigBuilderFromFile(string configFilePath)
         {
             var configXml = XDocument.Load(configFilePath, LoadOptions.SetLineInfo);
-            return XmlConfigParser.Parse(configXml, OverridingParser);
+            return XmlConfigParser.Parse(configXml);
         }
     }
 }

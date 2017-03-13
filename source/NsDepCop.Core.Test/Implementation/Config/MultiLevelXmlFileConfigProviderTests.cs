@@ -184,7 +184,10 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             return Path.Combine(path, ProductConstants.DefaultConfigFileName);
         }
 
-        private static MultiLevelXmlFileConfigProvider CreateConfigProvider(string folder, Parsers? overridingParser = null) 
-            => new MultiLevelXmlFileConfigProvider(folder, overridingParser, Console.WriteLine);
+        private static MultiLevelXmlFileConfigProvider CreateConfigProvider(string folder, Parsers? overridingParser = null)
+        {
+            return new MultiLevelXmlFileConfigProvider(folder, Console.WriteLine)
+                .OverrideParser(overridingParser) as MultiLevelXmlFileConfigProvider;
+        }
     }
 }

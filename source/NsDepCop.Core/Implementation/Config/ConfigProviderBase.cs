@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <remarks>
     /// Uses locking to ensure that no property can be read while refreshing the config.
     /// </remarks>
-    internal abstract class ConfigProviderBase : IConfigProvider
+    internal abstract class ConfigProviderBase : IConfigProvider, IConfigInitializer<ConfigProviderBase>
     {
         /// <summary>
         /// This lock ensures that no property can be read while refreshing the config.
@@ -20,13 +20,32 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private bool _isInitialized;
         private ConfigLoadResult _configLoadResult;
 
-        protected Parsers? OverridingParser { get; }
         protected Action<string> DiagnosticMessageHandler { get; }
+        protected Parsers? OverridingParser { get; private set; }
+        protected Parsers? DefaultParser { get; private set; }
+        protected Importance? DefaultInfoImportance { get; private set; }
 
-        protected ConfigProviderBase(Parsers? overridingParser, Action<string> diagnosticMessageHandler)
+        protected ConfigProviderBase(Action<string> diagnosticMessageHandler)
+        {
+            DiagnosticMessageHandler = diagnosticMessageHandler;
+        }
+
+        public ConfigProviderBase OverrideParser(Parsers? overridingParser)
         {
             OverridingParser = overridingParser;
-            DiagnosticMessageHandler = diagnosticMessageHandler;
+            return this;
+        }
+
+        public ConfigProviderBase SetDefaultParser(Parsers? defaultParser)
+        {
+            DefaultParser = defaultParser;
+            return this;
+        }
+
+        public ConfigProviderBase SetDefaultInfoImportance(Importance? defaultInfoImportance)
+        {
+            DefaultInfoImportance = defaultInfoImportance;
+            return this;
         }
 
         public IAnalyzerConfig Config

@@ -111,6 +111,7 @@
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
     <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
+    <Compile Include="Interface\Config\IConfigInitializer.cs" />
     <Compile Include="Util\DateTimeProvider.cs" />
     <Compile Include="Util\FileHelper.cs" />
     <Compile Include="Implementation\Config\ConfigProviderBase.cs" />

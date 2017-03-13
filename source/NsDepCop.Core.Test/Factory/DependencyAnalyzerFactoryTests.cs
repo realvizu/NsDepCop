@@ -22,7 +22,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         public void CreateFromXmlConfigFile_EnabledWithRoslynParser_OverrideWithNRefactoryParser()
         {
             var configFilePath = GetTestFilePath("RoslynParser.nsdepcop");
-            var dependencyAnalyzer = new DependencyAnalyzerFactory().CreateFromXmlConfigFile(configFilePath, Parsers.NRefactory);
+            var dependencyAnalyzer = new DependencyAnalyzerFactory().OverrideParser(Parsers.NRefactory).CreateFromXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.Parser.Should().Be(Parsers.NRefactory);
         }

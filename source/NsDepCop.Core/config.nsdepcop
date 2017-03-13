@@ -11,16 +11,7 @@
     <Allowed From="Codartis.NsDepCop.Core.Implementation.*" To="Codartis.NsDepCop.Core.Interface" />
 
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Interface.*"/>
-    <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.Analysis">
-        <VisibleMembers>
-            <Type Name="DependencyAnalyzer" />
-        </VisibleMembers>
-    </Allowed>
-    <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.Config">
-        <VisibleMembers>
-            <Type Name="XmlFileConfigProvider" />
-        </VisibleMembers>
-    </Allowed>
+    <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.*"/>
 
     <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis" To="Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory">
         <VisibleMembers>

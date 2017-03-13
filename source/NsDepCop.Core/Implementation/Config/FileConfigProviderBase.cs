@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using Codartis.NsDepCop.Core.Interface.Config;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
@@ -21,8 +19,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public string ConfigFilePath { get; }
         public AnalyzerConfigBuilder ConfigBuilder { get; private set; }
 
-        protected FileConfigProviderBase(string configFilePath, Parsers? overridingParser, Action<string> diagnosticMessageHandler)
-            : base(overridingParser, diagnosticMessageHandler)
+        protected FileConfigProviderBase(string configFilePath, Action<string> diagnosticMessageHandler)
+            : base(diagnosticMessageHandler)
         {
             ConfigFilePath = configFilePath;
         }
@@ -61,11 +59,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
                 _configLastLoadUtc = DateTime.UtcNow;
 
-                ConfigBuilder = CreateConfigBuilderFromFile(ConfigFilePath);
+                ConfigBuilder = CreateConfigBuilderFromFile(ConfigFilePath)
+                    .OverrideParser(OverridingParser)
+                    .SetDefaultParser(DefaultParser)
+                    .SetDefaultInfoImportance(DefaultInfoImportance);
 
-                Debug.Assert(ConfigBuilder != null);
                 var config = ConfigBuilder.ToAnalyzerConfig();
-
                 return ConfigLoadResult.CreateWithConfig(config);
             }
             catch (Exception e)

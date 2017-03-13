@@ -13,12 +13,24 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         public void ToAnalyzerConfig_AppliesDefaults()
         {
             var config = new AnalyzerConfigBuilder().ToAnalyzerConfig();
+
             config.IsEnabled.Should().Be(ConfigDefaults.IsEnabled);
             config.IssueKind.Should().Be(ConfigDefaults.IssueKind);
             config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
             config.Parser.Should().Be(ConfigDefaults.Parser);
             config.ChildCanDependOnParentImplicitly.Should().Be(ConfigDefaults.ChildCanDependOnParentImplicitly);
             config.MaxIssueCount.Should().Be(ConfigDefaults.MaxIssueCount);
+        }
+
+        [TestMethod]
+        public void ToAnalyzerConfig_OverridingParserRespected()
+        {
+            var config = new AnalyzerConfigBuilder()
+                .OverrideParser(Parsers.NRefactory)
+                .SetParser(Parsers.Roslyn)
+                .ToAnalyzerConfig();
+
+            config.Parser.Should().Be(Parsers.NRefactory);
         }
 
         [TestMethod]
@@ -65,15 +77,6 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder.Parser.Should().Be(Parsers.NRefactory);
             configBuilder.ChildCanDependOnParentImplicitly.Should().Be(true);
             configBuilder.MaxIssueCount.Should().Be(42);
-        }
-
-        [TestMethod]
-        public void SetParser_OverridingParserRespected()
-        {
-            var configBuilder = new AnalyzerConfigBuilder(Parsers.NRefactory)
-                .SetParser(Parsers.Roslyn);
-
-            configBuilder.Parser.Should().Be(Parsers.NRefactory);
         }
 
         [TestMethod]

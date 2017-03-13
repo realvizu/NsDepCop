@@ -1,7 +1,5 @@
-﻿using System;
-using Codartis.NsDepCop.Core.Factory;
+﻿using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Config;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -27,7 +25,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 
             dependencyAnalyzerProvider.GetDependencyAnalyzer(filePath);
 
-            _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromXmlConfigFile(It.IsAny<string>(), Parsers.Roslyn, It.IsAny<Action<string>>()), Times.Once);
+            _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromXmlConfigFile(It.IsAny<string>()), Times.Once);
         }
 
         [TestMethod]
@@ -38,15 +36,15 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
             var dependencyAnalyzerProvider = CreateDependencyAnalyzerProvider();
 
             var analyzerMock = new Mock<IDependencyAnalyzer>();
-            _dependencyAnalyzerFactoryMock.Setup(i => i.CreateFromXmlConfigFile(It.IsAny<string>(), Parsers.Roslyn, It.IsAny<Action<string>>()))
+            _dependencyAnalyzerFactoryMock.Setup(i => i.CreateFromXmlConfigFile(It.IsAny<string>()))
                 .Returns(analyzerMock.Object);
 
             dependencyAnalyzerProvider.GetDependencyAnalyzer(filePath);
-            _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromXmlConfigFile(It.IsAny<string>(), Parsers.Roslyn, It.IsAny<Action<string>>()), Times.Once);
+            _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromXmlConfigFile(It.IsAny<string>()), Times.Once);
             analyzerMock.Verify(i => i.RefreshConfig(), Times.Never);
 
             dependencyAnalyzerProvider.GetDependencyAnalyzer(filePath);
-            _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromXmlConfigFile(It.IsAny<string>(), Parsers.Roslyn, It.IsAny<Action<string>>()), Times.Once);
+            _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromXmlConfigFile(It.IsAny<string>()), Times.Once);
             analyzerMock.Verify(i => i.RefreshConfig(), Times.Once);
         }
 

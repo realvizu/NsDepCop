@@ -63,8 +63,6 @@ namespace Codartis.NsDepCop.MsBuildTask
         private IEnumerable<string> SourceFilePaths => Compile.ToList().Select(i => i.ItemSpec);
         private IEnumerable<string> ReferencedAssemblyPaths => ReferencePath.ToList().Select(i => i.ItemSpec);
 
-        private readonly DependencyAnalyzerFactory _dependencyAnalyzerFactory = new DependencyAnalyzerFactory();
-
         /// <summary>
         /// Executes the custom MsBuild task. Called by the MsBuild tool.
         /// </summary>
@@ -77,14 +75,15 @@ namespace Codartis.NsDepCop.MsBuildTask
             {
                 LogDiagnosticMessages(GetInputParameterDiagnosticMessages());
 
-                var infoImportance = Parse<Importance>(InfoImportance.GetValue());
-                var parser = Parse<Parsers>(Parser.GetValue());
-                // TODO: use these values as defaults
-
+                var defaultInfoImportance = Parse<Importance>(InfoImportance.GetValue());
+                var defaultParser = Parse<Parsers>(Parser.GetValue());
                 var configFileName = Path.Combine(BaseDirectory.ItemSpec, ProductConstants.DefaultConfigFileName);
-                
-                using (var dependencyAnalyzer = 
-                    _dependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, diagnosticMessageHandler: LogDiagnosticMessage))
+
+                var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogDiagnosticMessage)
+                    .SetDefaultParser(defaultParser)
+                    .SetDefaultInfoImportance(defaultInfoImportance);
+
+                using (var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName))
                 {
                     var runWasSuccessful = true;
 

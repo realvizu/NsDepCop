@@ -145,8 +145,11 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.NoConfig);
         }
 
-        private static XmlFileConfigProvider CreateConfigProvider(string path, Parsers? overridingParser = null) 
-            => new XmlFileConfigProvider(path, overridingParser, Console.WriteLine);
+        private static XmlFileConfigProvider CreateConfigProvider(string path, Parsers? overridingParser = null)
+        {
+            return new XmlFileConfigProvider(path, Console.WriteLine)
+                .OverrideParser(overridingParser) as XmlFileConfigProvider;
+        }
     }
 }
 

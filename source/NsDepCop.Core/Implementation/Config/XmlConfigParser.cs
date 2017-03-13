@@ -29,9 +29,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private const string ToAttributeName = "To";
         private const string TypeNameAttributeName = "Name";
 
-        public static AnalyzerConfigBuilder Parse(XDocument configXml, Parsers? overridingParser = null)
+        public static AnalyzerConfigBuilder Parse(XDocument configXml)
         {
-            var configBuilder = new AnalyzerConfigBuilder(overridingParser);
+            var configBuilder = new AnalyzerConfigBuilder();
 
             var rootElement = configXml.Element(RootElementName);
             if (rootElement == null)

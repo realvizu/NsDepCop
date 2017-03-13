@@ -31,8 +31,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         /// </summary>
         private readonly List<XmlFileConfigProvider> _fileConfigProviders;
 
-        public MultiLevelXmlFileConfigProvider(string projectFolder, Parsers? overridingParser = null, Action<string> diagnosticMessageHandler = null)
-            : base(overridingParser, diagnosticMessageHandler)
+        public MultiLevelXmlFileConfigProvider(string projectFolder, Action<string> diagnosticMessageHandler = null)
+            : base(diagnosticMessageHandler)
         {
             ProjectFolder = projectFolder;
             _fileConfigProviders = CreateConfigProviders();
@@ -61,7 +61,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         private ConfigLoadResult CombineFileConfigProviders()
         {
-            var configBuilder = new AnalyzerConfigBuilder(OverridingParser);
+            var configBuilder = CreateAnalyzerConfigBuilder();
 
             var anyConfigFound = false;
             foreach (var childConfigProvider in _fileConfigProviders)
@@ -91,11 +91,22 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 : ConfigLoadResult.CreateWithNoConfig();
         }
 
+        private AnalyzerConfigBuilder CreateAnalyzerConfigBuilder()
+        {
+            return new AnalyzerConfigBuilder()
+                .OverrideParser(OverridingParser)
+                .SetDefaultParser(DefaultParser)
+                .SetDefaultInfoImportance(DefaultInfoImportance);
+        }
+
         private bool AnyChildConfigChanged() => _fileConfigProviders.Any(i => i.HasConfigFileChanged());
 
         private List<XmlFileConfigProvider> CreateConfigProviders()
         {
-            return FileHelper.GetFilenameWithFolderPaths(ProductConstants.DefaultConfigFileName, ProjectFolder, MaxFolderLevelsToTraverse).OrderBy(i => i.Length).Select(i => new XmlFileConfigProvider(i, OverridingParser, DiagnosticMessageHandler)).ToList();
+            return FileHelper.GetFilenameWithFolderPaths(ProductConstants.DefaultConfigFileName, ProjectFolder, MaxFolderLevelsToTraverse)
+                .OrderBy(i => i.Length)
+                .Select(i => new XmlFileConfigProvider(i, DiagnosticMessageHandler))
+                .ToList();
         }
     }
 }
