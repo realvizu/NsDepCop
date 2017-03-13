@@ -7,11 +7,11 @@ using Codartis.NsDepCop.Core.Interface.Config;
 namespace Codartis.NsDepCop.Core.Factory
 {
     /// <summary>
-    /// Creates dependency analyzer instances.
+    /// Creates dependency analyzer objects.
     /// </summary>
-    public static class DependencyAnalyzerFactory
+    public class DependencyAnalyzerFactory : IDependencyAnalyzerFactory
     {
-        public static IDependencyAnalyzer CreateFromXmlConfigFile(string configFilePath, Parsers? overridingParser = null,
+        public IDependencyAnalyzer CreateFromXmlConfigFile(string configFilePath, Parsers? overridingParser = null,
             Action<string> diagnosticMessageHandler = null)
         {
             var configProvider = new XmlFileConfigProvider(configFilePath, overridingParser, diagnosticMessageHandler);

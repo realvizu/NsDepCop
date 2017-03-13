@@ -15,20 +15,22 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// </summary>
     internal class DependencyAnalyzerProvider : IDependencyAnalyzerProvider
     {
+        private readonly IDependencyAnalyzerFactory _dependencyAnalyzerFactory;
+        private readonly Action<string> _diagnosticMessageHandler;
+
         /// <summary>
         /// Maps project files to their corresponding dependency analyzer. The key is the project file name with full path.
         /// </summary>
         private readonly ConcurrentDictionary<string, IDependencyAnalyzer> _projectFileToDependencyAnalyzerMap;
 
-        /// <summary>
-        /// Callback for emitting diagnostic messages;
-        /// </summary>
-        private readonly Action<string> _diagnosticMessageHandler;
-
-        public DependencyAnalyzerProvider(Action<string> diagnosticMessageHandler = null)
+        public DependencyAnalyzerProvider(IDependencyAnalyzerFactory dependencyAnalyzerFactory, Action<string> diagnosticMessageHandler = null)
         {
-            _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IDependencyAnalyzer>();
+            if (dependencyAnalyzerFactory == null)
+                throw new ArgumentNullException(nameof(dependencyAnalyzerFactory));
+
+            _dependencyAnalyzerFactory = dependencyAnalyzerFactory;
             _diagnosticMessageHandler = diagnosticMessageHandler;
+            _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IDependencyAnalyzer>();
         }
 
         public void Dispose()
@@ -39,6 +41,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public IDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath)
         {
+            if (string.IsNullOrWhiteSpace(csprojFilePath))
+                throw new ArgumentException("Filename must not be null or whitespace.", nameof(csprojFilePath));
+
             bool added;
             var dependencyAnalyzer = _projectFileToDependencyAnalyzerMap.GetOrAdd(csprojFilePath, CreateDependencyAnalyzer, out added);
 
@@ -51,12 +56,15 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private IDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
         {
             var configFileName = CreateConfigFileName(projectFilePath);
-            return  DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, Parsers.Roslyn, _diagnosticMessageHandler);
+            return _dependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, Parsers.Roslyn, _diagnosticMessageHandler);
         }
 
         private static string CreateConfigFileName(string projectFilePath)
         {
-            var projectFileDirectory = projectFilePath.Substring(0, projectFilePath.LastIndexOf('\\'));
+            var projectFileDirectory = Path.GetDirectoryName(projectFilePath);
+            if (projectFileDirectory == null)
+                throw new Exception($"Can not determine directory from full path '{projectFilePath}'");
+
             return Path.Combine(projectFileDirectory, ProductConstants.DefaultConfigFileName);
         }
     }

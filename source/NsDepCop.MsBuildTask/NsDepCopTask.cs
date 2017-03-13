@@ -63,6 +63,8 @@ namespace Codartis.NsDepCop.MsBuildTask
         private IEnumerable<string> SourceFilePaths => Compile.ToList().Select(i => i.ItemSpec);
         private IEnumerable<string> ReferencedAssemblyPaths => ReferencePath.ToList().Select(i => i.ItemSpec);
 
+        private readonly DependencyAnalyzerFactory _dependencyAnalyzerFactory = new DependencyAnalyzerFactory();
+
         /// <summary>
         /// Executes the custom MsBuild task. Called by the MsBuild tool.
         /// </summary>
@@ -80,8 +82,9 @@ namespace Codartis.NsDepCop.MsBuildTask
                 // TODO: use these values as defaults
 
                 var configFileName = Path.Combine(BaseDirectory.ItemSpec, ProductConstants.DefaultConfigFileName);
+                
                 using (var dependencyAnalyzer = 
-                    DependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, diagnosticMessageHandler: LogDiagnosticMessage))
+                    _dependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName, diagnosticMessageHandler: LogDiagnosticMessage))
                 {
                     var runWasSuccessful = true;
 

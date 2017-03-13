@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Roslyn;
@@ -144,6 +145,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             var message = IssueDefinitions.TooManyIssuesIssue.StaticDescription;
             return CreateDiagnostic(IllegalDependencyDescriptor, location, message);
         }
+
         private static Diagnostic CreateConfigExceptionDiagnostic(SyntaxNode node, Exception exception)
         {
             // The location should be the config.nsdepcop file, but we cannot use that because of a Roslyn limitation: 
@@ -181,8 +183,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static CachingDependencyAnalyzerProvider CreateDependencyAnalyzerProvider()
         {
-            return new CachingDependencyAnalyzerProvider(new DependencyAnalyzerProvider(LogDiagnosticMessages), 
-                new DateTimeProvider(), AnalyzerCachingTimeSpan);
+            var embeddedDependencyAnalyzerProvider = new DependencyAnalyzerProvider(new DependencyAnalyzerFactory(), LogDiagnosticMessages);
+            return new CachingDependencyAnalyzerProvider(embeddedDependencyAnalyzerProvider, new DateTimeProvider(), AnalyzerCachingTimeSpan);
         }
 
         private static void LogDiagnosticMessages(string message)

@@ -63,6 +63,7 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="DependencyAnalyzerProviderTests.cs" />
     <Compile Include="CachingDependencyAnalyzerProviderTests.cs" />
     <Compile Include="CachingCsprojResolverTests.cs" />
     <Compile Include="MockDateTimeProvider.cs" />

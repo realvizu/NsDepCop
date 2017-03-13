@@ -14,6 +14,7 @@ namespace Codartis.NsDepCop.ConsoleHost
     /// </summary>
     internal class Program
     {
+        private static readonly DependencyAnalyzerFactory DependencyAnalyzerFactory = new DependencyAnalyzerFactory();
         private static bool _isVerbose;
 
         public static int Main(string[] args)
