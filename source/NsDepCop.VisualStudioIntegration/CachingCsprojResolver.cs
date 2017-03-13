@@ -11,16 +11,19 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <summary>
         /// The resolver that this class delegates to.
         /// </summary>
-        private readonly CsprojResolver _csprojResolver;
+        private readonly ICsprojResolver _csprojResolver;
 
         /// <summary>
         /// Caches which source file path resolves to which csproj file path.
         /// </summary>
         private readonly ConcurrentDictionary<string, string> _csprojResolverCache;
 
-        public CachingCsprojResolver(Action<string> diagnosticMessageHandler = null)
+        public CachingCsprojResolver(ICsprojResolver csprojResolver)
         {
-            _csprojResolver = new CsprojResolver(diagnosticMessageHandler);
+            if (csprojResolver == null)
+                throw new ArgumentNullException(nameof(csprojResolver));
+
+            _csprojResolver = csprojResolver;
             _csprojResolverCache = new ConcurrentDictionary<string, string>();
         }
 

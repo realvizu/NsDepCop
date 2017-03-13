@@ -110,6 +110,7 @@
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
     <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
+    <Compile Include="Util\DateTimeProvider.cs" />
     <Compile Include="Util\FileHelper.cs" />
     <Compile Include="Implementation\Config\ConfigProviderBase.cs" />
     <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProvider.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Interface\Analysis\IDependencyAnalyzer.cs" />
     <Compile Include="Interface\Analysis\ISemanticModel.cs" />
     <Compile Include="Interface\Analysis\ISyntaxNode.cs" />
+    <Compile Include="Util\IDateTimeProvider.cs" />
     <Compile Include="Util\ObjectWrapper.cs" />
     <Compile Include="Interface\Analysis\Roslyn\RoslynSemanticModel.cs" />
     <Compile Include="Interface\Analysis\Roslyn\RoslynSyntaxNode.cs" />

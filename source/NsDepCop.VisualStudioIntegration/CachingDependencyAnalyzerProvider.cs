@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
@@ -9,14 +10,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// </summary>
     internal class CachingDependencyAnalyzerProvider : IDependencyAnalyzerProvider
     {
-        /// <summary>
-        /// Dependency analyzer retrieval operations are delegated to this object.
-        /// </summary>
-        private readonly DependencyAnalyzerProvider _dependencyAnalyzerProvider;
-
-        /// <summary>
-        /// The max lifetime of a cached item.
-        /// </summary>
+        private readonly IDependencyAnalyzerProvider _dependencyAnalyzerProvider;
+        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly TimeSpan _cachingTimeSpan;
 
         /// <summary>
@@ -24,10 +19,18 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// </summary>
         private readonly ConcurrentDictionary<string, CacheItem> _cache;
 
-        public CachingDependencyAnalyzerProvider(TimeSpan cacheTimeSpan, Action<string> diagnosticMessageHandler = null)
+        public CachingDependencyAnalyzerProvider(IDependencyAnalyzerProvider dependencyAnalyzerProvider, IDateTimeProvider dateTimeProvider, TimeSpan cacheTimeSpan)
         {
-            _dependencyAnalyzerProvider = new DependencyAnalyzerProvider(diagnosticMessageHandler);
+            if (dependencyAnalyzerProvider == null)
+                throw new ArgumentNullException(nameof(dependencyAnalyzerProvider));
+
+            if (dateTimeProvider == null)
+                throw new ArgumentNullException(nameof(dateTimeProvider));
+
+            _dependencyAnalyzerProvider = dependencyAnalyzerProvider;
+            _dateTimeProvider = dateTimeProvider;
             _cachingTimeSpan = cacheTimeSpan;
+
             _cache = new ConcurrentDictionary<string, CacheItem>();
         }
 
@@ -40,7 +43,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         {
             var cacheItem = _cache.GetOrAdd(csprojFilePath, CreateCacheItem);
 
-            if (DateTime.UtcNow <= cacheItem.RetrievalDateTime + _cachingTimeSpan)
+            if (_dateTimeProvider.UtcNow < cacheItem.RetrievalDateTime + _cachingTimeSpan)
                 return cacheItem.DependencyAnalyzer;
 
             var newCacheItem = CreateCacheItem(csprojFilePath);
@@ -51,7 +54,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private CacheItem CreateCacheItem(string csprojFilePath)
         {
             var dependencyAnalyzer = _dependencyAnalyzerProvider.GetDependencyAnalyzer(csprojFilePath);
-            return new CacheItem(dependencyAnalyzer, DateTime.UtcNow);
+            return new CacheItem(dependencyAnalyzer, _dateTimeProvider.UtcNow);
         }
 
         /// <summary>

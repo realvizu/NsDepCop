@@ -6,7 +6,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// <summary>
     /// Provides dependency analyzer instances.
     /// </summary>
-    internal interface IDependencyAnalyzerProvider : IDisposable
+    public interface IDependencyAnalyzerProvider : IDisposable
     {
         /// <summary>
         /// Retrieves an up-to-date analyzer for a C# project file (csproj).

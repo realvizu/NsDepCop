@@ -6,6 +6,7 @@ using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Roslyn;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -42,8 +43,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public NsDepCopDiagnosticAnalyzer()
         {
-            _csprojResolver = new CachingCsprojResolver(LogDiagnosticMessages);
-            _analyzerProvider = new CachingDependencyAnalyzerProvider(AnalyzerCachingTimeSpan, LogDiagnosticMessages);
+            _csprojResolver = CreateCsprojResolver();
+            _analyzerProvider = CreateDependencyAnalyzerProvider();
         }
 
         public void Dispose()
@@ -68,7 +69,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
         {
-            if (context.Node?.SyntaxTree?.FilePath == null || 
+            if (context.Node?.SyntaxTree?.FilePath == null ||
                 context.SemanticModel?.Compilation?.Assembly == null)
                 return;
 
@@ -90,9 +91,6 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 case AnalyzerConfigState.NoConfig:
                     break;
 
-                case AnalyzerConfigState.Disabled:
-                    break;
-
                 case AnalyzerConfigState.ConfigError:
                     ReportConfigException(context, dependencyAnalyzer.ConfigException);
                     break;
@@ -101,6 +99,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                     var config = dependencyAnalyzer.Config;
                     var illegalDependencies = dependencyAnalyzer.AnalyzeSyntaxNode(new RoslynSyntaxNode(syntaxNode), new RoslynSemanticModel(semanticModel));
                     ReportIllegalDependencies(illegalDependencies, context, config.IssueKind, config.MaxIssueCount);
+                    break;
+
+                case AnalyzerConfigState.Disabled:
                     break;
 
                 default:
@@ -153,7 +154,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             return CreateDiagnostic(ConfigExceptionDescriptor, location, message);
         }
 
-        private static Diagnostic CreateDiagnostic(DiagnosticDescriptor diagnosticDescriptor, 
+        private static Diagnostic CreateDiagnostic(DiagnosticDescriptor diagnosticDescriptor,
             Location location, string message, IssueKind? issueKind = null)
         {
             var severity = issueKind?.ToDiagnosticSeverity() ?? diagnosticDescriptor.DefaultSeverity;
@@ -172,6 +173,17 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         }
 
         private static int GetWarningLevel(DiagnosticSeverity severity) => severity == DiagnosticSeverity.Error ? 0 : 1;
+
+        private static CachingCsprojResolver CreateCsprojResolver()
+        {
+            return new CachingCsprojResolver(new CsprojResolver(LogDiagnosticMessages));
+        }
+
+        private static CachingDependencyAnalyzerProvider CreateDependencyAnalyzerProvider()
+        {
+            return new CachingDependencyAnalyzerProvider(new DependencyAnalyzerProvider(LogDiagnosticMessages), 
+                new DateTimeProvider(), AnalyzerCachingTimeSpan);
+        }
 
         private static void LogDiagnosticMessages(string message)
         {

@@ -3,7 +3,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// <summary>
     /// Finds the C# project file (csproj) that a given source file belongs to.
     /// </summary>
-    internal interface ICsprojResolver
+    public interface ICsprojResolver
     {
         /// <summary>
         /// Returns the path of the csproj that a given source file belongs to.
