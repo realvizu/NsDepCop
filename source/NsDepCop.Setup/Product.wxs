@@ -11,7 +11,7 @@
              Language="1033"
              Version="!(bind.assemblyVersion.File_NsDepCop.MsBuildTask.dll)" >
 
-        <Package InstallerVersion="200"
+        <Package InstallerVersion="500"
                  InstallScope="perMachine"
                  Compressed="yes"
                  InstallPrivileges="elevated" />

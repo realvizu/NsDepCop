@@ -28,6 +28,7 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CustomWelcomeDlg.wxs" />
     <Compile Include="Feature_ConfigXmlSchema.wxs" />
     <Compile Include="CustomActions.wxs" />
     <Compile Include="Feature_GlobalMSBuildIntegration.wxs" />
@@ -86,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="NsDepCopConfigSchema\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Strings.wxl" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

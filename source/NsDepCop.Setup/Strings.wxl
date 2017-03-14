@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+	<String Id="WelcomeDlgNotification">{\NotificationStyle}Please note that the recommended way to use this tool is via NuGet and VSIX.
+For more info click the links below.</String>
+</WixLocalization>
