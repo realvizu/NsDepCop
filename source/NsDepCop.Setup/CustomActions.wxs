@@ -32,10 +32,10 @@
                       Value="MSBUILDFILETOMODIFY=[Folder_MsBuildVersion]Custom.After.Microsoft.CSharp.targets" />
 
         <InstallExecuteSequence>
-            <Custom Action="AddNsDepCopToMsBuildWorkflow" After="InstallFiles"><![CDATA[&Feature_MsBuildTask = 3]]></Custom>
+            <Custom Action="AddNsDepCopToMsBuildWorkflow" After="InstallFiles"><![CDATA[&Feature_GlobalMSBuildIntegration = 3]]></Custom>
             <Custom Action="SetData_AddNsDepCopToMsBuildWorkflow" Before="AddNsDepCopToMsBuildWorkflow"/>
 
-            <Custom Action="RemoveNsDepCopFromMsBuildWorkflow" After="RemoveFiles"><![CDATA[&Feature_MsBuildTask = 2]]></Custom>
+            <Custom Action="RemoveNsDepCopFromMsBuildWorkflow" After="RemoveFiles"><![CDATA[&Feature_GlobalMSBuildIntegration = 2]]></Custom>
             <Custom Action="SetData_RemoveNsDepCopFromMsBuildWorkflow" Before="RemoveNsDepCopFromMsBuildWorkflow"/>
         </InstallExecuteSequence>
 

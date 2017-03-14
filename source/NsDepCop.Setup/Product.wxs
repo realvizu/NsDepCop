@@ -28,13 +28,15 @@
         <UIRef Id="WixUI_NsDepCop" />
         <FeatureGroupRef Id="FeatureGroup_Prerequisites"/>
         <FeatureGroupRef Id="FeatureGroup_CustomActions"/>
-        <FeatureRef Id="Feature_MsBuildTask" />
-        <FeatureRef Id="Feature_VisualStudioPackage" />
+        <FeatureRef Id="Feature_ConfigXmlSchema" />
+        <FeatureRef Id="Feature_GlobalMSBuildIntegration" />
 
         <Icon Id="NsDepCop_256.ico" SourceFile="NsDepCop_256.ico"/>
         <Property Id="ARPPRODUCTICON" Value="NsDepCop_256.ico" />
 
-        <Property Id="ARPURLINFOABOUT">https://nsdepcop.codeplex.com</Property>
+        <Property Id="INSTALLLEVEL" Value="1" />
+        
+        <Property Id="ARPURLINFOABOUT">https://github.com/realvizu/NsDepCop</Property>
         
     </Product>
     

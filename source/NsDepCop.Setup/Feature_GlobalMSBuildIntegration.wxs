@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        
+        <Feature Id="Feature_GlobalMSBuildIntegration"
+                 Title="Machine-wide MSBuild integration"
+                 Description="Integrates NsDepCop with MSBuild for all C# projects. (For MSBuild 14.0 aka Microsoft Build Tools 2015.)"
+                 Level="2"
+                 InstallDefault="local"
+                 TypicalDefault="install"
+                 AllowAdvertise="no">
+            <ComponentGroupRef Id="ComponentGroup_MsBuildTask" />
+        </Feature>
+
+        <DirectoryRef Id="TARGETDIR">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="Folder_MsBuild" Name="MSBuild">
+                    <Directory Id="Folder_MsBuildVersion" Name="v14.0"/>
+                </Directory>
+            </Directory>
+        </DirectoryRef>
+
+        <ComponentGroup Id="ComponentGroup_MsBuildTask"
+                        Directory="Folder_MsBuildVersion">
+            
+            <Component Id="Component_NsDepCop.MsBuildTask.dll"
+                       Guid="3066D167-9239-488C-8734-4095132F7217">
+                <File Id="File_NsDepCop.MsBuildTask.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetPath)"
+                      Assembly=".net"
+                      AssemblyApplication="File_NsDepCop.MsBuildTask.dll"
+                      KeyPath="yes"  />
+            </Component>
+            
+            <Component Id="Component_NsDepCop.Core.dll"
+                       Guid="F5575BEA-2680-4527-A511-56DB1F23412E">
+                <File Id="File_NsDepCop.Core.dll"
+                      Source="$(var.NsDepCop.Core.TargetPath)"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_Mono.Cecil.dll"
+                       Guid="4D18FA1E-E74C-481D-9C31-6DB6163F0829">
+                <File Id="File_Mono.Cecil.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\Mono.Cecil.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_ICSharpCode.NRefactory.dll"
+                       Guid="B17E5EA4-23EE-4C7D-9761-76D683F1AE66">
+                <File Id="File_ICSharpCode.NRefactory.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\ICSharpCode.NRefactory.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_ICSharpCode.NRefactory.CSharp.dll"
+                       Guid="5D91122A-8A9C-46F2-8151-F38635AC6270">
+                <File Id="File_ICSharpCode.NRefactory.CSharp.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\ICSharpCode.NRefactory.CSharp.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_ICSharpCode.NRefactory.Cecil.dll"
+                       Guid="AB5D888F-0B00-4A42-8429-550E47625DD6">
+                <File Id="File_ICSharpCode.NRefactory.Cecil.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\ICSharpCode.NRefactory.Cecil.dll"
+                      KeyPath="yes" />
+            </Component>
+            
+            <Component Id="Component_Microsoft.CodeAnalysis.dll"
+                       Guid="566674B8-386F-4F18-9F15-BFA9AFDF2395">
+                <File Id="File_Microsoft.CodeAnalysis.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\Microsoft.CodeAnalysis.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_Microsoft.CodeAnalysis.CSharp.dll"
+                       Guid="50899718-32F8-4063-8450-E345BBFFE8E8">
+                <File Id="File_Microsoft.CodeAnalysis.CSharp.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\Microsoft.CodeAnalysis.CSharp.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_System.Collections.Immutable.dll"
+                       Guid="AEDE7A98-24C6-4D41-839B-929108FA8736">
+                <File Id="File_System.Collections.Immutable.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\System.Collections.Immutable.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_System.Reflection.Metadata.dll"
+                       Guid="FFD93FEC-7438-4B77-B6A8-19395B4B0B98">
+                <File Id="File_System.Reflection.Metadata.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\System.Reflection.Metadata.dll"
+                      KeyPath="yes" />
+            </Component>
+
+            <Component Id="Component_MoreLinq.dll"
+                       Guid="F29D9814-7358-4328-AE98-F59F1F47C2A6">
+                <File Id="File_MoreLinq.dll"
+                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\MoreLinq.dll"
+                      KeyPath="yes" />
+            </Component>
+        </ComponentGroup>
+
+    </Fragment>
+</Wix>
