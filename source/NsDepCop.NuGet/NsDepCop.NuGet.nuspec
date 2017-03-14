@@ -4,7 +4,8 @@
         <id>NsDepCop</id>
         <version>$version$</version>
         <title>NsDepCop - Namespace Dependency Checker Tool for C#</title>
-        <description>Static code analysis tool to enforce namespace dependency rules in C# projects.</description>
+        <summary>Static code analysis tool to enforce namespace dependency rules in C# projects.</summary>
+        <description>Static code analysis tool to enforce namespace dependency rules in C# projects. See project site for details.</description>
         <authors>Ferenc Vizkeleti</authors>
         <owners>Ferenc Vizkeleti</owners>
         <projectUrl>https://github.com/realvizu/NsDepCop</projectUrl>
@@ -14,6 +15,10 @@
         <developmentDependency>true</developmentDependency>
         <copyright>$copyright$</copyright>
         <tags>static code analysis tool C# csharp namespace dependency dependencies enforce rule</tags>
+        <releaseNotes>
+New: NuGet package.
+New: multi-level config.
+        </releaseNotes>
     </metadata>
     <files>
         <file src="bin\$configuration$\*.dll" target="tools" exclude="bin\$configuration$\NsDepCop.NuGet.dll" />
