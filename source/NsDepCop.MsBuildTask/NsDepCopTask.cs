@@ -2,7 +2,6 @@
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
@@ -77,13 +76,13 @@ namespace Codartis.NsDepCop.MsBuildTask
 
                 var defaultInfoImportance = Parse<Importance>(InfoImportance.GetValue());
                 var defaultParser = Parse<Parsers>(Parser.GetValue());
-                var configFileName = Path.Combine(BaseDirectory.ItemSpec, ProductConstants.DefaultConfigFileName);
+                var configFolderPath = BaseDirectory.ItemSpec;
 
                 var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogDiagnosticMessage)
                     .SetDefaultParser(defaultParser)
                     .SetDefaultInfoImportance(defaultInfoImportance);
 
-                using (var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName))
+                using (var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(configFolderPath))
                 {
                     var runWasSuccessful = true;
 

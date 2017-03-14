@@ -63,6 +63,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">
+      <Project>{bc26589e-79b0-4f55-b64d-db11534d3476}</Project>
+      <Name>NsDepCop.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NsDepCop.ItemTemplate\NsDepCop.ItemTemplate.csproj">
       <Project>{1629e4c3-4294-4836-824b-d9305768c7e9}</Project>
       <Name>NsDepCop.ItemTemplate</Name>

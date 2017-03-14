@@ -41,17 +41,24 @@ namespace Codartis.NsDepCop.Core.Factory
 
         public IDependencyAnalyzer CreateFromXmlConfigFile(string configFilePath)
         {
-            var configProvider = CreateConfigProvider(configFilePath);
+            var configProvider = new XmlFileConfigProvider(configFilePath, _diagnosticMessageHandler);
+            ApplyConfigDefaults(configProvider);
             return new DependencyAnalyzer(configProvider, _diagnosticMessageHandler);
         }
 
-        private XmlFileConfigProvider CreateConfigProvider(string configFilePath)
+        public IDependencyAnalyzer CreateFromMultiLevelXmlConfigFile(string folderPath)
         {
-            return new XmlFileConfigProvider(configFilePath, _diagnosticMessageHandler)
+            var configProvider = new MultiLevelXmlFileConfigProvider(folderPath, _diagnosticMessageHandler);
+            ApplyConfigDefaults(configProvider);
+            return new DependencyAnalyzer(configProvider, _diagnosticMessageHandler);
+        }
+
+        private void ApplyConfigDefaults(ConfigProviderBase configProvider)
+        {
+            configProvider
                 .OverrideParser(_overridingParser)
                 .SetDefaultParser(_defaultParser)
-                .SetDefaultInfoImportance(_defaultInfoImportance)
-                as XmlFileConfigProvider;
+                .SetDefaultInfoImportance(_defaultInfoImportance);
         }
     }
 }

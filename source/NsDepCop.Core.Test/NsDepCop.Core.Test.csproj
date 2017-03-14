@@ -96,7 +96,7 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Factory\DependencyAnalyzerFactoryTests\RoslynParser.nsdepcop">
+    <None Include="Factory\DependencyAnalyzerFactoryTests\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Attributes_MissingDoesNotOverwrite\Level2\config.nsdepcop">

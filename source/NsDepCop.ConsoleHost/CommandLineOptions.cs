@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.ConsoleHost
     /// </summary>
     internal class CommandLineOptions
     {
-        [Option('f', "projectFile", Required = true, HelpText = "The name and path of the csproj file to validate.")]
+        [Option('f', "projectfile", Required = true, HelpText = "The name and path of the csproj file to validate.")]
         public string CsprojFile { get; set; }
 
         [Option('p', "parser", HelpText = "Specifies the parser to be used, overrides the parser defined in config.")]
@@ -21,6 +21,9 @@ namespace Codartis.NsDepCop.ConsoleHost
 
         [Option('v', "verbose", DefaultValue = false, HelpText = "Verbose output with internal diagnostic messages.")]
         public bool IsVerbose { get; set; }
+
+        [Option('s', "singleconfig", DefaultValue = false, HelpText = "Uses a single config file (not multi level).")]
+        public bool UseSingleFileConfig { get; set; }
 
         [HelpOption]
         public string GetUsage()

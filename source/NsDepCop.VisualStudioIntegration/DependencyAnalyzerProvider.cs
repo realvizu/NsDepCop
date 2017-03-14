@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using Codartis.NsDepCop.Core.Factory;
-using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Util;
 
@@ -52,17 +51,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private IDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
         {
-            var configFileName = CreateConfigFileName(projectFilePath);
-            return _dependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName);
-        }
-
-        private static string CreateConfigFileName(string projectFilePath)
-        {
             var projectFileDirectory = Path.GetDirectoryName(projectFilePath);
-            if (projectFileDirectory == null)
-                throw new Exception($"Can not determine directory from full path '{projectFilePath}'");
-
-            return Path.Combine(projectFileDirectory, ProductConstants.DefaultConfigFileName);
+            return _dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(projectFileDirectory);
         }
     }
 }

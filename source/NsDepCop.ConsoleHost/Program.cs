@@ -28,26 +28,35 @@ namespace Codartis.NsDepCop.ConsoleHost
 
         private static void ValidateProject(CommandLineOptions options)
         {
+            Console.WriteLine($"Analysing {options.CsprojFile}, parser={ParserToString(options.Parser)}, repeats={options.RepeatCount}, useSingleFileConfig={options.UseSingleFileConfig} ...");
+
             _isVerbose = options.IsVerbose;
 
             var csProjParser = new CsProjParser(options.CsprojFile);
-            var configFileName = Path.Combine(Path.GetDirectoryName(options.CsprojFile), "config.nsdepcop");
-
-            Console.WriteLine($"Analysing {options.CsprojFile}, parser={options.Parser?.ToString() ?? "(not specified)"}, repeats={options.RepeatCount} ...");
+            var dependencyAnalyzer = CreateDependencyAnalyzer(options);
 
             var runTimeSpans = new List<TimeSpan>();
             for (var i = 0; i < options.RepeatCount; i++)
-                runTimeSpans.Add(AnalyseCsProj(configFileName, csProjParser, options.Parser));
+                runTimeSpans.Add(AnalyseCsProj(dependencyAnalyzer, csProjParser));
 
             DumpRunTimes(runTimeSpans);
         }
 
-        private static TimeSpan AnalyseCsProj(string configFileName, CsProjParser csProjParser, Parsers? overridingParser = null)
+        private static IDependencyAnalyzer CreateDependencyAnalyzer(CommandLineOptions options)
+        {
+            var directoryPath = Path.GetDirectoryName(options.CsprojFile);
+
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogDiagnosticMessage).OverrideParser(options.Parser);
+
+            return options.UseSingleFileConfig
+                ? dependencyAnalyzerFactory.CreateFromXmlConfigFile(Path.Combine(directoryPath, "config.nsdepcop"))
+                : dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(directoryPath);
+        }
+
+        private static TimeSpan AnalyseCsProj(IDependencyAnalyzer dependencyAnalyzer, CsProjParser csProjParser)
         {
             var startTime = DateTime.Now;
 
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogDiagnosticMessage).OverrideParser(overridingParser);
-            var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromXmlConfigFile(configFileName);
             var illegalDependencies = dependencyAnalyzer.AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths).ToList();
 
             var endTime = DateTime.Now;
@@ -76,5 +85,7 @@ namespace Codartis.NsDepCop.ConsoleHost
             var minRunTimeSpan = TimeSpan.FromMilliseconds(runTimeSpans.Min(i => i.TotalMilliseconds));
             Console.WriteLine($"Min run time: {minRunTimeSpan:mm\\:ss\\.fff}");
         }
+
+        private static string ParserToString(Parsers? parser) => parser?.ToString() ?? "(not specified)";
     }
 }

@@ -12,7 +12,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         [TestMethod]
         public void CreateFromXmlConfigFile_EnabledWithRoslynParser()
         {
-            var configFilePath = GetTestFilePath("RoslynParser.nsdepcop");
+            var configFilePath = GetTestFilePath("config.nsdepcop");
             var dependencyAnalyzer = new DependencyAnalyzerFactory().CreateFromXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.Parser.Should().Be(Parsers.Roslyn);
@@ -21,8 +21,26 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         [TestMethod]
         public void CreateFromXmlConfigFile_EnabledWithRoslynParser_OverrideWithNRefactoryParser()
         {
-            var configFilePath = GetTestFilePath("RoslynParser.nsdepcop");
+            var configFilePath = GetTestFilePath("config.nsdepcop");
             var dependencyAnalyzer = new DependencyAnalyzerFactory().OverrideParser(Parsers.NRefactory).CreateFromXmlConfigFile(configFilePath);
+            dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
+            dependencyAnalyzer.Config.Parser.Should().Be(Parsers.NRefactory);
+        }
+
+        [TestMethod]
+        public void CreateFromMultiLevelXmlConfigFile_EnabledWithRoslynParser()
+        {
+            var configFilePath = GetTestFilePath("");
+            var dependencyAnalyzer = new DependencyAnalyzerFactory().CreateFromMultiLevelXmlConfigFile(configFilePath);
+            dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
+            dependencyAnalyzer.Config.Parser.Should().Be(Parsers.Roslyn);
+        }
+
+        [TestMethod]
+        public void CreateFromMultiLevelXmlConfigFile_EnabledWithRoslynParser_OverrideWithNRefactoryParser()
+        {
+            var configFilePath = GetTestFilePath("");
+            var dependencyAnalyzer = new DependencyAnalyzerFactory().OverrideParser(Parsers.NRefactory).CreateFromMultiLevelXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.Parser.Should().Be(Parsers.NRefactory);
         }
