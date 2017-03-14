@@ -157,7 +157,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             var issueCount = 0;
             foreach (var illegalDependency in illegalDependencies)
             {
-                LogIssue(IssueDefinitions.IllegalDependencyIssue, illegalDependency.ToString(), issueKind, illegalDependency.SourceSegment);
+                LogIssue(IssueDefinitions.IllegalDependencyIssue, illegalDependency, issueKind, illegalDependency.SourceSegment);
                 issueCount++;
             }
 
@@ -167,9 +167,10 @@ namespace Codartis.NsDepCop.MsBuildTask
             return issueCount;
         }
 
-        private void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T messageParam = default(T))
+        private void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T messageParam = default(T), 
+            IssueKind? issueKind = null, SourceSegment sourceSegment = null)
         {
-            LogIssue(issueDescriptor, issueDescriptor.GetDynamicDescription(messageParam));
+            LogIssue(issueDescriptor, issueDescriptor.GetDynamicDescription(messageParam), issueKind, sourceSegment);
         }
 
         private void LogIssue(IssueDescriptor issueDescriptor, string message = null, IssueKind? issueKind = null, SourceSegment sourceSegment = null)
