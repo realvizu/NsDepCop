@@ -1,9 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning">
-    <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System" />
-    <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System.Collections.Generic" />
-    <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System.IO" />
-    <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System.Linq.*" />
-    <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="System.Xml.Linq" />
+<NsDepCopConfig>
     <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="Microsoft.Deployment.WindowsInstaller" />
 </NsDepCopConfig>

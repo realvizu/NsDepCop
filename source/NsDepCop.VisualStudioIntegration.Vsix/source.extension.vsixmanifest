@@ -3,9 +3,9 @@
     <Metadata>
         <Identity Id="NsDepCop..e8ae3b7e-3cd5-40ef-92ca-b22ef9d0cc24" Version="1.6.0.0" Language="en-US" Publisher="Codartis" />
         <DisplayName>NsDepCop - Namespace dependency checker for C#</DisplayName>
-        <Description xml:space="preserve">Highlights unintended namespace dependencies in the code editor. Also available as an MSBuild extension: http://nsdepcop.codeplex.com</Description>
-        <MoreInfo>https://nsdepcop.codeplex.com</MoreInfo>
-        <GettingStartedGuide>https://nsdepcop.codeplex.com/wikipage?title=Getting%20Started</GettingStartedGuide>
+        <Description xml:space="preserve">Highlights unintended namespace dependencies in the code editor. Also available as an MSBuild extension: https://github.com/realvizu/NsDepCop</Description>
+        <MoreInfo>https://github.com/realvizu/NsDepCop</MoreInfo>
+        <GettingStartedGuide>https://github.com/realvizu/NsDepCop</GettingStartedGuide>
         <Icon>NsDepCop_40.ico</Icon>
         <PreviewImage>NsDepCop_256.ico</PreviewImage>
         <Tags>static analysis;code analysis;namespace;dependency;c#;csharp;roslyn</Tags>

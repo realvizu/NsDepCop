@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig CodeIssueKind="Error" ChildCanDependOnParentImplicitly="true" InfoImportance="High">
+    <Allowed From="*" To="System.*" />
+    <Allowed From="*" To="MoreLinq" />
+    <Allowed From="*" To="Codartis.NsDepCop.Core.Util" />
+</NsDepCopConfig>

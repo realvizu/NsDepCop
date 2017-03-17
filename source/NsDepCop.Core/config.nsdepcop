@@ -1,31 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="true" CodeIssueKind="Error" ChildCanDependOnParentImplicitly="true">
-    <Allowed From="*" To="System.*" />
-    <Allowed From="*" To="MoreLinq" />
-    <Allowed From="Codartis.NsDepCop.Core.*" To="Codartis.NsDepCop.Core.Util" />
-
+<NsDepCopConfig>
     <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis.*" To="Codartis.NsDepCop.Core.Interface.Config" />
+    <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis.Roslyn" To="Microsoft.CodeAnalysis.*" />
 
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.*" To="Codartis.NsDepCop.Core.Interface" />
     <Allowed From="Codartis.NsDepCop.Core.Implementation.Config" To="Codartis.NsDepCop.Core.Interface.Config" />
     <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.*" To="Codartis.NsDepCop.Core.Interface.*" />
-    <Allowed From="Codartis.NsDepCop.Core.Implementation.*" To="Codartis.NsDepCop.Core.Interface" />
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis" To="Codartis.NsDepCop.Core.Implementation.Analysis.*" />
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn" To="Microsoft.CodeAnalysis.*" />
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory" To="ICSharpCode.NRefactory.*" />
 
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Interface.*"/>
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.*"/>
 
-    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis" To="Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory">
-        <VisibleMembers>
-            <Type Name="NRefactoryTypeDependencyEnumerator" />
-        </VisibleMembers>
-    </Allowed>
-    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis" To="Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn">
-        <VisibleMembers>
-            <Type Name="RoslynTypeDependencyEnumerator" />
-        </VisibleMembers>
-    </Allowed>
-
-    <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis.Roslyn" To="Microsoft.CodeAnalysis.*" />
-    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn" To="Microsoft.CodeAnalysis.*" />
-
-    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory" To="ICSharpCode.NRefactory.*" />
+    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory">
+        <Type Name="NRefactoryTypeDependencyEnumerator" />
+    </VisibleMembers>
+    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn">
+        <Type Name="RoslynTypeDependencyEnumerator" />
+    </VisibleMembers>
 </NsDepCopConfig>
