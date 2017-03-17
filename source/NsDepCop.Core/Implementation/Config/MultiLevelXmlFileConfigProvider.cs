@@ -1,49 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
     /// <summary>
-    /// Traverses the source tree and reads all config files to create a composite config.
-    /// Starts from the specified folder and traverses the folder tree upwards till the root is reached.
+    /// Traverses the source tree and reads one or multiple config files to create a composite config.
+    /// Starts from the specified folder and traverses the folder tree upwards till the root or the max inheritance level is reached.
     /// </summary>
     /// <remarks>
     /// Base class ensures that all operations are executed in an atomic way so no extra locking needed.
     /// </remarks>
     internal sealed class MultiLevelXmlFileConfigProvider : ConfigProviderBase
     {
-        /// <summary>
-        /// Just a precaution to avoid runaway folder traversals.
-        /// </summary>
-        private const int MaxFolderLevelsToTraverse = 10;
-
         private ConfigLoadResult _lastConfigLoadResult;
-
-        public string ProjectFolder { get; }
+        private int _lastInheritanceDepth;
 
         /// <summary>
         /// The collection of all file config providers that must be composed to a single config.
-        /// Already sorted from most general (closer to root folder) to most specific (the project folder).
         /// </summary>
-        private readonly List<XmlFileConfigProvider> _fileConfigProviders;
+        /// <remarks>
+        /// The list is sorted from the project folder's config to increasingly farther configs in the folder tree.
+        /// The configs must be combined in reverse order (from the farthest to the closest).
+        /// </remarks>
+        private List<XmlFileConfigProvider> _fileConfigProviders;
+
+        public string ProjectFolder { get; }
 
         public MultiLevelXmlFileConfigProvider(string projectFolder, Action<string> diagnosticMessageHandler = null)
             : base(diagnosticMessageHandler)
         {
             ProjectFolder = projectFolder;
-            _fileConfigProviders = CreateConfigProviders();
         }
 
         public override string ToString() => $"MultiLevelXmlConfig:'{ProjectFolder}'";
 
         protected override ConfigLoadResult LoadConfigCore()
         {
-            _lastConfigLoadResult = CombineFileConfigProviders();
-            return _lastConfigLoadResult;
+            var projectLevelConfigProvider = new XmlFileConfigProvider(GetConfigFilePath(ProjectFolder), DiagnosticMessageHandler);
+
+            _fileConfigProviders = CreateFileConfigProviderList(projectLevelConfigProvider, ProjectFolder);
+
+            return CombineFileConfigProvidersAndSaveResult();
         }
 
         protected override ConfigLoadResult RefreshConfigCore()
@@ -53,10 +54,27 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
             DiagnosticMessageHandler?.Invoke($"Refreshing config {this}.");
 
-            foreach (var configProvider in _fileConfigProviders)
-                configProvider.RefreshConfig();
+            var projectLevelConfigProvider = _fileConfigProviders[0];
+            projectLevelConfigProvider.RefreshConfig();
 
-            return LoadConfigCore();
+            if (InheritanceDepth != _lastInheritanceDepth)
+            {
+                _fileConfigProviders = CreateFileConfigProviderList(projectLevelConfigProvider, ProjectFolder);
+            }
+            else
+            {
+                foreach (var configProvider in _fileConfigProviders.Skip(1))
+                    configProvider.RefreshConfig();
+            }
+
+            return CombineFileConfigProvidersAndSaveResult();
+        }
+
+        private ConfigLoadResult CombineFileConfigProvidersAndSaveResult()
+        {
+            _lastInheritanceDepth = InheritanceDepth;
+            _lastConfigLoadResult = CombineFileConfigProviders();
+            return _lastConfigLoadResult;
         }
 
         private ConfigLoadResult CombineFileConfigProviders()
@@ -64,7 +82,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             var configBuilder = CreateAnalyzerConfigBuilder();
 
             var anyConfigFound = false;
-            foreach (var childConfigProvider in _fileConfigProviders)
+            foreach (var childConfigProvider in Enumerable.Reverse(_fileConfigProviders))
             {
                 var childConfigState = childConfigProvider.ConfigState;
                 switch (childConfigState)
@@ -72,8 +90,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                     case AnalyzerConfigState.NoConfig:
                         break;
 
-                    case AnalyzerConfigState.Enabled:
                     case AnalyzerConfigState.Disabled:
+                        anyConfigFound = true;
+                        configBuilder.SetIsEnabled(false);
+                        break;
+
+                    case AnalyzerConfigState.Enabled:
                         anyConfigFound = true;
                         configBuilder.Combine(childConfigProvider.ConfigBuilder);
                         break;
@@ -87,7 +109,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             }
 
             return anyConfigFound
-                ? ConfigLoadResult.CreateWithConfig(configBuilder.ToAnalyzerConfig())
+                ? ConfigLoadResult.CreateWithConfig(configBuilder)
                 : ConfigLoadResult.CreateWithNoConfig();
         }
 
@@ -101,12 +123,28 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         private bool AnyChildConfigChanged() => _fileConfigProviders.Any(i => i.HasConfigFileChanged());
 
-        private List<XmlFileConfigProvider> CreateConfigProviders()
+        private List<XmlFileConfigProvider> CreateFileConfigProviderList(XmlFileConfigProvider firstConfigProvider, string startFolderPath)
         {
-            return FileHelper.GetFilenameWithFolderPaths(ProductConstants.DefaultConfigFileName, ProjectFolder, MaxFolderLevelsToTraverse)
-                .OrderBy(i => i.Length)
-                .Select(i => new XmlFileConfigProvider(i, DiagnosticMessageHandler))
-                .ToList();
+            var fileConfigProviders = new List<XmlFileConfigProvider> { firstConfigProvider };
+
+            DiagnosticMessageHandler?.Invoke($"InheritanceDepth={firstConfigProvider.InheritanceDepth}");
+
+            var currentFolder = startFolderPath;
+            for (var i = 0; i < firstConfigProvider.InheritanceDepth; i++)
+            {
+                currentFolder = Directory.GetParent(currentFolder)?.FullName;
+                if (string.IsNullOrWhiteSpace(currentFolder))
+                    break;
+
+                var higherLevelConfigProvider = new XmlFileConfigProvider(GetConfigFilePath(currentFolder), DiagnosticMessageHandler);
+                fileConfigProviders.Add(higherLevelConfigProvider);
+            }
+
+            return fileConfigProviders;
         }
+
+        private int InheritanceDepth => _fileConfigProviders.First().InheritanceDepth;
+
+        private static string GetConfigFilePath(string folderPath) => Path.Combine(folderPath, ProductConstants.DefaultConfigFileName);
     }
 }

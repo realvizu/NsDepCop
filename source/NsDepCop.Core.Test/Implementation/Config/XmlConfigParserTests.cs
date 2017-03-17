@@ -17,6 +17,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             var xDocument = LoadXml("NoRootAttributes.nsdepcop");
             var configBuilder = XmlConfigParser.Parse(xDocument);
             configBuilder.IsEnabled.Should().BeNull();
+            configBuilder.InheritanceDepth.Should().BeNull();
             configBuilder.IssueKind.Should().BeNull();
             configBuilder.MaxIssueCount.Should().BeNull();
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeNull();
@@ -30,6 +31,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             var xDocument = LoadXml("RootAttributes.nsdepcop");
             var configBuilder = XmlConfigParser.Parse(xDocument);
             configBuilder.IsEnabled.Should().BeTrue();
+            configBuilder.InheritanceDepth.Should().Be(9);
             configBuilder.IssueKind.ShouldBeEquivalentTo(IssueKind.Error);
             configBuilder.MaxIssueCount.ShouldBeEquivalentTo(42);
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeTrue();

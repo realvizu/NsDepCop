@@ -60,6 +60,18 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             }
         }
 
+        public AnalyzerConfigBuilder ConfigBuilder
+        {
+            get
+            {
+                lock (_refreshLockObject)
+                {
+                    EnsureInitialized();
+                    return _configLoadResult.ConfigBuilder;
+                }
+            }
+        }
+
         public AnalyzerConfigState ConfigState
         {
             get

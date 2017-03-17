@@ -32,6 +32,13 @@
                     </xs:annotation>
                 </xs:element>
             </xs:choice>
+            <xs:attribute name="InheritanceDepth" type="xs:int" use="optional">
+                <xs:annotation>
+                    <xs:documentation>
+                        Set the number of folder levels to traverse upwards to find and combine config files. Default is 0 (no inheritance).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="IsEnabled" type="xs:boolean" use="optional">
                 <xs:annotation>
                     <xs:documentation>

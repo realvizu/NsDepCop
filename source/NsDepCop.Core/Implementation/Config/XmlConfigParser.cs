@@ -14,6 +14,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     internal static class XmlConfigParser
     {
         private const string RootElementName = "NsDepCopConfig";
+        private const string InheritanceDepthAttributeName = "InheritanceDepth";
         private const string IsEnabledAttributeName = "IsEnabled";
         private const string CodeIssueKindAttributeName = "CodeIssueKind";
         private const string MaxIssueCountAttributeName = "MaxIssueCount";
@@ -46,6 +47,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private static void ParseRootNodeAttributes(XElement rootElement, AnalyzerConfigBuilder configBuilder)
         {
             configBuilder.SetIsEnabled(ParseAttribute<bool>(rootElement, IsEnabledAttributeName, bool.TryParse));
+            configBuilder.SetInheritanceDepth(ParseAttribute<int>(rootElement, InheritanceDepthAttributeName, int.TryParse));
             configBuilder.SetIssueKind(ParseAttribute<IssueKind>(rootElement, CodeIssueKindAttributeName, Enum.TryParse));
             configBuilder.SetInfoImportance(ParseAttribute<Importance>(rootElement, InfoImportanceAttributeName, Enum.TryParse));
             configBuilder.SetParser(ParseAttribute<Parsers>(rootElement, ParserAttributeName, Enum.TryParse));

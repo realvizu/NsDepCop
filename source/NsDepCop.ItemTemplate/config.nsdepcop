@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
+<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true" InheritanceDepth="1">
     
     <!-- Any namespace can reference the System namespace and its sub-namespaces. -->
     <Allowed From="*" To="System.*" />

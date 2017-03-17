@@ -5,6 +5,7 @@ namespace Codartis.NsDepCop.Core.Interface.Config
     /// </summary>
     internal static class ConfigDefaults
     {
+        public const int InheritanceDepth = 0;
         public const bool IsEnabled = true;
         public const IssueKind IssueKind = Config.IssueKind.Warning;
         public const int MaxIssueCount = 100;

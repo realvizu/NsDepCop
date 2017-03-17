@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig>
+<NsDepCopConfig InheritanceDepth="1">
     <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis.*" To="Codartis.NsDepCop.Core.Interface.Config" />
     <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis.Roslyn" To="Microsoft.CodeAnalysis.*" />
 

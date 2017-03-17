@@ -14,15 +14,17 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public Parsers? DefaultParser { get; private set; }
         public Importance? DefaultInfoImportance { get; private set; }
 
+        public int? InheritanceDepth { get; private set; }
+
         public bool? IsEnabled { get; private set; }
         public IssueKind? IssueKind { get; private set; }
         public Importance? InfoImportance { get; private set; }
         public Parsers? Parser { get; private set; }
 
         public bool? ChildCanDependOnParentImplicitly { get; private set; }
-        public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get;  }
-        public HashSet<NamespaceDependencyRule> DisallowRules { get;  }
-        public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get;  }
+        public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
+        public HashSet<NamespaceDependencyRule> DisallowRules { get; }
+        public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
         public int? MaxIssueCount { get; private set; }
 
         public AnalyzerConfigBuilder()
@@ -51,6 +53,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public AnalyzerConfigBuilder Combine(AnalyzerConfigBuilder analyzerConfigBuilder)
         {
+            // Note that InhertanceDepth is not combined.
+
             SetIsEnabled(analyzerConfigBuilder.IsEnabled);
             SetIssueKind(analyzerConfigBuilder.IssueKind);
             SetInfoImportance(analyzerConfigBuilder.InfoImportance);
@@ -80,6 +84,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public AnalyzerConfigBuilder SetDefaultInfoImportance(Importance? defaultInfoImportance)
         {
             DefaultInfoImportance = defaultInfoImportance;
+            return this;
+        }
+
+        public AnalyzerConfigBuilder SetInheritanceDepth(int? inheritanceDepth)
+        {
+            if (inheritanceDepth.HasValue)
+                InheritanceDepth = inheritanceDepth;
             return this;
         }
 

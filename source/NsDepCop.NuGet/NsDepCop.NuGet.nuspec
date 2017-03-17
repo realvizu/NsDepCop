@@ -16,8 +16,9 @@
         <copyright>$copyright$</copyright>
         <tags>static code analysis tool C# csharp namespace dependency dependencies enforce rule</tags>
         <releaseNotes>
-New: NuGet package.
-New: multi-level config.
+New: NuGet package (enables per-project MSBuild integration).
+New: Multi-level config (InheritanceDepth config attribute).
+Roslyn version updated to 1.3.2.
         </releaseNotes>
     </metadata>
     <files>

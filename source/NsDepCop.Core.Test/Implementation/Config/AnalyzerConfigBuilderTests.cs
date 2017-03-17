@@ -37,6 +37,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         public void SetMethods_WithNonNullValues_OverwriteProperties()
         {
             var configBuilder = new AnalyzerConfigBuilder()
+                .SetInheritanceDepth(9)
                 .SetIsEnabled(true)
                 .SetIssueKind(IssueKind.Error)
                 .SetInfoImportance(Importance.High)
@@ -44,6 +45,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
                 .SetChildCanDependOnParentImplicitly(true)
                 .SetMaxIssueCount(42);
 
+            configBuilder.InheritanceDepth.Should().Be(9);
             configBuilder.IsEnabled.Should().Be(true);
             configBuilder.IssueKind.Should().Be(IssueKind.Error);
             configBuilder.InfoImportance.Should().Be(Importance.High);
@@ -56,6 +58,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         public void SetMethods_WithNullValues_DoNotOverwriteProperties()
         {
             var configBuilder = new AnalyzerConfigBuilder()
+                .SetInheritanceDepth(9)
                 .SetIsEnabled(true)
                 .SetIssueKind(IssueKind.Error)
                 .SetInfoImportance(Importance.High)
@@ -64,6 +67,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
                 .SetMaxIssueCount(42);
 
             configBuilder
+                .SetInheritanceDepth(null)
                 .SetIsEnabled(null)
                 .SetIssueKind(null)
                 .SetInfoImportance(null)
@@ -71,6 +75,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
                 .SetChildCanDependOnParentImplicitly(null)
                 .SetMaxIssueCount(null);
 
+            configBuilder.InheritanceDepth.Should().Be(9);
             configBuilder.IsEnabled.Should().Be(true);
             configBuilder.IssueKind.Should().Be(IssueKind.Error);
             configBuilder.InfoImportance.Should().Be(Importance.High);
@@ -198,9 +203,9 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
                 .SetInfoImportance(Importance.High)
                 .SetParser(Parsers.NRefactory)
                 .SetChildCanDependOnParentImplicitly(true)
-                .AddAllowRule(new NamespaceDependencyRule("N1", "N2"), new TypeNameSet {"T1"})
+                .AddAllowRule(new NamespaceDependencyRule("N1", "N2"), new TypeNameSet { "T1" })
                 .AddDisallowRule(new NamespaceDependencyRule("N3", "N4"))
-                .AddVisibleTypesByNamespace(new Namespace("N5"), new TypeNameSet {"T2"})
+                .AddVisibleTypesByNamespace(new Namespace("N5"), new TypeNameSet { "T2" })
                 .SetMaxIssueCount(42);
 
             configBuilder1.Combine(configBuilder2);

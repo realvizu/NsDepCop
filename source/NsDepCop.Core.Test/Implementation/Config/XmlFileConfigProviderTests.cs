@@ -83,13 +83,13 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var path = GetTestFilePath("RefreshConfig_EnabledToDisabled.nsdepcop");
 
-            SetIsEnabled(path, "true");
+            SetAttribute(path, "IsEnabled", "true");
 
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
 
             Thread.Sleep(10);
-            SetIsEnabled(path, "false");
+            SetAttribute(path, "IsEnabled", "false");
 
             configProvider.RefreshConfig();
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Disabled);
@@ -100,13 +100,13 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var path = GetTestFilePath("RefreshConfig_EnabledToConfigError.nsdepcop");
 
-            SetIsEnabled(path, "true");
+            SetAttribute(path, "IsEnabled", "true");
 
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
 
             Thread.Sleep(10);
-            SetIsEnabled(path, "maybe");
+            SetAttribute(path, "IsEnabled", "maybe");
 
             configProvider.RefreshConfig();
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.ConfigError);

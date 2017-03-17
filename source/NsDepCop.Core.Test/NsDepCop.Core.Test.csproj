@@ -111,6 +111,12 @@
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Attributes_LowerLevelWins\Level2\Level1\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_EnabledToEnabledButChanged\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_EnabledToEnabledButChanged\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_EnabledToConfigError\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

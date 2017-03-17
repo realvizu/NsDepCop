@@ -1,4 +1,5 @@
 ﻿<NsDepCopConfig
+    InheritanceDepth="9"
     IsEnabled="true"
     CodeIssueKind="Error"
     MaxIssueCount="42"

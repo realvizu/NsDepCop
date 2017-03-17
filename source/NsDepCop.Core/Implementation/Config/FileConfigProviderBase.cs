@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Codartis.NsDepCop.Core.Interface.Config;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
@@ -17,7 +18,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private ConfigLoadResult _lastConfigLoadResult;
 
         public string ConfigFilePath { get; }
-        public AnalyzerConfigBuilder ConfigBuilder { get; private set; }
 
         protected FileConfigProviderBase(string configFilePath, Action<string> diagnosticMessageHandler)
             : base(diagnosticMessageHandler)
@@ -25,9 +25,11 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             ConfigFilePath = configFilePath;
         }
 
+        public int InheritanceDepth => ConfigBuilder?.InheritanceDepth ?? ConfigDefaults.InheritanceDepth;
+
         public bool HasConfigFileChanged()
         {
-            return ConfigFileCreatedOrDeleted() 
+            return ConfigFileCreatedOrDeleted()
                 || ConfigFileModifiedSinceLastLoad();
         }
 
@@ -39,8 +41,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         protected override ConfigLoadResult RefreshConfigCore()
         {
-            if (! HasConfigFileChanged())
-                return  _lastConfigLoadResult;
+            if (!HasConfigFileChanged())
+                return _lastConfigLoadResult;
 
             DiagnosticMessageHandler?.Invoke($"Refreshing config {this}.");
             return LoadConfigCore();
@@ -59,13 +61,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
                 _configLastLoadUtc = DateTime.UtcNow;
 
-                ConfigBuilder = CreateConfigBuilderFromFile(ConfigFilePath)
-                    .OverrideParser(OverridingParser)
-                    .SetDefaultParser(DefaultParser)
-                    .SetDefaultInfoImportance(DefaultInfoImportance);
+                var configBuilder = CreateConfigBuilderFromFile(ConfigFilePath)
+                     .OverrideParser(OverridingParser)
+                     .SetDefaultParser(DefaultParser)
+                     .SetDefaultInfoImportance(DefaultInfoImportance);
 
-                var config = ConfigBuilder.ToAnalyzerConfig();
-                return ConfigLoadResult.CreateWithConfig(config);
+                return ConfigLoadResult.CreateWithConfig(configBuilder);
             }
             catch (Exception e)
             {
@@ -83,7 +84,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         private bool ConfigFileModifiedSinceLastLoad()
         {
-            return File.Exists(ConfigFilePath) 
+            return File.Exists(ConfigFilePath)
                 && _configLastLoadUtc < File.GetLastWriteTimeUtc(ConfigFilePath);
         }
     }

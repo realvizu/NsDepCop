@@ -9,14 +9,17 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     internal struct ConfigLoadResult
     {
         public AnalyzerConfigState ConfigState { get; }
+        public AnalyzerConfigBuilder ConfigBuilder { get; }
         public IAnalyzerConfig Config { get; }
         public Exception ConfigException { get; }
 
-        private ConfigLoadResult(AnalyzerConfigState configState, IAnalyzerConfig config, Exception configException)
+        private ConfigLoadResult(AnalyzerConfigState configState, AnalyzerConfigBuilder configBuilder, 
+           IAnalyzerConfig config, Exception configException)
         {
-            ConfigException = configException;
-            Config = config;
             ConfigState = configState;
+            ConfigBuilder = configBuilder;
+            Config = config;
+            ConfigException = configException;
         }
 
         public static ConfigLoadResult CreateWithError(Exception configException)
@@ -24,23 +27,23 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (configException == null)
                 throw new ArgumentNullException(nameof(configException));
 
-            return new ConfigLoadResult(AnalyzerConfigState.ConfigError, null, configException);
+            return new ConfigLoadResult(AnalyzerConfigState.ConfigError, null, null, configException);
         }
 
         public static ConfigLoadResult CreateWithNoConfig()
         {
-            return new ConfigLoadResult(AnalyzerConfigState.NoConfig, null, null);
+            return new ConfigLoadResult(AnalyzerConfigState.NoConfig, null, null, null);
         }
 
-        public static ConfigLoadResult CreateWithConfig(IAnalyzerConfig config)
+        public static ConfigLoadResult CreateWithConfig(AnalyzerConfigBuilder configBuilder)
         {
-            if (config == null)
-                throw new ArgumentNullException(nameof(config));
+            if (configBuilder == null)
+                throw new ArgumentNullException(nameof(configBuilder));
 
-            if (config.IsEnabled)
-                return new ConfigLoadResult(AnalyzerConfigState.Enabled, config, null);
-            else
-                return new ConfigLoadResult(AnalyzerConfigState.Disabled, null, null);
+            var config = configBuilder.ToAnalyzerConfig();
+            return config.IsEnabled 
+                ? new ConfigLoadResult(AnalyzerConfigState.Enabled, configBuilder, config, null) 
+                : new ConfigLoadResult(AnalyzerConfigState.Disabled, null, null, null);
         }
     }
 }

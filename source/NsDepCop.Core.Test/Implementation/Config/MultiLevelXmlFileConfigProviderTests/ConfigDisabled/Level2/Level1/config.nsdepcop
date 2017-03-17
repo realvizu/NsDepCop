@@ -1,2 +1,2 @@
-﻿<NsDepCopConfig IsEnabled="false">
+﻿<NsDepCopConfig InheritanceDepth="2" IsEnabled="false">
 </NsDepCopConfig>

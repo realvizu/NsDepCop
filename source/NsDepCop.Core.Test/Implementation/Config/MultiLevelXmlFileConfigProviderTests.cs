@@ -112,17 +112,39 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         }
 
         [TestMethod]
+        public void RefreshConfig_EnabledToEnabledButChanged()
+        {
+            var path = GetTestFilePath(@"RefreshConfig_EnabledToEnabledButChanged\Level2\Level1");
+            var path2 = GetTestFilePath(@"RefreshConfig_EnabledToEnabledButChanged");
+
+            SetAttribute(GetConfigFilePath(path), "CodeIssueKind", "Error");
+            SetAttribute(GetConfigFilePath(path2), "MaxIssueCount", "1");
+
+            var configProvider = CreateConfigProvider(path);
+            configProvider.Config.IssueKind.Should().Be(IssueKind.Error);
+            configProvider.Config.MaxIssueCount.Should().Be(1);
+
+            Thread.Sleep(10);
+            SetAttribute(GetConfigFilePath(path), "CodeIssueKind", "Info");
+            SetAttribute(GetConfigFilePath(path2), "MaxIssueCount", "2");
+
+            configProvider.RefreshConfig();
+            configProvider.Config.IssueKind.Should().Be(IssueKind.Info);
+            configProvider.Config.MaxIssueCount.Should().Be(2);
+        }
+
+        [TestMethod]
         public void RefreshConfig_EnabledToDisabled()
         {
             var path = GetTestFilePath(@"RefreshConfig_EnabledToDisabled\Level2\Level1");
 
-            SetIsEnabled(GetConfigFilePath(path), "true");
+            SetAttribute(GetConfigFilePath(path), "IsEnabled", "true");
 
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
 
             Thread.Sleep(10);
-            SetIsEnabled(GetConfigFilePath(path), "false");
+            SetAttribute(GetConfigFilePath(path), "IsEnabled", "false");
 
             configProvider.RefreshConfig();
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Disabled);
@@ -133,18 +155,17 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var path = GetTestFilePath(@"RefreshConfig_EnabledToConfigError\Level2\Level1");
 
-            SetIsEnabled(GetConfigFilePath(path), "true");
+            SetAttribute(GetConfigFilePath(path), "IsEnabled", "true");
 
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
 
             Thread.Sleep(10);
-            SetIsEnabled(GetConfigFilePath(path), "maybe");
+            SetAttribute(GetConfigFilePath(path), "IsEnabled", "maybe");
 
             configProvider.RefreshConfig();
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.ConfigError);
         }
-
 
         [TestMethod]
         public void RefreshConfig_NoConfigToEnabled()
@@ -156,7 +177,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.NoConfig);
 
-            CreateConfigFile(GetConfigFilePath(path), "true");
+            CreateConfigFile(GetConfigFilePath(path), "true", 2);
 
             configProvider.RefreshConfig();
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
@@ -168,7 +189,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             var path = GetTestFilePath(@"RefreshConfig_EnabledToNoConfig\Level2\Level1");
 
             Delete(path);
-            CreateConfigFile(GetConfigFilePath(path), "true");
+            CreateConfigFile(GetConfigFilePath(path), "true", 2);
 
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
