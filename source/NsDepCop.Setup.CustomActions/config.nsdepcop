@@ -1,4 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig>
+<NsDepCopConfig CodeIssueKind="Error">
     <Allowed From="Codartis.NsDepCop.Setup.CustomActions" To="Microsoft.Deployment.WindowsInstaller" />
 </NsDepCopConfig>
