@@ -111,6 +111,24 @@
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Attributes_LowerLevelWins\Level2\Level1\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabledAtHigherLevelAndUndefinedAtProjectLevel\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabledAtHigherLevelAndUndefinedAtProjectLevel\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabledAtHigherLevelButEnabledAtProjectLevel\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabledAtHigherLevelButEnabledAtProjectLevel\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_InheritanceDepthChanged\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_InheritanceDepthChanged\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_EnabledToEnabledButChanged\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -135,10 +153,10 @@
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigEnabled\Level2\Level1\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabled\config.nsdepcop">
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabledAtProjectLevel\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabled\Level2\Level1\config.nsdepcop">
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabledAtProjectLevel\Level2\Level1\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RoslynParser\config.nsdepcop">

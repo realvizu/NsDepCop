@@ -74,13 +74,33 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         }
 
         [TestMethod]
-        public void Properties_ConfigDisabled()
+        public void Properties_ConfigDisabledAtProjectLevel_EffectiveDisabled()
         {
-            var path = GetTestFilePath(@"ConfigDisabled\Level2\Level1");
+            var path = GetTestFilePath(@"ConfigDisabledAtProjectLevel\Level2\Level1");
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Disabled);
             configProvider.ConfigException.Should().BeNull();
             configProvider.Config.Should().BeNull();
+        }
+
+        [TestMethod]
+        public void Properties_ConfigDisabledAtHigherLevelAndUndefinedAtProjectLevel_EffectiveDisabled()
+        {
+            var path = GetTestFilePath(@"ConfigDisabledAtHigherLevelAndUndefinedAtProjectLevel\Level2\Level1");
+            var configProvider = CreateConfigProvider(path);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Disabled);
+            configProvider.ConfigException.Should().BeNull();
+            configProvider.Config.Should().BeNull();
+        }
+
+        [TestMethod]
+        public void Properties_ConfigDisabledAtHigherLevelButEnabledAtProjectLevel_DisabledConfigNotCombinedToEffective()
+        {
+            var path = GetTestFilePath(@"ConfigDisabledAtHigherLevelButEnabledAtProjectLevel\Level2\Level1");
+            var configProvider = CreateConfigProvider(path);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
+            configProvider.ConfigException.Should().BeNull();
+            configProvider.Config.IssueKind.Should().Be(ConfigDefaults.IssueKind);
         }
 
         [TestMethod]
@@ -198,6 +218,44 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 
             configProvider.RefreshConfig();
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.NoConfig);
+        }
+
+        [TestMethod]
+        public void RefreshConfig_InheritanceDepthChangedFrom0To2()
+        {
+            var path = GetTestFilePath(@"RefreshConfig_InheritanceDepthChanged\Level2\Level1");
+
+            SetAttribute(GetConfigFilePath(path), "InheritanceDepth", "0");
+
+            var configProvider = CreateConfigProvider(path);
+            configProvider.InheritanceDepth.Should().Be(0);
+            configProvider.Config.MaxIssueCount.Should().Be(ConfigDefaults.MaxIssueCount);
+
+            Thread.Sleep(10);
+            SetAttribute(GetConfigFilePath(path), "InheritanceDepth", "2");
+
+            configProvider.RefreshConfig();
+            configProvider.InheritanceDepth.Should().Be(2);
+            configProvider.Config.MaxIssueCount.Should().Be(42);
+        }
+
+        [TestMethod]
+        public void RefreshConfig_InheritanceDepthChangedFrom2To0()
+        {
+            var path = GetTestFilePath(@"RefreshConfig_InheritanceDepthChanged\Level2\Level1");
+
+            SetAttribute(GetConfigFilePath(path), "InheritanceDepth", "2");
+
+            var configProvider = CreateConfigProvider(path);
+            configProvider.InheritanceDepth.Should().Be(2);
+            configProvider.Config.MaxIssueCount.Should().Be(42);
+
+            Thread.Sleep(10);
+            SetAttribute(GetConfigFilePath(path), "InheritanceDepth", "0");
+
+            configProvider.RefreshConfig();
+            configProvider.InheritanceDepth.Should().Be(0);
+            configProvider.Config.MaxIssueCount.Should().Be(ConfigDefaults.MaxIssueCount);
         }
 
         private static string GetConfigFilePath(string path)

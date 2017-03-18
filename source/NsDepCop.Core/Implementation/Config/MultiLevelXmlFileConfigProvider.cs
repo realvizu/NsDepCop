@@ -36,6 +36,18 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             ProjectFolder = projectFolder;
         }
 
+        public int InheritanceDepth
+        {
+            get
+            {
+                lock (RefreshLockObject)
+                {
+                    EnsureInitialized();
+                    return _fileConfigProviders.First().InheritanceDepth;
+                }
+            }
+        }
+
         public override string ToString() => $"MultiLevelXmlConfig:'{ProjectFolder}'";
 
         protected override ConfigLoadResult LoadConfigCore()
@@ -142,8 +154,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
             return fileConfigProviders;
         }
-
-        private int InheritanceDepth => _fileConfigProviders.First().InheritanceDepth;
 
         private static string GetConfigFilePath(string folderPath) => Path.Combine(folderPath, ProductConstants.DefaultConfigFileName);
     }

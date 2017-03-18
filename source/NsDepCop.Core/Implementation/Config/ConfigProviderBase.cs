@@ -12,13 +12,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// </remarks>
     internal abstract class ConfigProviderBase : IConfigProvider, IConfigInitializer<ConfigProviderBase>
     {
+        private bool _isInitialized;
+        private ConfigLoadResult _configLoadResult;
+
         /// <summary>
         /// This lock ensures that no property can be read while refreshing the config.
         /// </summary>
-        private readonly object _refreshLockObject = new object();
-
-        private bool _isInitialized;
-        private ConfigLoadResult _configLoadResult;
+        protected readonly object RefreshLockObject = new object();
 
         protected Action<string> DiagnosticMessageHandler { get; }
         protected Parsers? OverridingParser { get; private set; }
@@ -52,7 +52,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             get
             {
-                lock (_refreshLockObject)
+                lock (RefreshLockObject)
                 {
                     EnsureInitialized();
                     return _configLoadResult.Config;
@@ -64,7 +64,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             get
             {
-                lock (_refreshLockObject)
+                lock (RefreshLockObject)
                 {
                     EnsureInitialized();
                     return _configLoadResult.ConfigBuilder;
@@ -76,7 +76,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             get
             {
-                lock (_refreshLockObject)
+                lock (RefreshLockObject)
                 {
                     EnsureInitialized();
                     return _configLoadResult.ConfigState;
@@ -88,7 +88,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             get
             {
-                lock (_refreshLockObject)
+                lock (RefreshLockObject)
                 {
                     EnsureInitialized();
                     return _configLoadResult.ConfigException;
@@ -98,7 +98,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public void RefreshConfig()
         {
-            lock (_refreshLockObject)
+            lock (RefreshLockObject)
             {
                 EnsureInitialized();
 
@@ -114,17 +114,17 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         protected abstract ConfigLoadResult LoadConfigCore();
         protected abstract ConfigLoadResult RefreshConfigCore();
 
-        private void EnsureInitialized()
+        protected void EnsureInitialized()
         {
-            if (_isInitialized)
-                return;
+                if (_isInitialized)
+                    return;
 
-            _isInitialized = true;
+                _isInitialized = true;
 
-            DiagnosticMessageHandler?.Invoke($"Loading config {this}");
-            _configLoadResult = LoadConfigCore();
+                DiagnosticMessageHandler?.Invoke($"Loading config {this}");
+                _configLoadResult = LoadConfigCore();
 
-            DumpConfigToDiagnosticOutput();
+                DumpConfigToDiagnosticOutput();
         }
 
         private void DumpConfigToDiagnosticOutput()
