@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
@@ -12,12 +11,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     internal class CachingTypeDependencyValidator : TypeDependencyValidator, ICacheStatisticsProvider
     {
         private readonly ConcurrentDictionary<TypeDependency, bool> _dependencyValidationCache;
-        private readonly Action<string> _diagnosticMessageHandler;
+        private readonly MessageHandler _diagnosticMessageHandler;
 
         public int HitCount { get; private set; }
         public int MissCount { get; private set; }
 
-        public CachingTypeDependencyValidator(IDependencyRules dependencyRules, Action<string> diagnosticMessageHandler)
+        public CachingTypeDependencyValidator(IDependencyRules dependencyRules, MessageHandler diagnosticMessageHandler)
             : base(dependencyRules)
         {
             _dependencyValidationCache = new ConcurrentDictionary<TypeDependency, bool>();

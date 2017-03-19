@@ -1,5 +1,5 @@
-﻿using System;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
@@ -11,7 +11,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// </remarks>
     internal sealed class XmlFileConfigProvider : FileConfigProviderBase
     {
-        public XmlFileConfigProvider(string configFilePath, Action<string> diagnosticMessageHandler = null)
+        public XmlFileConfigProvider(string configFilePath, MessageHandler diagnosticMessageHandler = null)
             : base(configFilePath, diagnosticMessageHandler)
         {
         }

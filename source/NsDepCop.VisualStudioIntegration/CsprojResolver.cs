@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
@@ -15,9 +16,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <summary>
         /// Callback for emitting diagnostic messages;
         /// </summary>
-        private readonly Action<string> _diagnosticMessageHandler;
+        private readonly MessageHandler _diagnosticMessageHandler;
 
-        public CsprojResolver(Action<string> diagnosticMessageHandler = null)
+        public CsprojResolver(MessageHandler diagnosticMessageHandler = null)
         {
             _diagnosticMessageHandler = diagnosticMessageHandler;
         }

@@ -1,8 +1,8 @@
-﻿using System;
-using Codartis.NsDepCop.Core.Implementation.Analysis;
+﻿using Codartis.NsDepCop.Core.Implementation.Analysis;
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Factory
 {
@@ -11,12 +11,12 @@ namespace Codartis.NsDepCop.Core.Factory
     /// </summary>
     public class DependencyAnalyzerFactory : IDependencyAnalyzerFactory, IConfigInitializer<DependencyAnalyzerFactory>
     {
-        private readonly Action<string> _diagnosticMessageHandler;
+        private readonly MessageHandler _diagnosticMessageHandler;
         private Parsers? _overridingParser;
         private Parsers? _defaultParser;
         private Importance? _defaultInfoImportance;
 
-        public DependencyAnalyzerFactory(Action<string> diagnosticMessageHandler = null)
+        public DependencyAnalyzerFactory(MessageHandler diagnosticMessageHandler = null)
         {
             _diagnosticMessageHandler = diagnosticMessageHandler;
         }

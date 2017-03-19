@@ -118,6 +118,36 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         }
 
         [TestMethod]
+        public void DefaultParser()
+        {
+            {
+                var path = GetTestFilePath("RoslynParser");
+                var configProvider = CreateConfigProvider(path).SetDefaultParser(Parsers.NRefactory);
+                configProvider.Config.Parser.Should().Be(Parsers.Roslyn);
+            }
+            {
+                var path = GetTestFilePath("NoAttributes");
+                var configProvider = CreateConfigProvider(path).SetDefaultParser(Parsers.NRefactory);
+                configProvider.Config.Parser.Should().Be(Parsers.NRefactory);
+            }
+        }
+
+        [TestMethod]
+        public void DefaultInfoImportance()
+        {
+            {
+                var path = GetTestFilePath("HighInfoImportance");
+                var configProvider = CreateConfigProvider(path).SetDefaultInfoImportance(Importance.Low);
+                configProvider.Config.InfoImportance.Should().Be(Importance.High);
+            }
+            {
+                var path = GetTestFilePath("NoAttributes");
+                var configProvider = CreateConfigProvider(path).SetDefaultInfoImportance(Importance.Low); 
+                configProvider.Config.InfoImportance.Should().Be(Importance.Low);
+            }
+        }
+
+        [TestMethod]
         public void RefreshConfig_Unchanged()
         {
             var path = GetTestFilePath(@"ConfigEnabled\Level2\Level1");

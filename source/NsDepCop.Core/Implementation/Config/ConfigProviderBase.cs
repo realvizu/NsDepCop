@@ -1,6 +1,6 @@
 ﻿using System;
 using Codartis.NsDepCop.Core.Interface.Config;
-using MoreLinq;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
@@ -20,12 +20,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         /// </summary>
         protected readonly object RefreshLockObject = new object();
 
-        protected Action<string> DiagnosticMessageHandler { get; }
+        protected MessageHandler DiagnosticMessageHandler { get; }
         protected Parsers? OverridingParser { get; private set; }
         protected Parsers? DefaultParser { get; private set; }
         protected Importance? DefaultInfoImportance { get; private set; }
 
-        protected ConfigProviderBase(Action<string> diagnosticMessageHandler)
+        protected ConfigProviderBase(MessageHandler diagnosticMessageHandler)
         {
             DiagnosticMessageHandler = diagnosticMessageHandler;
         }
@@ -101,13 +101,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             lock (RefreshLockObject)
             {
                 EnsureInitialized();
-
-                var oldConfig = Config;
-
                 _configLoadResult = RefreshConfigCore();
-
-                if (oldConfig != Config)
-                    DumpConfigToDiagnosticOutput();
             }
         }
 
@@ -120,24 +114,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                     return;
 
                 _isInitialized = true;
-
-                DiagnosticMessageHandler?.Invoke($"Loading config {this}");
                 _configLoadResult = LoadConfigCore();
-
-                DumpConfigToDiagnosticOutput();
-        }
-
-        private void DumpConfigToDiagnosticOutput()
-        {
-            DiagnosticMessageHandler?.Invoke($"ConfigState={_configLoadResult.ConfigState} ({this})");
-
-            if (_configLoadResult.Config != null)
-            {
-                if (OverridingParser.HasValue)
-                    DiagnosticMessageHandler?.Invoke($"Parser overridden with {OverridingParser.Value}.");
-
-                _configLoadResult.Config?.DumpToStrings().ForEach(i => DiagnosticMessageHandler?.Invoke($"  {i}"));
-            }
         }
     }
 }

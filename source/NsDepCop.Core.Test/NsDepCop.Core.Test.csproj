@@ -159,6 +159,12 @@
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabledAtProjectLevel\Level2\Level1\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\NoAttributes\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\HighInfoImportance\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RoslynParser\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

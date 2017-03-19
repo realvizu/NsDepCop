@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
@@ -19,7 +20,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public string ConfigFilePath { get; }
 
-        protected FileConfigProviderBase(string configFilePath, Action<string> diagnosticMessageHandler)
+        protected FileConfigProviderBase(string configFilePath, MessageHandler diagnosticMessageHandler)
             : base(diagnosticMessageHandler)
         {
             ConfigFilePath = configFilePath;
@@ -54,10 +55,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             {
                 _configFileExists = File.Exists(ConfigFilePath);
                 if (!_configFileExists)
-                {
-                    DiagnosticMessageHandler?.Invoke($"Config file '{ConfigFilePath}' not found.");
                     return ConfigLoadResult.CreateWithNoConfig();
-                }
 
                 _configLastLoadUtc = DateTime.UtcNow;
 

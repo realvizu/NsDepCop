@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
 
@@ -8,7 +9,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <summary>
     /// Builds analyzer config objects.
     /// </summary>
-    internal class AnalyzerConfigBuilder : IConfigInitializer<AnalyzerConfigBuilder>
+    internal class AnalyzerConfigBuilder : IConfigInitializer<AnalyzerConfigBuilder>, IDiagnosticSupport
     {
         public Parsers? OverridingParser { get; private set; }
         public Parsers? DefaultParser { get; private set; }
@@ -173,6 +174,21 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (maxIssueCount.HasValue)
                 MaxIssueCount = maxIssueCount;
             return this;
+        }
+
+        public IEnumerable<string> ToStrings()
+        {
+            if (InheritanceDepth.HasValue) yield return $"InheritanceDepth={InheritanceDepth}";
+            if (IsEnabled.HasValue) yield return $"IsEnabled={IsEnabled}";
+            if (IssueKind.HasValue) yield return $"IssueKind={IssueKind}";
+            if (InfoImportance.HasValue) yield return $"InfoImportance={InfoImportance}";
+            if (Parser.HasValue) yield return $"Parser={Parser}";
+
+            if (ChildCanDependOnParentImplicitly.HasValue) yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
+            if (AllowRules.Any()) foreach (var s in AllowRules.ToStrings()) yield return s;
+            if (DisallowRules.Any()) foreach (var s in DisallowRules.ToStrings()) yield return s;
+            if (VisibleTypesByNamespace.Any()) foreach (var s in VisibleTypesByNamespace.ToStrings()) yield return s;
+            if (MaxIssueCount.HasValue) yield return $"MaxIssueCount={MaxIssueCount}";
         }
     }
 }

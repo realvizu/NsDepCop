@@ -1,11 +1,11 @@
-using System.Collections.Generic;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
     /// The configuration for an analyzer.
     /// </summary>
-    public interface IAnalyzerConfig : IDependencyRules
+    public interface IAnalyzerConfig : IDependencyRules, IDiagnosticSupport
     {
         /// <summary>
         /// Gets a value indicating whether analysis is enabled.
@@ -32,11 +32,5 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// The type of parser used by the analyzer.
         /// </summary>
         Parsers Parser { get; }
-
-        /// <summary>
-        /// Dumps the config into a collection of strings.
-        /// </summary>
-        /// <returns>A collection of strings containing the config values.</returns>
-        IEnumerable<string> DumpToStrings();
     }
 }

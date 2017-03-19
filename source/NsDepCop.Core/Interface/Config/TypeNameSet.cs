@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
@@ -16,6 +17,6 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         {
         }
 
-        public override string ToString() => $"{{{string.Join(",", this)}}}";
+        public override string ToString() => this.Any() ? $"{{{string.Join(",", this)}}}" : "{}";
     }
 }

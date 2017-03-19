@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
     /// <summary>
     /// Describes the result of a config load operation.
     /// </summary>
-    internal struct ConfigLoadResult
+    internal struct ConfigLoadResult : IDiagnosticSupport
     {
         public AnalyzerConfigState ConfigState { get; }
         public AnalyzerConfigBuilder ConfigBuilder { get; }
@@ -44,6 +46,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             return config.IsEnabled 
                 ? new ConfigLoadResult(AnalyzerConfigState.Enabled, configBuilder, config, null) 
                 : new ConfigLoadResult(AnalyzerConfigState.Disabled, null, null, null);
+        }
+
+        public IEnumerable<string> ToStrings()
+        {
+            yield return $"ConfigState={ConfigState}";
+            if (ConfigException != null) yield return $"ConfigException={ConfigException}";
+            if (Config != null) foreach (var s in Config.ToStrings()) yield return s;
         }
     }
 }

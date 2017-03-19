@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Analysis
 {
@@ -17,13 +18,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     {
         private readonly IConfigProvider _configProvider;
         private readonly ReaderWriterLockSlim _configRefreshLock;
-        private readonly Action<string> _diagnosticMessageHandler;
+        private readonly MessageHandler _diagnosticMessageHandler;
 
         private IAnalyzerConfig _config;
         private CachingTypeDependencyValidator _typeDependencyValidator;
         private ITypeDependencyEnumerator _typeDependencyEnumerator;
 
-        public DependencyAnalyzer(IConfigProvider configProvider, Action<string> diagnosticMessageHandler = null)
+        public DependencyAnalyzer(IConfigProvider configProvider, MessageHandler diagnosticMessageHandler = null)
         {
             if (configProvider == null)
                 throw new ArgumentNullException(nameof(configProvider));

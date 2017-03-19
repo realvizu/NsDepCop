@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
@@ -30,7 +31,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public string ProjectFolder { get; }
 
-        public MultiLevelXmlFileConfigProvider(string projectFolder, Action<string> diagnosticMessageHandler = null)
+        public MultiLevelXmlFileConfigProvider(string projectFolder, MessageHandler diagnosticMessageHandler = null)
             : base(diagnosticMessageHandler)
         {
             ProjectFolder = projectFolder;
@@ -52,6 +53,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         protected override ConfigLoadResult LoadConfigCore()
         {
+            DumpHelper.Dump(DiagnosticMessageHandler, $"Loading config {this}");
+
             var projectLevelConfigProvider = new XmlFileConfigProvider(GetConfigFilePath(ProjectFolder), DiagnosticMessageHandler);
 
             _fileConfigProviders = CreateFileConfigProviderList(projectLevelConfigProvider, ProjectFolder);
@@ -64,7 +67,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (!AnyChildConfigChanged())
                 return _lastConfigLoadResult;
 
-            DiagnosticMessageHandler?.Invoke($"Refreshing config {this}.");
+            DumpHelper.Dump(DiagnosticMessageHandler, $"Refreshing config {this}.");
 
             var projectLevelConfigProvider = _fileConfigProviders[0];
             projectLevelConfigProvider.RefreshConfig();
@@ -86,6 +89,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             _lastInheritanceDepth = InheritanceDepth;
             _lastConfigLoadResult = CombineFileConfigProviders();
+
+            DumpHelper.Dump(DiagnosticMessageHandler, "Effective config:", 1);
+            DumpHelper.Dump(DiagnosticMessageHandler, _lastConfigLoadResult.ToStrings(), 2);
+
             return _lastConfigLoadResult;
         }
 
@@ -97,6 +104,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             foreach (var childConfigProvider in Enumerable.Reverse(_fileConfigProviders))
             {
                 var childConfigState = childConfigProvider.ConfigState;
+
+                DumpHelper.Dump(DiagnosticMessageHandler, $"Combining {childConfigProvider}, state={childConfigState}", 1);
+
                 switch (childConfigState)
                 {
                     case AnalyzerConfigState.NoConfig:
@@ -109,7 +119,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
                     case AnalyzerConfigState.Enabled:
                         anyConfigFound = true;
-                        configBuilder.Combine(childConfigProvider.ConfigBuilder);
+
+                        var childConfigBuilder = childConfigProvider.ConfigBuilder;
+                        configBuilder.Combine(childConfigBuilder);
+                        DumpHelper.Dump(DiagnosticMessageHandler, childConfigBuilder.ToStrings(), 2);
                         break;
 
                     case AnalyzerConfigState.ConfigError:
@@ -127,6 +140,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         private AnalyzerConfigBuilder CreateAnalyzerConfigBuilder()
         {
+            if (OverridingParser.HasValue) DumpHelper.Dump(DiagnosticMessageHandler, $"OverridingParser={OverridingParser}", 1);
+            if (DefaultParser.HasValue) DumpHelper.Dump(DiagnosticMessageHandler, $"DefaultParser={DefaultParser}", 1);
+            if (DefaultInfoImportance.HasValue) DumpHelper.Dump(DiagnosticMessageHandler, $"DefaultInfoImportance={DefaultInfoImportance}", 1);
+
             return new AnalyzerConfigBuilder()
                 .OverrideParser(OverridingParser)
                 .SetDefaultParser(DefaultParser)
@@ -139,7 +156,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             var fileConfigProviders = new List<XmlFileConfigProvider> { firstConfigProvider };
 
-            DiagnosticMessageHandler?.Invoke($"InheritanceDepth={firstConfigProvider.InheritanceDepth}");
+            DumpHelper.Dump(DiagnosticMessageHandler, $"InheritanceDepth={firstConfigProvider.InheritanceDepth}", 1);
 
             var currentFolder = startFolderPath;
             for (var i = 0; i < firstConfigProvider.InheritanceDepth; i++)
