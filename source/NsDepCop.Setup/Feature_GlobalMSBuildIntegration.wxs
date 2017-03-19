@@ -94,13 +94,6 @@
                       Source="$(var.NsDepCop.MsBuildTask.TargetDir)\System.Reflection.Metadata.dll"
                       KeyPath="yes" />
             </Component>
-
-            <Component Id="Component_MoreLinq.dll"
-                       Guid="F29D9814-7358-4328-AE98-F59F1F47C2A6">
-                <File Id="File_MoreLinq.dll"
-                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\MoreLinq.dll"
-                      KeyPath="yes" />
-            </Component>
         </ComponentGroup>
 
     </Fragment>
