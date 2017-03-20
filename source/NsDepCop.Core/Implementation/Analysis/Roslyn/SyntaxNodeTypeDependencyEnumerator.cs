@@ -12,6 +12,19 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
     internal static class SyntaxNodeTypeDependencyEnumerator
     {
         /// <summary>
+        /// The list of those type kinds that are subject of dependency analysis.
+        /// </summary>
+        private static readonly List<TypeKind> AnalyzedTypeKinds = new List<TypeKind>
+        {
+            TypeKind.Class,
+            TypeKind.Delegate,
+            TypeKind.Enum,
+            TypeKind.Interface,
+            TypeKind.Struct,
+            TypeKind.TypeParameter
+        };
+
+        /// <summary>
         /// Returns type dependencies for a syntax node.
         /// </summary>
         /// <param name="node">A syntax node.</param>
@@ -21,20 +34,30 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
         {
             // Determine the type that contains the current syntax node.
             var enclosingType = DetermineEnclosingType(node, semanticModel);
-            if (enclosingType?.ContainingNamespace == null)
+            if (!IsCandidateForDependecyAnalysis(enclosingType))
                 yield break;
 
             // Determine the type referenced by the symbol represented by the current syntax node.
             var referencedType = DetermineReferencedType(node, semanticModel);
-            var referencedTypeDependency = CreateTypeDependency(enclosingType, referencedType, node);
-            if (referencedTypeDependency != null)
-                yield return referencedTypeDependency.Value;
+            if (IsCandidateForDependecyAnalysis(referencedType))
+                yield return CreateTypeDependency(enclosingType, referencedType, node);
 
             // If this is an extension method invocation then determine the type declaring the extension method.
             var declaringType = DetermineExtensionMethodDeclaringType(node, semanticModel);
-            var declaringTypeDependency = CreateTypeDependency(enclosingType, declaringType, node);
-            if (declaringTypeDependency != null)
-                yield return declaringTypeDependency.Value;
+            if (IsCandidateForDependecyAnalysis(declaringType))
+                yield return CreateTypeDependency(enclosingType, declaringType, node);
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether the given type is subject of dependency analysis.
+        /// </summary>
+        /// <param name="typeSymbol">A type symbol.</param>
+        /// <returns>True if the type symbol is subject of dependency analysis.</returns>
+        private static bool IsCandidateForDependecyAnalysis(ITypeSymbol typeSymbol)
+        {
+            return typeSymbol?.ContainingNamespace != null
+                && AnalyzedTypeKinds.Contains(typeSymbol.TypeKind)
+                && !typeSymbol.IsAnonymousType;
         }
 
         /// <summary>
@@ -43,16 +66,11 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
         /// <param name="fromType">The referring type.</param>
         /// <param name="toType">The referenced type.</param>
         /// <param name="node">The syntax node currently analyzed.</param>
-        /// <returns>A type dependency object or null of cound not create one.</returns>
-        private static TypeDependency? CreateTypeDependency(ITypeSymbol fromType, ITypeSymbol toType, SyntaxNode node)
+        /// <returns>A type dependency object.</returns>
+        private static TypeDependency CreateTypeDependency(ITypeSymbol fromType, ITypeSymbol toType, SyntaxNode node)
         {
-            if (fromType == null || 
-                toType?.ContainingNamespace == null || 
-                toType.TypeKind == TypeKind.Error)
-                return null;
-
             return new TypeDependency(
-                fromType.ContainingNamespace.ToDisplayString(), fromType.MetadataName, 
+                fromType.ContainingNamespace.ToDisplayString(), fromType.MetadataName,
                 toType.ContainingNamespace.ToDisplayString(), toType.MetadataName,
                 GetSourceSegment(node));
         }
@@ -67,8 +85,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
         {
             var methodSymbol = semanticModel.GetSymbolInfo(node).Symbol as IMethodSymbol;
 
-            return methodSymbol == null || !methodSymbol.IsExtensionMethod 
-                ? null 
+            return methodSymbol == null || !methodSymbol.IsExtensionMethod
+                ? null
                 : methodSymbol.ContainingType;
         }
 

@@ -29,6 +29,19 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
         public List<TypeDependency> TypeDependencies { get; }
 
         /// <summary>
+        /// The list of those type kinds that are subject of dependency analysis.
+        /// </summary>
+        private static readonly List<TypeKind> AnalyzedTypeKinds = new List<TypeKind>
+        {
+            TypeKind.Class,
+            TypeKind.Delegate,
+            TypeKind.Enum,
+            TypeKind.Interface,
+            TypeKind.Struct,
+            TypeKind.TypeParameter
+        };
+
+        /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="compilation">The representation of the current project.</param>
@@ -62,20 +75,29 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
         {
             // Determine the type that contains the current syntax node.
             var enclosingType = DetermineEnclosingType(node, _resolver);
-            if (enclosingType?.Namespace == null)
+            if (!IsCandidateForDependecyAnalysis(enclosingType))
                 yield break;
 
             // Determine the type referenced by the symbol represented by the current syntax node.
             var referencedType = DetermineReferencedType(node, _resolver);
-            var referencedTypeDependency = GetTypeDependency(enclosingType, referencedType, node);
-            if (referencedTypeDependency != null)
-                yield return referencedTypeDependency.Value;
+            if (IsCandidateForDependecyAnalysis(referencedType))
+                yield return GetTypeDependency(enclosingType, referencedType, node);
 
             // If this is an extension method invocation then determine the type declaring the extension method.
             var declaringType = DetermineExtensionMethodDeclaringType(node, _resolver);
-            var declaringTypeDependency = GetTypeDependency(enclosingType, declaringType, node);
-            if (declaringTypeDependency != null)
-                yield return declaringTypeDependency.Value;
+            if (IsCandidateForDependecyAnalysis(declaringType))
+                yield return GetTypeDependency(enclosingType, declaringType, node);
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether the given type is subject of dependency analysis.
+        /// </summary>
+        /// <param name="typeSymbol">A type symbol.</param>
+        /// <returns>True if the type symbol is subject of dependency analysis.</returns>
+        private static bool IsCandidateForDependecyAnalysis(IType typeSymbol)
+        {
+            return typeSymbol?.Namespace != null
+                && AnalyzedTypeKinds.Contains(typeSymbol.Kind);
         }
 
         /// <summary>
@@ -85,14 +107,11 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory
         /// <param name="toType">The referenced type.</param>
         /// <param name="node">The syntax node currently analyzed.</param>
         /// <returns>A type dependency object or null of could not create one.</returns>
-        private TypeDependency? GetTypeDependency(IType fromType, IType toType, AstNode node)
+        private TypeDependency GetTypeDependency(IType fromType, IType toType, AstNode node)
         {
-            if (fromType?.Namespace == null || toType?.Namespace == null)
-                return null;
-
             return new TypeDependency(
                 fromType.Namespace, fromType.GetMetadataName(),
-                toType.Namespace, toType.GetMetadataName(), 
+                toType.Namespace, toType.GetMetadataName(),
                 GetSourceSegment(node, _syntaxTree.FileName));
         }
 
