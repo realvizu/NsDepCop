@@ -44,5 +44,7 @@
             Text = text;
             Path = path;
         }
+
+        public override string ToString() => $"{Path} ({StartLine},{StartColumn},{EndLine},{EndColumn})";
     }
 }

@@ -1,15 +1,8 @@
-﻿using Microsoft.Build.Framework;
+﻿using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Config;
+using Microsoft.Build.Framework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
-using FluentAssertions;
 
 namespace Codartis.NsDepCop.MsBuildTask.Test
 {
@@ -17,7 +10,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
     /// Unit tests for the NsDepCopTask class.
     /// </summary>
     [TestClass]
-    public class NsDepCopTaskTests : NsDepCopTaskTestBase
+    public class NsDepCopTaskTests : MockedNsDepCopTaskTestBase
     {
         [TestMethod]
         public void Execute_NoConfigFile()
@@ -165,19 +158,10 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_IdentifierName_ReportWarning",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 23
-                    },
+                    CreateLogEntryParameters(sourceFileName, 7, 17, 7, 23)
                 },
             });
         }
@@ -192,16 +176,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Info,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 23
-                    },
+                    CreateLogEntryParameters(sourceFileName, 7, 17, 7, 23, IssueKind.Info)
                 },
             });
         }
@@ -216,16 +191,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Error,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 23
-                    },
+                    CreateLogEntryParameters(sourceFileName, 7, 17, 7, 23, IssueKind.Error)
                 },
                 ExpectedReturnValue = false
             });
@@ -238,19 +204,10 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_QualifiedName",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 5,
-                        StartColumn = 19,
-                        EndLine = 5,
-                        EndColumn = 25
-                    },
+                    CreateLogEntryParameters(sourceFileName, 5, 19, 5, 25)
                 },
             });
         }
@@ -262,19 +219,10 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_AliasQualifiedName",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 25,
-                        EndLine = 7,
-                        EndColumn = 31
-                    },
+                    CreateLogEntryParameters(sourceFileName, 7, 25, 7, 31)
                 },
                 SkipLocationValidation = true
             });
@@ -287,49 +235,13 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_InvocationExpression",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 10,
-                        StartColumn = 13,
-                        EndLine = 10,
-                        EndColumn = 26
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 11,
-                        StartColumn = 26,
-                        EndLine = 11,
-                        EndColumn = 45
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 12,
-                        StartColumn = 32,
-                        EndLine = 12,
-                        EndColumn = 45
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 15,
-                        StartColumn = 9,
-                        EndLine = 15,
-                        EndColumn = 15
-                    },
+                    CreateLogEntryParameters(sourceFileName, 10, 13, 10, 26),
+                    CreateLogEntryParameters(sourceFileName, 11, 26, 11, 45),
+                    CreateLogEntryParameters(sourceFileName, 12, 32, 12, 45),
+                    CreateLogEntryParameters(sourceFileName, 15, 9, 15, 15)
                 },
             });
         }
@@ -341,19 +253,10 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_InvocationWithTypeArg",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 9,
-                        StartColumn = 42,
-                        EndLine = 9,
-                        EndColumn = 50
-                    },
+                    CreateLogEntryParameters(sourceFileName, 9, 42, 9, 50)
                 },
             });
         }
@@ -365,19 +268,10 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_MemberAccessExpression",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 9,
-                        StartColumn = 37,
-                        EndLine = 9,
-                        EndColumn = 47
-                    },
+                    CreateLogEntryParameters(sourceFileName, 9, 37, 9, 47)
                 },
             });
         }
@@ -389,19 +283,12 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_GenericName",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 31
-                    },
+                    CreateLogEntryParameters(sourceFileName, 8, 17, 8, 31),
+                    CreateLogEntryParameters(sourceFileName, 11, 17, 11, 31),
+                    CreateLogEntryParameters(sourceFileName, 11, 32, 11, 40)
                 },
             });
         }
@@ -413,29 +300,11 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_GenericTypeArgument",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 32,
-                        EndLine = 7,
-                        EndColumn = 40
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 8,
-                        StartColumn = 36,
-                        EndLine = 8,
-                        EndColumn = 44
-                    },
+                    CreateLogEntryParameters(sourceFileName, 7, 32, 7, 40),
+                    CreateLogEntryParameters(sourceFileName, 8, 36, 8, 44)
                 },
             });
         }
@@ -447,49 +316,13 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_NestedType",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 25
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 26,
-                        EndLine = 7,
-                        EndColumn = 36
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 8,
-                        StartColumn = 19,
-                        EndLine = 8,
-                        EndColumn = 27
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 8,
-                        StartColumn = 28,
-                        EndLine = 8,
-                        EndColumn = 38
-                    },
+                    CreateLogEntryParameters(sourceFileName, 7, 17, 7, 25),
+                    CreateLogEntryParameters(sourceFileName, 7, 26, 7, 36),
+                    CreateLogEntryParameters(sourceFileName, 8, 19, 8, 27),
+                    CreateLogEntryParameters(sourceFileName, 8, 28, 8, 38)
                 },
             });
         }
@@ -501,19 +334,10 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ArrayType",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 25
-                    },
+                    CreateLogEntryParameters(sourceFileName, 7, 17, 7, 25)
                 },
             });
         }
@@ -525,19 +349,10 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_NullableType",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 25
-                    },
+                    CreateLogEntryParameters(sourceFileName, 7, 17, 7, 25)
                 },
             });
         }
@@ -549,59 +364,14 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_EveryUserDefinedTypeKind",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 24
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 8,
-                        StartColumn = 17,
-                        EndLine = 8,
-                        EndColumn = 29
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 9,
-                        StartColumn = 17,
-                        EndLine = 9,
-                        EndColumn = 25
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 10,
-                        StartColumn = 17,
-                        EndLine = 10,
-                        EndColumn = 23
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 11,
-                        StartColumn = 17,
-                        EndLine = 11,
-                        EndColumn = 27
-                    },
+                    CreateLogEntryParameters(sourceFileName, 7, 17, 7, 24),
+                    CreateLogEntryParameters(sourceFileName, 8, 17, 8, 29),
+                    CreateLogEntryParameters(sourceFileName, 9, 17, 9, 25),
+                    CreateLogEntryParameters(sourceFileName, 10, 17, 10, 23),
+                    CreateLogEntryParameters(sourceFileName, 11, 17, 11, 27)
                 },
             });
         }
@@ -613,29 +383,11 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_TooManyIssues",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 23
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 8,
-                        StartColumn = 17,
-                        EndLine = 8,
-                        EndColumn = 23
-                    },
+                    CreateLogEntryParameters(sourceFileName, 7, 17, 7, 23),
+                    CreateLogEntryParameters(sourceFileName, 8, 17, 8, 23),
                     LogEntryParameters.FromIssueDescriptor(IssueDefinitions.TooManyIssuesIssue),
                 },
             });
@@ -648,29 +400,11 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_MaxIssueCountEqualsIssueCount",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 23
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 8,
-                        StartColumn = 17,
-                        EndLine = 8,
-                        EndColumn = 23
-                    },
+                    CreateLogEntryParameters(sourceFileName, 7, 17, 7, 23),
+                    CreateLogEntryParameters(sourceFileName, 8, 17, 8, 23),
                     LogEntryParameters.FromIssueDescriptor(IssueDefinitions.TooManyIssuesIssue),
                 },
             });
@@ -693,29 +427,11 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_MultipleSourceFiles",
-                SourceFileNames = new[] { sourceFile1, sourceFile2 },
+                SourceFileNames = new[] {sourceFile1, sourceFile2},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFile1,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 23
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFile2,
-                        StartLine = 7,
-                        StartColumn = 17,
-                        EndLine = 7,
-                        EndColumn = 23
-                    },
+                    CreateLogEntryParameters(sourceFile1, 7, 17, 7, 23),
+                    CreateLogEntryParameters(sourceFile2, 7, 17, 7, 23),
                 },
             });
         }
@@ -737,29 +453,11 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ExtensionMethodInvocation",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 9,
-                        StartColumn = 27,
-                        EndLine = 9,
-                        EndColumn = 44
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 10,
-                        StartColumn = 27,
-                        EndLine = 10,
-                        EndColumn = 51
-                    },
+                    CreateLogEntryParameters(sourceFileName, 9, 27, 9, 44),
+                    CreateLogEntryParameters(sourceFileName, 10, 27, 10, 51)
                 },
             });
         }
@@ -771,19 +469,10 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ObjectCreationExpression",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 9,
-                        StartColumn = 17,
-                        EndLine = 9,
-                        EndColumn = 29
-                    },
+                    CreateLogEntryParameters(sourceFileName, 9, 17, 9, 29)
                 },
             });
         }
@@ -795,222 +484,51 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_AllowedDependencyInvisibleMembers",
-                SourceFileNames = new[] { sourceFileName },
+                SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 6,
-                        StartColumn = 19,
-                        EndLine = 6,
-                        EndColumn = 32
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 8,
-                        StartColumn = 19,
-                        EndLine = 8,
-                        EndColumn = 43
-                    },
-                    new LogEntryParameters
-                    {
-                        IssueKind = IssueKind.Warning,
-                        Code = IssueDefinitions.IllegalDependencyIssue.Id,
-                        Path = sourceFileName,
-                        StartLine = 9,
-                        StartColumn = 19,
-                        EndLine = 9,
-                        EndColumn = 39
-                    },
+                    CreateLogEntryParameters(sourceFileName, 6, 19, 6, 32),
+                    CreateLogEntryParameters(sourceFileName, 8, 19, 8, 43),
+                    CreateLogEntryParameters(sourceFileName, 9, 19, 9, 39)
                 },
             });
         }
 
-        /// <summary>
-        /// Executes the test case using both analyzers.
-        /// </summary>
-        /// <param name="specification">The test case specification.</param>
-        private static void ExecuteWithAllAnalyzers(TestCaseSpecification specification)
+        [TestMethod]
+        public void Execute_DepViolation_Var()
         {
+            const string sourceFileName = "var.cs";
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
-                Debug.WriteLine("--> Running test with NRefactory...");
-                var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);
-                nsDepCopTask.Parser = new TestTaskItem(Parsers.NRefactory.ToString());
-                nsDepCopTask.Execute().Should().Be(specification.ExpectedReturnValue);
-                nsDepCopTask.BuildEngine.VerifyAllExpectations();
-            }
-            {
-                Debug.WriteLine("--> Running test with Roslyn...");
-                var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);
-                nsDepCopTask.Parser = new TestTaskItem(Parsers.Roslyn.ToString());
-                nsDepCopTask.Execute().Should().Be(specification.ExpectedReturnValue);
-                nsDepCopTask.BuildEngine.VerifyAllExpectations();
-            }
-        }
-
-        /// <summary>
-        /// Creates an NsDepCopTask and sets it up for testing. Adds a mocked BuildEngine and log expectations.
-        /// </summary>
-        /// <param name="specification">The test case specification.</param>
-        /// <returns>A new NsDepCopTask instance ready for testing.</returns>
-        private static NsDepCopTask SetUpNsDepCopTaskForTest(TestCaseSpecification specification)
-        {
-            var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Assert.IsNotNull(assemblyDirectory);
-
-            var baseDirectory = Path.Combine(assemblyDirectory, specification.TestFilesFolderName);
-
-            var mockBuildEngine = MockRepository.GenerateStrictMock<IBuildEngine>();
-
-            ExpectAnyDiagnosticEvents(mockBuildEngine);
-
-            if (specification.ExpectStartEvent)
-                ExpectStartEvent(mockBuildEngine);
-
-            ExpectEvents(mockBuildEngine, specification.ExpectedLogEntries, baseDirectory, specification.SkipLocationValidation);
-
-            if (specification.ExpectEndEvent)
-                ExpectEndEvent(mockBuildEngine);
-
-            var nsDepCopTask = new NsDepCopTask
-            {
-                BaseDirectory = new TestTaskItem(baseDirectory),
-                Compile = CreateTaskItems(CreateFullPathFileNames(baseDirectory, specification.SourceFileNames)),
-                ReferencePath = CreateTaskItems(specification.ReferencedFilePaths),
-                BuildEngine = mockBuildEngine,
-            };
-
-            return nsDepCopTask;
-        }
-
-        private static void ExpectAnyDiagnosticEvents(IBuildEngine mockBuildEngine)
-        {
-            mockBuildEngine
-                .Expect(i => i.LogMessageEvent(Arg<BuildMessageEventArgs>.Matches(e => e.Importance == MessageImportance.Low)))
-                .Repeat.Any();
-        }
-
-        /// <summary>
-        /// Creates the specified expectations on a mock IBuildEngine.
-        /// </summary>
-        /// <param name="mockBuildEngine">The mock build engine.</param>
-        /// <param name="expectedLogEntries">The expected log entry events.</param>
-        /// <param name="baseDirecytory">The base directory of the source files.</param>
-        /// <param name="skipLocationValidation">If true then skip the validation of the location info.</param>
-        private static void ExpectEvents(IBuildEngine mockBuildEngine, IEnumerable<LogEntryParameters> expectedLogEntries,
-            string baseDirecytory = null, bool skipLocationValidation = true)
-        {
-            foreach (var expectedLogEntry in expectedLogEntries.EmptyIfNull())
-            {
-                switch (expectedLogEntry.IssueKind)
+                TestFilesFolderName = "TestFiles_DepViolation_Var",
+                SourceFileNames = new[] {sourceFileName},
+                ExpectedLogEntries = new[]
                 {
-                    case IssueKind.Info:
-                        mockBuildEngine
-                            .Expect(i => i.LogMessageEvent(Arg<BuildMessageEventArgs>
-                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
-                            .Repeat.Once();
-                        break;
-
-                    case IssueKind.Warning:
-                        mockBuildEngine
-                            .Expect(i => i.LogWarningEvent(Arg<BuildWarningEventArgs>
-                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
-                            .Repeat.Once();
-                        break;
-
-                    case IssueKind.Error:
-                        mockBuildEngine
-                            .Expect(i => i.LogErrorEvent(Arg<BuildErrorEventArgs>
-                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
-                            .Repeat.Once();
-                        break;
-
-                    default:
-                        throw new Exception($"Unexpected IssueKind: {expectedLogEntry.IssueKind}");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Compares a log entry to an expected value.
-        /// </summary>
-        /// <param name="logEntry">The log entry to be verified.</param>
-        /// <param name="expectedLogEntry">The expected log entry.</param>
-        /// <param name="baseDirecytory">The base directory of the source files.</param>
-        /// <param name="skipLocationValidation">If true then skip the validation of the location info.</param>
-        /// <returns>True if the given log entry equals to the expected log entry.</returns>
-        private static bool LogEntryEqualsExpected(dynamic logEntry, LogEntryParameters expectedLogEntry, string baseDirecytory, bool skipLocationValidation)
-        {
-            return LogEntryHasExpectedCode(logEntry, expectedLogEntry)
-                && LogEntryHasExpectedFile(logEntry, expectedLogEntry, baseDirecytory)
-                && LogEntryHasExpectedImportance(logEntry, expectedLogEntry)
-                && LogEntryHasExpectedLocation(logEntry, expectedLogEntry, skipLocationValidation);
-        }
-
-        private static bool LogEntryHasExpectedCode(dynamic logEntry, LogEntryParameters expectedLogEntry)
-        {
-            return logEntry.Code == expectedLogEntry.Code;
-        }
-
-        private static bool LogEntryHasExpectedFile(dynamic logEntry, LogEntryParameters expectedLogEntry, string baseDirecytory)
-        {
-            return logEntry.File == FileNameToFullPath(baseDirecytory, expectedLogEntry.Path);
-        }
-
-        private static bool LogEntryHasExpectedImportance(dynamic logEntry, LogEntryParameters expectedLogEntry)
-        {
-            return !(logEntry is BuildMessageEventArgs)
-                || !expectedLogEntry.InfoImportance.HasValue
-                || expectedLogEntry.InfoImportance.Value.ToMessageImportance() == logEntry.Importance;
-        }
-
-        private static bool LogEntryHasExpectedLocation(dynamic logEntry, LogEntryParameters expectedLogEntry, bool skipLocationValidation)
-        {
-            return skipLocationValidation 
-                || LocationEqualsExpected(logEntry, expectedLogEntry);
-        }
-
-        /// <summary>
-        /// Compares a location to an expected value.
-        /// </summary>
-        /// <param name="logEntry">The log entry to be verified.</param>
-        /// <param name="expectedLogEntry">The expected log entry.</param>
-        /// <returns>True if the given location equals to the expected location.</returns>
-        private static bool LocationEqualsExpected(dynamic logEntry, LogEntryParameters expectedLogEntry)
-        {
-            return logEntry.LineNumber == expectedLogEntry.StartLine
-                && logEntry.ColumnNumber == expectedLogEntry.StartColumn
-                && logEntry.EndLineNumber == expectedLogEntry.EndLine
-                && logEntry.EndColumnNumber == expectedLogEntry.EndColumn;
-        }
-
-        /// <summary>
-        /// Registers the expectation of a start event on the given BuildEngine mock.
-        /// </summary>
-        /// <param name="mockBuildEngine">A mock BuildEngine.</param>
-        private static void ExpectStartEvent(IBuildEngine mockBuildEngine)
-        {
-            ExpectEvents(mockBuildEngine, new[]
-            {
-                new LogEntryParameters { IssueKind = NsDepCopTask.TaskStartedIssue.DefaultKind, Code = NsDepCopTask.TaskStartedIssue.Id },
+                    CreateLogEntryParameters(sourceFileName, 7, 13, 7, 16),
+                    CreateLogEntryParameters(sourceFileName, 7, 23, 7, 29),
+                    CreateLogEntryParameters(sourceFileName, 7, 30, 7, 40)
+                },
             });
         }
 
-        /// <summary>
-        /// Registers the expectation of an end event on the given BuildEngine mock.
-        /// </summary>
-        /// <param name="mockBuildEngine">A mock BuildEngine.</param>
-        private static void ExpectEndEvent(IBuildEngine mockBuildEngine)
+        // TODO
+        [TestMethod, Ignore]
+        public void Execute_DepViolation_VarWithConstructedGenericType()
         {
-            ExpectEvents(mockBuildEngine, new[]
+            const string sourceFileName = "var.cs";
+            ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
-                new LogEntryParameters { IssueKind = NsDepCopTask.TaskFinishedIssue.DefaultKind, Code = NsDepCopTask.TaskFinishedIssue.Id },
+                TestFilesFolderName = "TestFiles_DepViolation_VarWithConstructedGenericType",
+                SourceFileNames = new[] {sourceFileName},
+                ExpectedLogEntries = new[]
+                {
+                    CreateLogEntryParameters(sourceFileName, 8, 13, 8, 16),
+                    CreateLogEntryParameters(sourceFileName, 8, 13, 8, 16),
+                    CreateLogEntryParameters(sourceFileName, 8, 23, 8, 30),
+                    CreateLogEntryParameters(sourceFileName, 8, 33, 8, 39),
+                    CreateLogEntryParameters(sourceFileName, 8, 41, 8, 49),
+                    CreateLogEntryParameters(sourceFileName, 8, 41, 8, 49),
+                },
             });
         }
     }

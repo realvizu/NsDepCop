@@ -77,7 +77,12 @@ namespace Codartis.NsDepCop.ConsoleHost
         {
             Console.WriteLine($"Illegal dependencies count={typeDependencies.Count}");
             foreach (var typeDependency in typeDependencies)
-                Console.WriteLine(IssueDefinitions.IllegalDependencyIssue.GetDynamicDescription(typeDependency));
+                Console.WriteLine(FormatIssue(typeDependency));
+        }
+
+        private static string FormatIssue(TypeDependency typeDependency)
+        {
+            return $"{IssueDefinitions.IllegalDependencyIssue.GetDynamicDescription(typeDependency)} at {typeDependency.SourceSegment}";
         }
 
         private static void DumpRunTimes(List<TimeSpan> runTimeSpans)

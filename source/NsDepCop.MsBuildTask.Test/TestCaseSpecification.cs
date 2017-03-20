@@ -5,7 +5,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
     /// <summary>
     /// The parameters that specify a test case.
     /// </summary>
-    internal class TestCaseSpecification
+    public class TestCaseSpecification
     {
         /// <summary>The name of the test files folder.</summary>
         public string TestFilesFolderName;
