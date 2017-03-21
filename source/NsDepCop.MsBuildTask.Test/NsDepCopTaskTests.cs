@@ -608,5 +608,30 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
             });
         }
+
+        [TestMethod]
+        public void Execute_DepViolation_Attributes()
+        {
+            const string sourceFileName = "DepViolation_Attributes.cs";
+            ExecuteTest(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_DepViolation_Attributes",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    // [Forbidden(...
+                    CreateLogEntryParameters(sourceFileName, 15, 6, 15, 15),
+
+                    // class attribute type parameter
+                    CreateLogEntryParameters(sourceFileName, 21, 41, 21, 54),
+
+                    // field attribute type parameter
+                    CreateLogEntryParameters(sourceFileName, 29, 45, 29, 58),
+
+                    // enum value attribute type parameter
+                    CreateLogEntryParameters(sourceFileName, 38, 45, 38, 58),
+                },
+            });
+        }
     }
 }
