@@ -4,6 +4,5 @@
     CodeIssueKind="Error"
     MaxIssueCount="42"
     ChildCanDependOnParentImplicitly="true"
-    InfoImportance="Normal"
-    Parser="Roslyn">
+    InfoImportance="Normal">
 </NsDepCopConfig>

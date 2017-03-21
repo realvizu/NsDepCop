@@ -165,9 +165,6 @@
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\HighInfoImportance\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RoslynParser\config.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigError\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -227,9 +224,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\XmlFileConfigProviderTests\RefreshConfig_EnabledToDisabled.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Implementation\Config\XmlFileConfigProviderTests\RoslynParser.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\XmlFileConfigProviderTests\Erronous.nsdepcop">

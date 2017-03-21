@@ -8,15 +8,7 @@
     <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.*" To="Codartis.NsDepCop.Core.Interface.*" />
     <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis" To="Codartis.NsDepCop.Core.Implementation.Analysis.*" />
     <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn" To="Microsoft.CodeAnalysis.*" />
-    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory" To="ICSharpCode.NRefactory.*" />
 
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Interface.*"/>
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.*"/>
-
-    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Implementation.Analysis.NRefactory">
-        <Type Name="NRefactoryTypeDependencyEnumerator" />
-    </VisibleMembers>
-    <VisibleMembers OfNamespace="Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn">
-        <Type Name="RoslynTypeDependencyEnumerator" />
-    </VisibleMembers>
 </NsDepCopConfig>

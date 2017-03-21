@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Codartis.NsDepCop.Core.Interface.Analysis;
@@ -22,22 +21,11 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         /// Executes the test case using both analyzers.
         /// </summary>
         /// <param name="specification">The test case specification.</param>
-        protected static void ExecuteWithAllAnalyzers(TestCaseSpecification specification)
+        protected static void ExecuteTest(TestCaseSpecification specification)
         {
-            //{
-            //    Debug.WriteLine("--> Running test with NRefactory...");
-            //    var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);
-            //    nsDepCopTask.Parser = new TestTaskItem(Parsers.NRefactory.ToString());
-            //    nsDepCopTask.Execute().Should().Be(specification.ExpectedReturnValue);
-            //    nsDepCopTask.BuildEngine.VerifyAllExpectations();
-            //}
-            {
-                Debug.WriteLine("--> Running test with Roslyn...");
-                var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);
-                nsDepCopTask.Parser = new TestTaskItem(Parsers.Roslyn.ToString());
-                nsDepCopTask.Execute().Should().Be(specification.ExpectedReturnValue);
-                nsDepCopTask.BuildEngine.VerifyAllExpectations();
-            }
+            var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);
+            nsDepCopTask.Execute().Should().Be(specification.ExpectedReturnValue);
+            nsDepCopTask.BuildEngine.VerifyAllExpectations();
         }
 
         /// <summary>
@@ -115,7 +103,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             if (specification.ExpectStartEvent)
                 ExpectStartEvent(mockBuildEngine);
 
-            ExpectEvents(mockBuildEngine, specification.ExpectedLogEntries, baseDirectory, specification.SkipLocationValidation);
+            ExpectEvents(mockBuildEngine, specification.ExpectedLogEntries, baseDirectory);
 
             if (specification.ExpectEndEvent)
                 ExpectEndEvent(mockBuildEngine);

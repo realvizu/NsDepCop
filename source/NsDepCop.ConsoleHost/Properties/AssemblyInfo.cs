@@ -1,4 +1,4 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("NsDepCop.TestHost")]
-[assembly: AssemblyDescription("Test host for perf tuning NsDepCop.")]
+[assembly: AssemblyTitle("NsDepCop")]
+[assembly: AssemblyDescription("Console host for NsDepCop.")]

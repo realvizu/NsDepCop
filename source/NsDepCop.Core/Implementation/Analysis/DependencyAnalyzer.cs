@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
@@ -115,7 +116,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             if (ConfigState == AnalyzerConfigState.Enabled)
             {
                 _typeDependencyValidator = new CachingTypeDependencyValidator(_config, _diagnosticMessageHandler);
-                _typeDependencyEnumerator = TypeDependencyEnumeratorFactory.Create(_config.Parser);
+                _typeDependencyEnumerator = new RoslynTypeDependencyEnumerator();
             }
             else
             {

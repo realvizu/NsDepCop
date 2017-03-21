@@ -27,10 +27,5 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// Influences whether messages are emitted or suppressed by the host.
         /// </summary>
         Importance InfoImportance { get; }
-
-        /// <summary>
-        /// The type of parser used by the analyzer.
-        /// </summary>
-        Parsers Parser { get; }
     }
 }

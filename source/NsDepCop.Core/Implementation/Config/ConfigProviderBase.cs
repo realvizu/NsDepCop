@@ -21,25 +21,11 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         protected readonly object RefreshLockObject = new object();
 
         protected MessageHandler DiagnosticMessageHandler { get; }
-        protected Parsers? OverridingParser { get; private set; }
-        protected Parsers? DefaultParser { get; private set; }
         protected Importance? DefaultInfoImportance { get; private set; }
 
         protected ConfigProviderBase(MessageHandler diagnosticMessageHandler)
         {
             DiagnosticMessageHandler = diagnosticMessageHandler;
-        }
-
-        public ConfigProviderBase OverrideParser(Parsers? overridingParser)
-        {
-            OverridingParser = overridingParser;
-            return this;
-        }
-
-        public ConfigProviderBase SetDefaultParser(Parsers? defaultParser)
-        {
-            DefaultParser = defaultParser;
-            return this;
         }
 
         public ConfigProviderBase SetDefaultInfoImportance(Importance? defaultInfoImportance)

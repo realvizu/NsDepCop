@@ -11,6 +11,5 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         public const int MaxIssueCount = 100;
         public const bool ChildCanDependOnParentImplicitly = false;
         public const Importance InfoImportance = Importance.Normal;
-        public const Parsers Parser = Parsers.Roslyn;
     }
 }

@@ -27,8 +27,5 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
 
         /// <summary>The expected return value of the task.</summary>
         public bool ExpectedReturnValue = true;
-
-        /// <summary>If true then ignores the location part of an issue. Needed because of an NRefactory bug that gives wrong location.</summary>
-        public bool SkipLocationValidation = false;
     }
 }

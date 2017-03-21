@@ -57,7 +57,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
 
         private static IEnumerable<ITypeSymbol> GetConstituentTypes(ITypeSymbol typeSymbol, SyntaxNode syntaxNode)
         {
-            if (typeSymbol == null)
+            if (typeSymbol == null || 
+                typeSymbol.IsAnonymousType)
                 yield break;
 
             switch (typeSymbol.TypeKind)

@@ -39,34 +39,6 @@
                       KeyPath="yes" />
             </Component>
 
-            <Component Id="Component_Mono.Cecil.dll"
-                       Guid="4D18FA1E-E74C-481D-9C31-6DB6163F0829">
-                <File Id="File_Mono.Cecil.dll"
-                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\Mono.Cecil.dll"
-                      KeyPath="yes" />
-            </Component>
-
-            <Component Id="Component_ICSharpCode.NRefactory.dll"
-                       Guid="B17E5EA4-23EE-4C7D-9761-76D683F1AE66">
-                <File Id="File_ICSharpCode.NRefactory.dll"
-                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\ICSharpCode.NRefactory.dll"
-                      KeyPath="yes" />
-            </Component>
-
-            <Component Id="Component_ICSharpCode.NRefactory.CSharp.dll"
-                       Guid="5D91122A-8A9C-46F2-8151-F38635AC6270">
-                <File Id="File_ICSharpCode.NRefactory.CSharp.dll"
-                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\ICSharpCode.NRefactory.CSharp.dll"
-                      KeyPath="yes" />
-            </Component>
-
-            <Component Id="Component_ICSharpCode.NRefactory.Cecil.dll"
-                       Guid="AB5D888F-0B00-4A42-8429-550E47625DD6">
-                <File Id="File_ICSharpCode.NRefactory.Cecil.dll"
-                      Source="$(var.NsDepCop.MsBuildTask.TargetDir)\ICSharpCode.NRefactory.Cecil.dll"
-                      KeyPath="yes" />
-            </Component>
-            
             <Component Id="Component_Microsoft.CodeAnalysis.dll"
                        Guid="566674B8-386F-4F18-9F15-BFA9AFDF2395">
                 <File Id="File_Microsoft.CodeAnalysis.dll"

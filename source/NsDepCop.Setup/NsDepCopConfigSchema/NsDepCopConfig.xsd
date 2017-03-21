@@ -74,13 +74,6 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
-            <xs:attribute name="Parser" type="Parsers" use="optional">
-                <xs:annotation>
-                    <xs:documentation>
-                        Sets the parser to use: Roslyn (default) or NRefactory.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:attribute>
         </xs:complexType>
     </xs:element>
 
@@ -97,13 +90,6 @@
             <xs:enumeration value="Low" />
             <xs:enumeration value="Normal" />
             <xs:enumeration value="High" />
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:simpleType name="Parsers" >
-        <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="Roslyn" />
-            <xs:enumeration value="NRefactory" />
         </xs:restriction>
     </xs:simpleType>
 

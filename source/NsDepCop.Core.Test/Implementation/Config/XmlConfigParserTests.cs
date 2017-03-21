@@ -22,7 +22,6 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder.MaxIssueCount.Should().BeNull();
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeNull();
             configBuilder.InfoImportance.Should().BeNull();
-            configBuilder.Parser.Should().BeNull();
         }
 
         [TestMethod]
@@ -36,7 +35,6 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder.MaxIssueCount.ShouldBeEquivalentTo(42);
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeTrue();
             configBuilder.InfoImportance.ShouldBeEquivalentTo(Importance.Normal);
-            configBuilder.Parser.ShouldBeEquivalentTo(Parsers.Roslyn);
         }
 
         [TestMethod]

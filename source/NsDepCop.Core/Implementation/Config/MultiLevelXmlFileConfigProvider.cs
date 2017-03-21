@@ -140,14 +140,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         private AnalyzerConfigBuilder CreateAnalyzerConfigBuilder()
         {
-            if (OverridingParser.HasValue) DumpHelper.Dump(DiagnosticMessageHandler, $"OverridingParser={OverridingParser}", 1);
-            if (DefaultParser.HasValue) DumpHelper.Dump(DiagnosticMessageHandler, $"DefaultParser={DefaultParser}", 1);
             if (DefaultInfoImportance.HasValue) DumpHelper.Dump(DiagnosticMessageHandler, $"DefaultInfoImportance={DefaultInfoImportance}", 1);
 
-            return new AnalyzerConfigBuilder()
-                .OverrideParser(OverridingParser)
-                .SetDefaultParser(DefaultParser)
-                .SetDefaultInfoImportance(DefaultInfoImportance);
+            return new AnalyzerConfigBuilder().SetDefaultInfoImportance(DefaultInfoImportance);
         }
 
         private bool AnyChildConfigChanged() => _fileConfigProviders.Any(i => i.HasConfigFileChanged());

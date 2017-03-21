@@ -18,7 +18,7 @@ namespace Codartis.NsDepCop.MsBuildTask
     public class NsDepCopTask : Task
     {
         public static readonly IssueDescriptor<string> TaskStartedIssue =
-            new IssueDescriptor<string>("NSDEPCOPSTART", IssueKind.Info, null, i => $"Analysing project using {i}.");
+            new IssueDescriptor<string>("NSDEPCOPSTART", IssueKind.Info, null, i => $"Analysing project in folder: {i}");
 
         public static readonly IssueDescriptor<TimeSpan> TaskFinishedIssue =
             new IssueDescriptor<TimeSpan>("NSDEPCOPFINISH", IssueKind.Info, null, i => $"Analysis took: {i:mm\\:ss\\.fff}");
@@ -48,7 +48,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         public ITaskItem BaseDirectory { get; set; }
 
         /// <summary>
-        /// Specifies the parser: NRefactory or Roslyn. Optional. Default: Roslyn.
+        /// Not used any more.
         /// </summary>
         public ITaskItem Parser { get; set; }
 
@@ -75,11 +75,9 @@ namespace Codartis.NsDepCop.MsBuildTask
                 LogDiagnosticMessages(GetInputParameterDiagnosticMessages());
 
                 var defaultInfoImportance = Parse<Importance>(InfoImportance.GetValue());
-                var defaultParser = Parse<Parsers>(Parser.GetValue());
                 var configFolderPath = BaseDirectory.ItemSpec;
 
                 var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogDiagnosticMessage)
-                    .SetDefaultParser(defaultParser)
                     .SetDefaultInfoImportance(defaultInfoImportance);
 
                 using (var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(configFolderPath))
@@ -102,7 +100,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                             break;
 
                         case AnalyzerConfigState.Enabled:
-                            runWasSuccessful = ExecuteAnalysis(dependencyAnalyzer);
+                            runWasSuccessful = ExecuteAnalysis(dependencyAnalyzer, configFolderPath);
                             break;
 
                         default:
@@ -123,15 +121,16 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// Executes dependency analysis on the project.
         /// </summary>
         /// <param name="dependencyAnalyzer">The dependency analyzer object.</param>
+        /// <param name="configFolderPath">The full path of the folder where the analyzer searches the config.</param>
         /// <returns>True if the analysis was 'green', ie. no error issues found.</returns>
-        private bool ExecuteAnalysis(IDependencyAnalyzer dependencyAnalyzer)
+        private bool ExecuteAnalysis(IDependencyAnalyzer dependencyAnalyzer, string configFolderPath)
         {
             var config = dependencyAnalyzer.Config;
 
             _infoImportance = config.InfoImportance.ToMessageImportance();
 
             var startTime = DateTime.Now;
-            LogIssue(TaskStartedIssue, config.Parser.ToString());
+            LogIssue(TaskStartedIssue, configFolderPath);
 
             var illegalDependencies = dependencyAnalyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths);
             var issuesReported = ReportIllegalDependencies(illegalDependencies, config.IssueKind, config.MaxIssueCount);

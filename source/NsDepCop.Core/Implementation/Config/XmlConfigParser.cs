@@ -20,7 +20,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private const string MaxIssueCountAttributeName = "MaxIssueCount";
         private const string ImplicitParentDependencyAttributeName = "ChildCanDependOnParentImplicitly";
         private const string InfoImportanceAttributeName = "InfoImportance";
-        private const string ParserAttributeName = "Parser";
         private const string AllowedElementName = "Allowed";
         private const string DisallowedElementName = "Disallowed";
         private const string VisibleMembersElementName = "VisibleMembers";
@@ -50,7 +49,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             configBuilder.SetInheritanceDepth(ParseAttribute<int>(rootElement, InheritanceDepthAttributeName, int.TryParse));
             configBuilder.SetIssueKind(ParseAttribute<IssueKind>(rootElement, CodeIssueKindAttributeName, Enum.TryParse));
             configBuilder.SetInfoImportance(ParseAttribute<Importance>(rootElement, InfoImportanceAttributeName, Enum.TryParse));
-            configBuilder.SetParser(ParseAttribute<Parsers>(rootElement, ParserAttributeName, Enum.TryParse));
             configBuilder.SetChildCanDependOnParentImplicitly(ParseAttribute<bool>(rootElement, ImplicitParentDependencyAttributeName, bool.TryParse));
             configBuilder.SetMaxIssueCount(ParseAttribute<int>(rootElement, MaxIssueCountAttributeName, int.TryParse));
         }

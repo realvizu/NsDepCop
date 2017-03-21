@@ -10,39 +10,39 @@ namespace Codartis.NsDepCop.Core.Test.Factory
     public class DependencyAnalyzerFactoryTests : FileBasedTestsBase
     {
         [TestMethod]
-        public void CreateFromXmlConfigFile_EnabledWithRoslynParser()
+        public void CreateFromXmlConfigFile_Enabled()
         {
             var configFilePath = GetTestFilePath("config.nsdepcop");
             var dependencyAnalyzer = new DependencyAnalyzerFactory().CreateFromXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
-            dependencyAnalyzer.Config.Parser.Should().Be(Parsers.Roslyn);
+            dependencyAnalyzer.Config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
         }
 
         [TestMethod]
-        public void CreateFromXmlConfigFile_EnabledWithRoslynParser_OverrideWithNRefactoryParser()
+        public void CreateFromXmlConfigFile_EnabledWithDefaultInfoImportance()
         {
             var configFilePath = GetTestFilePath("config.nsdepcop");
-            var dependencyAnalyzer = new DependencyAnalyzerFactory().OverrideParser(Parsers.NRefactory).CreateFromXmlConfigFile(configFilePath);
+            var dependencyAnalyzer = new DependencyAnalyzerFactory().SetDefaultInfoImportance(Importance.High).CreateFromXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
-            dependencyAnalyzer.Config.Parser.Should().Be(Parsers.NRefactory);
+            dependencyAnalyzer.Config.InfoImportance.Should().Be(Importance.High);
         }
 
         [TestMethod]
-        public void CreateFromMultiLevelXmlConfigFile_EnabledWithRoslynParser()
+        public void CreateFromMultiLevelXmlConfigFile_Enabled()
         {
             var configFilePath = GetTestFilePath("");
             var dependencyAnalyzer = new DependencyAnalyzerFactory().CreateFromMultiLevelXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
-            dependencyAnalyzer.Config.Parser.Should().Be(Parsers.Roslyn);
+            dependencyAnalyzer.Config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
         }
 
         [TestMethod]
-        public void CreateFromMultiLevelXmlConfigFile_EnabledWithRoslynParser_OverrideWithNRefactoryParser()
+        public void CreateFromMultiLevelXmlConfigFile_EnabledWithDefaultInfoImportance()
         {
             var configFilePath = GetTestFilePath("");
-            var dependencyAnalyzer = new DependencyAnalyzerFactory().OverrideParser(Parsers.NRefactory).CreateFromMultiLevelXmlConfigFile(configFilePath);
+            var dependencyAnalyzer = new DependencyAnalyzerFactory().SetDefaultInfoImportance(Importance.High).CreateFromMultiLevelXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
-            dependencyAnalyzer.Config.Parser.Should().Be(Parsers.NRefactory);
+            dependencyAnalyzer.Config.InfoImportance.Should().Be(Importance.High);
         }
     }
 }

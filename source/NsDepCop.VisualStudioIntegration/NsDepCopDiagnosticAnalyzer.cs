@@ -183,7 +183,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static CachingDependencyAnalyzerProvider CreateDependencyAnalyzerProvider()
         {
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogDiagnosticMessages).OverrideParser(Parsers.Roslyn);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogDiagnosticMessages);
             var embeddedDependencyAnalyzerProvider = new DependencyAnalyzerProvider(dependencyAnalyzerFactory);
             return new CachingDependencyAnalyzerProvider(embeddedDependencyAnalyzerProvider, new DateTimeProvider(), AnalyzerCachingTimeSpan);
         }

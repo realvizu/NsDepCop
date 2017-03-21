@@ -12,25 +12,11 @@ namespace Codartis.NsDepCop.Core.Factory
     public class DependencyAnalyzerFactory : IDependencyAnalyzerFactory, IConfigInitializer<DependencyAnalyzerFactory>
     {
         private readonly MessageHandler _diagnosticMessageHandler;
-        private Parsers? _overridingParser;
-        private Parsers? _defaultParser;
         private Importance? _defaultInfoImportance;
 
         public DependencyAnalyzerFactory(MessageHandler diagnosticMessageHandler = null)
         {
             _diagnosticMessageHandler = diagnosticMessageHandler;
-        }
-
-        public DependencyAnalyzerFactory OverrideParser(Parsers? overridingParser)
-        {
-            _overridingParser = overridingParser;
-            return this;
-        }
-
-        public DependencyAnalyzerFactory SetDefaultParser(Parsers? defaultParser)
-        {
-            _defaultParser = defaultParser;
-            return this;
         }
 
         public DependencyAnalyzerFactory SetDefaultInfoImportance(Importance? defaultInfoImportance)
@@ -55,10 +41,7 @@ namespace Codartis.NsDepCop.Core.Factory
 
         private void ApplyConfigDefaults(ConfigProviderBase configProvider)
         {
-            configProvider
-                .OverrideParser(_overridingParser)
-                .SetDefaultParser(_defaultParser)
-                .SetDefaultInfoImportance(_defaultInfoImportance);
+            configProvider.SetDefaultInfoImportance(_defaultInfoImportance);
         }
     }
 }

@@ -51,20 +51,6 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         }
 
         [TestMethod]
-        public void OverridingParser()
-        {
-            var path = GetTestFilePath("RoslynParser.nsdepcop");
-            {
-                var configProvider = CreateConfigProvider(path);
-                configProvider.Config.Parser.Should().Be(Parsers.Roslyn);
-            }
-            {
-                var configProvider = CreateConfigProvider(path, Parsers.NRefactory);
-                configProvider.Config.Parser.Should().Be(Parsers.NRefactory);
-            }
-        }
-
-        [TestMethod]
         public void RefreshConfig_Unchanged()
         {
             var path = GetTestFilePath("Enabled.nsdepcop");
@@ -145,10 +131,9 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.NoConfig);
         }
 
-        private static XmlFileConfigProvider CreateConfigProvider(string path, Parsers? overridingParser = null)
+        private static XmlFileConfigProvider CreateConfigProvider(string path)
         {
-            return new XmlFileConfigProvider(path, Console.WriteLine)
-                .OverrideParser(overridingParser) as XmlFileConfigProvider;
+            return new XmlFileConfigProvider(path, Console.WriteLine);
         }
     }
 }

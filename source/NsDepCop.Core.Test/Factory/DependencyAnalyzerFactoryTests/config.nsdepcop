@@ -1,2 +1,2 @@
-﻿<NsDepCopConfig IsEnabled="true" Parser="Roslyn">
+﻿<NsDepCopConfig IsEnabled="true">
 </NsDepCopConfig>

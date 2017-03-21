@@ -11,8 +11,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// </summary>
     internal class AnalyzerConfigBuilder : IConfigInitializer<AnalyzerConfigBuilder>, IDiagnosticSupport
     {
-        public Parsers? OverridingParser { get; private set; }
-        public Parsers? DefaultParser { get; private set; }
         public Importance? DefaultInfoImportance { get; private set; }
 
         public int? InheritanceDepth { get; private set; }
@@ -20,7 +18,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public bool? IsEnabled { get; private set; }
         public IssueKind? IssueKind { get; private set; }
         public Importance? InfoImportance { get; private set; }
-        public Parsers? Parser { get; private set; }
 
         public bool? ChildCanDependOnParentImplicitly { get; private set; }
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
@@ -41,7 +38,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 IsEnabled ?? ConfigDefaults.IsEnabled,
                 IssueKind ?? ConfigDefaults.IssueKind,
                 InfoImportance ?? DefaultInfoImportance ?? ConfigDefaults.InfoImportance,
-                GetParser() ?? DefaultParser ?? ConfigDefaults.Parser,
                 ChildCanDependOnParentImplicitly ?? ConfigDefaults.ChildCanDependOnParentImplicitly,
                 AllowRules.ToImmutableDictionary(),
                 DisallowRules.ToImmutableHashSet(),
@@ -50,8 +46,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 );
         }
 
-        private Parsers? GetParser() => OverridingParser.HasValue ? OverridingParser : Parser;
-
         public AnalyzerConfigBuilder Combine(AnalyzerConfigBuilder analyzerConfigBuilder)
         {
             // Note that InhertanceDepth is not combined.
@@ -59,7 +53,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             SetIsEnabled(analyzerConfigBuilder.IsEnabled);
             SetIssueKind(analyzerConfigBuilder.IssueKind);
             SetInfoImportance(analyzerConfigBuilder.InfoImportance);
-            SetParser(analyzerConfigBuilder.Parser);
 
             SetChildCanDependOnParentImplicitly(analyzerConfigBuilder.ChildCanDependOnParentImplicitly);
             AddAllowRules(analyzerConfigBuilder.AllowRules);
@@ -67,18 +60,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             AddVisibleTypesByNamespace(analyzerConfigBuilder.VisibleTypesByNamespace);
             SetMaxIssueCount(analyzerConfigBuilder.MaxIssueCount);
 
-            return this;
-        }
-
-        public AnalyzerConfigBuilder OverrideParser(Parsers? overridingParser)
-        {
-            OverridingParser = overridingParser;
-            return this;
-        }
-
-        public AnalyzerConfigBuilder SetDefaultParser(Parsers? defaultParser)
-        {
-            DefaultParser = defaultParser;
             return this;
         }
 
@@ -113,13 +94,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             if (infoImportance.HasValue)
                 InfoImportance = infoImportance;
-            return this;
-        }
-
-        public AnalyzerConfigBuilder SetParser(Parsers? parser)
-        {
-            if (parser.HasValue)
-                Parser = parser;
             return this;
         }
 
@@ -182,7 +156,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (IsEnabled.HasValue) yield return $"IsEnabled={IsEnabled}";
             if (IssueKind.HasValue) yield return $"IssueKind={IssueKind}";
             if (InfoImportance.HasValue) yield return $"InfoImportance={InfoImportance}";
-            if (Parser.HasValue) yield return $"Parser={Parser}";
 
             if (ChildCanDependOnParentImplicitly.HasValue) yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
             if (AllowRules.Any()) foreach (var s in AllowRules.ToStrings()) yield return s;

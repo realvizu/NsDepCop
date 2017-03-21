@@ -15,7 +15,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_NoConfigFile()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_NoConfigFile",
                 ExpectedLogEntries = new[]
@@ -30,7 +30,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_NonXmlConfigFile()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_NonXmlConfigFile",
                 ExpectedLogEntries = new[]
@@ -46,7 +46,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_ConfigFileErrorCausesException()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_ConfigFileErrorCausesException",
                 ExpectedLogEntries = new[]
@@ -62,7 +62,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_ConfigFileDisabled()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_ConfigDisabled",
                 ExpectedLogEntries = new[]
@@ -77,7 +77,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_ConfigFileExtraElementsIgnored()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_ConfigFileExtraElementsIgnored",
             });
@@ -107,7 +107,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_ConfigInfoImportanceIsHigh()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_ConfigInfoImportanceIsHigh",
                 SourceFileNames = new[] { "ConfigInfoImportanceIsHigh.cs" },
@@ -124,7 +124,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_AllowedDependency()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_AllowedDependency",
                 SourceFileNames = new[] { "AllowedDependency.cs" },
@@ -134,7 +134,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_SameNamespaceAlwaysAllowed()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_SameNamespaceAlwaysAllowed",
                 SourceFileNames = new[] { "SameNamespaceAlwaysAllowed.cs" },
@@ -144,7 +144,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_SameNamespaceAllowedEvenWhenVisibleMembersDefined()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_SameNamespaceAllowedEvenWhenVisibleMembersDefined",
                 SourceFileNames = new[] { "SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs" },
@@ -155,7 +155,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_IdentifierName_ReportWarning()
         {
             const string sourceFileName = "DepViolation_IdentifierName_ReportWarning.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_IdentifierName_ReportWarning",
                 SourceFileNames = new[] {sourceFileName},
@@ -170,7 +170,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_IdentifierName_ReportInfo()
         {
             const string sourceFileName = "DepViolation_IdentifierName_ReportInfo.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_IdentifierName_ReportInfo",
                 SourceFileNames = new[] { sourceFileName },
@@ -185,7 +185,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_IdentifierName_ReportError()
         {
             const string sourceFileName = "DepViolation_IdentifierName_ReportError.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_IdentifierName_ReportError",
                 SourceFileNames = new[] { sourceFileName },
@@ -201,7 +201,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_QualifiedName()
         {
             const string sourceFileName = "DepViolation_QualifiedName.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_QualifiedName",
                 SourceFileNames = new[] {sourceFileName},
@@ -216,7 +216,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_AliasQualifiedName()
         {
             const string sourceFileName = "DepViolation_AliasQualifiedName.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_AliasQualifiedName",
                 SourceFileNames = new[] {sourceFileName},
@@ -224,7 +224,6 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 {
                     CreateLogEntryParameters(sourceFileName, 7, 25, 7, 31)
                 },
-                SkipLocationValidation = true
             });
         }
 
@@ -232,7 +231,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_InvocationExpression()
         {
             const string sourceFileName = "DepViolation_InvocationExpression.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_InvocationExpression",
                 SourceFileNames = new[] {sourceFileName},
@@ -250,7 +249,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_InvocationWithTypeArg()
         {
             const string sourceFileName = "DepViolation_InvocationWithTypeArg.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_InvocationWithTypeArg",
                 SourceFileNames = new[] {sourceFileName},
@@ -265,7 +264,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_MemberAccessExpression()
         {
             const string sourceFileName = "DepViolation_MemberAccessExpression.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_MemberAccessExpression",
                 SourceFileNames = new[] {sourceFileName},
@@ -280,7 +279,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_GenericName()
         {
             const string sourceFileName = "DepViolation_GenericName.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_GenericName",
                 SourceFileNames = new[] {sourceFileName},
@@ -310,7 +309,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_GenericTypeArgument()
         {
             const string sourceFileName = "DepViolation_GenericTypeArgument.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_GenericTypeArgument",
                 SourceFileNames = new[] {sourceFileName},
@@ -326,7 +325,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_NestedType()
         {
             const string sourceFileName = "DepViolation_NestedType.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_NestedType",
                 SourceFileNames = new[] {sourceFileName},
@@ -344,7 +343,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_ArrayType()
         {
             const string sourceFileName = "DepViolation_ArrayType.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ArrayType",
                 SourceFileNames = new[] {sourceFileName},
@@ -359,7 +358,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_NullableType()
         {
             const string sourceFileName = "DepViolation_NullableType.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_NullableType",
                 SourceFileNames = new[] {sourceFileName},
@@ -374,7 +373,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_EveryUserDefinedTypeKind()
         {
             const string sourceFileName = "DepViolation_EveryUserDefinedTypeKind.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_EveryUserDefinedTypeKind",
                 SourceFileNames = new[] {sourceFileName},
@@ -393,7 +392,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_TooManyIssues()
         {
             const string sourceFileName = "TooManyIssues.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_TooManyIssues",
                 SourceFileNames = new[] {sourceFileName},
@@ -410,7 +409,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_MaxIssueCountEqualsIssueCount()
         {
             const string sourceFileName = "MaxIssueCountEqualsIssueCount.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_MaxIssueCountEqualsIssueCount",
                 SourceFileNames = new[] {sourceFileName},
@@ -426,7 +425,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_NoSourceFiles()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_NoSourceFiles",
             });
@@ -437,7 +436,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         {
             const string sourceFile1 = "SourceFile1.cs";
             const string sourceFile2 = "SourceFile2.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_MultipleSourceFiles",
                 SourceFileNames = new[] {sourceFile1, sourceFile2},
@@ -452,7 +451,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_AllowedDependency_ByChildCanDependOnParentImplicitlyOption()
         {
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_ByChildCanDependOnParentImplicitlyOption",
                 SourceFileNames = new[] { "ChildToParentDependency.cs" },
@@ -463,7 +462,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_ExtensionMethodInvocation()
         {
             const string sourceFileName = "DepViolation_ExtensionMethodInvocation.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ExtensionMethodInvocation",
                 SourceFileNames = new[] {sourceFileName},
@@ -479,7 +478,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_ObjectCreationExpression()
         {
             const string sourceFileName = "DepViolation_ObjectCreationExpression.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ObjectCreationExpression",
                 SourceFileNames = new[] {sourceFileName},
@@ -494,7 +493,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_AllowedDependencyWithInvisibleMembers()
         {
             const string sourceFileName = "AllowedDependencyWithInvisibleMembers.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_AllowedDependencyWithInvisibleMembers",
                 SourceFileNames = new[] {sourceFileName},
@@ -511,7 +510,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_Var()
         {
             const string sourceFileName = "DepViolation_Var.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_Var",
                 SourceFileNames = new[] {sourceFileName},
@@ -528,7 +527,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         public void Execute_DepViolation_VarWithConstructedGenericType()
         {
             const string sourceFileName = "DepViolation_VarWithConstructedGenericType.cs";
-            ExecuteWithAllAnalyzers(new TestCaseSpecification
+            ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_VarWithConstructedGenericType",
                 SourceFileNames = new[] {sourceFileName},

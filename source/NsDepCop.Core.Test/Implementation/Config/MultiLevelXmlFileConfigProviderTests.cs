@@ -104,35 +104,6 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         }
 
         [TestMethod]
-        public void OverridingParser()
-        {
-            var path = GetTestFilePath("RoslynParser");
-            {
-                var configProvider = CreateConfigProvider(path);
-                configProvider.Config.Parser.Should().Be(Parsers.Roslyn);
-            }
-            {
-                var configProvider = CreateConfigProvider(path, Parsers.NRefactory);
-                configProvider.Config.Parser.Should().Be(Parsers.NRefactory);
-            }
-        }
-
-        [TestMethod]
-        public void DefaultParser()
-        {
-            {
-                var path = GetTestFilePath("RoslynParser");
-                var configProvider = CreateConfigProvider(path).SetDefaultParser(Parsers.NRefactory);
-                configProvider.Config.Parser.Should().Be(Parsers.Roslyn);
-            }
-            {
-                var path = GetTestFilePath("NoAttributes");
-                var configProvider = CreateConfigProvider(path).SetDefaultParser(Parsers.NRefactory);
-                configProvider.Config.Parser.Should().Be(Parsers.NRefactory);
-            }
-        }
-
-        [TestMethod]
         public void DefaultInfoImportance()
         {
             {
@@ -293,10 +264,9 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             return Path.Combine(path, ProductConstants.DefaultConfigFileName);
         }
 
-        private static MultiLevelXmlFileConfigProvider CreateConfigProvider(string folder, Parsers? overridingParser = null)
+        private static MultiLevelXmlFileConfigProvider CreateConfigProvider(string folder)
         {
-            return new MultiLevelXmlFileConfigProvider(folder, Console.WriteLine)
-                .OverrideParser(overridingParser) as MultiLevelXmlFileConfigProvider;
+            return new MultiLevelXmlFileConfigProvider(folder, Console.WriteLine);
         }
     }
 }
