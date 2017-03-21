@@ -178,19 +178,17 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static CachingCsprojResolver CreateCsprojResolver()
         {
-            return new CachingCsprojResolver(new CsprojResolver(LogDiagnosticMessages));
+            return new CachingCsprojResolver(new CsprojResolver(LogToTrace, LogToDebug));
         }
 
         private static CachingDependencyAnalyzerProvider CreateDependencyAnalyzerProvider()
         {
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogDiagnosticMessages);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogToTrace, LogToDebug);
             var embeddedDependencyAnalyzerProvider = new DependencyAnalyzerProvider(dependencyAnalyzerFactory);
             return new CachingDependencyAnalyzerProvider(embeddedDependencyAnalyzerProvider, new DateTimeProvider(), AnalyzerCachingTimeSpan);
         }
 
-        private static void LogDiagnosticMessages(string message)
-        {
-            Debug.WriteLine($"[{ProductConstants.ToolName}] {message}");
-        }
+        private static void LogToTrace(string message) => Trace.WriteLine($"[{ProductConstants.ToolName}] {message}");
+        private static void LogToDebug(string message) => Debug.WriteLine($"[{ProductConstants.ToolName}] {message}");
     }
 }

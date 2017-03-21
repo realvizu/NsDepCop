@@ -11,8 +11,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// </remarks>
     internal sealed class XmlFileConfigProvider : FileConfigProviderBase
     {
-        public XmlFileConfigProvider(string configFilePath, MessageHandler diagnosticMessageHandler = null)
-            : base(configFilePath, diagnosticMessageHandler)
+        public XmlFileConfigProvider(string configFilePath,
+            MessageHandler infoMessageHandler = null, 
+            MessageHandler diagnosticMessageHandler = null)
+            : base(configFilePath, infoMessageHandler, diagnosticMessageHandler)
         {
         }
 

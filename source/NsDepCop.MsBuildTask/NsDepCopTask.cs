@@ -74,10 +74,12 @@ namespace Codartis.NsDepCop.MsBuildTask
             {
                 LogDiagnosticMessages(GetInputParameterDiagnosticMessages());
 
-                var defaultInfoImportance = Parse<Importance>(InfoImportance.GetValue());
                 var configFolderPath = BaseDirectory.ItemSpec;
 
-                var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogDiagnosticMessage)
+                var defaultInfoImportance = Parse<Importance>(InfoImportance.GetValue());
+                _infoImportance = defaultInfoImportance?.ToMessageImportance() ?? MessageImportance.Normal;
+
+                var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogInfoMessage, LogDiagnosticMessage)
                     .SetDefaultInfoImportance(defaultInfoImportance);
 
                 using (var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(configFolderPath))
@@ -196,6 +198,11 @@ namespace Codartis.NsDepCop.MsBuildTask
         private void LogDiagnosticMessage(string message)
         {
             LogBuildEvent(IssueKind.Info, message, MessageImportance.Low);
+        }
+
+        private void LogInfoMessage(string message)
+        {
+            LogBuildEvent(IssueKind.Info, message, _infoImportance);
         }
 
         private void LogBuildEvent(IssueKind issueKind, string message, MessageImportance messageImportance, string code = null,

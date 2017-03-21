@@ -14,10 +14,19 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
     /// </summary>
     internal class RoslynTypeDependencyEnumerator : ITypeDependencyEnumerator
     {
+        private readonly MessageHandler _infoMessageHandler;
+        private readonly MessageHandler _diagnosticMessageHandler;
+
+        public RoslynTypeDependencyEnumerator(MessageHandler infoMessageHandler, MessageHandler diagnosticMessageHandler)
+        {
+            _infoMessageHandler = infoMessageHandler;
+            _diagnosticMessageHandler = diagnosticMessageHandler;
+        }
+
         public IEnumerable<TypeDependency> GetTypeDependencies(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {
-            var referencedAssemblies = referencedAssemblyPaths.Select(i => MetadataReference.CreateFromFile(i)).ToList();
-            var syntaxTrees = sourceFilePaths.Select(ParseFile).ToList();
+            var referencedAssemblies = referencedAssemblyPaths.Select(LoadMetadata).Where(i => i != null).ToList();
+            var syntaxTrees = sourceFilePaths.Select(ParseFile).Where(i => i != null).ToList();
             var compilation = CSharpCompilation.Create("NsDepCopProject", syntaxTrees, referencedAssemblies);
 
             foreach (var syntaxTree in syntaxTrees)
@@ -33,7 +42,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
                 }
             }
         }
-
+        
         public IEnumerable<TypeDependency> GetTypeDependencies(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
         {
             return SyntaxNodeTypeDependencyEnumerator.GetTypeDependencies(Unwrap<SyntaxNode>(syntaxNode), Unwrap<SemanticModel>(semanticModel));
@@ -50,13 +59,34 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
             return ((ObjectWrapper<TUnwrapped>)wrappedValue).Value;
         }
 
-        private static SyntaxTree ParseFile(string fileName)
+        private MetadataReference LoadMetadata(string fileName)
         {
-            using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var streamReader = new StreamReader(stream))
+            try
             {
-                var sourceText = streamReader.ReadToEnd();
-                return CSharpSyntaxTree.ParseText(sourceText, null, fileName);
+                return MetadataReference.CreateFromFile(fileName);
+            }
+            catch (Exception e)
+            {
+                _infoMessageHandler?.Invoke($"Error loading metadata file '{fileName}': {e}");
+                return null;
+            }
+        }
+
+        private SyntaxTree ParseFile(string fileName)
+        {
+            try
+            {
+                using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var streamReader = new StreamReader(stream))
+                {
+                    var sourceText = streamReader.ReadToEnd();
+                    return CSharpSyntaxTree.ParseText(sourceText, null, fileName);
+                }
+            }
+            catch (Exception e)
+            {
+                _infoMessageHandler?.Invoke($"Error parsing source file '{fileName}': {e}");
+                return null;
             }
         }
     }

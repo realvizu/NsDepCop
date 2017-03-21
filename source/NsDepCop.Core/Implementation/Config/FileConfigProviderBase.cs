@@ -20,8 +20,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public string ConfigFilePath { get; }
 
-        protected FileConfigProviderBase(string configFilePath, MessageHandler diagnosticMessageHandler)
-            : base(diagnosticMessageHandler)
+        protected FileConfigProviderBase(string configFilePath,
+            MessageHandler infoMessageHandler,
+            MessageHandler diagnosticMessageHandler)
+            : base(infoMessageHandler, diagnosticMessageHandler)
         {
             ConfigFilePath = configFilePath;
         }
@@ -66,7 +68,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             }
             catch (Exception e)
             {
-                DiagnosticMessageHandler?.Invoke($"BuildConfig exception: {e}");
+                InfoMessageHandler?.Invoke($"BuildConfig exception: {e}");
                 return ConfigLoadResult.CreateWithError(e);
             }
         }

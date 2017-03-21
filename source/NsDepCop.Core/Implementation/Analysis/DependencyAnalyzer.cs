@@ -19,19 +19,23 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     {
         private readonly IConfigProvider _configProvider;
         private readonly ReaderWriterLockSlim _configRefreshLock;
+        private readonly MessageHandler _infoMessageHandler;
         private readonly MessageHandler _diagnosticMessageHandler;
 
         private IAnalyzerConfig _config;
         private CachingTypeDependencyValidator _typeDependencyValidator;
         private ITypeDependencyEnumerator _typeDependencyEnumerator;
 
-        public DependencyAnalyzer(IConfigProvider configProvider, MessageHandler diagnosticMessageHandler = null)
+        public DependencyAnalyzer(IConfigProvider configProvider,
+            MessageHandler infoMessageHandler = null,
+            MessageHandler diagnosticMessageHandler = null)
         {
             if (configProvider == null)
                 throw new ArgumentNullException(nameof(configProvider));
 
             _configProvider = configProvider;
             _configRefreshLock = new ReaderWriterLockSlim();
+            _infoMessageHandler = infoMessageHandler;
             _diagnosticMessageHandler = diagnosticMessageHandler;
 
             UpdateConfig();
@@ -115,8 +119,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         {
             if (ConfigState == AnalyzerConfigState.Enabled)
             {
-                _typeDependencyValidator = new CachingTypeDependencyValidator(_config, _diagnosticMessageHandler);
-                _typeDependencyEnumerator = new RoslynTypeDependencyEnumerator();
+                _typeDependencyValidator = new CachingTypeDependencyValidator(_config, _infoMessageHandler, _diagnosticMessageHandler);
+                _typeDependencyEnumerator = new RoslynTypeDependencyEnumerator(_infoMessageHandler, _diagnosticMessageHandler);
             }
             else
             {

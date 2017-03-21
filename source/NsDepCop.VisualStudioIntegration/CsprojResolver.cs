@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
@@ -14,12 +13,18 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     internal class CsprojResolver : ICsprojResolver
     {
         /// <summary>
+        /// Callback for emitting info messages;
+        /// </summary>
+        private readonly MessageHandler _infoMessageHandler;
+
+        /// <summary>
         /// Callback for emitting diagnostic messages;
         /// </summary>
         private readonly MessageHandler _diagnosticMessageHandler;
 
-        public CsprojResolver(MessageHandler diagnosticMessageHandler = null)
+        public CsprojResolver(MessageHandler infoMessageHandler = null, MessageHandler diagnosticMessageHandler = null)
         {
+            _infoMessageHandler = infoMessageHandler;
             _diagnosticMessageHandler = diagnosticMessageHandler;
         }
 
@@ -49,12 +54,12 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             }
             catch (Exception e)
             {
-                Trace.WriteLine($"Exception in FindProjectFile({sourceFilePath}, {assemblyName}): {e}");
+                _infoMessageHandler?.Invoke($"Exception in FindProjectFile({sourceFilePath}, {assemblyName}): {e}");
                 return null;
             }
         }
 
-        private static bool IsProjectFileForAssembly(string projectFilePath, string assemblyName)
+        private bool IsProjectFileForAssembly(string projectFilePath, string assemblyName)
         {
             try
             {
@@ -73,7 +78,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             }
             catch (Exception e)
             {
-                Trace.WriteLine($"Exception in IsProjectFileForAssembly({projectFilePath}, {assemblyName}): {e}");
+                _infoMessageHandler?.Invoke($"Exception in IsProjectFileForAssembly({projectFilePath}, {assemblyName}): {e}");
                 return false;
             }
         }

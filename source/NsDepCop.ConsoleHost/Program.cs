@@ -45,7 +45,7 @@ namespace Codartis.NsDepCop.ConsoleHost
         {
             var directoryPath = Path.GetDirectoryName(options.CsprojFile);
 
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogDiagnosticMessage);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogInfoToConsole, LogDiagnosticToConsole);
 
             return options.UseSingleFileConfig
                 ? dependencyAnalyzerFactory.CreateFromXmlConfigFile(Path.Combine(directoryPath, "config.nsdepcop"))
@@ -67,7 +67,12 @@ namespace Codartis.NsDepCop.ConsoleHost
             return elapsedTimeSpan;
         }
 
-        private static void LogDiagnosticMessage(string message)
+        private static void LogInfoToConsole(string message)
+        {
+            Console.WriteLine(message);
+        }
+
+        private static void LogDiagnosticToConsole(string message)
         {
             if (_isVerbose) Console.WriteLine(message);
         }

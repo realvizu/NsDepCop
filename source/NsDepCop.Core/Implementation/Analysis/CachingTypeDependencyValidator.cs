@@ -11,15 +11,19 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     internal class CachingTypeDependencyValidator : TypeDependencyValidator, ICacheStatisticsProvider
     {
         private readonly ConcurrentDictionary<TypeDependency, bool> _dependencyValidationCache;
+        private readonly MessageHandler _infoMessageHandler;
         private readonly MessageHandler _diagnosticMessageHandler;
 
         public int HitCount { get; private set; }
         public int MissCount { get; private set; }
 
-        public CachingTypeDependencyValidator(IDependencyRules dependencyRules, MessageHandler diagnosticMessageHandler)
+        public CachingTypeDependencyValidator(IDependencyRules dependencyRules,
+            MessageHandler infoMessageHandler,
+            MessageHandler diagnosticMessageHandler)
             : base(dependencyRules)
         {
             _dependencyValidationCache = new ConcurrentDictionary<TypeDependency, bool>();
+            _infoMessageHandler = infoMessageHandler;
             _diagnosticMessageHandler = diagnosticMessageHandler;
         }
 

@@ -11,11 +11,13 @@ namespace Codartis.NsDepCop.Core.Factory
     /// </summary>
     public class DependencyAnalyzerFactory : IDependencyAnalyzerFactory, IConfigInitializer<DependencyAnalyzerFactory>
     {
+        private readonly MessageHandler _infoMessageHandler;
         private readonly MessageHandler _diagnosticMessageHandler;
         private Importance? _defaultInfoImportance;
 
-        public DependencyAnalyzerFactory(MessageHandler diagnosticMessageHandler = null)
+        public DependencyAnalyzerFactory(MessageHandler infoMessageHandler = null, MessageHandler diagnosticMessageHandler = null)
         {
+            _infoMessageHandler = infoMessageHandler;
             _diagnosticMessageHandler = diagnosticMessageHandler;
         }
 
@@ -27,16 +29,16 @@ namespace Codartis.NsDepCop.Core.Factory
 
         public IDependencyAnalyzer CreateFromXmlConfigFile(string configFilePath)
         {
-            var configProvider = new XmlFileConfigProvider(configFilePath, _diagnosticMessageHandler);
+            var configProvider = new XmlFileConfigProvider(configFilePath, _infoMessageHandler, _diagnosticMessageHandler);
             ApplyConfigDefaults(configProvider);
-            return new DependencyAnalyzer(configProvider, _diagnosticMessageHandler);
+            return new DependencyAnalyzer(configProvider, _infoMessageHandler, _diagnosticMessageHandler);
         }
 
         public IDependencyAnalyzer CreateFromMultiLevelXmlConfigFile(string folderPath)
         {
-            var configProvider = new MultiLevelXmlFileConfigProvider(folderPath, _diagnosticMessageHandler);
+            var configProvider = new MultiLevelXmlFileConfigProvider(folderPath, _infoMessageHandler, _diagnosticMessageHandler);
             ApplyConfigDefaults(configProvider);
-            return new DependencyAnalyzer(configProvider, _diagnosticMessageHandler);
+            return new DependencyAnalyzer(configProvider, _infoMessageHandler, _diagnosticMessageHandler);
         }
 
         private void ApplyConfigDefaults(ConfigProviderBase configProvider)

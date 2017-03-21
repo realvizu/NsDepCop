@@ -31,8 +31,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public string ProjectFolder { get; }
 
-        public MultiLevelXmlFileConfigProvider(string projectFolder, MessageHandler diagnosticMessageHandler = null)
-            : base(diagnosticMessageHandler)
+        public MultiLevelXmlFileConfigProvider(string projectFolder,
+            MessageHandler infoMessageHandler = null,
+            MessageHandler diagnosticMessageHandler = null)
+            : base(infoMessageHandler, diagnosticMessageHandler)
         {
             ProjectFolder = projectFolder;
         }
