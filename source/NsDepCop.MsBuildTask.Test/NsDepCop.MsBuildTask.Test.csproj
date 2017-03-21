@@ -65,10 +65,10 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Content Include="TestFiles_AllowedDependencyInvisibleMembers\AllowedDependencyInvisibleMembers.cs">
+    <Content Include="TestFiles_AllowedDependencyWithInvisibleMembers\AllowedDependencyWithInvisibleMembers.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_AllowedDependencyInvisibleMembers\config.nsdepcop">
+    <Content Include="TestFiles_AllowedDependencyWithInvisibleMembers\config.nsdepcop">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -145,7 +145,7 @@
     <Content Include="TestFiles_DepViolation_ExtensionMethodInvocation\DepViolation_ExtensionMethodInvocation.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_DepViolation_Var\var.cs">
+    <Content Include="TestFiles_DepViolation_Var\DepViolation_Var.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="TestFiles_DepViolation_ObjectCreationExpression\DepViolation_ObjectCreationExpression.cs">
@@ -160,7 +160,7 @@
     <Content Include="TestFiles_ConfigInfoImportanceIsHigh\ConfigInfoImportanceIsHigh.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_DepViolation_VarWithConstructedGenericType\var.cs">
+    <Content Include="TestFiles_DepViolation_VarWithConstructedGenericType\DepViolation_VarWithConstructedGenericType.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="TestTaskItem.cs" />

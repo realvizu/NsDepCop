@@ -286,9 +286,22 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
-                    CreateLogEntryParameters(sourceFileName, 8, 17, 8, 31),
-                    CreateLogEntryParameters(sourceFileName, 11, 17, 11, 31),
-                    CreateLogEntryParameters(sourceFileName, 11, 32, 11, 40)
+                    // MyGenericClass<MyClass2>
+                    CreateLogEntryParameters(sourceFileName, 8, 17, 8, 41),
+
+                    // MyGenericClass2<MyClass3, MyClass2, MyClass3>
+                    CreateLogEntryParameters(sourceFileName, 11, 17, 11, 62),
+                    // MyClass3
+                    CreateLogEntryParameters(sourceFileName, 11, 33, 11, 41),
+                    // MyClass3
+                    CreateLogEntryParameters(sourceFileName, 11, 53, 11, 61),
+
+                    // MyGenericClass<MyGenericClass<MyClass3>>
+                    CreateLogEntryParameters(sourceFileName, 14, 17, 14, 57),
+                    // MyGenericClass<MyClass3>
+                    CreateLogEntryParameters(sourceFileName, 14, 32, 14, 56),
+                    // MyClass3
+                    CreateLogEntryParameters(sourceFileName, 14, 47, 14, 55),
                 },
             });
         }
@@ -478,18 +491,18 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [TestMethod]
-        public void Execute_DepViolation_AllowedDependencyInvisibleMembers()
+        public void Execute_AllowedDependencyWithInvisibleMembers()
         {
-            const string sourceFileName = "AllowedDependencyInvisibleMembers.cs";
+            const string sourceFileName = "AllowedDependencyWithInvisibleMembers.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
-                TestFilesFolderName = "TestFiles_AllowedDependencyInvisibleMembers",
+                TestFilesFolderName = "TestFiles_AllowedDependencyWithInvisibleMembers",
                 SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 6, 19, 6, 32),
                     CreateLogEntryParameters(sourceFileName, 8, 19, 8, 43),
-                    CreateLogEntryParameters(sourceFileName, 9, 19, 9, 39)
+                    CreateLogEntryParameters(sourceFileName, 9, 19, 9, 47)
                 },
             });
         }
@@ -497,7 +510,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [TestMethod]
         public void Execute_DepViolation_Var()
         {
-            const string sourceFileName = "var.cs";
+            const string sourceFileName = "DepViolation_Var.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_Var",
@@ -511,23 +524,32 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             });
         }
 
-        // TODO
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Execute_DepViolation_VarWithConstructedGenericType()
         {
-            const string sourceFileName = "var.cs";
+            const string sourceFileName = "DepViolation_VarWithConstructedGenericType.cs";
             ExecuteWithAllAnalyzers(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_VarWithConstructedGenericType",
                 SourceFileNames = new[] {sourceFileName},
                 ExpectedLogEntries = new[]
                 {
+                    // var: ClassB`2, EnumB, EnumB
                     CreateLogEntryParameters(sourceFileName, 8, 13, 8, 16),
                     CreateLogEntryParameters(sourceFileName, 8, 13, 8, 16),
-                    CreateLogEntryParameters(sourceFileName, 8, 23, 8, 30),
-                    CreateLogEntryParameters(sourceFileName, 8, 33, 8, 39),
-                    CreateLogEntryParameters(sourceFileName, 8, 41, 8, 49),
-                    CreateLogEntryParameters(sourceFileName, 8, 41, 8, 49),
+                    CreateLogEntryParameters(sourceFileName, 8, 13, 8, 16),
+
+                    // ClassB<B.EnumB, EnumA, B.EnumB>
+                    CreateLogEntryParameters(sourceFileName, 8, 23, 8, 54),
+                    // EnumB
+                    CreateLogEntryParameters(sourceFileName, 8, 32, 8, 37),
+                    // EnumB
+                    CreateLogEntryParameters(sourceFileName, 8, 48, 8, 53),
+
+                    // Instance: ClassB`2, EnumB, EnumB
+                    CreateLogEntryParameters(sourceFileName, 8, 55, 8, 63),
+                    CreateLogEntryParameters(sourceFileName, 8, 55, 8, 63),
+                    CreateLogEntryParameters(sourceFileName, 8, 55, 8, 63),
                 },
             });
         }

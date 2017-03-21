@@ -105,6 +105,7 @@
     <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
     <Compile Include="Factory\IDependencyAnalyzerFactory.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
+    <Compile Include="Implementation\Analysis\Roslyn\SyntaxNodeExtensions.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
     <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
     <Compile Include="Implementation\Config\DumpExtensions.cs" />

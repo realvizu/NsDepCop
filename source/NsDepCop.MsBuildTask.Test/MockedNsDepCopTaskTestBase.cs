@@ -24,13 +24,13 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         /// <param name="specification">The test case specification.</param>
         protected static void ExecuteWithAllAnalyzers(TestCaseSpecification specification)
         {
-            {
-                Debug.WriteLine("--> Running test with NRefactory...");
-                var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);
-                nsDepCopTask.Parser = new TestTaskItem(Parsers.NRefactory.ToString());
-                nsDepCopTask.Execute().Should().Be(specification.ExpectedReturnValue);
-                nsDepCopTask.BuildEngine.VerifyAllExpectations();
-            }
+            //{
+            //    Debug.WriteLine("--> Running test with NRefactory...");
+            //    var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);
+            //    nsDepCopTask.Parser = new TestTaskItem(Parsers.NRefactory.ToString());
+            //    nsDepCopTask.Execute().Should().Be(specification.ExpectedReturnValue);
+            //    nsDepCopTask.BuildEngine.VerifyAllExpectations();
+            //}
             {
                 Debug.WriteLine("--> Running test with Roslyn...");
                 var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);

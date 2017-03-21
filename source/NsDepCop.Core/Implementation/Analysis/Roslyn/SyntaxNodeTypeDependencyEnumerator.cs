@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Microsoft.CodeAnalysis;
@@ -12,16 +13,15 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
     internal static class SyntaxNodeTypeDependencyEnumerator
     {
         /// <summary>
-        /// The list of those type kinds that are subject of dependency analysis.
+        /// The list of those type kinds that can occur as a declaration.
         /// </summary>
-        private static readonly List<TypeKind> AnalyzedTypeKinds = new List<TypeKind>
+        private static readonly List<TypeKind> DeclarationTypeKinds = new List<TypeKind>
         {
             TypeKind.Class,
             TypeKind.Delegate,
             TypeKind.Enum,
             TypeKind.Interface,
             TypeKind.Struct,
-            TypeKind.TypeParameter
         };
 
         /// <summary>
@@ -34,30 +34,85 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
         {
             // Determine the type that contains the current syntax node.
             var enclosingType = DetermineEnclosingType(node, semanticModel);
-            if (!IsCandidateForDependecyAnalysis(enclosingType))
+            if (!IsAnalyzableDeclarationType(enclosingType))
                 yield break;
 
             // Determine the type referenced by the symbol represented by the current syntax node.
             var referencedType = DetermineReferencedType(node, semanticModel);
-            if (IsCandidateForDependecyAnalysis(referencedType))
-                yield return CreateTypeDependency(enclosingType, referencedType, node);
+            foreach (var type in GetConstituentTypes(referencedType, node))
+                yield return CreateTypeDependency(enclosingType, type, node);
 
             // If this is an extension method invocation then determine the type declaring the extension method.
             var declaringType = DetermineExtensionMethodDeclaringType(node, semanticModel);
-            if (IsCandidateForDependecyAnalysis(declaringType))
+            if (IsAnalyzableDeclarationType(declaringType))
                 yield return CreateTypeDependency(enclosingType, declaringType, node);
         }
 
-        /// <summary>
-        /// Returns a value indicating whether the given type is subject of dependency analysis.
-        /// </summary>
-        /// <param name="typeSymbol">A type symbol.</param>
-        /// <returns>True if the type symbol is subject of dependency analysis.</returns>
-        private static bool IsCandidateForDependecyAnalysis(ITypeSymbol typeSymbol)
+        private static bool IsAnalyzableDeclarationType(ITypeSymbol typeSymbol)
         {
             return typeSymbol?.ContainingNamespace != null
-                && AnalyzedTypeKinds.Contains(typeSymbol.TypeKind)
-                && !typeSymbol.IsAnonymousType;
+                && !typeSymbol.IsAnonymousType
+                && DeclarationTypeKinds.Contains(typeSymbol.TypeKind);
+        }
+
+        private static IEnumerable<ITypeSymbol> GetConstituentTypes(ITypeSymbol typeSymbol, SyntaxNode syntaxNode)
+        {
+            if (typeSymbol == null)
+                yield break;
+
+            switch (typeSymbol.TypeKind)
+            {
+                case TypeKind.Array:
+                    var arrayTypeSymbol = (IArrayTypeSymbol)typeSymbol;
+                    foreach (var type in GetConstituentTypes(arrayTypeSymbol.ElementType, syntaxNode))
+                        yield return type;
+                    break;
+
+                case TypeKind.Pointer:
+                    var pointerTypeSymbol = (IPointerTypeSymbol)typeSymbol;
+                    foreach (var type in GetConstituentTypes(pointerTypeSymbol.PointedAtType, syntaxNode))
+                        yield return type;
+                    break;
+
+                case TypeKind.Class:
+                case TypeKind.Delegate:
+                case TypeKind.Enum:
+                case TypeKind.Interface:
+                case TypeKind.Struct:
+                    var namedTypeSymbol = typeSymbol as INamedTypeSymbol;
+                    if (namedTypeSymbol == null)
+                        yield break;
+
+                    if (namedTypeSymbol.IsGenericType)
+                    {
+                        yield return namedTypeSymbol.ConstructedFrom;
+
+                        // If the syntax node has any identifier descendants then those will trigger analysis for the type arguments
+                        // so there's no need to recurse into the type arguments here.
+                        if (syntaxNode.HasDescendant<IdentifierNameSyntax>())
+                            yield break;
+
+                        foreach (var typeArgument in namedTypeSymbol.TypeArguments)
+                            foreach (var type in GetConstituentTypes(typeArgument, syntaxNode))
+                                yield return type;
+                    }
+                    else
+                    {
+                        yield return namedTypeSymbol;
+                    }
+                    break;
+
+                case TypeKind.Dynamic:
+                case TypeKind.Error:
+                case TypeKind.Module:
+                case TypeKind.Unknown:
+                case TypeKind.Submission:
+                case TypeKind.TypeParameter:
+                    yield break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(typeSymbol), typeSymbol.TypeKind, "Unexpected TypeKind.");
+            }
         }
 
         /// <summary>
@@ -142,9 +197,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
         /// <returns>The source segment of the given syntax node.</returns>
         private static SourceSegment GetSourceSegment(SyntaxNode syntaxNode)
         {
-            var syntaxNodeOrToken = GetNodeOrTokenToReport(syntaxNode);
-
-            var lineSpan = syntaxNodeOrToken.GetLocation().GetLineSpan();
+            var lineSpan = syntaxNode.GetLocation().GetLineSpan();
 
             return new SourceSegment
             (
@@ -152,27 +205,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
                 lineSpan.StartLinePosition.Character + 1,
                 lineSpan.EndLinePosition.Line + 1,
                 lineSpan.EndLinePosition.Character + 1,
-                syntaxNodeOrToken.ToString(),
+                syntaxNode.ToString(),
                 lineSpan.Path
             );
-        }
-
-        /// <summary>
-        /// Determine which node or token should be reported as the location of the issue.
-        /// </summary>
-        /// <param name="syntaxNode">The syntax node that caused the issue.</param>
-        /// <returns>The node or token that should be reported as the location of the issue.</returns>
-        private static SyntaxNodeOrToken GetNodeOrTokenToReport(SyntaxNode syntaxNode)
-        {
-            SyntaxNodeOrToken syntaxNodeOrToken = syntaxNode;
-
-            // For a Generic Name we should report its first token as the location.
-            if (syntaxNode is GenericNameSyntax)
-            {
-                syntaxNodeOrToken = syntaxNode.GetFirstToken();
-            }
-
-            return syntaxNodeOrToken;
         }
     }
 }
