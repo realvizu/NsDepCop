@@ -1,21 +1,23 @@
 ﻿namespace A
 {
     using B;
+    using C;
 
-    class MyClass
+    class Class1
     {
-        void MyMethod()
+        void Method1()
         {
-            MyOtherClass.MyOtherMethod<C.MyClassC>(null);
+            Class2.Method2<Class3>();
+            Class2.Method2<Class4<Class3>>();
         }
     }
 }
 
 namespace B
 {
-    static class MyOtherClass
+    static class Class2
     {
-        public static void MyOtherMethod<T>(T t)
+        public static void Method2<T>()
         {
         }
     }
@@ -23,7 +25,11 @@ namespace B
 
 namespace C
 {
-    class MyClassC
+    class Class3
+    {
+    }
+
+    class Class4<T>
     {
     }
 }

@@ -19,6 +19,7 @@
 New: NuGet package (enables per-project MSBuild integration).
 New: Multi-level config (InheritanceDepth config attribute).
 Roslyn version updated to 1.3.2.
+Removed NRefactory as a parser choice.
         </releaseNotes>
     </metadata>
     <files>

@@ -158,7 +158,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_IdentifierName_ReportWarning",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 7, 17, 7, 23)
@@ -204,7 +204,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_QualifiedName",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 5, 19, 5, 25)
@@ -219,7 +219,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_AliasQualifiedName",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 7, 25, 7, 31)
@@ -234,13 +234,20 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_InvocationExpression",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
-                    CreateLogEntryParameters(sourceFileName, 10, 13, 10, 26),
-                    CreateLogEntryParameters(sourceFileName, 11, 26, 11, 45),
-                    CreateLogEntryParameters(sourceFileName, 12, 32, 12, 45),
-                    CreateLogEntryParameters(sourceFileName, 15, 9, 15, 15)
+                    // Class3
+                    CreateLogEntryParameters(sourceFileName, 9, 13, 9, 20),
+                    // Class3
+                    CreateLogEntryParameters(sourceFileName, 10, 26, 10, 33),
+                    // Class3
+                    CreateLogEntryParameters(sourceFileName, 11, 20, 11, 27),
+                    // Class4<Class3>
+                    CreateLogEntryParameters(sourceFileName, 12, 20, 12, 27),
+                    CreateLogEntryParameters(sourceFileName, 12, 20, 12, 27),
+                    // Class3
+                    CreateLogEntryParameters(sourceFileName, 15, 11, 15, 17)
                 },
             });
         }
@@ -252,10 +259,14 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_InvocationWithTypeArg",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
-                    CreateLogEntryParameters(sourceFileName, 9, 42, 9, 50)
+                    // Class3
+                    CreateLogEntryParameters(sourceFileName, 10, 28, 10, 34),
+                    // Class4<Class3>
+                    CreateLogEntryParameters(sourceFileName, 11, 28, 11, 42),
+                    CreateLogEntryParameters(sourceFileName, 11, 35, 11, 41),
                 },
             });
         }
@@ -267,7 +278,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_MemberAccessExpression",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 9, 37, 9, 47)
@@ -282,7 +293,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_GenericName",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     // MyGenericClass<MyClass2>
@@ -312,7 +323,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_GenericTypeArgument",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 7, 32, 7, 40),
@@ -328,7 +339,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_NestedType",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 7, 17, 7, 25),
@@ -346,10 +357,55 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ArrayType",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
-                    CreateLogEntryParameters(sourceFileName, 7, 17, 7, 25)
+                    CreateLogEntryParameters(sourceFileName, 7, 19, 7, 25),
+                    CreateLogEntryParameters(sourceFileName, 11, 20, 11, 27),
+                    CreateLogEntryParameters(sourceFileName, 12, 20, 12, 27),
+                },
+            });
+        }
+
+        [TestMethod]
+        public void Execute_DepViolation_PointerType()
+        {
+            const string sourceFileName = "DepViolation_PointerType.cs";
+            ExecuteTest(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_DepViolation_PointerType",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    CreateLogEntryParameters(sourceFileName, 7, 19, 7, 25),
+                    CreateLogEntryParameters(sourceFileName, 11, 20, 11, 27),
+                    CreateLogEntryParameters(sourceFileName, 12, 20, 12, 27),
+                },
+            });
+        }
+
+        [TestMethod]
+        public void Execute_DepViolation_VeryComplexType()
+        {
+            const string sourceFileName = "DepViolation_VeryComplexType.cs";
+            ExecuteTest(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_DepViolation_VeryComplexType",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    // Class4<Class3[], Class4<Class3*[], Class3[][]>>
+                    CreateLogEntryParameters(sourceFileName, 10, 13, 10, 60),
+                    CreateLogEntryParameters(sourceFileName, 10, 20, 10, 26),
+                    CreateLogEntryParameters(sourceFileName, 10, 30, 10, 59),
+                    CreateLogEntryParameters(sourceFileName, 10, 37, 10, 43),
+                    CreateLogEntryParameters(sourceFileName, 10, 48, 10, 54),
+                    // Method2 return value
+                    CreateLogEntryParameters(sourceFileName, 10, 72, 10, 79),
+                    CreateLogEntryParameters(sourceFileName, 10, 72, 10, 79),
+                    CreateLogEntryParameters(sourceFileName, 10, 72, 10, 79),
+                    CreateLogEntryParameters(sourceFileName, 10, 72, 10, 79),
+                    CreateLogEntryParameters(sourceFileName, 10, 72, 10, 79),
                 },
             });
         }
@@ -361,7 +417,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_NullableType",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 7, 17, 7, 25)
@@ -376,7 +432,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_EveryUserDefinedTypeKind",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 7, 17, 7, 24),
@@ -395,7 +451,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_TooManyIssues",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 7, 17, 7, 23),
@@ -412,7 +468,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_MaxIssueCountEqualsIssueCount",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 7, 17, 7, 23),
@@ -439,7 +495,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_MultipleSourceFiles",
-                SourceFileNames = new[] {sourceFile1, sourceFile2},
+                SourceFileNames = new[] { sourceFile1, sourceFile2 },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFile1, 7, 17, 7, 23),
@@ -465,7 +521,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ExtensionMethodInvocation",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 9, 27, 9, 44),
@@ -481,7 +537,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_ObjectCreationExpression",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 9, 17, 9, 29)
@@ -496,7 +552,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_AllowedDependencyWithInvisibleMembers",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 6, 19, 6, 32),
@@ -513,7 +569,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_Var",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 7, 13, 7, 16),
@@ -530,7 +586,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             ExecuteTest(new TestCaseSpecification
             {
                 TestFilesFolderName = "TestFiles_DepViolation_VarWithConstructedGenericType",
-                SourceFileNames = new[] {sourceFileName},
+                SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
                     // var: ClassB`2, EnumB, EnumB
