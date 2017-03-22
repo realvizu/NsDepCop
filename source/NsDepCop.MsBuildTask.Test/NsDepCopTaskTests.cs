@@ -651,5 +651,30 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
             });
         }
+
+        [TestMethod]
+        public void Execute_DepViolation_ElementAccess()
+        {
+            const string sourceFileName = "DepViolation_ElementAccess.cs";
+            ExecuteTest(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_DepViolation_ElementAccess",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    // var a = new Class2<Class3>[10];
+                    CreateLogEntryParameters(sourceFileName, 9, 13, 9, 16),
+                    CreateLogEntryParameters(sourceFileName, 9, 13, 9, 16),
+                    CreateLogEntryParameters(sourceFileName, 9, 25, 9, 39),
+                    CreateLogEntryParameters(sourceFileName, 9, 32, 9, 38),
+
+                    // a[1] = a[2];
+                    CreateLogEntryParameters(sourceFileName, 10, 13, 10, 14),
+                    CreateLogEntryParameters(sourceFileName, 10, 13, 10, 14),
+                    CreateLogEntryParameters(sourceFileName, 10, 20, 10, 21),
+                    CreateLogEntryParameters(sourceFileName, 10, 20, 10, 21),
+                },
+            });
+        }
     }
 }

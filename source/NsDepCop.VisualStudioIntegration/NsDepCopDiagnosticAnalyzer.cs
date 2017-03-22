@@ -62,8 +62,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         {
             context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode,
                 SyntaxKind.IdentifierName,
-                SyntaxKind.GenericName,
-                SyntaxKind.ElementAccessExpression);
+                SyntaxKind.GenericName);
 
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         }

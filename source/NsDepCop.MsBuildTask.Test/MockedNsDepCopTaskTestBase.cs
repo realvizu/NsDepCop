@@ -34,9 +34,8 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         /// <param name="mockBuildEngine">The mock build engine.</param>
         /// <param name="expectedLogEntries">The expected log entry events.</param>
         /// <param name="baseDirecytory">The base directory of the source files.</param>
-        /// <param name="skipLocationValidation">If true then skip the validation of the location info.</param>
         protected static void ExpectEvents(IBuildEngine mockBuildEngine, IEnumerable<LogEntryParameters> expectedLogEntries,
-            string baseDirecytory = null, bool skipLocationValidation = true)
+            string baseDirecytory = null)
         {
             foreach (var expectedLogEntry in expectedLogEntries.EmptyIfNull())
             {
@@ -45,21 +44,21 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     case IssueKind.Info:
                         mockBuildEngine
                             .Expect(i => i.LogMessageEvent(Arg<BuildMessageEventArgs>
-                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
+                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory))))
                             .Repeat.Once();
                         break;
 
                     case IssueKind.Warning:
                         mockBuildEngine
                             .Expect(i => i.LogWarningEvent(Arg<BuildWarningEventArgs>
-                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
+                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory))))
                             .Repeat.Once();
                         break;
 
                     case IssueKind.Error:
                         mockBuildEngine
                             .Expect(i => i.LogErrorEvent(Arg<BuildErrorEventArgs>
-                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory, skipLocationValidation))))
+                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory))))
                             .Repeat.Once();
                         break;
 
@@ -126,12 +125,12 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 .Repeat.Any();
         }
 
-        private static bool LogEntryEqualsExpected(dynamic logEntry, LogEntryParameters expectedLogEntry, string baseDirecytory, bool skipLocationValidation)
+        private static bool LogEntryEqualsExpected(dynamic logEntry, LogEntryParameters expectedLogEntry, string baseDirecytory)
         {
             return LogEntryHasExpectedCode(logEntry, expectedLogEntry)
                    && LogEntryHasExpectedFile(logEntry, expectedLogEntry, baseDirecytory)
                    && LogEntryHasExpectedImportance(logEntry, expectedLogEntry)
-                   && LogEntryHasExpectedLocation(logEntry, expectedLogEntry, skipLocationValidation);
+                   && LogEntryHasExpectedLocation(logEntry, expectedLogEntry);
         }
 
         private static bool LogEntryHasExpectedCode(dynamic logEntry, LogEntryParameters expectedLogEntry)
@@ -151,10 +150,9 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                    || expectedLogEntry.InfoImportance.Value.ToMessageImportance() == logEntry.Importance;
         }
 
-        private static bool LogEntryHasExpectedLocation(dynamic logEntry, LogEntryParameters expectedLogEntry, bool skipLocationValidation)
+        private static bool LogEntryHasExpectedLocation(dynamic logEntry, LogEntryParameters expectedLogEntry)
         {
-            return skipLocationValidation
-                   || LocationEqualsExpected(logEntry, expectedLogEntry);
+            return LocationEqualsExpected(logEntry, expectedLogEntry);
         }
 
         private static bool LocationEqualsExpected(dynamic logEntry, LogEntryParameters expectedLogEntry)
