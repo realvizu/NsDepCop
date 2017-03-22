@@ -5,7 +5,12 @@
         <version>$version$</version>
         <title>NsDepCop - Namespace Dependency Checker Tool for C#</title>
         <summary>Static code analysis tool to enforce namespace dependency rules in C# projects.</summary>
-        <description>Static code analysis tool to enforce namespace dependency rules in C# projects. See project site for details.</description>
+        <description>
+NsDepCop helps you to eliminate unintended or unnoticed code dependencies in your application. 
+Add the NuGet package to your C# projects and specify the dependency rules in the config.nsdepcop files. 
+The dependency analyzer will be run automatically on every build. 
+See project site for details (https://github.com/realvizu/NsDepCop).
+        </description>
         <authors>Ferenc Vizkeleti</authors>
         <owners>Ferenc Vizkeleti</owners>
         <projectUrl>https://github.com/realvizu/NsDepCop</projectUrl>

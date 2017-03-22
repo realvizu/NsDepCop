@@ -2,7 +2,7 @@ image: Visual Studio 2015
 
 environment:
   shortversion: '1.6.0'
-  informationalversion: '1.6.0-beta3'
+  informationalversion: '1.6.0-rc1'
 
 version: '$(shortversion).{build}'
 
