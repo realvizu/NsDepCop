@@ -633,5 +633,23 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
             });
         }
+
+        [TestMethod]
+        public void Execute_DepViolation_Delegates()
+        {
+            const string sourceFileName = "DepViolation_Delegates.cs";
+            ExecuteTest(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_DepViolation_Delegates",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    // delegate Class1<Class2> Delegate1(Class2 c);
+                    CreateLogEntryParameters(sourceFileName, 5, 14, 5, 28),
+                    CreateLogEntryParameters(sourceFileName, 5, 21, 5, 27),
+                    CreateLogEntryParameters(sourceFileName, 5, 39, 5, 45),
+                },
+            });
+        }
     }
 }

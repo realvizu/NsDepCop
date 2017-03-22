@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
 {
     public static class SyntaxNodeExtensions
     {
+        public static bool IsTypeDeclaration(this SyntaxNode syntaxNode)
+        {
+            return syntaxNode is BaseTypeDeclarationSyntax 
+                || syntaxNode is DelegateDeclarationSyntax;
+        }
+
         public static bool HasDescendant<T>(this SyntaxNode syntaxNode)
             where T : SyntaxNode
         {

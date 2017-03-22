@@ -183,7 +183,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
         private static ITypeSymbol DetermineEnclosingType(SyntaxNode node, SemanticModel semanticModel)
         {
             // Find the type declaration that contains the current syntax node.
-            var typeDeclarationSyntaxNode = node.Ancestors().FirstOrDefault(i => i is BaseTypeDeclarationSyntax);
+            var typeDeclarationSyntaxNode = node.Ancestors().FirstOrDefault(i => i.IsTypeDeclaration());
             if (typeDeclarationSyntaxNode == null)
                 return null;
 
