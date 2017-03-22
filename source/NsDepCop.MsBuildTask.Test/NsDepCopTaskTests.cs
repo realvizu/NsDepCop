@@ -619,17 +619,29 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
-                    // [Forbidden(...
-                    CreateLogEntryParameters(sourceFileName, 15, 6, 15, 15),
+                    // assembly and module attributes are not analyzed because there's no enclosing type
+                    //// [assembly: A.AllowedAttributeWithTypeArg(typeof(B.ForbiddenType))]
+                    //CreateLogEntryParameters(sourceFileName, 3, 14, 3, 41),
+                    //CreateLogEntryParameters(sourceFileName, 3, 51, 3, 64),
+                    //// [module: A.AllowedAttributeWithTypeArg(typeof(B.ForbiddenType))]
+                    //CreateLogEntryParameters(sourceFileName, 4, 12, 4, 39),
+                    //CreateLogEntryParameters(sourceFileName, 4, 49, 4, 62),
+                    //// [assembly: B.ForbiddenAttribute("foo")]
+                    //CreateLogEntryParameters(sourceFileName, 5, 14, 5, 32),
+                    //// [module: B.Forbidden("foo")]
+                    //CreateLogEntryParameters(sourceFileName, 6, 12, 6, 21),
+
+                    // [Forbidden on class
+                    CreateLogEntryParameters(sourceFileName, 20, 6, 20, 15),
 
                     // class attribute type parameter
-                    CreateLogEntryParameters(sourceFileName, 21, 41, 21, 54),
+                    CreateLogEntryParameters(sourceFileName, 26, 41, 26, 54),
 
                     // field attribute type parameter
-                    CreateLogEntryParameters(sourceFileName, 29, 45, 29, 58),
+                    CreateLogEntryParameters(sourceFileName, 34, 45, 34, 58),
 
                     // enum value attribute type parameter
-                    CreateLogEntryParameters(sourceFileName, 38, 45, 38, 58),
+                    CreateLogEntryParameters(sourceFileName, 43, 45, 43, 58),
                 },
             });
         }

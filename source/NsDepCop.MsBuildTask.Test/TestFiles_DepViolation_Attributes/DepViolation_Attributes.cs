@@ -1,5 +1,10 @@
 ﻿using System;
 
+// not analyzed: [assembly: A.AllowedAttributeWithTypeArg(typeof(B.ForbiddenType))]
+// not analyzed: [module: A.AllowedAttributeWithTypeArg(typeof(B.ForbiddenType))]
+// not analyzed: [assembly: B.ForbiddenAttribute("foo")]
+// not analyzed: [module: B.Forbidden("foo")]
+
 namespace A
 {
     using B;
