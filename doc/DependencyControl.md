@@ -19,7 +19,7 @@ They can work at different levels and on different input formats:
 It also supports some fine-tuning at the type level (see details below).
 
 ## So what is a namespace dependency?
-Namespace 'A' depends on namespace 'B' (A->B) if any type declared in namespace 'A' uses any type declared in namespace 'B'.
+Namespace **A** depends on namespace **B** if any type declared in namespace **A** uses any type declared in namespace **B**.
 
 In the example below **A->B** because type A1 uses types B1, B2, B3, B4, B5.
 ```csharp

@@ -13,8 +13,7 @@ What is this [**dependency control**](doc/DependencyControl.md) anyway?
 ## Getting Started
 
 1. Add the [![NuGet Package](https://img.shields.io/nuget/v/NsDepCop.svg)](https://nuget.org/packages/NsDepCop) package to your C# projects.
-1. A rule config file called config.nsdepcop is automatically added to the project.
-1. Configure the dependency rules in the **config.nsdepcop** file.
+1. A file called **config.nsdepcop** is automatically added to the project: edit it to describe [**dependency rules**](doc/Help.md#dependency-rules).
 1. When you **build** the project, dependency violations will be reported in the build output just like compiler errors/warnings.
 
 See the [**Help**](doc/Help.md) for details.
@@ -27,11 +26,10 @@ See the [**Help**](doc/Help.md) for details.
 
 * Install the **config XML schema support** for Visual Studio to get validation and IntelliSense while editing the config.nsdepcop files.
   * Download the **MSI** installer from the [Releases](https://github.com/realvizu/nsdepcop/releases). 
-  * Run the installer and choose the "Config XML schema support in VS" option.
-  * Requires admin privilege for installing.
+  * Run the installer and choose the "Config XML schema support in VS" option (requires admin privilege).
   * At the moment it is for Visual Studio 2015 only.
   
-* There's a legacy option in the MSI installer called "Machine-wide MSBuild integration" but it's not recommended any more. Please use the NuGet package instead. (More info.)
+* There's a legacy option in the MSI installer called "Machine-wide MSBuild integration" but it's not recommended any more. Please use the NuGet package instead. ([More info.](doc/Help.md#machine-wide-msbuild-integration))
 
 ## Versions
 * See the [**Change Log**](CHANGELOG.md) for version history.
@@ -45,6 +43,7 @@ See the [**Help**](doc/Help.md) for details.
 ## More Info
 * [Diagnostics Reference](doc/Diagnostics.md)
 * [FAQ](doc/FAQ.md)
+* [How to contribute?](Contribute.md)
 
 ## Thanks to 
 * [Roslyn](https://github.com/dotnet/roslyn) for the best parser API.
