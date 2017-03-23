@@ -10,9 +10,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\CHANGELOG.md = ..\CHANGELOG.md
 		config.nsdepcop = config.nsdepcop
 		..\Contribute.md = ..\Contribute.md
-		..\Help.md = ..\Help.md
+		..\LICENSE = ..\LICENSE
 		measure.cmd = measure.cmd
 		perf-results.txt = perf-results.txt
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.MsBuildTask", "NsDepCop.MsBuildTask\NsDepCop.MsBuildTask.csproj", "{2ACFCACC-FC7D-4192-9B9F-C916784D93B3}"
@@ -46,6 +47,15 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.VisualStudioIntegration.Test", "NsDepCop.VisualStudioIntegration.Test\NsDepCop.VisualStudioIntegration.Test.csproj", "{7BF36CB7-19D8-42B9-B319-F5567116B320}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.TestUtil", "NsDepCop.TestUtil\NsDepCop.TestUtil.csproj", "{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{EFA91D33-558D-4191-8786-8A6A8CFA7CD3}"
+	ProjectSection(SolutionItems) = preProject
+		..\doc\DependencyControl.md = ..\doc\DependencyControl.md
+		..\doc\Diagnostics.md = ..\doc\Diagnostics.md
+		..\doc\FAQ.md = ..\doc\FAQ.md
+		..\doc\Help.md = ..\doc\Help.md
+		..\doc\Versions.md = ..\doc\Versions.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

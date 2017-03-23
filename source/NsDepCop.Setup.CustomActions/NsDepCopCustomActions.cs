@@ -44,7 +44,7 @@ namespace Codartis.NsDepCop.Setup.CustomActions
                         FormatString = "Setup is unable to add NsDepCop target to the C# build workflow, " +
                         $"because of custom content in {filename}\n" +
                         "You have to add it manually. " +
-                        "See the FAQ at http://nsdepcop.codeplex.com/documentation for more info. " +
+                        "See the FAQ at https://github.com/realvizu/NsDepCop/blob/VS2015/doc/FAQ.md for more info. " +
                         "Setup continues."
                     };
                     session.Message(InstallMessage.Warning, record);
@@ -104,7 +104,7 @@ namespace Codartis.NsDepCop.Setup.CustomActions
                         FormatString = "Setup is unable to remove NsDepCop target from the C# build workflow, " +
                         $"because of custom content in {filename}\n" +
                         "You have to remove it manually. " +
-                        "See the FAQ at http://nsdepcop.codeplex.com/documentation for more info. " +
+                        "See the FAQ at https://github.com/realvizu/NsDepCop/blob/VS2015/doc/FAQ.md for more info. " +
                         "Setup continues."
                     };
                     session.Message(InstallMessage.Warning, record);

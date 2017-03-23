@@ -1,3 +1,0 @@
-# NsDepCop Help
-
-### Topic1
