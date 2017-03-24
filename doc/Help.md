@@ -3,7 +3,7 @@
 * [Dependency rules](#dependency-rules)
 * [Config inheritance](#config-inheritance)
 * [Controlling verbosity](#controlling-verbosity)
-* [Config.nsdepcop schema](#config.nsdepcop-schema)
+* [Config XML schema](#config-xml-schema)
 * [Machine-wide MSBuild integration](#machine-wide-msbuild-integration)
 
 
@@ -172,17 +172,17 @@ Advanced settings:
 * This is useful if you want to keep the MSBuild verbosity level at a certain value for some reason (e.g.: because of other build steps you always want to keep verbosity at minimal level), and you want to control whether NsDepCop info messages are visible at that certain MSBuild verbosity level or not.
 * The following table shows which InfoImportance levels are shown at certain MSBuild verbosity levels.
 
- MSBuild verbosity level| Low InfoImportance | Normal InfoImportance | High InfoImportance
- - | - | - | -
- q[uiet] | - | - | -
- m[inimal] | - | - | yes
- n[ormal] | - | yes | yes
- d[etailed] | yes | yes | yes
- diag[nostic] | yes | yes | yes
+| MSBuild verbosity level| Low InfoImportance | Normal InfoImportance | High InfoImportance |
+| - | - | - | - |
+| q[uiet] | - | - | - |
+| m[inimal] | - | - | yes |
+| n[ormal] | - | yes | yes |
+| d[etailed] | yes | yes | yes |
+| diag[nostic] | yes | yes | yes |
 
 E.g.: if you want NsDepCop info messages to show up at minimal MSBuild verbosity then set `InfoImportance` to High.
 
-## Config.nsdepcop schema
+## Config XML schema
 See the XSD schema of config.nsdepcop [here](../source/NsDepCop.Setup/NsDepCopConfigSchema/NsDepCopConfig.xsd).
 
 ## Machine-wide MSBuild integration
