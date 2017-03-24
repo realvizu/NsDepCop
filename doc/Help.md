@@ -119,9 +119,65 @@ Example:
 ```
 
 ## Config inheritance
-aka Multi-level config
+From v1.6 NsDepCop supports config inheritance, aka multi-level config.
+
+* The goal is to achieve "DRY" configs, that is, **avoid redundant info** in config.nsdepcop files.
+* You can extract common config settings from project-level config.nsdepcop files and put them into a **"master"** config file, that must be in a folder that is a common ancestor of the project folders, e.g. the solution folder.
+* The "master" config file must also be named config.nsdepcop.
+* You have to **"turn on" inheritance** in the project-level configs by setting the `InheritanceDepth` attribute to a number that indicates the number of folder levels between the project folder and the master config's folder. 
+* Typically you put the master config file into the solution folder which is the immediate parent of the project folders, so you set `InheritanceDepth="1"` in all project-level configs.
+
+Example: 
+
+```xml
+config.nsdepcop file in "C:\MySolution":
+
+<NsDepCopConfig CodeIssueKind="Error" ChildCanDependOnParentImplicitly="true" InfoImportance="High">
+    <Allowed From="*" To="System.*" />
+    <Allowed From="*" To="MoreLinq" />
+    <Allowed From="*" To="NsDepCop.Core.Util" />
+</NsDepCopConfig>
+
+config.nsdepcop file in "C:\MySolution\MyProject":
+
+<NsDepCopConfig InheritanceDepth="1">
+    <Allowed From="NsDepCop.MsBuildTask" To="NsDepCop.Core.Interface.*" />
+    <Allowed From="NsDepCop.MsBuildTask" To="NsDepCop.Core.Factory" />
+    <Allowed From="NsDepCop.MsBuildTask" To="Microsoft.Build.*" />
+</NsDepCopConfig>
+``` 
+
+More info:
+* If there is a conflict between the project-level and the inherited settings then the project-level settings "win".
+* The inheritance is not limited to just a project and a solution level config; you can have any number of config.nsdepcop files at any folder levels. Just make sure you set the `InheritanceDepth` to a number that is great enough to find all the higher-level configs.
+* There must always be a config.nsdepcop file in the project folder if you want to analyze that project. 
+Even if all the settings come from a higher-level config, you have to put **at least a minimal config to the project level**, that enables the inheritance in the first place.
+E.g.: `<NsDepCopConfig InheritanceDepth="3"/>`
+* You can turn on diagnostic messages ([Controlling verbosity](#controlling-verbosity)) to see which config files were found and loaded by the tool and what effective config resulted from combining them.
 
 ## Controlling verbosity
+* Besides emitting dependency violation issues, the tool can emit diagnostic and info messages too.
+  * **Info messages** tell you when was the tool started and finished.
+  * **Diagnostic messages** help you debug config problems by dumping config contents and dependency validation result cache change events.
+* When the tool is run by MSBuild you can modify the [verbosity switch (/v:level)](https://msdn.microsoft.com/en-us/library/ms164311.aspx) to get more or less details in the output.
+  * The verbosity levels defined by MSBuild are the following (ordered from less verbose to most verbose): q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic]
+  * Set it to **detailed** or higher to see NsDepCop **diagnostic messages**.
+  * Set it to **normal** or higher to see NsDepCop **info messages**.
+
+Advanced settings:
+* You can also modify the importance level of NsDepCop info messages by setting the `InfoImportance` attribute in config.nsdepcop to Low, Normal or High.
+* This is useful if you want to keep the MSBuild verbosity level at a certain value for some reason (e.g.: because of other build steps you always want to keep verbosity at minimal level), and you want to control whether NsDepCop info messages are visible at that certain MSBuild verbosity level or not.
+* The following table shows which InfoImportance levels are shown at certain MSBuild verbosity levels.
+
+ MSBuild verbosity level| Low InfoImportance | Normal InfoImportance | High InfoImportance
+ - | - | - | -
+ q[uiet] | - | - | -
+ m[inimal] | - | - | yes
+ n[ormal] | - | yes | yes
+ d[etailed] | yes | yes | yes
+ diag[nostic] | yes | yes | yes
+
+E.g.: if you want NsDepCop info messages to show up at minimal MSBuild verbosity then set `InfoImportance` to High.
 
 ## Config.nsdepcop schema
 See the XSD schema of config.nsdepcop [here](../source/NsDepCop.Setup/NsDepCopConfigSchema/NsDepCopConfig.xsd).

@@ -13,7 +13,7 @@ What is this [**dependency control**](doc/DependencyControl.md) anyway?
 ## Getting Started
 
 1. Add the [![NuGet Package](https://img.shields.io/nuget/v/NsDepCop.svg)](https://nuget.org/packages/NsDepCop) package to your C# projects.
-1. A file called **config.nsdepcop** is automatically added to the project: edit it to describe [**dependency rules**](doc/Help.md#dependency-rules).
+1. A file called **config.nsdepcop** is automatically added. Edit it and describe [**dependency rules**](doc/Help.md#dependency-rules).
 1. When you **build** the project, dependency violations will be reported in the build output just like compiler errors/warnings.
 
 See the [**Help**](doc/Help.md) for details.
@@ -38,7 +38,7 @@ See the [**Help**](doc/Help.md) for details.
 
 ## Feedback
 * Please use the [**Issue Tracker**](https://github.com/realvizu/NsDepCop/issues) to record bugs and feature requests.
-* I post about new releases on Twitter: [![Follow on Titter](https://img.shields.io/twitter/url/http/realvizu.svg?style=social&label=@realvizu)](https://twitter.com/realvizu)
+* Or tweet me [![Follow on Titter](https://img.shields.io/twitter/url/http/realvizu.svg?style=social&label=@realvizu)](https://twitter.com/realvizu)
 
 ## More Info
 * [Diagnostics Reference](doc/Diagnostics.md)
