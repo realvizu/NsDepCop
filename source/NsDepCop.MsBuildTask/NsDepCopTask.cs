@@ -208,23 +208,22 @@ namespace Codartis.NsDepCop.MsBuildTask
         private void LogBuildEvent(IssueKind issueKind, string message, MessageImportance messageImportance, string code = null,
             string path = null, int startLine = 0, int startColumn = 0, int endLine = 0, int endColumn = 0)
         {
-            message = "[" + ProductConstants.ToolName + "] " + message;
-
             switch (issueKind)
             {
                 case IssueKind.Error:
-                    BuildEngine.LogErrorEvent(new BuildErrorEventArgs(
-                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, ProductConstants.ToolName));
+                    BuildEngine.LogErrorEvent(
+                        new BuildErrorEventArgs(null, code, path, startLine, startColumn, endLine, endColumn, message, code, ProductConstants.ToolName));
                     break;
 
                 case IssueKind.Warning:
-                    BuildEngine.LogWarningEvent(new BuildWarningEventArgs(
-                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, ProductConstants.ToolName));
+                    BuildEngine.LogWarningEvent(
+                        new BuildWarningEventArgs(null, code, path, startLine, startColumn, endLine, endColumn, message, code, ProductConstants.ToolName));
                     break;
 
                 default:
-                    BuildEngine.LogMessageEvent(new BuildMessageEventArgs(
-                        null, code, path, startLine, startColumn, endLine, endColumn, message, code, ProductConstants.ToolName, messageImportance));
+                    BuildEngine.LogMessageEvent(
+                        new BuildMessageEventArgs(null, code, path, startLine, startColumn, endLine, endColumn, 
+                            $"[{ProductConstants.ToolName}] {message}", code, ProductConstants.ToolName, messageImportance));
                     break;
             }
         }

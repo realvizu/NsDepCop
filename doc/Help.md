@@ -149,6 +149,9 @@ config.nsdepcop file in "C:\MySolution\MyProject":
 
 More info:
 * If there is a conflict between the project-level and the inherited settings then the project-level settings "win".
+* The `IsEnabled` attribute has different meaning in the project-level config and in inherited configs.
+  * If `IsEnabled="false"` in a project-level config then the project don't get analyzed.
+  * If `IsEnabled="false"` in an inherited config then its content doesn't get inherited.
 * The inheritance is not limited to just a project and a solution level config; you can have any number of config.nsdepcop files at any folder levels. Just make sure you set the `InheritanceDepth` to a number that is great enough to find all the higher-level configs.
 * There must always be a config.nsdepcop file in the project folder if you want to analyze that project. 
 Even if all the settings come from a higher-level config, you have to put **at least a minimal config to the project level**, that enables the inheritance in the first place.

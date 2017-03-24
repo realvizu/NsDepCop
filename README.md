@@ -14,6 +14,7 @@ What is this [**dependency control**](doc/DependencyControl.md) anyway?
 
 1. Add the [![NuGet Package](https://img.shields.io/nuget/v/NsDepCop.svg)](https://nuget.org/packages/NsDepCop) package to your C# projects.
 1. A file called **config.nsdepcop** is automatically added. Edit it and describe [**dependency rules**](doc/Help.md#dependency-rules).
+   * If you already have an nsdepcop.config in the project then nuget will prompt you whether you want to overwrite it. Make sure you choose 'No'.
 1. When you **build** the project, dependency violations will be reported in the build output just like compiler errors/warnings.
 
 See the [**Help**](doc/Help.md) for details.

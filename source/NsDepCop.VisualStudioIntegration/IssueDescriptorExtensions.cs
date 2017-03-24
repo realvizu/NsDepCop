@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     internal static class IssueDescriptorExtensions
     {
         /// <summary>
-        /// Format string to create a help link for diagnostics. The parameter is the diagnostic's code in full UPPERCASE.
+        /// Format string to create a help link for diagnostics. The parameter is the diagnostic's code in lowercase.
         /// </summary>
         private const string HelpLinkFormat = @"https://github.com/realvizu/NsDepCop/blob/VS2015/doc/Diagnostics.md#{0}";
 
@@ -27,7 +27,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static string GetHelpLink(string issueDescriptorId)
         {
-            return string.Format(HelpLinkFormat, issueDescriptorId.ToUpper(CultureInfo.InvariantCulture));
+            return string.Format(HelpLinkFormat, issueDescriptorId.ToLower(CultureInfo.InvariantCulture));
         }
     }
 }

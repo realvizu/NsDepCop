@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// ReSharper disable once CheckNamespace
-namespace MoreLinq
+namespace Codartis.NsDepCop.Core.Util
 {
-    public static class MoreLinqExtensions
+    public static class LinqExtensions
     {
         public static TSource MinByOrDefault<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> selector)
         {

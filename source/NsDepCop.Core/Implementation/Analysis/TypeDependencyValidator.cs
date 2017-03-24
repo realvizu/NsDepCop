@@ -2,7 +2,7 @@
 using System.Linq;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
-using MoreLinq;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Analysis
 {
