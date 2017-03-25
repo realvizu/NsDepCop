@@ -3,7 +3,7 @@
     <Metadata>
         <Identity Id="NsDepCop..e8ae3b7e-3cd5-40ef-92ca-b22ef9d0cc24" Version="1.6.0.0" Language="en-US" Publisher="Codartis" />
         <DisplayName>NsDepCop - Namespace dependency checker for C#</DisplayName>
-        <Description xml:space="preserve">Helps enforcing dependency rules in C# projects by highlighting disallowed type usages in the code editor. You can also use this tool in your build process by adding the NsDepCop NuGet package to your projects.</Description>
+        <Description xml:space="preserve">NsDepCop is a static code analysis tool that helps to enforce dependency rules in C# projects by highlighting disallowed type usages in the code editor. You can also use this tool in your build process by adding the NsDepCop NuGet package to your projects.</Description>
         <MoreInfo>https://github.com/realvizu/NsDepCop</MoreInfo>
         <License>Resources\LICENSE</License>
         <GettingStartedGuide>https://github.com/realvizu/NsDepCop/blob/VS2015/README.md#getting-started</GettingStartedGuide>
