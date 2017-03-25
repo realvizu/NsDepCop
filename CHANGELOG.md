@@ -3,7 +3,6 @@
 ## v1.6
 (03/2017)
 
-- [x] Supports Visual Studio 2015 only.
 - [x] New: NuGet package.
   - [x] Enables per-project MSBuild integration.
   - [x] Enables zero install on build machine.
