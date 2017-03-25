@@ -4,7 +4,7 @@
 [![NuGet Package](https://img.shields.io/nuget/v/NsDepCop.svg)](https://nuget.org/packages/NsDepCop)
 [![Visual Studio extension](https://vsmarketplacebadge.apphb.com/version/FerencVizkeleti.NsDepCop-NamespacedependencycheckertoolforC.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCop-NamespacedependencycheckertoolforC)
 
-NsDepCop is a static code analysis tool that lets you enforce namespace dependency rules in your C# projects.
+NsDepCop is a static code analysis tool that helps you to enforce namespace dependency rules in C# projects.
 * Runs as part of the build process and reports dependency problems.
 * No more unplanned or unnoticed dependencies in your system.
 

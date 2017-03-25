@@ -7,7 +7,7 @@
         <MoreInfo>https://github.com/realvizu/NsDepCop</MoreInfo>
         <License>Resources\LICENSE</License>
         <GettingStartedGuide>https://github.com/realvizu/NsDepCop/blob/VS2015/README.md#getting-started</GettingStartedGuide>
-        <Icon>Resources\NsDepCop_40.ico</Icon>
+        <Icon>Resources\NsDepCop_128.ico</Icon>
         <PreviewImage>Resources\NsDepCop_256.ico</PreviewImage>
         <Tags>static analysis;code analysis;namespace;dependency;c#;csharp;roslyn</Tags>
     </Metadata>
