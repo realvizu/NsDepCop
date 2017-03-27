@@ -3,7 +3,7 @@
 ## Why care about code dependencies?
 "Poor dependency management leads to code that is hard to change, fragile, and non-reusable," [said Uncle Bob](http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod).
 
-Dependency control tools help you enforce an organizing scheme so your code base doesn't degrade with time into a tangled mess.
+Dependency control tools help you to enforce an organizing scheme so your code base doesn't degrade with time into a tangled mess.
 
 If you want to learn more about dependency management I highly recommend Uncle Bob's [articles](https://docs.google.com/file/d/0BxR1naE0JfyzV2JVbkYwRE5odGM), [books](https://www.amazon.com/Agile-Principles-Patterns-Practices-C/dp/0131857258) and [training videos](https://cleancoders.com/videos/clean-code/solid-principles).
 

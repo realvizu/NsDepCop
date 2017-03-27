@@ -25,7 +25,7 @@ Or to be more lax:
 ## FAQ02
 ### Setup is unable to add NsDepCop target to the C# build workflow
 
-In order to insert the NsDepCop task into the C# project build workflow, setup creates (or modifies) the "**Custom.After.Microsoft.CSharp.targets**" file at "(Program Files folder)\MsBuild\v4.0".
+In order to insert the NsDepCop task into the C# project build workflow, setup creates (or modifies) the "**Custom.After.Microsoft.CSharp.targets**" file at "(Program Files folder)\MsBuild\v14.0".
 It redefines the "BuildDependsOn" property group to include the NsDepCop target as the last step just before the "Build" target executes. 
 If you already have this file and it already contains the definition of the BuildDependsOn property group then setup won't change it (so not to mess up anything). 
 
@@ -56,7 +56,7 @@ After:
 ### Setup is unable to remove NsDepCop target from the C# build workflow
 
 The same problem as above when uninstalling NsDepCop. 
-The "**Custom.After.Microsoft.CSharp.targets**" file at "(Program Files folder)\MsBuild\v4.0" contains a definition of the BuildDependsOn property group that is different from the content that setup creates. 
+The "**Custom.After.Microsoft.CSharp.targets**" file at "(Program Files folder)\MsBuild\v14.0" contains a definition of the BuildDependsOn property group that is different from the content that setup creates. 
 You have to remove the NsDepCop string from the BuildDependsOn definition manually.
 
 ## FAQ04

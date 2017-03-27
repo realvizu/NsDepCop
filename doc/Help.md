@@ -36,13 +36,13 @@ Attribute | Values | Description
 **IsEnabled** | **true**, false | If set to false then analysis is not performed for the project.
 **CodeIssueKind** | Info, **Warning**, Error | Dependency violations are reported at this severity level.
 **ChildCanDependOnParentImplicitly** | true, **false** | If set to true then all child namespaces can depend on any of their parents without an explicit allowing rule. The recommended value is **true**. (False is default for backward compatibility.)
-**InfoImportance** | Low, **Normal**, High | Info messages are reported to MSBuild at this level. This setting and the MSBuild verbosity (-v) swicth together determine whether a message appears on the output or not. See [InfoImportance](#controlling-verbosity) for details.
-**MaxIssueCount** | int (>0), default: **100** | Analysis stop when reaching this number of issues.
-**InheritanceDepth** | int (>=0), default: **0** | Sets the number of parent folder to inherit config from. 0 means no inheritance.
+**InfoImportance** | Low, **Normal**, High | Info messages are reported to MSBuild at this level. This setting and the MSBuild verbosity (/v) swicth together determine whether a message appears on the output or not. See [Controlling verbosity](#controlling-verbosity) for details.
+**MaxIssueCount** | int (>0), default: **100** | Analysis stops when reaching this number of issues.
+**InheritanceDepth** | int (>=0), default: **0** | Sets the number of parent folder levels to inherit config from. 0 means no inheritance.
 
 ### Whitelisting
 * The **`<Allowed From="N1" To="N2"/>`** config element defines that **N1** namespace can depend on **N2** namespace.
-* If a dependency does not match any allowed rule then it's considered disallowed.
+* If a dependency does not match any of the allowed rules then it's considered disallowed.
 
 Special symbols:
 
@@ -66,7 +66,7 @@ Example | Meaning
 * To implement the blacklisting behavior, you also have to define an "allow all" rule, otherwise no dependency will be allowed.
 * Only those dependencies are allowed that has a matching "Allowed" rule and no match with any of the "Disallowed" rules.
 * You can specify any number of "Allowed" and "Disallowed" rules in any order.
-* If both an "Allowed" and a "Disallowed" rule is matched then "Disallowed" is the "stronger".
+* If both an "Allowed" and a "Disallowed" rule are matched then "Disallowed" is the "stronger".
 
 Example:
 ```xml
@@ -92,7 +92,6 @@ Meaning:
 </Allowed>
 ```
 * Notice that the surface is defined in the context of a particular namespace dependency, that is, this surface of **UnityEngine** is accessible only to **GameLogic**.
-* Other namespaces still can't depend on **UnityEngine**.
 * You can define different surfaces for different other namespaces.
 * You can also define a **"global"** surface, that is, a surface that is applicable to all namespaces that otherwise are allowed to depend on **UnityEngine**. See the following example. 
 ```xml
@@ -101,7 +100,7 @@ Meaning:
     <Type Name="Vector3" />
 </VisibleMembers>
 ```
-* Notice that when defining a "global" surface the `<VisibleMembers>` element is not embedded in an `<Allowed>` element but use must specify the **OfNamespace** attribute.
+* Notice that when defining a "global" surface the `<VisibleMembers>` element is not embedded in an `<Allowed>` element but you must specify the **OfNamespace** attribute.
 
 ### Allowing all child namespaces to depend on their parents
 You can specify the **ChildCanDependOnParentImplicitly** attribute on the NsDepCopConfig element.
