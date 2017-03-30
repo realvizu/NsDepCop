@@ -20,6 +20,14 @@
 - [x] Changed: Roslyn version updated to 1.3.2.
 - [x] Changed: Removed NRefactory as a parser choice.
 
+### Upgrading
+
+* To upgrade please uninstall the previous version first. 
+  * Your existing config.nsdepcop files will be preserved.
+* Then install the new version. 
+  * Recommended: change to per-project MSBuild integration. See [Readme.md](Readme.md) for details.
+  
+
 ## v1.5
 (06/2016)
 
