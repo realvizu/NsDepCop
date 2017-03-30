@@ -34,7 +34,7 @@ See the [**Help**](doc/Help.md) for details.
 
 ## Versions
 * See the [**Change Log**](CHANGELOG.md) for version history.
-* See the [**Upgrade instructions**](ChangeLog.md#upgrading) if using an older version.
+* See the [**Upgrade instructions**](CHANGELOG.md#upgrading) if using an older version.
 * See the [**Milestones**](https://github.com/realvizu/NsDepCop/milestones) for planned releases.
 * See the [**Old Versions**](doc/Versions.md).
 
