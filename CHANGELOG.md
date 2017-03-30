@@ -25,7 +25,7 @@
 * To upgrade please uninstall the previous version first. 
   * Your existing config.nsdepcop files will be preserved.
 * Then install the new version. 
-  * Recommended: change to per-project MSBuild integration. See [Readme.md](Readme.md) for details.
+  * Recommended: change to per-project MSBuild integration. See [README.md](README.md) for details.
   
 
 ## v1.5
