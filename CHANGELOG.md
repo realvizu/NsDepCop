@@ -25,8 +25,8 @@
 * To upgrade please uninstall the previous version first. 
   * Your existing config.nsdepcop files will be preserved.
 * Then install the new version. 
-  * Recommended: change to per-project MSBuild integration. See [README.md](README.md) for details.
-  
+  * Recommended: change to per-project MSBuild integration with NuGet. See [README.md](README.md) for details.
+  * Please note that if you don't uninstall the previous version then its machine-wide MSBuild integration will override the per-project integration provided by the NuGet package and the old analyzer version will run at build time.
 
 ## v1.5
 (06/2016)
