@@ -1,6 +1,11 @@
 # NsDepCop Change Log
 
-## v1.6
+## v1.6.1
+(04/2017)
+
+- [x] Fix: Type without a name caused exception in analyzer.
+
+## v1.6.0
 (03/2017)
 
 - [x] New: NuGet package.
