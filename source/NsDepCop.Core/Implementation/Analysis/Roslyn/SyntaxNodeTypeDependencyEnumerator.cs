@@ -52,7 +52,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
         {
             return typeSymbol?.ContainingNamespace != null
                 && !typeSymbol.IsAnonymousType
-                && DeclarationTypeKinds.Contains(typeSymbol.TypeKind);
+                && DeclarationTypeKinds.Contains(typeSymbol.TypeKind)
+                && !string.IsNullOrWhiteSpace(typeSymbol.MetadataName);
         }
 
         private static IEnumerable<ITypeSymbol> GetConstituentTypes(ITypeSymbol typeSymbol, SyntaxNode syntaxNode)
