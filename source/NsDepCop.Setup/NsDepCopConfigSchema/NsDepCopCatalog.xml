@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<SchemaCatalog xmlns="http://schemas.microsoft.com/xsd/catalog">
-  <Association extension="nsdepcop" schema="%InstallRoot%/xml/schemas/NsDepCopConfig.xsd" />
-</SchemaCatalog>
