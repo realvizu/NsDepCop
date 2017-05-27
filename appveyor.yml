@@ -1,4 +1,4 @@
-image: Visual Studio 2015
+image: Visual Studio 2017
 
 environment:
   shortversion: '1.7.0'
@@ -21,6 +21,7 @@ assembly_info:
 before_build:
 # vsixmanifest file must be specified with full path.
 - ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.VisualStudioIntegration.Vs2015\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
+- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.VisualStudioIntegration.Vs2017\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
 - cmd: nuget restore -Verbosity quiet source\NsDepCop.sln
 
 build:
@@ -31,6 +32,5 @@ test:
   assemblies: '**\*Test.dll'
 
 artifacts:
-- path: 'source\NsDepCop.Setup\bin\$(configuration)\en-us\NsDepCop.msi'
-- path: 'source\NsDepCop.VisualStudioIntegration.Vs2015\bin\$(configuration)\NsDepCop_Vs2015.vsix'
+- path: 'source\NsDepCop.VisualStudioIntegration.Vs2017\bin\$(configuration)\NsDepCop.vsix'
 - path: 'source\NsDepCop.NuGet\bin\$(configuration)\NsDepCop*.nupkg'
