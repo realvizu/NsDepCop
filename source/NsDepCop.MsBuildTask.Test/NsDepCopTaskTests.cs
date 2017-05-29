@@ -688,5 +688,37 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 },
             });
         }
+
+        [TestMethod]
+        public void Execute_DepViolation_Cs7_Out()
+        {
+            const string sourceFileName = "DepViolation_Cs7_Out.cs";
+            ExecuteTest(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_DepViolation_Cs7_Out",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    CreateLogEntryParameters(sourceFileName, 9, 45, 9, 51),
+                },
+            });
+        }
+
+        [TestMethod]
+        public void Execute_DepViolation_Cs7_Tuples()
+        {
+            const string sourceFileName = "DepViolation_Cs7_Tuples.cs";
+            ExecuteTest(new TestCaseSpecification
+            {
+                TestFilesFolderName = "TestFiles_DepViolation_Cs7_Tuples",
+                SourceFileNames = new[] { sourceFileName },
+                ExpectedLogEntries = new[]
+                {
+                    CreateLogEntryParameters(sourceFileName, 9, 14, 9, 17),
+                    CreateLogEntryParameters(sourceFileName, 9, 21, 9, 24),
+                    CreateLogEntryParameters(sourceFileName, 9, 30, 9, 36),
+                },
+            });
+        }
     }
 }
