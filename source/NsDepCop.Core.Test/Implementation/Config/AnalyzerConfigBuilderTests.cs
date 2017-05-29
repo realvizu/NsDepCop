@@ -2,14 +2,13 @@
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Config;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 {
-    [TestClass]
     public class AnalyzerConfigBuilderTests
     {
-        [TestMethod]
+        [Fact]
         public void ToAnalyzerConfig_AppliesDefaults()
         {
             var config = new AnalyzerConfigBuilder().ToAnalyzerConfig();
@@ -21,7 +20,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             config.MaxIssueCount.Should().Be(ConfigDefaults.MaxIssueCount);
         }
 
-        [TestMethod]
+        [Fact]
         public void SetMethods_WithNonNullValues_OverwriteProperties()
         {
             var configBuilder = new AnalyzerConfigBuilder()
@@ -40,7 +39,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder.MaxIssueCount.Should().Be(42);
         }
 
-        [TestMethod]
+        [Fact]
         public void SetMethods_WithNullValues_DoNotOverwriteProperties()
         {
             var configBuilder = new AnalyzerConfigBuilder()
@@ -67,7 +66,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder.MaxIssueCount.Should().Be(42);
         }
 
-        [TestMethod]
+        [Fact]
         public void AddAllowRule_Works()
         {
             var configBuilder = new AnalyzerConfigBuilder()
@@ -87,7 +86,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
                 });
         }
 
-        [TestMethod]
+        [Fact]
         public void AddDisallowRule_Works()
         {
             var configBuilder = new AnalyzerConfigBuilder()
@@ -107,7 +106,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
                 });
         }
 
-        [TestMethod]
+        [Fact]
         public void AddVisibleTypesByNamespace_Works()
         {
             var configBuilder = new AnalyzerConfigBuilder()
@@ -127,7 +126,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
                 });
         }
 
-        [TestMethod]
+        [Fact]
         public void Combine_EmptyWithEmpty()
         {
             var configBuilder1 = new AnalyzerConfigBuilder();
@@ -145,7 +144,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder1.MaxIssueCount.Should().BeNull();
         }
 
-        [TestMethod]
+        [Fact]
         public void Combine_NonEmptyWithEmpty()
         {
             var configBuilder1 = new AnalyzerConfigBuilder()
@@ -172,7 +171,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder1.MaxIssueCount.Should().Be(42);
         }
 
-        [TestMethod]
+        [Fact]
         public void Combine_EmptyWithNonEmpty()
         {
             var configBuilder1 = new AnalyzerConfigBuilder();
@@ -199,7 +198,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder1.MaxIssueCount.Should().Be(42);
         }
 
-        [TestMethod]
+        [Fact]
         public void Combine_NonEmptyWithNonEmpty()
         {
             var configBuilder1 = new AnalyzerConfigBuilder()

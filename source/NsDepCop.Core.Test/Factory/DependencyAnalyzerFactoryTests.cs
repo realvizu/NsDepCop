@@ -2,14 +2,13 @@
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Factory
 {
-    [TestClass]
     public class DependencyAnalyzerFactoryTests : FileBasedTestsBase
     {
-        [TestMethod]
+        [Fact]
         public void CreateFromXmlConfigFile_Enabled()
         {
             var configFilePath = GetTestFilePath("config.nsdepcop");
@@ -18,7 +17,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
             dependencyAnalyzer.Config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateFromXmlConfigFile_EnabledWithDefaultInfoImportance()
         {
             var configFilePath = GetTestFilePath("config.nsdepcop");
@@ -27,7 +26,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
             dependencyAnalyzer.Config.InfoImportance.Should().Be(Importance.High);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateFromMultiLevelXmlConfigFile_Enabled()
         {
             var configFilePath = GetTestFilePath("");
@@ -36,7 +35,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
             dependencyAnalyzer.Config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateFromMultiLevelXmlConfigFile_EnabledWithDefaultInfoImportance()
         {
             var configFilePath = GetTestFilePath("");
@@ -45,10 +44,6 @@ namespace Codartis.NsDepCop.Core.Test.Factory
             dependencyAnalyzer.Config.InfoImportance.Should().Be(Importance.High);
         }
 
-        private static DependencyAnalyzerFactory CreateDependencyAnalyzerFactory()
-        {
-            return new DependencyAnalyzerFactory();
-        }
-
+        private static DependencyAnalyzerFactory CreateDependencyAnalyzerFactory() => new DependencyAnalyzerFactory();
     }
 }

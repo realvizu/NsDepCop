@@ -1,13 +1,12 @@
 ﻿using Codartis.NsDepCop.Core.Implementation.Analysis;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
 {
-    [TestClass]
     public class TypeDependencyValidatorTests
     {
-        [TestMethod]
+        [Fact]
         public void NoRule_SameNamespaceIsAlwaysAllowed()
         {
             var ruleConfig = new DependencyRulesBuilder();
@@ -16,7 +15,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("N", "C1", "N", "C2").Should().BeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void NoRule_EverythingIsDisallowed_ExceptSameNamespace()
         {
             var ruleConfig = new DependencyRulesBuilder();
@@ -25,7 +24,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("N1", "C1", "N2", "C2").Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void AllowRule()
         {
             var ruleConfig = new DependencyRulesBuilder()
@@ -37,7 +36,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void AllowRule_WithSubnamespace()
         {
             var ruleConfig = new DependencyRulesBuilder()
@@ -51,7 +50,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void AllowRule_WithAnyNamespace()
         {
             var ruleConfig = new DependencyRulesBuilder()
@@ -63,7 +62,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").Should().BeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void AllowRuleWithVisibleMembers_AffectsOnlyAllowRuleSource()
         {
             var ruleConfig = new DependencyRulesBuilder()
@@ -80,7 +79,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("S2", "C", "T", "C3").Should().BeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void AllowRule_GlobalVisibleMembers_AffectsAllRuleSources()
         {
             var ruleConfig = new DependencyRulesBuilder()
@@ -98,7 +97,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("S2", "C", "T", "C3").Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void DisallowRule()
         {
             var ruleConfig = new DependencyRulesBuilder()
@@ -108,7 +107,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("S", "C", "T", "C1").Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void DisallowRule_StrongerThanAllowRule()
         {
             var ruleConfig = new DependencyRulesBuilder()
@@ -119,7 +118,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("S", "C", "T", "C1").Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void ChildCanDependOnParentImplicitly()
         {
             var ruleConfig = new DependencyRulesBuilder()
@@ -130,7 +129,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("N1", "C", "N1.N2", "C1").Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void ChildCanDependOnParentImplicitly_ButDisallowWins()
         {
             var ruleConfig = new DependencyRulesBuilder()
@@ -142,7 +141,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("N1", "C", "N1.N2", "C1").Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void ChildCanDependOnParentImplicitly_ButDisallowWins_WithWildcard()
         {
             var ruleConfig = new DependencyRulesBuilder()

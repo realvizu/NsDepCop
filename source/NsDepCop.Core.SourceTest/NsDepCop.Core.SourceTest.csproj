@@ -1,17 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0FB37BF6-7E56-4974-829D-917AB6207257}</ProjectGuid>
+    <ProjectGuid>{F6554236-1D67-4343-816A-F145F7750526}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NsDepCop.NuGet</RootNamespace>
-    <AssemblyName>NsDepCop.NuGet</AssemblyName>
+    <RootNamespace>Codartis.NsDepCop.Core.SourceTest</RootNamespace>
+    <AssemblyName>NsDepCop.Core.SourceTest</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -47,31 +48,16 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="SourceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NsDepCop.MsBuildTask\NsDepCop.MsBuildTask.csproj">
-      <Project>{2acfcacc-fc7d-4192-9b9f-c916784d93b3}</Project>
-      <Name>NsDepCop.MsBuildTask</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\NsDepCop.ItemTemplate\config.nsdepcop">
-      <Link>config.nsdepcop</Link>
+    <Content Include="AliasQualifiedName\AliasQualifiedName.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="NsDepCop.NuGet.nuspec" />
-    <None Include="NsDepCop.targets" />
-    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AliasQualifiedName\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <Target Name="NuGetPack" AfterTargets="AfterBuild">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="..\packages\NuGet.CommandLine.3.5.0\tools\nuget.exe pack $(MSBuildProjectFullPath) -tool -outputdirectory $(OutDir)" />
-  </Target>
 </Project>

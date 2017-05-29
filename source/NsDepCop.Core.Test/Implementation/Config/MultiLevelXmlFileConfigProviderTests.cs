@@ -5,14 +5,13 @@ using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Config;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 {
-    [TestClass]
     public class MultiLevelXmlFileConfigProviderTests : XmlFileConfigTestBase
     {
-        [TestMethod]
+        [Fact]
         public void Rules_Merged()
         {
             var folder = GetTestFilePath(@"Rules_Merged\Level2\Level1");
@@ -27,7 +26,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             allowedRules.Keys.Should().Contain(new NamespaceDependencyRule("N3", "N4"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Attributes_LowerLevelWins()
         {
             var folder = GetTestFilePath(@"Attributes_LowerLevelWins\Level2\Level1");
@@ -35,7 +34,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.IssueKind.Should().Be(IssueKind.Info);
         }
 
-        [TestMethod]
+        [Fact]
         public void Attributes_MissingDoesNotOverwrite()
         {
             var folder = GetTestFilePath(@"Attributes_MissingDoesNotOverwrite\Level2\Level1");
@@ -43,7 +42,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.IssueKind.Should().Be(IssueKind.Error);
         }
 
-        [TestMethod]
+        [Fact]
         public void Properties_ConfigNotFound()
         {
             var path = GetTestFilePath(@"NoConfig\Level2\Level1");
@@ -53,7 +52,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.Should().BeNull();
         }
 
-        [TestMethod]
+        [Fact]
         public void Properties_ConfigError()
         {
             var path = GetTestFilePath(@"ConfigError\Level2\Level1");
@@ -63,7 +62,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.Should().BeNull();
         }
 
-        [TestMethod]
+        [Fact]
         public void Properties_ConfigEnabled()
         {
             var path = GetTestFilePath(@"ConfigEnabled\Level2\Level1");
@@ -73,7 +72,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Fact]
         public void Properties_ConfigDisabledAtProjectLevel_EffectiveDisabled()
         {
             var path = GetTestFilePath(@"ConfigDisabledAtProjectLevel\Level2\Level1");
@@ -83,7 +82,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.Should().BeNull();
         }
 
-        [TestMethod]
+        [Fact]
         public void Properties_ConfigDisabledAtHigherLevelAndUndefinedAtProjectLevel_EffectiveDisabled()
         {
             var path = GetTestFilePath(@"ConfigDisabledAtHigherLevelAndUndefinedAtProjectLevel\Level2\Level1");
@@ -93,7 +92,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.Should().BeNull();
         }
 
-        [TestMethod]
+        [Fact]
         public void Properties_ConfigDisabledAtHigherLevelButEnabledAtProjectLevel_DisabledConfigNotCombinedToEffective()
         {
             var path = GetTestFilePath(@"ConfigDisabledAtHigherLevelButEnabledAtProjectLevel\Level2\Level1");
@@ -103,7 +102,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.IssueKind.Should().Be(ConfigDefaults.IssueKind);
         }
 
-        [TestMethod]
+        [Fact]
         public void DefaultInfoImportance()
         {
             {
@@ -118,7 +117,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void RefreshConfig_Unchanged()
         {
             var path = GetTestFilePath(@"ConfigEnabled\Level2\Level1");
@@ -132,7 +131,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.Should().Be(savedConfig);
         }
 
-        [TestMethod]
+        [Fact]
         public void RefreshConfig_EnabledToEnabledButChanged()
         {
             var path = GetTestFilePath(@"RefreshConfig_EnabledToEnabledButChanged\Level2\Level1");
@@ -154,7 +153,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.MaxIssueCount.Should().Be(2);
         }
 
-        [TestMethod]
+        [Fact]
         public void RefreshConfig_EnabledToDisabled()
         {
             var path = GetTestFilePath(@"RefreshConfig_EnabledToDisabled\Level2\Level1");
@@ -171,7 +170,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Disabled);
         }
 
-        [TestMethod]
+        [Fact]
         public void RefreshConfig_EnabledToConfigError()
         {
             var path = GetTestFilePath(@"RefreshConfig_EnabledToConfigError\Level2\Level1");
@@ -188,7 +187,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.ConfigError);
         }
 
-        [TestMethod]
+        [Fact]
         public void RefreshConfig_NoConfigToEnabled()
         {
             var path = GetTestFilePath(@"RefreshConfig_NoConfigToEnabled\Level2\Level1");
@@ -204,7 +203,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
         }
 
-        [TestMethod]
+        [Fact]
         public void RefreshConfig_EnabledToNoConfig()
         {
             var path = GetTestFilePath(@"RefreshConfig_EnabledToNoConfig\Level2\Level1");
@@ -221,7 +220,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.NoConfig);
         }
 
-        [TestMethod]
+        [Fact]
         public void RefreshConfig_InheritanceDepthChangedFrom0To2()
         {
             var path = GetTestFilePath(@"RefreshConfig_InheritanceDepthChanged\Level2\Level1");
@@ -240,7 +239,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.MaxIssueCount.Should().Be(42);
         }
 
-        [TestMethod]
+        [Fact]
         public void RefreshConfig_InheritanceDepthChangedFrom2To0()
         {
             var path = GetTestFilePath(@"RefreshConfig_InheritanceDepthChanged\Level2\Level1");

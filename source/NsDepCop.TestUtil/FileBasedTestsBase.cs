@@ -12,7 +12,9 @@ namespace Codartis.NsDepCop.TestUtil
     {
         protected string GetTestFilePath(string filename)
         {
-            var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var codeBaseUri = new Uri(Assembly.GetExecutingAssembly().CodeBase);
+            var codeBasePath = Uri.UnescapeDataString(codeBaseUri.AbsolutePath);
+            var assemblyDirectory = Path.GetDirectoryName(codeBasePath);
             Assert.IsNotNull(assemblyDirectory);
 
             var namespacePrefix = $"Codartis.{this.GetType().Assembly.GetName().Name}";

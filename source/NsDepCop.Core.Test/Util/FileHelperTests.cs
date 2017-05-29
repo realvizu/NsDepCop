@@ -3,28 +3,27 @@ using System.Linq;
 using Codartis.NsDepCop.Core.Util;
 using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Util
 {
-    [TestClass]
     public class FileHelperTests : FileBasedTestsBase
     {
-        [TestMethod]
+        [Fact]
         public void GetFolderPaths_MaxLevelsIsZero_ThrowsArgumentException()
         {
             Action a = () => FileHelper.GetFolderPaths(GetTestFilePath("whatever"), 0).ToList();
             a.ShouldThrow<ArgumentException>().WithMessage("*must be > 0*");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetFolderPaths_NonExistingFolder_ThrowsArgumentException()
         {
             Action a = () => FileHelper.GetFolderPaths(GetTestFilePath(@"NoSuchFolder"), 3).ToList();
             a.ShouldThrow<ArgumentException>().WithMessage("*Starting folder does not exist*");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetFolderPaths_Works()
         {
             var folderPaths = FileHelper.GetFolderPaths(GetTestFilePath(@"Level3\Level2\Level1"), 3).ToList();
@@ -34,7 +33,7 @@ namespace Codartis.NsDepCop.Core.Test.Util
             folderPaths.Should().Contain(i => i.EndsWith(@"Level3"));
         }
 
-        [TestMethod]
+        [Fact]
         public void GetFilenameWithFolderPaths_Works()
         {
             var folderPaths = FileHelper.GetFilenameWithFolderPaths("a.txt", GetTestFilePath(@"Level3\Level2\Level1"), 3).ToList();
@@ -44,7 +43,7 @@ namespace Codartis.NsDepCop.Core.Test.Util
             folderPaths.Should().Contain(i => i.EndsWith(@"Level3\a.txt"));
         }
 
-        [TestMethod]
+        [Fact]
         public void FindInParentFolders_Max1Level()
         {
             var filePaths = FileHelper.FindInParentFolders("test.txt", GetTestFilePath(@"Level3\Level2\Level1"), 1).ToList();
@@ -52,7 +51,7 @@ namespace Codartis.NsDepCop.Core.Test.Util
             filePaths.Should().Contain(i => i.EndsWith(@"Level3\Level2\Level1\test.txt"));
         }
 
-        [TestMethod]
+        [Fact]
         public void FindInParentFolders_Max3Levels()
         {
             var filePaths = FileHelper.FindInParentFolders("test.txt", GetTestFilePath(@"Level3\Level2\Level1"), 3).ToList();

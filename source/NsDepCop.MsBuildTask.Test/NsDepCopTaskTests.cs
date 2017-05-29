@@ -699,12 +699,12 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 SourceFileNames = new[] { sourceFileName },
                 ExpectedLogEntries = new[]
                 {
-                    CreateLogEntryParameters(sourceFileName, 9, 45, 9, 51),
+                    CreateLogEntryParameters(sourceFileName, 11, 45, 11, 51),
                 },
             });
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         public void Execute_DepViolation_Cs7_Tuples()
         {
             const string sourceFileName = "DepViolation_Cs7_Tuples.cs";
@@ -712,6 +712,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             {
                 TestFilesFolderName = "TestFiles_DepViolation_Cs7_Tuples",
                 SourceFileNames = new[] { sourceFileName },
+                ReferencedFilePaths = new[] { "System.ValueTuple.dll" },
                 ExpectedLogEntries = new[]
                 {
                     CreateLogEntryParameters(sourceFileName, 9, 14, 9, 17),

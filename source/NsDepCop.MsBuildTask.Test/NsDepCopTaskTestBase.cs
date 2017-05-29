@@ -25,11 +25,11 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         /// Creates a collection of full path filenames from the given filenames and a base directory.
         /// </summary>
         /// <param name="baseDirecytory">A directory.</param>
-        /// <param name="sourceFileNames">A collection of filenames (without full path).</param>
+        /// <param name="fileNames">A collection of filenames (without full path).</param>
         /// <returns>A collection of full path filenames.</returns>
-        protected static IEnumerable<string> CreateFullPathFileNames(string baseDirecytory, IEnumerable<string> sourceFileNames)
+        protected static IEnumerable<string> CreateFullPathFileNames(string baseDirecytory, IEnumerable<string> fileNames)
         {
-            return sourceFileNames.EmptyIfNull().Select(i => FileNameToFullPath(baseDirecytory, i));
+            return fileNames.EmptyIfNull().Select(i => FileNameToFullPath(baseDirecytory, i));
         }
 
         /// <summary>

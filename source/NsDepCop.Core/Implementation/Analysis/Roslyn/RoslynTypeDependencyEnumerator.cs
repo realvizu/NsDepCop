@@ -27,7 +27,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
         {
             var referencedAssemblies = referencedAssemblyPaths.Select(LoadMetadata).Where(i => i != null).ToList();
             var syntaxTrees = sourceFilePaths.Select(ParseFile).Where(i => i != null).ToList();
-            var compilation = CSharpCompilation.Create("NsDepCopProject", syntaxTrees, referencedAssemblies);
+            var compilation = CSharpCompilation.Create("NsDepCopProject", syntaxTrees, referencedAssemblies, 
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             foreach (var syntaxTree in syntaxTrees)
             {
