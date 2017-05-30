@@ -24,7 +24,7 @@ namespace Codartis.NsDepCop.Core.SourceTest
 
         public static SourceTestSpecification Create([CallerMemberName] string name = null) => new SourceTestSpecification(name);
 
-        public SourceTestSpecification ExpectEnvalidSegment(int line, int startColumn, int endColumn)
+        public SourceTestSpecification ExpectInvalidSegment(int line, int startColumn, int endColumn)
         {
             _invalidLineSegments.Add(new SourceLineSegment(line, startColumn, endColumn));
             return this;
@@ -45,7 +45,7 @@ namespace Codartis.NsDepCop.Core.SourceTest
                 "NsDepCopProject",
                 sourceFiles.Select(i => CSharpSyntaxTree.ParseText(LoadFile(i))),
                 referencedAssemblies.Select(i => MetadataReference.CreateFromFile(i)),
-                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, allowUnsafe: true));
 
             var errors = compilation.GetDiagnostics().Where(i => i.Severity == DiagnosticSeverity.Error).ToList();
             errors.Should().HaveCount(0);
@@ -80,6 +80,7 @@ namespace Codartis.NsDepCop.Core.SourceTest
             {
                 // mscorlib
                 GetAssemblyPath(typeof(object).Assembly),
+                GetAssemblyPath(typeof(ValueTuple).Assembly),
             };
         }
     }

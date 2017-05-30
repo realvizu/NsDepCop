@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NsDepCopConfig>
-    <Allowed From="A" To="B" />
-    <Allowed From="B" To="C" />
+    <Allowed From="*" To="System" />
 </NsDepCopConfig>
