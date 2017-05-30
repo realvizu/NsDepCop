@@ -7,7 +7,19 @@ namespace Codartis.NsDepCop.Core.SourceTest
         [Fact]
         public void AliasQualifiedName()
         {
-            SourceTestSpecification.Create(nameof(AliasQualifiedName)).ExpectEnvalidSegment(7, 25, 31).Execute();
+            SourceTestSpecification.Create()
+                .ExpectEnvalidSegment(7, 25, 31)
+                .Execute();
+        }
+
+        [Fact]
+        public void ArrayType()
+        {
+            SourceTestSpecification.Create()
+                .ExpectEnvalidSegment(7, 19, 25)
+                .ExpectEnvalidSegment(11, 20, 27)
+                .ExpectEnvalidSegment(12, 20, 27)
+                .Execute();
         }
     }
 }

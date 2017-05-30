@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.TestUtil;
@@ -21,7 +22,7 @@ namespace Codartis.NsDepCop.Core.SourceTest
             _name = name;
         }
 
-        public static SourceTestSpecification Create(string name) => new SourceTestSpecification(name);
+        public static SourceTestSpecification Create([CallerMemberName] string name = null) => new SourceTestSpecification(name);
 
         public SourceTestSpecification ExpectEnvalidSegment(int line, int startColumn, int endColumn)
         {
@@ -55,10 +56,9 @@ namespace Codartis.NsDepCop.Core.SourceTest
             var baseFolder = GetBinFilePath(_name);
             var illegalDependencies = GetIllegalDependencies(baseFolder, sourceFiles, referencedAssemblies).ToList();
 
-            illegalDependencies.Should().HaveCount(_invalidLineSegments.Count);
-
-            foreach (var illegalDependency in illegalDependencies)
-                _invalidLineSegments.Should().Contain(i => i.Equals(illegalDependency.SourceSegment));
+            illegalDependencies.Select(i => i.SourceSegment)
+                .Should().Equal(_invalidLineSegments,
+                (typeDependency, sourceLineSegment) => sourceLineSegment.Equals(typeDependency));
         }
 
         private static IEnumerable<TypeDependency> GetIllegalDependencies(string baseFolder,

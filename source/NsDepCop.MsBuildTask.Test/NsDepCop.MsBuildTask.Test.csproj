@@ -163,16 +163,10 @@
     <Content Include="TestFiles_DepViolation_QualifiedName\DepViolation_QualifiedName.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_DepViolation_AliasQualifiedName\DepViolation_AliasQualifiedName.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="TestFiles_DepViolation_MemberAccessExpression\DepViolation_MemberAccessExpression.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles_DepViolation_GenericTypeArgument\DepViolation_GenericTypeArgument.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestFiles_DepViolation_ArrayType\DepViolation_ArrayType.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestFiles_DepViolation_NullableType\DepViolation_NullableType.cs">
@@ -311,22 +305,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_DepViolation_AliasQualifiedName\config.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="TestFiles_DepViolation_MemberAccessExpression\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestFiles_DepViolation_GenericTypeArgument\config.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="TestFiles_DepViolation_ArrayType\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

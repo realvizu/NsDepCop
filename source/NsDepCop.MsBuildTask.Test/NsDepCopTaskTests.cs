@@ -213,21 +213,6 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [TestMethod]
-        public void Execute_DepViolation_AliasQualifiedName()
-        {
-            const string sourceFileName = "DepViolation_AliasQualifiedName.cs";
-            ExecuteTest(new TestCaseSpecification
-            {
-                TestFilesFolderName = "TestFiles_DepViolation_AliasQualifiedName",
-                SourceFileNames = new[] { sourceFileName },
-                ExpectedLogEntries = new[]
-                {
-                    CreateLogEntryParameters(sourceFileName, 7, 25, 7, 31)
-                },
-            });
-        }
-
-        [TestMethod]
         public void Execute_DepViolation_InvocationExpression()
         {
             const string sourceFileName = "DepViolation_InvocationExpression.cs";
@@ -346,23 +331,6 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                     CreateLogEntryParameters(sourceFileName, 7, 26, 7, 36),
                     CreateLogEntryParameters(sourceFileName, 8, 19, 8, 27),
                     CreateLogEntryParameters(sourceFileName, 8, 28, 8, 38)
-                },
-            });
-        }
-
-        [TestMethod]
-        public void Execute_DepViolation_ArrayType()
-        {
-            const string sourceFileName = "DepViolation_ArrayType.cs";
-            ExecuteTest(new TestCaseSpecification
-            {
-                TestFilesFolderName = "TestFiles_DepViolation_ArrayType",
-                SourceFileNames = new[] { sourceFileName },
-                ExpectedLogEntries = new[]
-                {
-                    CreateLogEntryParameters(sourceFileName, 7, 19, 7, 25),
-                    CreateLogEntryParameters(sourceFileName, 11, 20, 11, 27),
-                    CreateLogEntryParameters(sourceFileName, 12, 20, 12, 27),
                 },
             });
         }

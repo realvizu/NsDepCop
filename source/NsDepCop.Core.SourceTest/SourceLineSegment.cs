@@ -22,5 +22,7 @@ namespace Codartis.NsDepCop.Core.SourceTest
                 && StartColumn == sourceSegment.StartColumn
                 && EndColumn == sourceSegment.EndColumn;
         }
+
+        public override string ToString() => $"({Line},{StartColumn}-{EndColumn})";
     }
 }
