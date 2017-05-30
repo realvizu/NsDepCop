@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Codartis.NsDepCop.TestUtil
 {
@@ -10,18 +9,40 @@ namespace Codartis.NsDepCop.TestUtil
     /// </summary>
     public abstract class FileBasedTestsBase
     {
-        protected string GetTestFilePath(string filename)
-        {
-            var codeBaseUri = new Uri(Assembly.GetExecutingAssembly().CodeBase);
-            var codeBasePath = Uri.UnescapeDataString(codeBaseUri.AbsolutePath);
-            var assemblyDirectory = Path.GetDirectoryName(codeBasePath);
-            Assert.IsNotNull(assemblyDirectory);
+        protected static string GetExecutingAssemblyDirectory() => GetAssemblyDirectory(Assembly.GetExecutingAssembly());
 
+        protected static string GetAssemblyPath(Assembly assembly)
+        {
+            var codeBaseUri = new Uri(assembly.CodeBase);
+            return Uri.UnescapeDataString(codeBaseUri.AbsolutePath);
+        }
+
+        protected static string GetAssemblyDirectory(Assembly assembly)
+        {
+            var assemblyPath = GetAssemblyPath(assembly);
+            return Path.GetDirectoryName(assemblyPath);
+        }
+
+        protected static string GetBinFilePath(string filename)
+        {
+            return Path.Combine(GetExecutingAssemblyDirectory(), filename);
+        }
+
+        protected string GetFilePathInTestClassFolder(string filename)
+        {
             var namespacePrefix = $"Codartis.{this.GetType().Assembly.GetName().Name}";
             var namespacePostfix = GetType().FullName.Remove(0, namespacePrefix.Length + 1).Replace('.', '\\');
 
-            var path = Path.Combine(assemblyDirectory, namespacePostfix, filename);
-            return path;
+            return GetBinFilePath(Path.Combine(namespacePostfix, filename));
+        }
+
+        protected string LoadFile(string fullPath)
+        {
+            using (var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var streamReader = new StreamReader(stream))
+            {
+                return streamReader.ReadToEnd();
+            }
         }
 
         protected static void Rename(string fromFilename, string toFilename)

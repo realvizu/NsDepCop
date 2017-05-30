@@ -12,7 +12,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         [Fact]
         public void Properties_ConfigNotFound()
         {
-            var path = GetTestFilePath("NonExisting.nsdepcop");
+            var path = GetFilePathInTestClassFolder("NonExisting.nsdepcop");
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.NoConfig);
             configProvider.ConfigException.Should().BeNull();
@@ -22,7 +22,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         [Fact]
         public void Properties_ConfigEnabled()
         {
-            var path = GetTestFilePath("Enabled.nsdepcop");
+            var path = GetFilePathInTestClassFolder("Enabled.nsdepcop");
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             configProvider.ConfigException.Should().BeNull();
@@ -32,7 +32,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         [Fact]
         public void Properties_ConfigDisabled()
         {
-            var path = GetTestFilePath("Disabled.nsdepcop");
+            var path = GetFilePathInTestClassFolder("Disabled.nsdepcop");
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Disabled);
             configProvider.ConfigException.Should().BeNull();
@@ -42,7 +42,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         [Fact]
         public void Properties_ConfigError()
         {
-            var path = GetTestFilePath("Erronous.nsdepcop");
+            var path = GetFilePathInTestClassFolder("Erronous.nsdepcop");
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.ConfigError);
             configProvider.ConfigException.Should().NotBeNull();
@@ -52,7 +52,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         [Fact]
         public void RefreshConfig_Unchanged()
         {
-            var path = GetTestFilePath("Enabled.nsdepcop");
+            var path = GetFilePathInTestClassFolder("Enabled.nsdepcop");
 
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
@@ -66,7 +66,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         [Fact]
         public void RefreshConfig_EnabledToDisabled()
         {
-            var path = GetTestFilePath("RefreshConfig_EnabledToDisabled.nsdepcop");
+            var path = GetFilePathInTestClassFolder("RefreshConfig_EnabledToDisabled.nsdepcop");
 
             SetAttribute(path, "IsEnabled", "true");
 
@@ -83,7 +83,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         [Fact]
         public void RefreshConfig_EnabledToConfigError()
         {
-            var path = GetTestFilePath("RefreshConfig_EnabledToConfigError.nsdepcop");
+            var path = GetFilePathInTestClassFolder("RefreshConfig_EnabledToConfigError.nsdepcop");
 
             SetAttribute(path, "IsEnabled", "true");
 
@@ -100,7 +100,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         [Fact]
         public void RefreshConfig_NoConfigToEnabled()
         {
-            var path = GetTestFilePath("RefreshConfig_NoConfigToEnabled.nsdepcop");
+            var path = GetFilePathInTestClassFolder("RefreshConfig_NoConfigToEnabled.nsdepcop");
 
             Delete(path);
 
@@ -116,7 +116,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         [Fact]
         public void RefreshConfig_EnabledToNoConfig()
         {
-            var path = GetTestFilePath("RefreshConfig_EnabledToNoConfig.nsdepcop");
+            var path = GetFilePathInTestClassFolder("RefreshConfig_EnabledToNoConfig.nsdepcop");
 
             Delete(path);
             CreateConfigFile(path, "true");

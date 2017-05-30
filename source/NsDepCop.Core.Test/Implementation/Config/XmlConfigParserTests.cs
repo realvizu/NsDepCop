@@ -168,7 +168,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 
         private XDocument LoadXml(string filename)
         {
-            var path = GetTestFilePath(filename);
+            var path = GetFilePathInTestClassFolder(filename);
             return XDocument.Load(path);
         }
     }

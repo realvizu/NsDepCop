@@ -11,7 +11,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         [Fact]
         public void CreateFromXmlConfigFile_Enabled()
         {
-            var configFilePath = GetTestFilePath("config.nsdepcop");
+            var configFilePath = GetFilePathInTestClassFolder("config.nsdepcop");
             var dependencyAnalyzer = CreateDependencyAnalyzerFactory().CreateFromXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
@@ -20,7 +20,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         [Fact]
         public void CreateFromXmlConfigFile_EnabledWithDefaultInfoImportance()
         {
-            var configFilePath = GetTestFilePath("config.nsdepcop");
+            var configFilePath = GetFilePathInTestClassFolder("config.nsdepcop");
             var dependencyAnalyzer = CreateDependencyAnalyzerFactory().SetDefaultInfoImportance(Importance.High).CreateFromXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.InfoImportance.Should().Be(Importance.High);
@@ -29,7 +29,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         [Fact]
         public void CreateFromMultiLevelXmlConfigFile_Enabled()
         {
-            var configFilePath = GetTestFilePath("");
+            var configFilePath = GetFilePathInTestClassFolder("");
             var dependencyAnalyzer = CreateDependencyAnalyzerFactory().CreateFromMultiLevelXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
@@ -38,7 +38,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         [Fact]
         public void CreateFromMultiLevelXmlConfigFile_EnabledWithDefaultInfoImportance()
         {
-            var configFilePath = GetTestFilePath("");
+            var configFilePath = GetFilePathInTestClassFolder("");
             var dependencyAnalyzer = CreateDependencyAnalyzerFactory().SetDefaultInfoImportance(Importance.High).CreateFromMultiLevelXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.InfoImportance.Should().Be(Importance.High);
