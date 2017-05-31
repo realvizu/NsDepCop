@@ -76,18 +76,10 @@ namespace Codartis.NsDepCop.Core.SourceTest
 
         private static IEnumerable<string> GetReferencedAssemblyPaths()
         {
-            var valueTuplePath = GetAssemblyPath(typeof(ValueTuple).Assembly);
-            var systemRuntimePath = Path.Combine(Path.GetDirectoryName(valueTuplePath), "System.Runtime.dll");
-
             return new[]
             {
                 // mscorlib
-                //GetAssemblyPath(typeof(object).Assembly),
-
-                @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\mscorlib.dll",
-
-                valueTuplePath,
-                systemRuntimePath
+                GetAssemblyPath(typeof(object).Assembly),
             };
         }
     }
