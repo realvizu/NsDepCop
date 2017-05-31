@@ -156,7 +156,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
         private static ITypeSymbol DetermineReferencedType(SyntaxNode node, SemanticModel semanticModel)
         {
             var typeSymbol = semanticModel.GetTypeInfo(node).Type;
-            if (typeSymbol != null)
+            if (typeSymbol != null && typeSymbol.TypeKind != TypeKind.Error)
                 return typeSymbol;
 
             // Special case (or Roslyn bug?): 

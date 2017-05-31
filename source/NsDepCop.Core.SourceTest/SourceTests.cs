@@ -295,7 +295,7 @@ namespace Codartis.NsDepCop.Core.SourceTest
                 .Execute();
         }
 
-        [Fact(Skip = "error CS8179: Predefined type 'System.ValueTuple`2' is not defined or imported")]
+        [Fact]
         public void Cs7_Tuples()
         {
             SourceTestSpecification.Create()

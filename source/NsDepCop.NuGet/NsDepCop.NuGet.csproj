@@ -59,6 +59,7 @@
     <Content Include="..\NsDepCop.ItemTemplate\config.nsdepcop">
       <Link>config.nsdepcop</Link>
     </Content>
+    <None Include="app.config" />
     <None Include="NsDepCop.NuGet.nuspec" />
     <None Include="NsDepCop.targets" />
     <None Include="packages.config" />
