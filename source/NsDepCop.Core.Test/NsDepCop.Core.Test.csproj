@@ -238,9 +238,7 @@
     <None Include="Implementation\Config\XmlFileConfigProviderTests\Enabled.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Implementation\Config\XmlConfigParserTests\AllowedRules.nsdepcop">
