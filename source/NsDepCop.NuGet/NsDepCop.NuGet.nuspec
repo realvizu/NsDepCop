@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-    <metadata minClientVersion="2.5">
+    <metadata minClientVersion="3.3">
         <id>NsDepCop</id>
-        <version>$version$</version>
+        <version>1.0.0-local</version>
         <title>NsDepCop - Namespace Dependency Checker Tool for C#</title>
         <summary>Static code analysis tool to enforce namespace dependency rules in C# projects.</summary>
         <description>
-NsDepCop helps you to eliminate unintended or unnoticed code dependencies in your application. 
-Add the NuGet package to your C# projects and specify the dependency rules in the config.nsdepcop files. 
-The dependency analyzer will be run automatically on every build. 
-See project site for details (https://github.com/realvizu/NsDepCop).
+            NsDepCop helps you to eliminate unintended or unnoticed code dependencies in your application.
+            Add the NuGet package to your C# projects and specify the dependency rules in the config.nsdepcop files.
+            The dependency analyzer will be run automatically on every build.
+            See project site for details (https://github.com/realvizu/NsDepCop).
         </description>
         <authors>Ferenc Vizkeleti</authors>
         <owners>Ferenc Vizkeleti</owners>
@@ -18,14 +18,19 @@ See project site for details (https://github.com/realvizu/NsDepCop).
         <iconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/VS2015/images/icons/NsDepCop_128.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <developmentDependency>true</developmentDependency>
-        <copyright>$copyright$</copyright>
+        <copyright>Copyright 2013-2017 Ferenc Vizkeleti</copyright>
         <tags>static code analysis tool C# csharp namespace dependency dependencies enforce rule</tags>
         <releaseNotes>
-Fix: Type without a name caused exception in analyzer.
+            New: C# 7 support.
         </releaseNotes>
+        <contentFiles>
+            <files include="any/any/config.nsdepcop" buildAction="None" copyToOutput="false" flatten="true" />
+        </contentFiles>    
     </metadata>
     <files>
-        <file src="bin\$configuration$\*.dll" target="tools" exclude="bin\$configuration$\NsDepCop.NuGet.dll" />
-        <file src="NsDepCop.targets" target="build" />
+        <file src="*.targets" target="build" />
+        <file src="bin\$configuration$\*.dll" target="tools" exclude="bin\$configuration$\NsDepCop.NuGet.*" />
+        <file src="bin\$configuration$\config.nsdepcop" target="contentFiles\any\any\config.nsdepcop" />
+        <file src="bin\$configuration$\config.nsdepcop" target="content\config.nsdepcop" />
     </files>
 </package>
