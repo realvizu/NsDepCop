@@ -2,7 +2,7 @@ image: Visual Studio 2017
 
 environment:
   shortversion: '1.7.0'
-  informationalversion: '1.7.0'
+  informationalversion: '1.7.0-beta1'
 
 version: '$(shortversion).{build}'
 
@@ -22,6 +22,7 @@ before_build:
 # vsixmanifest file must be specified with full path.
 - ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.VisualStudioIntegration.Vs2015\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
 - ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.VisualStudioIntegration.Vs2017\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
+- ps: Set-NuspecVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.NuGet\NsDepCop.NuGet.nuspec $env:informationalversion -ErrorAction Stop
 - cmd: nuget restore -Verbosity quiet source\NsDepCop.sln
 
 build:
