@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.ParserAdapter.Implementation;
 using CommandLine;
 
 namespace Codartis.NsDepCop.ConsoleHost
@@ -45,7 +46,8 @@ namespace Codartis.NsDepCop.ConsoleHost
         {
             var directoryPath = Path.GetDirectoryName(options.CsprojFile);
 
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogInfoToConsole, LogDiagnosticToConsole);
+            var typeDependencyEnumerator = new RoslynTypeDependencyEnumerator(LogInfoToConsole, LogDiagnosticToConsole);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogInfoToConsole, LogDiagnosticToConsole);
 
             return options.UseSingleFileConfig
                 ? dependencyAnalyzerFactory.CreateFromXmlConfigFile(Path.Combine(directoryPath, "config.nsdepcop"))

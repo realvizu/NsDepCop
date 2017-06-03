@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AB1A4FF5-D372-416A-9986-6C3548F78B3B}"
 	ProjectSection(SolutionItems) = preProject
@@ -55,6 +55,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.VisualStudioIntegration.Vs2017", "NsDepCop.VisualStudioIntegration.Vs2017\NsDepCop.VisualStudioIntegration.Vs2017.csproj", "{7FCDB56A-4419-4F9B-8BBB-95D60C0C9784}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Core.SourceTest", "NsDepCop.Core.SourceTest\NsDepCop.Core.SourceTest.csproj", "{F6554236-1D67-4343-816A-F145F7750526}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.ParserAdapter.Roslyn1x", "NsDepCop.ParserAdapter.Roslyn1x\NsDepCop.ParserAdapter.Roslyn1x.csproj", "{80771E79-4D7C-44E4-8813-2511254BDBAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.ParserAdapter.Roslyn2x", "NsDepCop.ParserAdapter.Roslyn2x\NsDepCop.ParserAdapter.Roslyn2x.csproj", "{49913F01-47E6-4860-B0BC-359E2255BB5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -212,6 +216,30 @@ Global
 		{F6554236-1D67-4343-816A-F145F7750526}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F6554236-1D67-4343-816A-F145F7750526}.Release|x86.ActiveCfg = Release|Any CPU
 		{F6554236-1D67-4343-816A-F145F7750526}.Release|x86.Build.0 = Release|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Debug|x86.Build.0 = Debug|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|x86.ActiveCfg = Release|Any CPU
+		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|x86.Build.0 = Release|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|x86.Build.0 = Debug|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|x86.ActiveCfg = Release|Any CPU
+		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

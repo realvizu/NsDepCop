@@ -1,13 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NsDepCopConfig InheritanceDepth="1">
-    <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis.*" To="Codartis.NsDepCop.Core.Interface.Config" />
-    <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis.Roslyn" To="Microsoft.CodeAnalysis.*" />
+    <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis" To="Codartis.NsDepCop.Core.Interface.Config" />
 
     <Allowed From="Codartis.NsDepCop.Core.Implementation.*" To="Codartis.NsDepCop.Core.Interface" />
     <Allowed From="Codartis.NsDepCop.Core.Implementation.Config" To="Codartis.NsDepCop.Core.Interface.Config" />
-    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.*" To="Codartis.NsDepCop.Core.Interface.*" />
-    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis" To="Codartis.NsDepCop.Core.Implementation.Analysis.*" />
-    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn" To="Microsoft.CodeAnalysis.*" />
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis" To="Codartis.NsDepCop.Core.Interface.*" />
 
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Interface.*"/>
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.*"/>

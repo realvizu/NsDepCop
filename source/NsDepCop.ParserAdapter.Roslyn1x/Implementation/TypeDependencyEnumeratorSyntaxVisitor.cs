@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
+namespace Codartis.NsDepCop.ParserAdapter.Implementation
 {
     /// <summary>
     /// Implements a syntax visitor that traverses the syntax tree and finds all type dependencies. 

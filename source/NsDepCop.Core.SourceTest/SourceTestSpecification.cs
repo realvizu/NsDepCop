@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.ParserAdapter.Implementation;
 using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
@@ -64,7 +65,8 @@ namespace Codartis.NsDepCop.Core.SourceTest
         private static IEnumerable<TypeDependency> GetIllegalDependencies(string baseFolder,
             IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
         {
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(Console.WriteLine, Console.WriteLine);
+            var typeDependencyEnumerator = new RoslynTypeDependencyEnumerator(Console.WriteLine, Console.WriteLine);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, Console.WriteLine, Console.WriteLine);
             var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(baseFolder);
             return dependencyAnalyzer.AnalyzeProject(sourceFiles, referencedAssemblies);
         }

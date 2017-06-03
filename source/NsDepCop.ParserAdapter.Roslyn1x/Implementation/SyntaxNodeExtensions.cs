@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
+namespace Codartis.NsDepCop.ParserAdapter.Implementation
 {
     public static class SyntaxNodeExtensions
     {

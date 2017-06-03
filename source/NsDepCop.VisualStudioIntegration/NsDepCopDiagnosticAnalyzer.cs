@@ -5,9 +5,10 @@ using System.Diagnostics;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Analysis.Roslyn;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.ParserAdapter.Implementation;
+using Codartis.NsDepCop.ParserAdapter.Interface;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -182,7 +183,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static CachingDependencyAnalyzerProvider CreateDependencyAnalyzerProvider()
         {
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogToTrace, LogToDebug);
+            var typeDependencyEnumerator = new RoslynTypeDependencyEnumerator(LogToTrace, LogToDebug);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogToTrace, LogToDebug);
             var embeddedDependencyAnalyzerProvider = new DependencyAnalyzerProvider(dependencyAnalyzerFactory);
             return new CachingDependencyAnalyzerProvider(embeddedDependencyAnalyzerProvider, new DateTimeProvider(), AnalyzerCachingTimeSpan);
         }

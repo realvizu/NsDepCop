@@ -5,7 +5,7 @@ using Codartis.NsDepCop.Core.Interface.Analysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
+namespace Codartis.NsDepCop.ParserAdapter.Implementation
 {
     /// <summary>
     /// Static helper class that enumerates type dependencies for a syntax node.

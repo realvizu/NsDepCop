@@ -151,6 +151,10 @@
       <Name>NsDepCop.Core</Name>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\NsDepCop.ParserAdapter.Roslyn2x\NsDepCop.ParserAdapter.Roslyn2x.csproj">
+      <Project>{49913f01-47e6-4860-b0bc-359e2255bb5c}</Project>
+      <Name>NsDepCop.ParserAdapter.Roslyn2x</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

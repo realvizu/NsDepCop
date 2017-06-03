@@ -1,13 +1,17 @@
 ﻿using Codartis.NsDepCop.Core.Factory;
+using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Factory
 {
     public class DependencyAnalyzerFactoryTests : FileBasedTestsBase
     {
+        private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock = new Mock<ITypeDependencyEnumerator>();
+
         [Fact]
         public void CreateFromXmlConfigFile_Enabled()
         {
@@ -44,6 +48,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
             dependencyAnalyzer.Config.InfoImportance.Should().Be(Importance.High);
         }
 
-        private static DependencyAnalyzerFactory CreateDependencyAnalyzerFactory() => new DependencyAnalyzerFactory();
+        private  DependencyAnalyzerFactory CreateDependencyAnalyzerFactory() 
+            => new DependencyAnalyzerFactory(_typeDependencyEnumeratorMock.Object);
     }
 }

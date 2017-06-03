@@ -7,12 +7,12 @@ using Codartis.NsDepCop.Core.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn
+namespace Codartis.NsDepCop.ParserAdapter.Implementation
 {
     /// <summary>
     /// Finds type dependencies in source code using Roslyn as the parser.
     /// </summary>
-    internal class RoslynTypeDependencyEnumerator : ITypeDependencyEnumerator
+    public class RoslynTypeDependencyEnumerator : ITypeDependencyEnumerator
     {
         private readonly MessageHandler _infoMessageHandler;
         private readonly MessageHandler _diagnosticMessageHandler;
