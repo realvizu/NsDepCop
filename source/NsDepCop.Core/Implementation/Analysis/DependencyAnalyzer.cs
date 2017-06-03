@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Codartis.NsDepCop.Core.Implementation.Analysis.Roslyn;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
@@ -24,9 +23,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
         private IAnalyzerConfig _config;
         private CachingTypeDependencyValidator _typeDependencyValidator;
-        private ITypeDependencyEnumerator _typeDependencyEnumerator;
+        private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
 
         public DependencyAnalyzer(IConfigProvider configProvider,
+            ITypeDependencyEnumerator typeDependencyEnumerator,
             MessageHandler infoMessageHandler = null,
             MessageHandler diagnosticMessageHandler = null)
         {
@@ -35,6 +35,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
             _configProvider = configProvider;
             _configRefreshLock = new ReaderWriterLockSlim();
+            _typeDependencyEnumerator = typeDependencyEnumerator;
             _infoMessageHandler = infoMessageHandler;
             _diagnosticMessageHandler = diagnosticMessageHandler;
 
@@ -117,15 +118,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
         private void UpdateAnalyzerLogic()
         {
-            if (ConfigState == AnalyzerConfigState.Enabled)
-            {
-                _typeDependencyValidator = new CachingTypeDependencyValidator(_config, _infoMessageHandler, _diagnosticMessageHandler);
-                _typeDependencyEnumerator = new RoslynTypeDependencyEnumerator(_infoMessageHandler, _diagnosticMessageHandler);
-            }
-            else
-            {
-                _typeDependencyEnumerator = null;
-            }
+            _typeDependencyValidator = ConfigState == AnalyzerConfigState.Enabled 
+                ? new CachingTypeDependencyValidator(_config, _infoMessageHandler, _diagnosticMessageHandler) 
+                : null;
         }
 
         private void EnsureValidStateForAnalysis()

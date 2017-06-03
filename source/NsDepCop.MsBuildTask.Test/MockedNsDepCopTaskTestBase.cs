@@ -111,7 +111,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             {
                 BaseDirectory = new TestTaskItem(baseDirectory),
                 Compile = CreateTaskItems(CreateFullPathFileNames(baseDirectory, specification.SourceFileNames)),
-                ReferencePath = CreateTaskItems(specification.ReferencedFilePaths),
+                ReferencePath = CreateTaskItems(CreateFullPathFileNames(assemblyDirectory, specification.ReferencedFilePaths)),
                 BuildEngine = mockBuildEngine,
             };
 

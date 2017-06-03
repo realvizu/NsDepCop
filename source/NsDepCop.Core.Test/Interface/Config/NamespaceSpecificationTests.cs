@@ -1,13 +1,12 @@
 ﻿using Codartis.NsDepCop.Core.Interface.Config;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Interface.Config
 {
-    [TestClass]
     public class NamespaceSpecificationTests
     {
-        [TestMethod]
+        [Fact]
         public void GetMatchRelevance()
         {
             const string ns = "A.B";

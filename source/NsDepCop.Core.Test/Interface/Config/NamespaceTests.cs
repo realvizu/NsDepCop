@@ -1,50 +1,44 @@
 ﻿using System;
 using Codartis.NsDepCop.Core.Interface.Config;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Interface.Config
 {
-    [TestClass]
     public class NamespaceTests
     {
-        [TestMethod]
-        public void Create_Works()
+        [Theory]
+        [InlineData("A")]
+        [InlineData("A.B")]
+        [InlineData(".")]
+        public void Create_Works(string namespaceString)
         {
-            new Namespace("A").ToString().Should().Be("A");
-            new Namespace("A.B").ToString().Should().Be("A.B");
-            new Namespace(".").ToString().Should().Be(".");
+            new Namespace(namespaceString).ToString().Should().Be(namespaceString);
         }
 
-        [TestMethod]
-        public void Create_GlobalNamespaceRepresentationNormalized()
+        [Theory]
+        [InlineData("<global namespace>")]
+        [InlineData("")]
+        public void Create_GlobalNamespaceRepresentationNormalized(string globalNamespaceString)
         {
-            new Namespace("<global namespace>").ToString().Should().Be(".");
-            new Namespace("").ToString().Should().Be(".");
+            new Namespace(globalNamespaceString).ToString().Should().Be(".");
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void Create_WithNull_ThrowsArgumentNullExceptionn()
         {
-            new Namespace(null);
+            Assert.Throws<ArgumentNullException>(() => new Namespace(null));
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void Create_AnyNamespace_ThrowsFormatException()
+        [Theory]
+        [InlineData("*")]
+        [InlineData("A.*")]
+        public void Create_AnyNamespace_ThrowsFormatException(string namespaceString)
         {
-            new Namespace("*");
+            Assert.Throws<FormatException>(() => new Namespace(namespaceString));
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void Create_NamespaceTree_ThrowsFormatException()
-        {
-            new Namespace("A.*");
-        }
-
-        [TestMethod]
+        [Fact]
         public void IsSubnamespaceOf_Works()
         {
             new Namespace("A").IsSubnamespaceOf(new Namespace(".")).Should().BeTrue();
@@ -58,16 +52,14 @@ namespace Codartis.NsDepCop.Core.Test.Interface.Config
             new Namespace("A").IsSubnamespaceOf(new Namespace("A.B")).Should().BeFalse();
         }
 
-        [TestMethod]
+        [Fact]
         public void Equals_Works()
         {
             (new Namespace("A") == new Namespace("A")).Should().BeTrue();
             (new Namespace("A") == new Namespace("B")).Should().BeFalse();
-
-            (new Namespace(".") == Namespace.GlobalNamespace).Should().BeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void GlobalNamespace_IsEqualToOtherInstanceOfGlobalNamespace()
         {
             (new Namespace(".") == Namespace.GlobalNamespace).Should().BeTrue();

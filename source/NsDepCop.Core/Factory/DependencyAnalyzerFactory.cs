@@ -1,4 +1,5 @@
-﻿using Codartis.NsDepCop.Core.Implementation.Analysis;
+﻿using System;
+using Codartis.NsDepCop.Core.Implementation.Analysis;
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
@@ -11,12 +12,18 @@ namespace Codartis.NsDepCop.Core.Factory
     /// </summary>
     public class DependencyAnalyzerFactory : IDependencyAnalyzerFactory, IConfigInitializer<DependencyAnalyzerFactory>
     {
+        private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
         private readonly MessageHandler _infoMessageHandler;
         private readonly MessageHandler _diagnosticMessageHandler;
         private Importance? _defaultInfoImportance;
 
-        public DependencyAnalyzerFactory(MessageHandler infoMessageHandler = null, MessageHandler diagnosticMessageHandler = null)
+        public DependencyAnalyzerFactory(ITypeDependencyEnumerator typeDependencyEnumerator,
+            MessageHandler infoMessageHandler = null, MessageHandler diagnosticMessageHandler = null)
         {
+            if (typeDependencyEnumerator == null)
+                throw new ArgumentNullException(nameof(typeDependencyEnumerator));
+
+            _typeDependencyEnumerator = typeDependencyEnumerator;
             _infoMessageHandler = infoMessageHandler;
             _diagnosticMessageHandler = diagnosticMessageHandler;
         }
@@ -31,14 +38,14 @@ namespace Codartis.NsDepCop.Core.Factory
         {
             var configProvider = new XmlFileConfigProvider(configFilePath, _infoMessageHandler, _diagnosticMessageHandler);
             ApplyConfigDefaults(configProvider);
-            return new DependencyAnalyzer(configProvider, _infoMessageHandler, _diagnosticMessageHandler);
+            return new DependencyAnalyzer(configProvider, _typeDependencyEnumerator);
         }
 
         public IDependencyAnalyzer CreateFromMultiLevelXmlConfigFile(string folderPath)
         {
             var configProvider = new MultiLevelXmlFileConfigProvider(folderPath, _infoMessageHandler, _diagnosticMessageHandler);
             ApplyConfigDefaults(configProvider);
-            return new DependencyAnalyzer(configProvider, _infoMessageHandler, _diagnosticMessageHandler);
+            return new DependencyAnalyzer(configProvider, _typeDependencyEnumerator);
         }
 
         private void ApplyConfigDefaults(ConfigProviderBase configProvider)

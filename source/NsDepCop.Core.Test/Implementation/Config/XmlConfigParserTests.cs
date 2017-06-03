@@ -4,14 +4,13 @@ using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 {
-    [TestClass]
     public class XmlConfigParserTests : FileBasedTestsBase
     {
-        [TestMethod]
+        [Fact]
         public void Parse_NoRootAttributes()
         {
             var xDocument = LoadXml("NoRootAttributes.nsdepcop");
@@ -24,7 +23,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder.InfoImportance.Should().BeNull();
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_RootAttributes()
         {
             var xDocument = LoadXml("RootAttributes.nsdepcop");
@@ -37,7 +36,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder.InfoImportance.ShouldBeEquivalentTo(Importance.Normal);
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_AllowedRules()
         {
             var xDocument = LoadXml("AllowedRules.nsdepcop");
@@ -61,7 +60,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_DisallowedRules()
         {
             var xDocument = LoadXml("DisallowedRules.nsdepcop");
@@ -74,7 +73,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             disallowedRules.Should().Contain(new NamespaceDependencyRule("N3", "N4"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_VisibleMembers()
         {
             var xDocument = LoadXml("VisibleMembers.nsdepcop");
@@ -95,7 +94,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_AllowedRuleForNamespaceTreeWithVisibleMembers_Throws()
         {
             var xDocument = LoadXml("AllowedRuleForNamespaceTreeWithVisibleMembers.nsdepcop");
@@ -103,7 +102,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             a.ShouldThrow<Exception>().WithMessage("*must be a single namespace*");
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_AllowedRuleForNamespaceWithVisibleMembersWithOfNamespaceAttribute_Throws()
         {
             var xDocument = LoadXml("AllowedRuleForNamespaceWithVisibleMembersWithOfNamespaceAttribute.nsdepcop");
@@ -111,7 +110,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             a.ShouldThrow<Exception>().WithMessage("*'OfNamespace' attribute must not be defined*");
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_VisibleMembersOfNamespaceMissing_Throws()
         {
             var xDocument = LoadXml("VisibleMembersOfNamespaceMissing.nsdepcop");
@@ -119,7 +118,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             a.ShouldThrow<Exception>().WithMessage("*'OfNamespace' attribute missing*");
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_AllowedRuleFromAttributeMissing_Throws()
         {
             var xDocument = LoadXml("AllowedRuleFromAttributeMissing.nsdepcop");
@@ -127,7 +126,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             a.ShouldThrow<Exception>().WithMessage("*'From' attribute missing*");
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_AllowedRuleToAttributeMissing_Throws()
         {
             var xDocument = LoadXml("AllowedRuleToAttributeMissing.nsdepcop");
@@ -135,7 +134,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             a.ShouldThrow<Exception>().WithMessage("*'To' attribute missing*");
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_VisibleMembersTypeNameAttributeMissing_Throws()
         {
             var xDocument = LoadXml("VisibleMembersTypeNameAttributeMissing.nsdepcop");
@@ -143,7 +142,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             a.ShouldThrow<Exception>().WithMessage("*'Name' attribute missing*");
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_NsDepCopConfigElementNotFound_Throws()
         {
             var xDocument = LoadXml("NsDepCopConfigElementNotFound.nsdepcop");
@@ -151,7 +150,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             a.ShouldThrow<Exception>().WithMessage("*root element not found*");
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_InvalidNamespaceString_Throws()
         {
             var xDocument = LoadXml("InvalidNamespaceString.nsdepcop");
@@ -159,7 +158,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             a.ShouldThrow<Exception>().WithMessage("*not a valid Namespace*");
         }
 
-        [TestMethod]
+        [Fact]
         public void Parse_InvalidAttributeValue_Throws()
         {
             var xDocument = LoadXml("InvalidAttributeValue.nsdepcop");
@@ -169,7 +168,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 
         private XDocument LoadXml(string filename)
         {
-            var path = GetTestFilePath(filename);
+            var path = GetFilePathInTestClassFolder(filename);
             return XDocument.Load(path);
         }
     }

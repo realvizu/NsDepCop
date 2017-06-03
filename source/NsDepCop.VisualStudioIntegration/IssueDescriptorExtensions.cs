@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Analysis.Roslyn;
+using Codartis.NsDepCop.ParserAdapter.Interface;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration

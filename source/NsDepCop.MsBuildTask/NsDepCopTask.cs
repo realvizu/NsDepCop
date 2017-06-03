@@ -8,6 +8,7 @@ using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.ParserAdapter.Implementation;
 
 namespace Codartis.NsDepCop.MsBuildTask
 {
@@ -79,7 +80,8 @@ namespace Codartis.NsDepCop.MsBuildTask
                 var defaultInfoImportance = Parse<Importance>(InfoImportance.GetValue());
                 _infoImportance = defaultInfoImportance?.ToMessageImportance() ?? MessageImportance.Normal;
 
-                var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogInfoMessage, LogDiagnosticMessage)
+                var typeDependencyEnumerator = new RoslynTypeDependencyEnumerator(LogInfoMessage, LogDiagnosticMessage);
+                var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogInfoMessage, LogDiagnosticMessage)
                     .SetDefaultInfoImportance(defaultInfoImportance);
 
                 using (var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(configFolderPath))

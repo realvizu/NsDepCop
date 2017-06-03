@@ -1,53 +1,36 @@
 ﻿using System;
 using Codartis.NsDepCop.Core.Interface.Config;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Interface.Config
 {
-    [TestClass]
     public class NamespaceSpecificationParserTests
     {
-        [TestMethod]
-        public void Parse_Namespace()
+        [Theory]
+        [InlineData(".")]
+        [InlineData("A.B")]
+        public void Parse_Namespace(string namespaceString)
         {
-            NamespaceSpecificationParser.Parse(".").Should().Be(new Namespace("."));
-            NamespaceSpecificationParser.Parse("A.B").Should().Be(new Namespace("A.B"));
+            NamespaceSpecificationParser.Parse(namespaceString).Should().Be(new Namespace(namespaceString));
         }
 
-        [TestMethod]
-        public void Parse_NamespaceTree()
+        [Theory]
+        [InlineData("*")]
+        [InlineData("A.*")]
+        public void Parse_NamespaceTree(string namespaceTreeString)
         {
-            NamespaceSpecificationParser.Parse("*").Should().Be(new NamespaceTree("*"));
-            NamespaceSpecificationParser.Parse("A.*").Should().Be(new NamespaceTree("A.*"));
+            NamespaceSpecificationParser.Parse(namespaceTreeString).Should().Be(new NamespaceTree(namespaceTreeString));
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void Parse_Invalid1()
+        [Theory]
+        [InlineData("..")]
+        [InlineData(".A")]
+        [InlineData("A.")]
+        [InlineData("*.*")]
+        public void Parse_Invalid(string invalidString)
         {
-            NamespaceSpecificationParser.Parse("..");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void Parse_Invalid2()
-        {
-            NamespaceSpecificationParser.Parse(".A");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void Parse_Invalid3()
-        {
-            NamespaceSpecificationParser.Parse("A.");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void Parse_InvalidUseOfAny()
-        {
-            NamespaceSpecificationParser.Parse("*.*");
+            Assert.Throws<FormatException>(() => NamespaceSpecificationParser.Parse(invalidString));
         }
     }
 }
