@@ -115,9 +115,7 @@
     <None Include="config.nsdepcop">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NsDepCop.1.6.1\build\NsDepCop.targets" Condition="Exists('..\packages\NsDepCop.1.6.1\build\NsDepCop.targets')" />
