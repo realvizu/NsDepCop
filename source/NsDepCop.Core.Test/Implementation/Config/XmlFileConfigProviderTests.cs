@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.Threading;
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Config;
@@ -132,7 +132,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 
         private static XmlFileConfigProvider CreateConfigProvider(string path)
         {
-            return new XmlFileConfigProvider(path, Console.WriteLine);
+            return new XmlFileConfigProvider(path, i => Debug.WriteLine(i));
         }
     }
 }
