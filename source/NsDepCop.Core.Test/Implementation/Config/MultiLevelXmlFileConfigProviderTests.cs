@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface;
@@ -265,7 +264,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 
         private static MultiLevelXmlFileConfigProvider CreateConfigProvider(string folder)
         {
-            return new MultiLevelXmlFileConfigProvider(folder, i => Debug.WriteLine(i));
+            return new MultiLevelXmlFileConfigProvider(folder);
         }
     }
 }
