@@ -1,6 +1,6 @@
 ﻿using Codartis.NsDepCop.Core.Interface.Analysis;
 
-namespace Codartis.NsDepCop.Core.SourceTest
+namespace Codartis.NsDepCop.SourceTest
 {
     public class SourceLineSegment
     {

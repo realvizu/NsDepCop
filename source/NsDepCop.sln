@@ -54,7 +54,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.TestUtil", "NsDepC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.VisualStudioIntegration.Vs2017", "NsDepCop.VisualStudioIntegration.Vs2017\NsDepCop.VisualStudioIntegration.Vs2017.csproj", "{7FCDB56A-4419-4F9B-8BBB-95D60C0C9784}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Core.SourceTest", "NsDepCop.Core.SourceTest\NsDepCop.Core.SourceTest.csproj", "{F6554236-1D67-4343-816A-F145F7750526}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.SourceTest", "NsDepCop.SourceTest\NsDepCop.SourceTest.csproj", "{F6554236-1D67-4343-816A-F145F7750526}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.ParserAdapter.Roslyn1x", "NsDepCop.ParserAdapter.Roslyn1x\NsDepCop.ParserAdapter.Roslyn1x.csproj", "{80771E79-4D7C-44E4-8813-2511254BDBAD}"
 EndProject

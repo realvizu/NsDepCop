@@ -11,7 +11,7 @@ using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Codartis.NsDepCop.Core.SourceTest
+namespace Codartis.NsDepCop.SourceTest
 {
     internal class SourceTestSpecification : FileBasedTestsBase
     {

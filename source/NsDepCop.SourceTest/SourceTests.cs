@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Codartis.NsDepCop.Core.SourceTest
+namespace Codartis.NsDepCop.SourceTest
 {
     public class SourceTests
     {
