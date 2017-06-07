@@ -5,12 +5,12 @@ using Codartis.NsDepCop.Core.Interface.Analysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Codartis.NsDepCop.ParserAdapter.Implementation
+namespace Codartis.NsDepCop.ParserAdapter
 {
     /// <summary>
     /// Enumerates type dependencies for a syntax node using Roslyn 1.x.
     /// </summary>
-    public class Roslyn1SyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
+    public class SyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
     {
         /// <summary>
         /// The list of those type kinds that can occur as a declaration.

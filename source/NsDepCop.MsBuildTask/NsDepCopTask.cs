@@ -8,7 +8,7 @@ using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
-using Codartis.NsDepCop.ParserAdapter.Implementation;
+using Codartis.NsDepCop.ParserAdapter.Roslyn2x;
 
 namespace Codartis.NsDepCop.MsBuildTask
 {

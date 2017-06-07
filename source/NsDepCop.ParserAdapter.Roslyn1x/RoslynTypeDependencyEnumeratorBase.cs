@@ -7,7 +7,7 @@ using Codartis.NsDepCop.Core.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Codartis.NsDepCop.ParserAdapter.Implementation
+namespace Codartis.NsDepCop.ParserAdapter
 {
     /// <summary>
     /// Abstract base class for type dependency enumerators that use Roslyn as the parser.

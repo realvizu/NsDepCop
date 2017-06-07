@@ -1,7 +1,7 @@
 ﻿using Codartis.NsDepCop.Core.Interface.Config;
 using Microsoft.CodeAnalysis;
 
-namespace Codartis.NsDepCop.ParserAdapter.Interface
+namespace Codartis.NsDepCop.VisualStudioIntegration
 {
     public static class IssueKindExtension
     {

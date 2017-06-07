@@ -1,6 +1,6 @@
 ﻿using Codartis.NsDepCop.Core.Util;
 
-namespace Codartis.NsDepCop.ParserAdapter.Implementation
+namespace Codartis.NsDepCop.ParserAdapter.Roslyn1x
 {
     /// <summary>
     /// Enumerates type dependencies in source code using Roslyn 1.x
@@ -8,7 +8,7 @@ namespace Codartis.NsDepCop.ParserAdapter.Implementation
     public class Roslyn1TypeDependencyEnumerator : RoslynTypeDependencyEnumeratorBase
     {
         public Roslyn1TypeDependencyEnumerator(MessageHandler infoMessageHandler, MessageHandler diagnosticMessageHandler) 
-            : base(new Roslyn1SyntaxNodeAnalyzer(),  infoMessageHandler, diagnosticMessageHandler)
+            : base(new SyntaxNodeAnalyzer(),  infoMessageHandler, diagnosticMessageHandler)
         {
         }
     }

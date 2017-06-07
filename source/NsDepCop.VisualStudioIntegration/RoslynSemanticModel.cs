@@ -2,7 +2,7 @@
 using Codartis.NsDepCop.Core.Util;
 using Microsoft.CodeAnalysis;
 
-namespace Codartis.NsDepCop.ParserAdapter.Interface
+namespace Codartis.NsDepCop.VisualStudioIntegration
 {
     /// <summary>
     /// Wraps a Roslyn semantic model object.

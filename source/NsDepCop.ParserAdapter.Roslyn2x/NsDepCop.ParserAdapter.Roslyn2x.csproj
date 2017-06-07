@@ -131,35 +131,23 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\ISyntaxNodeAnalyzer.cs">
-      <Link>Implementation\ISyntaxNodeAnalyzer.cs</Link>
+    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\ISyntaxNodeAnalyzer.cs">
+      <Link>ISyntaxNodeAnalyzer.cs</Link>
     </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\Roslyn1SyntaxNodeAnalyzer.cs">
-      <Link>Implementation\Roslyn1SyntaxNodeAnalyzer.cs</Link>
+    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\RoslynTypeDependencyEnumeratorBase.cs">
+      <Link>RoslynTypeDependencyEnumeratorBase.cs</Link>
     </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\RoslynTypeDependencyEnumeratorBase.cs">
-      <Link>Implementation\RoslynTypeDependencyEnumeratorBase.cs</Link>
+    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\SyntaxNodeAnalyzer.cs">
+      <Link>SyntaxNodeAnalyzer.cs</Link>
     </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\SyntaxNodeExtensions.cs">
-      <Link>Implementation\SyntaxNodeExtensions.cs</Link>
+    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\SyntaxNodeExtensions.cs">
+      <Link>SyntaxNodeExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\TypeDependencyEnumeratorSyntaxVisitor.cs">
-      <Link>Implementation\TypeDependencyEnumeratorSyntaxVisitor.cs</Link>
+    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\TypeDependencyEnumeratorSyntaxVisitor.cs">
+      <Link>TypeDependencyEnumeratorSyntaxVisitor.cs</Link>
     </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Interface\IssueKindExtension.cs">
-      <Link>Interface\IssueKindExtension.cs</Link>
-    </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Interface\IssueKindTranslator.cs">
-      <Link>Interface\IssueKindTranslator.cs</Link>
-    </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Interface\RoslynSemanticModel.cs">
-      <Link>Interface\RoslynSemanticModel.cs</Link>
-    </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Interface\RoslynSyntaxNode.cs">
-      <Link>Interface\RoslynSyntaxNode.cs</Link>
-    </Compile>
-    <Compile Include="Implementation\Roslyn2TypeDependencyEnumerator.cs" />
-    <Compile Include="Implementation\Roslyn2SyntaxNodeAnalyzer.cs" />
+    <Compile Include="Roslyn2x\Roslyn2TypeDependencyEnumerator.cs" />
+    <Compile Include="Roslyn2x\Roslyn2SyntaxNodeAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

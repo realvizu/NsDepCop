@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.ParserAdapter.Implementation;
+using Codartis.NsDepCop.ParserAdapter.Roslyn2x;
 using CommandLine;
 
 namespace Codartis.NsDepCop.ConsoleHost

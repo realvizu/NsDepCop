@@ -2,7 +2,7 @@
 using Codartis.NsDepCop.Core.Interface.Config;
 using Microsoft.CodeAnalysis;
 
-namespace Codartis.NsDepCop.ParserAdapter.Interface
+namespace Codartis.NsDepCop.VisualStudioIntegration
 {
     internal static class IssueKindTranslator
     {

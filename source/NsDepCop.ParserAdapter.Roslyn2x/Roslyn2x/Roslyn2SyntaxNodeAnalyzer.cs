@@ -3,13 +3,13 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Codartis.NsDepCop.ParserAdapter.Implementation
+namespace Codartis.NsDepCop.ParserAdapter.Roslyn2x
 {
     /// <summary>
     /// Analyzes a syntax node using Roslyn 2.x. 
     /// Extends the logic of the Roslyn 1.x-specific syntax node analyzer
     /// </summary>
-    public class Roslyn2SyntaxNodeAnalyzer : Roslyn1SyntaxNodeAnalyzer
+    public class Roslyn2SyntaxNodeAnalyzer : SyntaxNodeAnalyzer
     {
         protected override IEnumerable<ITypeSymbol> GetConstituentTypes(ITypeSymbol typeSymbol, SyntaxNode syntaxNode)
         {

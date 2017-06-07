@@ -1,6 +1,6 @@
 ﻿using Codartis.NsDepCop.Core.Util;
 
-namespace Codartis.NsDepCop.ParserAdapter.Implementation
+namespace Codartis.NsDepCop.ParserAdapter.Roslyn2x
 {
     /// <summary>
     /// Enumerates type dependencies in source code using Roslyn 2.x
