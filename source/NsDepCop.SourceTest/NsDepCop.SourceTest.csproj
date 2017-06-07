@@ -161,6 +161,21 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Content Include="Cs7_IsExpressionWithPattern\Cs7_IsExpressionWithPattern.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs7_SwitchWithPattern\Cs7_SwitchWithPattern.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs7_LocalFunction\Cs7_LocalFunction.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs7_ThrowExpression\Cs7_ThrowExpression.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs7_Deconstruction\Cs7_Deconstruction.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="SourceLineSegment.cs" />
     <Compile Include="SourceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -241,6 +256,21 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Cs7_IsExpressionWithPattern\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs7_SwitchWithPattern\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs7_LocalFunction\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs7_ThrowExpression\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs7_Deconstruction\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

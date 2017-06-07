@@ -1,33 +1,40 @@
-﻿namespace A
+﻿using System;
+
+namespace A
 {
     using B;
 
     public class Class1
     {
-        public void Method()
+        // Tuple return type
+        public (Class1, Class2) Method1()
         {
-            (var a, var b) = Class2.Method2();
+            // Tuple literal
+            return (new Class1(), new Class2());
+        }
+
+        // Named tuple elements
+        public (Class1 class1, Class2 class2) Method2()
+        {
+            // Named tuple elements in tuple literal
+            return (class1: new Class1(), class2: new Class2());
+        }
+
+        public void Method3()
+        {
+            // Get tuple value
+            var a = Method2();
+            // Access tuple element by defalt name
+            a.Item2 = null;
+            // Access tuple element by name
+            a.class2 = null;
         }
     }
 }
 
 namespace B
 {
-    public static class Class2
+    public class Class2
     {
-        public static (MyEnum1, MyEnum2) Method2()
-        {
-            return (MyEnum1.EnumValue1, MyEnum2.EnumValue2);
-        }
-    }
-
-    public enum MyEnum1
-    {
-        EnumValue1
-    }
-
-    public enum MyEnum2
-    {
-        EnumValue2
     }
 }

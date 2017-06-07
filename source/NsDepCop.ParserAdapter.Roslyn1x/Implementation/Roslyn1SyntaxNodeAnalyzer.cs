@@ -8,9 +8,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Codartis.NsDepCop.ParserAdapter.Implementation
 {
     /// <summary>
-    /// Static helper class that enumerates type dependencies for a syntax node.
+    /// Enumerates type dependencies for a syntax node using Roslyn 1.x.
     /// </summary>
-    internal static class SyntaxNodeTypeDependencyEnumerator
+    public class Roslyn1SyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
     {
         /// <summary>
         /// The list of those type kinds that can occur as a declaration.
@@ -30,7 +30,7 @@ namespace Codartis.NsDepCop.ParserAdapter.Implementation
         /// <param name="node">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the current document.</param>
         /// <returns>A list of type dependencies. Can be empty.</returns>
-        public static IEnumerable<TypeDependency> GetTypeDependencies(SyntaxNode node, SemanticModel semanticModel)
+        public IEnumerable<TypeDependency> GetTypeDependencies(SyntaxNode node, SemanticModel semanticModel)
         {
             // Determine the type that contains the current syntax node.
             var enclosingType = DetermineEnclosingType(node, semanticModel);
@@ -56,9 +56,9 @@ namespace Codartis.NsDepCop.ParserAdapter.Implementation
                 && !string.IsNullOrWhiteSpace(typeSymbol.MetadataName);
         }
 
-        private static IEnumerable<ITypeSymbol> GetConstituentTypes(ITypeSymbol typeSymbol, SyntaxNode syntaxNode)
+        protected virtual IEnumerable<ITypeSymbol> GetConstituentTypes(ITypeSymbol typeSymbol, SyntaxNode syntaxNode)
         {
-            if (typeSymbol == null || 
+            if (typeSymbol == null ||
                 typeSymbol.IsAnonymousType)
                 yield break;
 
@@ -153,23 +153,21 @@ namespace Codartis.NsDepCop.ParserAdapter.Implementation
         /// <param name="node">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the project.</param>
         /// <returns>The type referenced by the given syntax node, or null if no type was referenced.</returns>
-        private static ITypeSymbol DetermineReferencedType(SyntaxNode node, SemanticModel semanticModel)
+        protected virtual ITypeSymbol DetermineReferencedType(SyntaxNode node, SemanticModel semanticModel)
         {
             var typeSymbol = semanticModel.GetTypeInfo(node).Type;
             if (typeSymbol != null && typeSymbol.TypeKind != TypeKind.Error)
                 return typeSymbol;
 
-            // Special case (or Roslyn bug?): 
-            // if we have an IdentifierNameSyntax inside an ObjectCreationExpression then 
-            // semanticModel.GetTypeInfo(node).Type returns null but
-            // semanticModel.GetSymbolInfo(node).Symbol returns the expected ITypeSymbol
+            // In same cases GetTypeInfo(node).Type does not return the desired type symbol but GetSymbolInfo(node).Symbol does.
+            // E.g.: IdentifierNameSyntax inside an ObjectCreationExpression
             var symbolInfo = semanticModel.GetSymbolInfo(node);
-            if (symbolInfo.Symbol is ITypeSymbol)
-                return symbolInfo.Symbol as ITypeSymbol;
+            if (symbolInfo.Symbol is ITypeSymbol symbolInfoTypeSymbol)
+                return symbolInfoTypeSymbol;
 
             // Special case: for method invocations we should check the return type
-            if (symbolInfo.Symbol is IMethodSymbol)
-                return (symbolInfo.Symbol as IMethodSymbol).ReturnType;
+            if (symbolInfo.Symbol is IMethodSymbol methodSymbol)
+                return methodSymbol.ReturnType;
 
             // Could not determine referenced type.
             return null;

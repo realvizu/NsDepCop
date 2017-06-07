@@ -63,9 +63,11 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Implementation\RoslynTypeDependencyEnumerator.cs" />
+    <Compile Include="Implementation\ISyntaxNodeAnalyzer.cs" />
+    <Compile Include="Implementation\Roslyn1TypeDependencyEnumerator.cs" />
+    <Compile Include="Implementation\RoslynTypeDependencyEnumeratorBase.cs" />
     <Compile Include="Implementation\SyntaxNodeExtensions.cs" />
-    <Compile Include="Implementation\SyntaxNodeTypeDependencyEnumerator.cs" />
+    <Compile Include="Implementation\Roslyn1SyntaxNodeAnalyzer.cs" />
     <Compile Include="Implementation\TypeDependencyEnumeratorSyntaxVisitor.cs" />
     <Compile Include="Interface\IssueKindExtension.cs" />
     <Compile Include="Interface\IssueKindTranslator.cs" />

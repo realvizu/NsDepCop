@@ -10,15 +10,21 @@ using Microsoft.CodeAnalysis.CSharp;
 namespace Codartis.NsDepCop.ParserAdapter.Implementation
 {
     /// <summary>
-    /// Finds type dependencies in source code using Roslyn as the parser.
+    /// Abstract base class for type dependency enumerators that use Roslyn as the parser.
     /// </summary>
-    public class RoslynTypeDependencyEnumerator : ITypeDependencyEnumerator
+    public abstract class RoslynTypeDependencyEnumeratorBase : ITypeDependencyEnumerator
     {
+        private readonly ISyntaxNodeAnalyzer _syntaxNodeAnalyzer;
         private readonly MessageHandler _infoMessageHandler;
         private readonly MessageHandler _diagnosticMessageHandler;
 
-        public RoslynTypeDependencyEnumerator(MessageHandler infoMessageHandler, MessageHandler diagnosticMessageHandler)
+        protected RoslynTypeDependencyEnumeratorBase(ISyntaxNodeAnalyzer syntaxNodeAnalyzer,
+            MessageHandler infoMessageHandler, MessageHandler diagnosticMessageHandler)
         {
+            if (syntaxNodeAnalyzer == null)
+                throw new ArgumentNullException(nameof(syntaxNodeAnalyzer));
+
+            _syntaxNodeAnalyzer = syntaxNodeAnalyzer;
             _infoMessageHandler = infoMessageHandler;
             _diagnosticMessageHandler = diagnosticMessageHandler;
         }
@@ -36,7 +42,7 @@ namespace Codartis.NsDepCop.ParserAdapter.Implementation
                 var documentRootNode = syntaxTree.GetRoot();
                 if (documentRootNode != null)
                 {
-                    var syntaxVisitor = new TypeDependencyEnumeratorSyntaxVisitor(compilation.GetSemanticModel(syntaxTree));
+                    var syntaxVisitor = new TypeDependencyEnumeratorSyntaxVisitor(compilation.GetSemanticModel(syntaxTree), _syntaxNodeAnalyzer);
                     syntaxVisitor.Visit(documentRootNode);
 
                     foreach (var typeDependency in syntaxVisitor.TypeDependencies)
@@ -47,7 +53,7 @@ namespace Codartis.NsDepCop.ParserAdapter.Implementation
         
         public IEnumerable<TypeDependency> GetTypeDependencies(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
         {
-            return SyntaxNodeTypeDependencyEnumerator.GetTypeDependencies(Unwrap<SyntaxNode>(syntaxNode), Unwrap<SemanticModel>(semanticModel));
+            return _syntaxNodeAnalyzer.GetTypeDependencies(Unwrap<SyntaxNode>(syntaxNode), Unwrap<SemanticModel>(semanticModel));
         }
 
         private static TUnwrapped Unwrap<TUnwrapped>(object wrappedValue)

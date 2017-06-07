@@ -65,7 +65,7 @@ namespace Codartis.NsDepCop.SourceTest
         private static IEnumerable<TypeDependency> GetIllegalDependencies(string baseFolder,
             IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
         {
-            var typeDependencyEnumerator = new RoslynTypeDependencyEnumerator(DebugMessageHandler, DebugMessageHandler);
+            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(DebugMessageHandler, DebugMessageHandler);
             var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, DebugMessageHandler, DebugMessageHandler);
             var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(baseFolder);
             return dependencyAnalyzer.AnalyzeProject(sourceFiles, referencedAssemblies);

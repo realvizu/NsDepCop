@@ -18,6 +18,11 @@ namespace Codartis.NsDepCop.ParserAdapter.Implementation
         private readonly SemanticModel _semanticModel;
 
         /// <summary>
+        /// Implements the analysis logic for a single syntax node.
+        /// </summary>
+        private readonly ISyntaxNodeAnalyzer _syntaxNodeAnalyzer;
+
+        /// <summary>
         /// The collection of type dependencies that the syntax visitor found.
         /// </summary>
         private readonly List<TypeDependency> _typeDependencies;
@@ -26,12 +31,16 @@ namespace Codartis.NsDepCop.ParserAdapter.Implementation
         /// Initializes a new instance.
         /// </summary>
         /// <param name="semanticModel">The semantic model for the document.</param>
-        public TypeDependencyEnumeratorSyntaxVisitor(SemanticModel semanticModel)
+        /// <param name="syntaxNodeAnalyzer">Syntax node analyzer logic.</param>
+        public TypeDependencyEnumeratorSyntaxVisitor(SemanticModel semanticModel, ISyntaxNodeAnalyzer syntaxNodeAnalyzer)
         {
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
+            if (syntaxNodeAnalyzer == null)
+                throw new ArgumentNullException(nameof(syntaxNodeAnalyzer));
 
             _semanticModel = semanticModel;
+            _syntaxNodeAnalyzer = syntaxNodeAnalyzer;
 
             _typeDependencies = new List<TypeDependency>();
         }
@@ -66,7 +75,8 @@ namespace Codartis.NsDepCop.ParserAdapter.Implementation
         /// <param name="node">A syntax node.</param>
         private void AnalyzeNode(SyntaxNode node)
         {
-            _typeDependencies.AddRange(SyntaxNodeTypeDependencyEnumerator.GetTypeDependencies(node, _semanticModel));
+            var typeDependencies = _syntaxNodeAnalyzer.GetTypeDependencies(node, _semanticModel);
+            _typeDependencies.AddRange(typeDependencies);
         }
     }
 }

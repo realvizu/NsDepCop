@@ -131,14 +131,17 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\RoslynTypeDependencyEnumerator.cs">
-      <Link>Implementation\RoslynTypeDependencyEnumerator.cs</Link>
+    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\ISyntaxNodeAnalyzer.cs">
+      <Link>Implementation\ISyntaxNodeAnalyzer.cs</Link>
+    </Compile>
+    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\Roslyn1SyntaxNodeAnalyzer.cs">
+      <Link>Implementation\Roslyn1SyntaxNodeAnalyzer.cs</Link>
+    </Compile>
+    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\RoslynTypeDependencyEnumeratorBase.cs">
+      <Link>Implementation\RoslynTypeDependencyEnumeratorBase.cs</Link>
     </Compile>
     <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\SyntaxNodeExtensions.cs">
       <Link>Implementation\SyntaxNodeExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\SyntaxNodeTypeDependencyEnumerator.cs">
-      <Link>Implementation\SyntaxNodeTypeDependencyEnumerator.cs</Link>
     </Compile>
     <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Implementation\TypeDependencyEnumeratorSyntaxVisitor.cs">
       <Link>Implementation\TypeDependencyEnumeratorSyntaxVisitor.cs</Link>
@@ -155,6 +158,8 @@
     <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\Interface\RoslynSyntaxNode.cs">
       <Link>Interface\RoslynSyntaxNode.cs</Link>
     </Compile>
+    <Compile Include="Implementation\Roslyn2TypeDependencyEnumerator.cs" />
+    <Compile Include="Implementation\Roslyn2SyntaxNodeAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

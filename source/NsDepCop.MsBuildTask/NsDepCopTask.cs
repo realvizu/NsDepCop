@@ -80,7 +80,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                 var defaultInfoImportance = Parse<Importance>(InfoImportance.GetValue());
                 _infoImportance = defaultInfoImportance?.ToMessageImportance() ?? MessageImportance.Normal;
 
-                var typeDependencyEnumerator = new RoslynTypeDependencyEnumerator(LogInfoMessage, LogDiagnosticMessage);
+                var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogInfoMessage, LogDiagnosticMessage);
                 var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogInfoMessage, LogDiagnosticMessage)
                     .SetDefaultInfoImportance(defaultInfoImportance);
 

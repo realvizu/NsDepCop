@@ -46,7 +46,7 @@ namespace Codartis.NsDepCop.ConsoleHost
         {
             var directoryPath = Path.GetDirectoryName(options.CsprojFile);
 
-            var typeDependencyEnumerator = new RoslynTypeDependencyEnumerator(LogInfoToConsole, LogDiagnosticToConsole);
+            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogInfoToConsole, LogDiagnosticToConsole);
             var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogInfoToConsole, LogDiagnosticToConsole);
 
             return options.UseSingleFileConfig
