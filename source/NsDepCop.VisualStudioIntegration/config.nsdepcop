@@ -2,6 +2,4 @@
 <NsDepCopConfig InheritanceDepth="1">
     <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.Interface.*" />
     <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.Factory" />
-    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.ParserAdapter.Roslyn1x" />
-    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Microsoft.CodeAnalysis.*" />
 </NsDepCopConfig>

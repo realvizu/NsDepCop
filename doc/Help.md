@@ -10,7 +10,7 @@
 ## Dependency rules
 
 * Allowed and disallowed dependencies are described with dependency rules in config files. 
-* The rule config file must be named **config.nsdepcop** and must be placed next to the csproj file.
+* The rule config file must be named **config.nsdepcop** and must be placed next to the C# project file.
 * The default (and recommended) approach is [**whitelisting**](#whitelisting), that is, if a dependency is not explicitly allowed then it is disallowed. (See also: [blacklisting](#blacklisting)).
 * The config file can inherit other config files from parent folders, see [**config inheritance**](#config-inheritance)
 
@@ -186,7 +186,7 @@ See the XSD schema of config.nsdepcop [here](../source/NsDepCop.Setup/NsDepCopCo
 
 ## Machine-wide MSBuild integration
 * This is a legacy option in the MSI installer and requires admin privilege.
-* Hooks into the MSBuild C# build process by modifying the "Custom.After.Microsoft.CSharp.targets" file. It does not modify any csproj files.
+* Hooks into the MSBuild C# build process by modifying the "Custom.After.Microsoft.CSharp.targets" file. It does not modify any C# project files.
 * Runs NsDepCop when building any C# project that has a config.nsdepcop file.
 * The drawback of this method is that you have to install the tool on every environment where you want to use it.
 * The NuGet (per-project MSBuild integration) approach is much better because that works in every environment with zero install: the tool gets pulled down by the nuget package restore.

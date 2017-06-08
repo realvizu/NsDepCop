@@ -21,7 +21,7 @@ To Do|Correct the reported issues and run the build again. Or set the MaxIssueCo
 Title|No config file found, analysis skipped.
 :-|:-
 Severity|Info
-Explanation|If there's no config.nsdepcop file next to the csproj file then NsDepCop does not perform analysis.
+Explanation|If there's no config.nsdepcop file next to the C# project file then NsDepCop does not perform analysis.
 To Do|None, this is just an informational message.
 
 ### NSDEPCOP04
@@ -29,7 +29,7 @@ To Do|None, this is just an informational message.
 Title|Analysis is disabled in the nsdepcop config file.
 :-|:-
 Severity|Info
-Explanation|There is a config.nsdepcop file next to the csproj file, but it contains IsEnabled="False".
+Explanation|There is a config.nsdepcop file next to the C# project file, but it contains IsEnabled="False".
 To Do|None, this is just an informational message.
 
 ### NSDEPCOP05

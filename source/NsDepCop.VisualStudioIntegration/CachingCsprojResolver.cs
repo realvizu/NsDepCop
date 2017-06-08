@@ -6,7 +6,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// <summary>
     /// Finds the C# project file (csproj) that a source file belongs to and caches the results.
     /// </summary>
-    internal class CachingCsprojResolver : ICsprojResolver
+    public class CachingCsprojResolver : ICsprojResolver
     {
         /// <summary>
         /// The resolver that this class delegates to.

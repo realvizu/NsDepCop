@@ -29,21 +29,21 @@ namespace Codartis.NsDepCop.MsBuildTask
 
         /// <summary>
         /// MsBuild task item list that contains the name and full path 
-        /// of the assemblies referenced in the current csproj.
+        /// of the assemblies referenced in the current project.
         /// </summary>
         [Required]
         public ITaskItem[] ReferencePath { get; set; }
 
         /// <summary>
         /// MsBuild task item list that contains the name and relative path
-        /// of the source files in the current csproj.
+        /// of the source files in the current project.
         /// The paths are relative to the BaseDirectory.
         /// </summary>
         [Required]
         public ITaskItem[] Compile { get; set; }
 
         /// <summary>
-        /// MsBuild task item that contains the full path of the directory of the csproj file.
+        /// MsBuild task item that contains the full path of the directory of the project file.
         /// </summary>
         [Required]
         public ITaskItem BaseDirectory { get; set; }

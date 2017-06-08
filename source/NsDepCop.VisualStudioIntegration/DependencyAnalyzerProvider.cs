@@ -11,7 +11,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// Creates and stores dependency analyzers for C# projects.
     /// Ensures that the analyzers' configs are always refreshed.
     /// </summary>
-    internal class DependencyAnalyzerProvider : IDependencyAnalyzerProvider
+    public class DependencyAnalyzerProvider : IDependencyAnalyzerProvider
     {
         private readonly IDependencyAnalyzerFactory _dependencyAnalyzerFactory;
 

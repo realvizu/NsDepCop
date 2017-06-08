@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// <summary>
     /// Finds the C# project file (csproj) that a source file belongs to.
     /// </summary>
-    internal class CsprojResolver : ICsprojResolver
+    public class CsprojResolver : ICsprojResolver
     {
         /// <summary>
         /// Callback for emitting info messages;

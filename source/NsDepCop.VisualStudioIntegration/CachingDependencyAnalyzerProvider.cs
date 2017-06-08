@@ -8,7 +8,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// <summary>
     /// Retrieves dependency analyzers and caches them for a certain time span.
     /// </summary>
-    internal class CachingDependencyAnalyzerProvider : IDependencyAnalyzerProvider
+    public class CachingDependencyAnalyzerProvider : IDependencyAnalyzerProvider
     {
         private readonly IDependencyAnalyzerProvider _dependencyAnalyzerProvider;
         private readonly IDateTimeProvider _dateTimeProvider;

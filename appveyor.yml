@@ -33,5 +33,6 @@ test:
   assemblies: '**\*Test.dll'
 
 artifacts:
-- path: 'source\NsDepCop.VisualStudioIntegration.Vs2017\bin\$(configuration)\NsDepCop.vsix'
+- path: 'source\NsDepCop.VisualStudioIntegration.Vs2015\bin\$(configuration)\NsDepCop*.vsix'
+- path: 'source\NsDepCop.VisualStudioIntegration.Vs2017\bin\$(configuration)\NsDepCop*.vsix'
 - path: 'source\NsDepCop.NuGet\bin\$(configuration)\NsDepCop*.nupkg'
