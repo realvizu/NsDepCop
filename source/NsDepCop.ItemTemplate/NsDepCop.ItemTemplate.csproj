@@ -28,7 +28,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NsDepCop.ItemTemplate</RootNamespace>
     <AssemblyName>NsDepCop.ItemTemplate</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
@@ -71,7 +71,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config.nsdepcop" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="NsDepCop.ItemTemplate.vstemplate">
