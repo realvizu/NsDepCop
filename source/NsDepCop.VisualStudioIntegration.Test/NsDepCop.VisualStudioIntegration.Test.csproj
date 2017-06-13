@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Codartis.NsDepCop.VisualStudioIntegration.Test</RootNamespace>
     <AssemblyName>NsDepCop.VisualStudioIntegration.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,10 +60,8 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="CsprojResolverTests.cs" />
     <Compile Include="DependencyAnalyzerProviderTests.cs" />
     <Compile Include="CachingDependencyAnalyzerProviderTests.cs" />
-    <Compile Include="CachingCsprojResolverTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -74,47 +73,16 @@
       <Project>{c60a83ed-3d03-4179-a2d6-e9ab6263b99e}</Project>
       <Name>NsDepCop.TestUtil</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NsDepCop.VisualStudioIntegration\NsDepCop.VisualStudioIntegration.csproj">
-      <Project>{86a0b958-2501-440c-9d82-93741cefd6cc}</Project>
-      <Name>NsDepCop.VisualStudioIntegration</Name>
+    <ProjectReference Include="..\NsDepCop.VisualStudioIntegration.Vs2015\NsDepCop.VisualStudioIntegration.Vs2015.csproj">
+      <Project>{9e294e04-7b01-4aae-810f-56c00b45a939}</Project>
+      <Name>NsDepCop.VisualStudioIntegration.Vs2015</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="CsprojResolverTests\GetCsprojFile_FoundInSameFolder\matching.csproj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CsprojResolverTests\GetCsprojFile_FoundInSameFolder\non-matching.csproj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CsprojResolverTests\GetCsprojFile_FoundInSameFolder\erronous.csproj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CsprojResolverTests\GetCsprojFile_FoundInSameFolder\non-matching2.csproj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CsprojResolverTests\GetCsprojFile_FoundOneFolderHigher\Level1\placeholder.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CsprojResolverTests\GetCsprojFile_FoundOneFolderHigher\non-matching2.csproj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CsprojResolverTests\GetCsprojFile_FoundOneFolderHigher\non-matching.csproj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CsprojResolverTests\GetCsprojFile_FoundOneFolderHigher\matching.csproj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CsprojResolverTests\GetCsprojFile_NotFound\non-matching.csproj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="CsprojResolverTests\GetCsprojFile_NotFound\non-matching2.csproj">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

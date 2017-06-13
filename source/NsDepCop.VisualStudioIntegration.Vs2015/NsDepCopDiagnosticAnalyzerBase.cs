@@ -10,6 +10,8 @@ using Codartis.NsDepCop.Core.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Shell;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
@@ -25,7 +27,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     {
         private static readonly TimeSpan AnalyzerCachingTimeSpan = TimeSpan.FromMilliseconds(1000);
 
-        private readonly ICsprojResolver _csprojResolver;
+        private readonly IProjectFileResolver _projectFileResolver;
         private readonly IDependencyAnalyzerProvider _analyzerProvider;
 
         /// <summary>
@@ -42,7 +44,15 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         protected NsDepCopDiagnosticAnalyzerBase(ITypeDependencyEnumerator typeDependencyEnumerator)
         {
-            _csprojResolver = CreateCsprojResolver();
+            var serviceProvider = ServiceProvider.GlobalProvider;
+            if (serviceProvider == null)
+                throw new Exception("ServiceProvider.GlobalProvider is null.");
+
+            var componentModel = (IComponentModel)serviceProvider.GetService(typeof(SComponentModel));
+            if (componentModel == null)
+                throw new Exception("SComponentModel is null.");
+
+            _projectFileResolver = CreateProjectFileResolver(componentModel);
             _analyzerProvider = CreateDependencyAnalyzerProvider(typeDependencyEnumerator);
         }
 
@@ -73,14 +83,15 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
             var syntaxNode = context.Node;
             var semanticModel = context.SemanticModel;
-            var sourceFilePath = syntaxNode.SyntaxTree.FilePath;
             var assemblyName = semanticModel.Compilation.AssemblyName;
 
-            var csprojFilePath = _csprojResolver.GetCsprojFile(sourceFilePath, assemblyName);
-            if (csprojFilePath == null)
+            var projectFilePath = _projectFileResolver.FindByAssemblyName(assemblyName);
+            if (projectFilePath == null)
                 return;
 
-            var dependencyAnalyzer = _analyzerProvider.GetDependencyAnalyzer(csprojFilePath);
+            Debug.WriteLine($"{syntaxNode.SyntaxTree.FilePath}, {assemblyName}, {projectFilePath}");
+
+            var dependencyAnalyzer = _analyzerProvider.GetDependencyAnalyzer(projectFilePath);
             if (dependencyAnalyzer == null)
                 return;
 
@@ -173,9 +184,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static int GetWarningLevel(DiagnosticSeverity severity) => severity == DiagnosticSeverity.Error ? 0 : 1;
 
-        private static CachingCsprojResolver CreateCsprojResolver()
+        private static IProjectFileResolver CreateProjectFileResolver(IComponentModel componentModel)
         {
-            return new CachingCsprojResolver(new CsprojResolver(LogToTrace, LogToDebug));
+            return new VisualStudioWorkspaceProjectFileResolver(componentModel, LogToTrace, LogToDebug);
         }
 
         private static CachingDependencyAnalyzerProvider CreateDependencyAnalyzerProvider(ITypeDependencyEnumerator typeDependencyEnumerator)

@@ -4,4 +4,5 @@
     <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.Core.Factory" />
     <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Codartis.NsDepCop.ParserAdapter.Roslyn2x" />
     <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Microsoft.CodeAnalysis.*" />
+    <Allowed From="Codartis.NsDepCop.VisualStudioIntegration" To="Microsoft.VisualStudio.*" />
 </NsDepCopConfig>
