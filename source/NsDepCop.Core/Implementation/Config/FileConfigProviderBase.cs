@@ -20,10 +20,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public string ConfigFilePath { get; }
 
-        protected FileConfigProviderBase(string configFilePath,
-            MessageHandler infoMessageHandler,
-            MessageHandler diagnosticMessageHandler)
-            : base(infoMessageHandler, diagnosticMessageHandler)
+        protected FileConfigProviderBase(string configFilePath, MessageHandler traceMessageHandler)
+            : base(traceMessageHandler)
         {
             ConfigFilePath = configFilePath;
         }
@@ -47,7 +45,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (!HasConfigFileChanged())
                 return _lastConfigLoadResult;
 
-            DiagnosticMessageHandler?.Invoke($"Refreshing config {this}.");
+            LogTraceMessage($"Refreshing config {this}.");
             return LoadConfigCore();
         }
 
@@ -68,7 +66,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             }
             catch (Exception e)
             {
-                InfoMessageHandler?.Invoke($"BuildConfig exception: {e}");
+                LogTraceMessage($"BuildConfig exception: {e}");
                 return ConfigLoadResult.CreateWithError(e);
             }
         }
@@ -85,5 +83,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             return File.Exists(ConfigFilePath)
                 && _configLastLoadUtc < File.GetLastWriteTimeUtc(ConfigFilePath);
         }
+
+        private void LogTraceMessage(string message) => TraceMessageHandler?.Invoke(new[] { message });
     }
 }

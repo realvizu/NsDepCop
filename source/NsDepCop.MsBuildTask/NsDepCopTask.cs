@@ -73,15 +73,15 @@ namespace Codartis.NsDepCop.MsBuildTask
         {
             try
             {
-                LogDiagnosticMessages(GetInputParameterDiagnosticMessages());
+                LogTraceMessage(GetInputParameterDiagnosticMessages());
 
                 var configFolderPath = BaseDirectory.ItemSpec;
 
                 var defaultInfoImportance = Parse<Importance>(InfoImportance.GetValue());
                 _infoImportance = defaultInfoImportance?.ToMessageImportance() ?? MessageImportance.Normal;
 
-                var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogInfoMessage, LogDiagnosticMessage);
-                var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogInfoMessage, LogDiagnosticMessage)
+                var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogTraceMessage);
+                var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogTraceMessage)
                     .SetDefaultInfoImportance(defaultInfoImportance);
 
                 using (var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(configFolderPath))
@@ -142,7 +142,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             var endTime = DateTime.Now;
             LogIssue(TaskFinishedIssue, endTime - startTime);
 
-            LogDiagnosticMessages(GetCacheStatisticsMessage(dependencyAnalyzer));
+            LogTraceMessage(GetCacheStatisticsMessage(dependencyAnalyzer));
 
             var errorIssueDetected = issuesReported > 0 && config.IssueKind == IssueKind.Error;
             return !errorIssueDetected;
@@ -170,7 +170,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             return issueCount;
         }
 
-        private void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T messageParam = default(T), 
+        private void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T messageParam = default(T),
             IssueKind? issueKind = null, SourceSegment sourceSegment = null)
         {
             LogIssue(issueDescriptor, issueDescriptor.GetDynamicDescription(messageParam), issueKind, sourceSegment);
@@ -191,20 +191,9 @@ namespace Codartis.NsDepCop.MsBuildTask
             LogBuildEvent(issueKind.Value, message, _infoImportance, code, path, startLine, startColumn, endLine, endColumn);
         }
 
-        private void LogDiagnosticMessages(IEnumerable<string> messages)
+        private void LogTraceMessage(IEnumerable<string> messages)
         {
-            foreach (var message in messages)
-                LogDiagnosticMessage(message);
-        }
-
-        private void LogDiagnosticMessage(string message)
-        {
-            LogBuildEvent(IssueKind.Info, message, MessageImportance.Low);
-        }
-
-        private void LogInfoMessage(string message)
-        {
-            LogBuildEvent(IssueKind.Info, message, _infoImportance);
+            LogBuildEvent(IssueKind.Info, string.Join(Environment.NewLine, messages), MessageImportance.Low);
         }
 
         private void LogBuildEvent(IssueKind issueKind, string message, MessageImportance messageImportance, string code = null,
@@ -224,7 +213,7 @@ namespace Codartis.NsDepCop.MsBuildTask
 
                 default:
                     BuildEngine.LogMessageEvent(
-                        new BuildMessageEventArgs(null, code, path, startLine, startColumn, endLine, endColumn, 
+                        new BuildMessageEventArgs(null, code, path, startLine, startColumn, endLine, endColumn,
                             $"[{ProductConstants.ToolName}] {message}", code, ProductConstants.ToolName, messageImportance));
                     break;
             }

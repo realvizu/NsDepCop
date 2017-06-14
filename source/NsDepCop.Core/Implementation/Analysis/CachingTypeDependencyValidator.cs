@@ -10,21 +10,17 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// </summary>
     internal class CachingTypeDependencyValidator : TypeDependencyValidator, ICacheStatisticsProvider
     {
+        private readonly MessageHandler _traceMessageHandler;
         private readonly ConcurrentDictionary<TypeDependency, bool> _dependencyValidationCache;
-        private readonly MessageHandler _infoMessageHandler;
-        private readonly MessageHandler _diagnosticMessageHandler;
 
         public int HitCount { get; private set; }
         public int MissCount { get; private set; }
 
-        public CachingTypeDependencyValidator(IDependencyRules dependencyRules,
-            MessageHandler infoMessageHandler,
-            MessageHandler diagnosticMessageHandler)
+        public CachingTypeDependencyValidator(IDependencyRules dependencyRules, MessageHandler traceMessageHandler)
             : base(dependencyRules)
         {
+            _traceMessageHandler = traceMessageHandler;
             _dependencyValidationCache = new ConcurrentDictionary<TypeDependency, bool>();
-            _infoMessageHandler = infoMessageHandler;
-            _diagnosticMessageHandler = diagnosticMessageHandler;
         }
 
         public double EfficiencyPercent => MathHelper.CalculatePercent(HitCount, HitCount + MissCount);
@@ -40,7 +36,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             if (added)
             {
                 MissCount++;
-                _diagnosticMessageHandler?.Invoke($"Dependency {typeDependency} added to cache as {isAllowedDependency}.");
+                LogTraceMessage($"Dependency {typeDependency} added to cache as {isAllowedDependency}.");
             }
             else
             {
@@ -50,5 +46,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             return isAllowedDependency;
         }
 
+        private void LogTraceMessage(string message) => _traceMessageHandler?.Invoke(new[] { message });
     }
 }

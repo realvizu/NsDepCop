@@ -15,18 +15,12 @@ namespace Codartis.NsDepCop.ParserAdapter
     public abstract class RoslynTypeDependencyEnumeratorBase : ITypeDependencyEnumerator
     {
         private readonly ISyntaxNodeAnalyzer _syntaxNodeAnalyzer;
-        private readonly MessageHandler _infoMessageHandler;
-        private readonly MessageHandler _diagnosticMessageHandler;
+        private readonly MessageHandler _traceMessageHandler;
 
-        protected RoslynTypeDependencyEnumeratorBase(ISyntaxNodeAnalyzer syntaxNodeAnalyzer,
-            MessageHandler infoMessageHandler, MessageHandler diagnosticMessageHandler)
+        protected RoslynTypeDependencyEnumeratorBase(ISyntaxNodeAnalyzer syntaxNodeAnalyzer, MessageHandler traceMessageHandler)
         {
-            if (syntaxNodeAnalyzer == null)
-                throw new ArgumentNullException(nameof(syntaxNodeAnalyzer));
-
-            _syntaxNodeAnalyzer = syntaxNodeAnalyzer;
-            _infoMessageHandler = infoMessageHandler;
-            _diagnosticMessageHandler = diagnosticMessageHandler;
+            _syntaxNodeAnalyzer = syntaxNodeAnalyzer ?? throw new ArgumentNullException(nameof(syntaxNodeAnalyzer));
+            _traceMessageHandler = traceMessageHandler;
         }
 
         public IEnumerable<TypeDependency> GetTypeDependencies(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
@@ -34,7 +28,7 @@ namespace Codartis.NsDepCop.ParserAdapter
             var referencedAssemblies = referencedAssemblyPaths.Select(LoadMetadata).Where(i => i != null).ToList();
             var syntaxTrees = sourceFilePaths.Select(ParseFile).Where(i => i != null).ToList();
 
-            var compilation = CSharpCompilation.Create("NsDepCopProject", syntaxTrees, referencedAssemblies, 
+            var compilation = CSharpCompilation.Create("NsDepCopProject", syntaxTrees, referencedAssemblies,
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, allowUnsafe: true));
 
             foreach (var syntaxTree in syntaxTrees)
@@ -50,7 +44,7 @@ namespace Codartis.NsDepCop.ParserAdapter
                 }
             }
         }
-        
+
         public IEnumerable<TypeDependency> GetTypeDependencies(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
         {
             return _syntaxNodeAnalyzer.GetTypeDependencies(Unwrap<SyntaxNode>(syntaxNode), Unwrap<SemanticModel>(semanticModel));
@@ -75,7 +69,7 @@ namespace Codartis.NsDepCop.ParserAdapter
             }
             catch (Exception e)
             {
-                _infoMessageHandler?.Invoke($"Error loading metadata file '{fileName}': {e}");
+                LogTraceMessage($"Error loading metadata file '{fileName}': {e}");
                 return null;
             }
         }
@@ -93,9 +87,11 @@ namespace Codartis.NsDepCop.ParserAdapter
             }
             catch (Exception e)
             {
-                _infoMessageHandler?.Invoke($"Error parsing source file '{fileName}': {e}");
+                LogTraceMessage($"Error parsing source file '{fileName}': {e}");
                 return null;
             }
         }
+
+        private void LogTraceMessage(string message) => _traceMessageHandler?.Invoke(new[] { message });
     }
 }

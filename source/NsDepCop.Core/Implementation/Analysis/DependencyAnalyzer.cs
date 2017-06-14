@@ -17,27 +17,21 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     internal class DependencyAnalyzer : IDependencyAnalyzer
     {
         private readonly IConfigProvider _configProvider;
+        private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
+        private readonly MessageHandler _traceMessageHandler;
         private readonly ReaderWriterLockSlim _configRefreshLock;
-        private readonly MessageHandler _infoMessageHandler;
-        private readonly MessageHandler _diagnosticMessageHandler;
 
         private IAnalyzerConfig _config;
         private CachingTypeDependencyValidator _typeDependencyValidator;
-        private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
 
-        public DependencyAnalyzer(IConfigProvider configProvider,
-            ITypeDependencyEnumerator typeDependencyEnumerator,
-            MessageHandler infoMessageHandler = null,
-            MessageHandler diagnosticMessageHandler = null)
+        public DependencyAnalyzer(IConfigProvider configProvider, 
+            ITypeDependencyEnumerator typeDependencyEnumerator, 
+            MessageHandler traceMessageHandler = null)
         {
-            if (configProvider == null)
-                throw new ArgumentNullException(nameof(configProvider));
-
-            _configProvider = configProvider;
+            _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
+            _typeDependencyEnumerator = typeDependencyEnumerator ?? throw new ArgumentNullException(nameof(typeDependencyEnumerator));
+            _traceMessageHandler = traceMessageHandler;
             _configRefreshLock = new ReaderWriterLockSlim();
-            _typeDependencyEnumerator = typeDependencyEnumerator;
-            _infoMessageHandler = infoMessageHandler;
-            _diagnosticMessageHandler = diagnosticMessageHandler;
 
             UpdateConfig();
         }
@@ -119,7 +113,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         private void UpdateAnalyzerLogic()
         {
             _typeDependencyValidator = ConfigState == AnalyzerConfigState.Enabled 
-                ? new CachingTypeDependencyValidator(_config, _infoMessageHandler, _diagnosticMessageHandler) 
+                ? new CachingTypeDependencyValidator(_config, _traceMessageHandler) 
                 : null;
         }
 

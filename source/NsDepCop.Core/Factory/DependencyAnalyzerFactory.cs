@@ -13,19 +13,13 @@ namespace Codartis.NsDepCop.Core.Factory
     public class DependencyAnalyzerFactory : IDependencyAnalyzerFactory, IConfigInitializer<DependencyAnalyzerFactory>
     {
         private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
-        private readonly MessageHandler _infoMessageHandler;
-        private readonly MessageHandler _diagnosticMessageHandler;
+        private readonly MessageHandler _traceMessageHandler;
         private Importance? _defaultInfoImportance;
 
-        public DependencyAnalyzerFactory(ITypeDependencyEnumerator typeDependencyEnumerator,
-            MessageHandler infoMessageHandler = null, MessageHandler diagnosticMessageHandler = null)
+        public DependencyAnalyzerFactory(ITypeDependencyEnumerator typeDependencyEnumerator, MessageHandler traceMessageHandler = null)
         {
-            if (typeDependencyEnumerator == null)
-                throw new ArgumentNullException(nameof(typeDependencyEnumerator));
-
-            _typeDependencyEnumerator = typeDependencyEnumerator;
-            _infoMessageHandler = infoMessageHandler;
-            _diagnosticMessageHandler = diagnosticMessageHandler;
+            _typeDependencyEnumerator = typeDependencyEnumerator ?? throw new ArgumentNullException(nameof(typeDependencyEnumerator));
+            _traceMessageHandler = traceMessageHandler;
         }
 
         public DependencyAnalyzerFactory SetDefaultInfoImportance(Importance? defaultInfoImportance)
@@ -36,16 +30,16 @@ namespace Codartis.NsDepCop.Core.Factory
 
         public IDependencyAnalyzer CreateFromXmlConfigFile(string configFilePath)
         {
-            var configProvider = new XmlFileConfigProvider(configFilePath, _infoMessageHandler, _diagnosticMessageHandler);
+            var configProvider = new XmlFileConfigProvider(configFilePath, _traceMessageHandler);
             ApplyConfigDefaults(configProvider);
-            return new DependencyAnalyzer(configProvider, _typeDependencyEnumerator);
+            return new DependencyAnalyzer(configProvider, _typeDependencyEnumerator, _traceMessageHandler);
         }
 
         public IDependencyAnalyzer CreateFromMultiLevelXmlConfigFile(string folderPath)
         {
-            var configProvider = new MultiLevelXmlFileConfigProvider(folderPath, _infoMessageHandler, _diagnosticMessageHandler);
+            var configProvider = new MultiLevelXmlFileConfigProvider(folderPath, _traceMessageHandler);
             ApplyConfigDefaults(configProvider);
-            return new DependencyAnalyzer(configProvider, _typeDependencyEnumerator);
+            return new DependencyAnalyzer(configProvider, _typeDependencyEnumerator, _traceMessageHandler);
         }
 
         private void ApplyConfigDefaults(ConfigProviderBase configProvider)

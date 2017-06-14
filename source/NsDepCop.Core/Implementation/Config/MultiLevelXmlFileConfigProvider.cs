@@ -31,10 +31,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public string ProjectFolder { get; }
 
-        public MultiLevelXmlFileConfigProvider(string projectFolder,
-            MessageHandler infoMessageHandler = null,
-            MessageHandler diagnosticMessageHandler = null)
-            : base(infoMessageHandler, diagnosticMessageHandler)
+        public MultiLevelXmlFileConfigProvider(string projectFolder, MessageHandler traceMessageHandler = null)
+            : base(traceMessageHandler)
         {
             ProjectFolder = projectFolder;
         }
@@ -55,9 +53,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         protected override ConfigLoadResult LoadConfigCore()
         {
-            DumpHelper.Dump(DiagnosticMessageHandler, $"Loading config {this}");
+            LogTraceMessage($"Loading config {this}");
 
-            var projectLevelConfigProvider = new XmlFileConfigProvider(GetConfigFilePath(ProjectFolder), DiagnosticMessageHandler);
+            var projectLevelConfigProvider = new XmlFileConfigProvider(GetConfigFilePath(ProjectFolder), TraceMessageHandler);
 
             _fileConfigProviders = CreateFileConfigProviderList(projectLevelConfigProvider, ProjectFolder);
 
@@ -69,7 +67,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (!AnyChildConfigChanged())
                 return _lastConfigLoadResult;
 
-            DumpHelper.Dump(DiagnosticMessageHandler, $"Refreshing config {this}.");
+            LogTraceMessage($"Refreshing config {this}.");
 
             var projectLevelConfigProvider = _fileConfigProviders[0];
             projectLevelConfigProvider.RefreshConfig();
@@ -92,8 +90,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             _lastInheritanceDepth = InheritanceDepth;
             _lastConfigLoadResult = CombineFileConfigProviders();
 
-            DumpHelper.Dump(DiagnosticMessageHandler, "Effective config:", 1);
-            DumpHelper.Dump(DiagnosticMessageHandler, _lastConfigLoadResult.ToStrings(), 2);
+            LogTraceMessage(IndentHelper.Indent("Effective config:", 1).Concat(IndentHelper.Indent(_lastConfigLoadResult.ToStrings(), 2)));
 
             return _lastConfigLoadResult;
         }
@@ -107,7 +104,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             {
                 var childConfigState = childConfigProvider.ConfigState;
 
-                DumpHelper.Dump(DiagnosticMessageHandler, $"Combining {childConfigProvider}, state={childConfigState}", 1);
+                LogTraceMessage(IndentHelper.Indent($"Combining {childConfigProvider}, state={childConfigState}", 1));
 
                 switch (childConfigState)
                 {
@@ -124,7 +121,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
                         var childConfigBuilder = childConfigProvider.ConfigBuilder;
                         configBuilder.Combine(childConfigBuilder);
-                        DumpHelper.Dump(DiagnosticMessageHandler, childConfigBuilder.ToStrings(), 2);
+                        LogTraceMessage(IndentHelper.Indent(childConfigBuilder.ToStrings(), 2));
                         break;
 
                     case AnalyzerConfigState.ConfigError:
@@ -142,7 +139,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         private AnalyzerConfigBuilder CreateAnalyzerConfigBuilder()
         {
-            if (DefaultInfoImportance.HasValue) DumpHelper.Dump(DiagnosticMessageHandler, $"DefaultInfoImportance={DefaultInfoImportance}", 1);
+            if (DefaultInfoImportance.HasValue)
+                LogTraceMessage(IndentHelper.Indent($"DefaultInfoImportance={DefaultInfoImportance}", 1));
 
             return new AnalyzerConfigBuilder().SetDefaultInfoImportance(DefaultInfoImportance);
         }
@@ -153,7 +151,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             var fileConfigProviders = new List<XmlFileConfigProvider> { firstConfigProvider };
 
-            DumpHelper.Dump(DiagnosticMessageHandler, $"InheritanceDepth={firstConfigProvider.InheritanceDepth}", 1);
+            LogTraceMessage(IndentHelper.Indent($"InheritanceDepth={firstConfigProvider.InheritanceDepth}", 1));
 
             var currentFolder = startFolderPath;
             for (var i = 0; i < firstConfigProvider.InheritanceDepth; i++)
@@ -162,7 +160,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 if (string.IsNullOrWhiteSpace(currentFolder))
                     break;
 
-                var higherLevelConfigProvider = new XmlFileConfigProvider(GetConfigFilePath(currentFolder), DiagnosticMessageHandler);
+                var higherLevelConfigProvider = new XmlFileConfigProvider(GetConfigFilePath(currentFolder), TraceMessageHandler);
                 fileConfigProviders.Add(higherLevelConfigProvider);
             }
 
@@ -170,5 +168,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         }
 
         private static string GetConfigFilePath(string folderPath) => Path.Combine(folderPath, ProductConstants.DefaultConfigFileName);
+
+        private void LogTraceMessage(IEnumerable<string> messages) => TraceMessageHandler?.Invoke(messages);
+        private void LogTraceMessage(string message) => LogTraceMessage(new[] { message });
     }
 }

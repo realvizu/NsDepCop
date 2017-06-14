@@ -10,8 +10,7 @@ using Codartis.NsDepCop.Core.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
@@ -44,16 +43,11 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         protected NsDepCopDiagnosticAnalyzerBase(ITypeDependencyEnumerator typeDependencyEnumerator)
         {
-            var serviceProvider = ServiceProvider.GlobalProvider;
-            if (serviceProvider == null)
-                throw new Exception("ServiceProvider.GlobalProvider is null.");
+            if (typeDependencyEnumerator == null)
+                throw new ArgumentNullException(nameof(typeDependencyEnumerator));
 
-            var componentModel = (IComponentModel)serviceProvider.GetService(typeof(SComponentModel));
-            if (componentModel == null)
-                throw new Exception("SComponentModel is null.");
-
-            _projectFileResolver = CreateProjectFileResolver(componentModel);
             _analyzerProvider = CreateDependencyAnalyzerProvider(typeDependencyEnumerator);
+            _projectFileResolver = CreateProjectFileResolver();
         }
 
         public void Dispose()
@@ -68,11 +62,23 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode,
+            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNodeAndLogException,
                 SyntaxKind.IdentifierName,
                 SyntaxKind.GenericName);
 
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        }
+
+        private void AnalyzeSyntaxNodeAndLogException(SyntaxNodeAnalysisContext context)
+        {
+            try
+            {
+                AnalyzeSyntaxNode(context);
+            }
+            catch (Exception e)
+            {
+                LogExceptionToActivityLog(e);
+            }
         }
 
         private void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
@@ -88,8 +94,6 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             var projectFilePath = _projectFileResolver.FindByAssemblyName(assemblyName);
             if (projectFilePath == null)
                 return;
-
-            Debug.WriteLine($"{syntaxNode.SyntaxTree.FilePath}, {assemblyName}, {projectFilePath}");
 
             var dependencyAnalyzer = _analyzerProvider.GetDependencyAnalyzer(projectFilePath);
             if (dependencyAnalyzer == null)
@@ -184,19 +188,28 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static int GetWarningLevel(DiagnosticSeverity severity) => severity == DiagnosticSeverity.Error ? 0 : 1;
 
-        private static IProjectFileResolver CreateProjectFileResolver(IComponentModel componentModel)
+        private static IProjectFileResolver CreateProjectFileResolver()
         {
-            return new VisualStudioWorkspaceProjectFileResolver(componentModel, LogToTrace, LogToDebug);
+            return new WorkspaceProjectFileResolver(LogTraceMessage);
         }
 
         private static CachingDependencyAnalyzerProvider CreateDependencyAnalyzerProvider(ITypeDependencyEnumerator typeDependencyEnumerator)
         {
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogToTrace, LogToDebug);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogTraceMessage);
             var embeddedDependencyAnalyzerProvider = new DependencyAnalyzerProvider(dependencyAnalyzerFactory);
             return new CachingDependencyAnalyzerProvider(embeddedDependencyAnalyzerProvider, new DateTimeProvider(), AnalyzerCachingTimeSpan);
         }
 
-        protected static void LogToTrace(string message) => Trace.WriteLine($"[{ProductConstants.ToolName}] {message}");
-        protected static void LogToDebug(string message) => Debug.WriteLine($"[{ProductConstants.ToolName}] {message}");
+        private static void LogExceptionToActivityLog(Exception exception)
+        {
+            var vsActivityLog = VisualStudioServiceGateway.GetActivityLogService();
+            vsActivityLog.LogEntry((uint)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR, ProductConstants.ToolName, exception.ToString());
+        }
+
+        protected static void LogTraceMessage(IEnumerable<string> messages)
+        {
+            foreach (var message in messages)
+                Trace.WriteLine($"[{ProductConstants.ToolName}] {message}");
+        }
     }
 }

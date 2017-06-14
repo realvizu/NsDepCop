@@ -11,7 +11,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     public class NsDepCopDiagnosticAnalyzer : NsDepCopDiagnosticAnalyzerBase
     {
         public NsDepCopDiagnosticAnalyzer() 
-            : base (new Roslyn1TypeDependencyEnumerator(LogToTrace, LogToDebug))
+            : base (new Roslyn1TypeDependencyEnumerator(LogTraceMessage))
         {
         }
    }

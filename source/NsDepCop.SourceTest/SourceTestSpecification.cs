@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -65,13 +66,16 @@ namespace Codartis.NsDepCop.SourceTest
         private static IEnumerable<TypeDependency> GetIllegalDependencies(string baseFolder,
             IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
         {
-            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(DebugMessageHandler, DebugMessageHandler);
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, DebugMessageHandler, DebugMessageHandler);
+            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(DebugMessageHandler);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, DebugMessageHandler);
             var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(baseFolder);
             return dependencyAnalyzer.AnalyzeProject(sourceFiles, referencedAssemblies);
         }
 
-        private static void DebugMessageHandler(string i) => Debug.WriteLine(i);
+        private static void DebugMessageHandler(IEnumerable<string> messages)
+        {
+            Debug.WriteLine(string.Join(Environment.NewLine, messages));
+        }
 
         private static string GetTestFileFullPath(string testName)
         {

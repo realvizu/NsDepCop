@@ -252,7 +252,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CachingDependencyAnalyzerProvider.cs" />
-    <Compile Include="VisualStudioWorkspaceProjectFileResolver.cs" />
+    <Compile Include="VisualStudioServiceGateway.cs" />
+    <Compile Include="WorkspaceProjectFileResolver.cs" />
     <Compile Include="DependencyAnalyzerProvider.cs" />
     <Compile Include="IProjectFileResolver.cs" />
     <Compile Include="IDependencyAnalyzerProvider.cs" />

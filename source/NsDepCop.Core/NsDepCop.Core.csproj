@@ -66,7 +66,7 @@
     <Compile Include="Implementation\Config\DumpExtensions.cs" />
     <Compile Include="Interface\Config\IConfigInitializer.cs" />
     <Compile Include="Util\DateTimeProvider.cs" />
-    <Compile Include="Util\DumpHelper.cs" />
+    <Compile Include="Util\IndentHelper.cs" />
     <Compile Include="Util\FileHelper.cs" />
     <Compile Include="Implementation\Config\ConfigProviderBase.cs" />
     <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProvider.cs" />

@@ -7,8 +7,8 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn1x
     /// </summary>
     public class Roslyn1TypeDependencyEnumerator : RoslynTypeDependencyEnumeratorBase
     {
-        public Roslyn1TypeDependencyEnumerator(MessageHandler infoMessageHandler, MessageHandler diagnosticMessageHandler) 
-            : base(new SyntaxNodeAnalyzer(),  infoMessageHandler, diagnosticMessageHandler)
+        public Roslyn1TypeDependencyEnumerator(MessageHandler traceMessageHandler) 
+            : base(new SyntaxNodeAnalyzer(),  traceMessageHandler)
         {
         }
     }

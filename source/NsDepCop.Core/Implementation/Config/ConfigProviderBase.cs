@@ -20,14 +20,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         /// </summary>
         protected readonly object RefreshLockObject = new object();
 
-        protected MessageHandler InfoMessageHandler { get; }
-        protected MessageHandler DiagnosticMessageHandler { get; }
+        protected MessageHandler TraceMessageHandler { get; }
         protected Importance? DefaultInfoImportance { get; private set; }
 
-        protected ConfigProviderBase(MessageHandler infoMessageHandler, MessageHandler diagnosticMessageHandler)
+        protected ConfigProviderBase(MessageHandler traceMessageHandler)
         {
-            InfoMessageHandler = infoMessageHandler;
-            DiagnosticMessageHandler = diagnosticMessageHandler;
+            TraceMessageHandler = traceMessageHandler;
         }
 
         public ConfigProviderBase SetDefaultInfoImportance(Importance? defaultInfoImportance)

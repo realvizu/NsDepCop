@@ -22,8 +22,17 @@ namespace Codartis.NsDepCop.ConsoleHost
             if (!Parser.Default.ParseArguments(args, options))
                 return -1;
 
-            ValidateProject(options);
-            return 0;
+            try
+            {
+                ValidateProject(options);
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return -1;
         }
 
         private static void ValidateProject(CommandLineOptions options)
@@ -46,8 +55,8 @@ namespace Codartis.NsDepCop.ConsoleHost
         {
             var directoryPath = Path.GetDirectoryName(options.CsprojFile);
 
-            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogInfoToConsole, LogDiagnosticToConsole);
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogInfoToConsole, LogDiagnosticToConsole);
+            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogTraceToConsole);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogTraceToConsole);
 
             return options.UseSingleFileConfig
                 ? dependencyAnalyzerFactory.CreateFromXmlConfigFile(Path.Combine(directoryPath, "config.nsdepcop"))
@@ -69,14 +78,10 @@ namespace Codartis.NsDepCop.ConsoleHost
             return elapsedTimeSpan;
         }
 
-        private static void LogInfoToConsole(string message)
+        private static void LogTraceToConsole(IEnumerable<string> messages)
         {
-            Console.WriteLine(message);
-        }
-
-        private static void LogDiagnosticToConsole(string message)
-        {
-            if (_isVerbose) Console.WriteLine(message);
+            if (_isVerbose)
+                Console.WriteLine(string.Join(Environment.NewLine, messages));
         }
 
         private static void DumpIllegalDependencies(IReadOnlyCollection<TypeDependency> typeDependencies)

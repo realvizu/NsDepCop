@@ -284,8 +284,11 @@
     <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\RoslynSyntaxNode.cs">
       <Link>RoslynSyntaxNode.cs</Link>
     </Compile>
-    <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\VisualStudioWorkspaceProjectFileResolver.cs">
-      <Link>VisualStudioWorkspaceProjectFileResolver.cs</Link>
+    <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\VisualStudioServiceGateway.cs">
+      <Link>VisualStudioServiceGateway.cs</Link>
+    </Compile>
+    <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\WorkspaceProjectFileResolver.cs">
+      <Link>WorkspaceProjectFileResolver.cs</Link>
     </Compile>
     <Compile Include="NsDepCopDiagnosticAnalyzer.cs" />
   </ItemGroup>

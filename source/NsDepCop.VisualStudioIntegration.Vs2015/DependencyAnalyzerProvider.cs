@@ -22,10 +22,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public DependencyAnalyzerProvider(IDependencyAnalyzerFactory dependencyAnalyzerFactory)
         {
-            if (dependencyAnalyzerFactory == null)
-                throw new ArgumentNullException(nameof(dependencyAnalyzerFactory));
-
-            _dependencyAnalyzerFactory = dependencyAnalyzerFactory;
+            _dependencyAnalyzerFactory = dependencyAnalyzerFactory ?? throw new ArgumentNullException(nameof(dependencyAnalyzerFactory));
             _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IDependencyAnalyzer>();
         }
 
