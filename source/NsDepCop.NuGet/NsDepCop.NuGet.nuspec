@@ -14,8 +14,8 @@
         <authors>Ferenc Vizkeleti</authors>
         <owners>Ferenc Vizkeleti</owners>
         <projectUrl>https://github.com/realvizu/NsDepCop</projectUrl>
-        <licenseUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/VS2015/LICENSE</licenseUrl>
-        <iconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/VS2015/images/icons/NsDepCop_128.png</iconUrl>
+        <licenseUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/LICENSE</licenseUrl>
+        <iconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <developmentDependency>true</developmentDependency>
         <copyright>Copyright 2013-2017 Ferenc Vizkeleti</copyright>
@@ -23,14 +23,10 @@
         <releaseNotes>
             New: C# 7 support.
         </releaseNotes>
-        <contentFiles>
-            <files include="any/any/config.nsdepcop" buildAction="None" copyToOutput="false" flatten="true" />
-        </contentFiles>    
     </metadata>
     <files>
         <file src="*.targets" target="build" />
         <file src="bin\$configuration$\*.dll" target="tools" exclude="bin\$configuration$\NsDepCop.NuGet.*" />
-        <file src="bin\$configuration$\config.nsdepcop" target="contentFiles\any\any\config.nsdepcop" />
         <file src="bin\$configuration$\config.nsdepcop" target="content\config.nsdepcop" />
     </files>
 </package>

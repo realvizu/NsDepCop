@@ -193,7 +193,8 @@ namespace Codartis.NsDepCop.MsBuildTask
 
         private void LogTraceMessage(IEnumerable<string> messages)
         {
-            LogBuildEvent(IssueKind.Info, string.Join(Environment.NewLine, messages), MessageImportance.Low);
+            foreach (var message in messages)
+                LogBuildEvent(IssueKind.Info, message, MessageImportance.Low);
         }
 
         private void LogBuildEvent(IssueKind issueKind, string message, MessageImportance messageImportance, string code = null,
