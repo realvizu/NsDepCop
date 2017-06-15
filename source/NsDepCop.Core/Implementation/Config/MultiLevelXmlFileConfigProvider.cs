@@ -128,7 +128,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                         return ConfigLoadResult.CreateWithError(childConfigProvider.ConfigException);
 
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(childConfigState), childConfigState, null);
+                        throw new ArgumentOutOfRangeException(nameof(childConfigState), childConfigState, "Unexpected value.");
                 }
             }
 

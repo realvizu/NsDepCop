@@ -24,8 +24,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 case DiagnosticSeverity.Warning:
                     return IssueKind.Warning;
                 default:
-                    throw new InvalidCastException(
-                        $"Cannot convert {diagnosticSeverity} to Codartis.NsDepCop.Core.IssueKind.");
+                    throw new ArgumentOutOfRangeException(nameof(diagnosticSeverity), diagnosticSeverity, "Unexpected value.");
             }
         }
 
@@ -47,8 +46,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 case IssueKind.Warning:
                     return DiagnosticSeverity.Warning;
                 default:
-                    throw new InvalidCastException(
-                        $"Cannot convert {issueKind} to Microsoft.CodeAnalysis.DiagnosticSeverity.");
+                    throw new ArgumentOutOfRangeException(nameof(issueKind), issueKind, "Unexpected value.");
             }
         }
     }

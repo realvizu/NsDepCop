@@ -62,7 +62,8 @@ namespace Codartis.NsDepCop.ParserAdapter
                 typeSymbol.IsAnonymousType)
                 yield break;
 
-            switch (typeSymbol.TypeKind)
+            var typeKind = typeSymbol.TypeKind;
+            switch (typeKind)
             {
                 case TypeKind.Array:
                     var arrayTypeSymbol = (IArrayTypeSymbol)typeSymbol;
@@ -113,7 +114,7 @@ namespace Codartis.NsDepCop.ParserAdapter
                     yield break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(typeSymbol), typeSymbol.TypeKind, "Unexpected TypeKind.");
+                    throw new ArgumentOutOfRangeException(nameof(typeKind), typeKind, "Unexpected value.");
             }
         }
 

@@ -23,7 +23,7 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         protected NamespaceSpecification(string namespaceSpecificationAsString, bool validate, Func<string, bool> validator)
         {
             if (namespaceSpecificationAsString == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(namespaceSpecificationAsString));
 
             if (validate && 
                 validator != null && 

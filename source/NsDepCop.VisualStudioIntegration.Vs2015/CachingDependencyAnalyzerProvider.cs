@@ -21,14 +21,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public CachingDependencyAnalyzerProvider(IDependencyAnalyzerProvider dependencyAnalyzerProvider, IDateTimeProvider dateTimeProvider, TimeSpan cacheTimeSpan)
         {
-            if (dependencyAnalyzerProvider == null)
-                throw new ArgumentNullException(nameof(dependencyAnalyzerProvider));
-
-            if (dateTimeProvider == null)
-                throw new ArgumentNullException(nameof(dateTimeProvider));
-
-            _dependencyAnalyzerProvider = dependencyAnalyzerProvider;
-            _dateTimeProvider = dateTimeProvider;
+            _dependencyAnalyzerProvider = dependencyAnalyzerProvider ?? throw new ArgumentNullException(nameof(dependencyAnalyzerProvider));
+            _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
             _cachingTimeSpan = cacheTimeSpan;
 
             _cache = new ConcurrentDictionary<string, CacheItem>();

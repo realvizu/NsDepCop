@@ -99,7 +99,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             if (dependencyAnalyzer == null)
                 return;
 
-            switch (dependencyAnalyzer.ConfigState)
+            var configState = dependencyAnalyzer.ConfigState;
+            switch (configState)
             {
                 case AnalyzerConfigState.NoConfig:
                     break;
@@ -118,7 +119,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                     break;
 
                 default:
-                    throw new Exception($"Unexpected ConfigState {dependencyAnalyzer.ConfigState}");
+                    throw new ArgumentOutOfRangeException(nameof(configState), configState, "Unexpected value.");
             }
         }
 

@@ -34,26 +34,16 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
 
         public TypeDependency(string fromNamespaceName, string fromTypeName, string toNamespaceName, string toTypeName, SourceSegment sourceSegment)
         {
-            if (fromNamespaceName == null)
-                throw new ArgumentNullException(nameof(fromNamespaceName));
-
             if (string.IsNullOrWhiteSpace(fromTypeName))
                 throw new ArgumentException("Should not be null or whitespace.", nameof(fromTypeName));
-
-            if (toNamespaceName==null)
-                throw new ArgumentNullException(nameof(toNamespaceName));
-
             if (string.IsNullOrWhiteSpace(toTypeName))
                 throw new ArgumentException("Should not be null or whitespace.", nameof(toTypeName));
 
-            if (sourceSegment == null)
-                throw new ArgumentNullException(nameof(sourceSegment));
-
-            FromNamespaceName = fromNamespaceName;
+            FromNamespaceName = fromNamespaceName ?? throw new ArgumentNullException(nameof(fromNamespaceName));
             FromTypeName = fromTypeName;
-            ToNamespaceName = toNamespaceName;
+            ToNamespaceName = toNamespaceName ?? throw new ArgumentNullException(nameof(toNamespaceName));
             ToTypeName = toTypeName;
-            SourceSegment = sourceSegment;
+            SourceSegment = sourceSegment ?? throw new ArgumentNullException(nameof(sourceSegment));
         }
 
         public override string ToString() => $"{FromNamespaceName}.{FromTypeName}->{ToNamespaceName}.{ToTypeName}";

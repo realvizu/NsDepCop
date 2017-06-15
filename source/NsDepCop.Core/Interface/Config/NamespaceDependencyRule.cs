@@ -27,14 +27,8 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// <param name="to">The target of the dependency.</param>
         public NamespaceDependencyRule(NamespaceSpecification from, NamespaceSpecification to)
         {
-            if (from == null)
-                throw new ArgumentNullException(nameof(@from));
-
-            if (to == null)
-                throw new ArgumentNullException(nameof(to));
-
-            From = from;
-            To = to;
+            From = from ?? throw new ArgumentNullException(nameof(from));
+            To = to ?? throw new ArgumentNullException(nameof(to));
         }
 
         /// <summary>

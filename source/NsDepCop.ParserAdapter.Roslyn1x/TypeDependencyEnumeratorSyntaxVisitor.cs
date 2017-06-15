@@ -34,13 +34,8 @@ namespace Codartis.NsDepCop.ParserAdapter
         /// <param name="syntaxNodeAnalyzer">Syntax node analyzer logic.</param>
         public TypeDependencyEnumeratorSyntaxVisitor(SemanticModel semanticModel, ISyntaxNodeAnalyzer syntaxNodeAnalyzer)
         {
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
-            if (syntaxNodeAnalyzer == null)
-                throw new ArgumentNullException(nameof(syntaxNodeAnalyzer));
-
-            _semanticModel = semanticModel;
-            _syntaxNodeAnalyzer = syntaxNodeAnalyzer;
+            _semanticModel = semanticModel ?? throw new ArgumentNullException(nameof(semanticModel));
+            _syntaxNodeAnalyzer = syntaxNodeAnalyzer ?? throw new ArgumentNullException(nameof(syntaxNodeAnalyzer));
 
             _typeDependencies = new List<TypeDependency>();
         }
