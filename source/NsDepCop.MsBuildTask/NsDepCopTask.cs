@@ -2,7 +2,10 @@
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Xml.Linq;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
@@ -58,6 +61,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// </summary>
         public ITaskItem InfoImportance { get; set; }
 
+        private AssemblyBindingRedirectMap _assemblyBindingRedirectMap;
         private MessageImportance _infoImportance;
 
         private IEnumerable<string> SourceFilePaths => Compile.ToList().Select(i => i.ItemSpec);
@@ -73,6 +77,10 @@ namespace Codartis.NsDepCop.MsBuildTask
         {
             try
             {
+                // Must handle assembly binding redirect because MsBuild does not provide it.
+                // See: https://github.com/Microsoft/msbuild/issues/1309
+                SetUpAssemblyBindingRedirect();
+
                 LogTraceMessage(GetInputParameterDiagnosticMessages());
 
                 var configFolderPath = BaseDirectory.ItemSpec;
@@ -249,6 +257,45 @@ namespace Codartis.NsDepCop.MsBuildTask
                 return result;
 
             return null;
+        }
+
+        /// <summary>
+        /// Sets up the manual handling of assembly binding redirects by loading the executing dll's config file
+        /// and hooking into the current AppDomain's AssemblyResolve events.
+        /// </summary>
+        private void SetUpAssemblyBindingRedirect()
+        {
+            var executingAssemblyConfigPath = Assembly.GetExecutingAssembly().Location + ".config";
+            var executingAssemblyConfigXml = LoadXml(executingAssemblyConfigPath);
+            _assemblyBindingRedirectMap = AssemblyBindingRedirectMap.ParseXml(executingAssemblyConfigXml);
+
+            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ResolveAssembly;
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+        }
+
+        /// <summary>
+        /// Called when assembly resolution fails.
+        /// Tries to load assemblies by applying the binding redirect info found in the executing assembly's config.
+        /// </summary>
+        /// <param name="sender">Unused.</param>
+        /// <param name="e">Assembly resolve event arguments.</param>
+        /// <returns>The loaded assembly or null.</returns>
+        private Assembly ResolveAssembly(object sender, ResolveEventArgs e)
+        {
+            var assemblyName = new AssemblyName(e.Name);
+
+            var redirectToVersion = _assemblyBindingRedirectMap.Find(assemblyName);
+            if (redirectToVersion == null || redirectToVersion == assemblyName.Version)
+                return null;
+
+            assemblyName.Version = redirectToVersion;
+            return Assembly.Load(assemblyName);
+        }
+
+        private static XDocument LoadXml(string xmlFilePath)
+        {
+            using (var stream = new FileStream(xmlFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                return XDocument.Load(stream);
         }
     }
 }

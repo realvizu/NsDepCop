@@ -27,6 +27,7 @@
     <files>
         <file src="*.targets" target="build" />
         <file src="bin\$configuration$\*.dll" target="tools" exclude="bin\$configuration$\NsDepCop.NuGet.*" />
+        <file src="bin\$configuration$\NsDepCop.MsBuildTask.dll.config" target="tools" />
         <file src="bin\$configuration$\config.nsdepcop" target="content\config.nsdepcop" />
     </files>
 </package>
