@@ -24,7 +24,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// </remarks>
     public abstract class NsDepCopDiagnosticAnalyzerBase : DiagnosticAnalyzer, IDisposable
     {
-        private static readonly TimeSpan AnalyzerCachingTimeSpan = TimeSpan.FromMilliseconds(1000);
+        private static readonly TimeSpan AnalyzerCachingTimeSpan = TimeSpan.FromMilliseconds(2000);
+        private static readonly TimeSpan ProjectFileCachingTimeSpan = TimeSpan.FromMilliseconds(2000);
 
         private readonly IProjectFileResolver _projectFileResolver;
         private readonly IDependencyAnalyzerProvider _analyzerProvider;
@@ -191,7 +192,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static IProjectFileResolver CreateProjectFileResolver()
         {
-            return new WorkspaceProjectFileResolver(LogTraceMessage);
+            var projectFileResolver = new WorkspaceProjectFileResolver(LogTraceMessage);
+            return new CachingProjectFileResolver(projectFileResolver, new DateTimeProvider(), ProjectFileCachingTimeSpan);
         }
 
         private static CachingDependencyAnalyzerProvider CreateDependencyAnalyzerProvider(ITypeDependencyEnumerator typeDependencyEnumerator)
