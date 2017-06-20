@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.ParserAdapter.Roslyn2x;
 using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
@@ -14,19 +12,19 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Codartis.NsDepCop.SourceTest
 {
-    internal class SourceTestSpecification : FileBasedTestsBase
+    internal abstract class SourceTestSpecificationBase : FileBasedTestsBase
     {
         private readonly string _name;
+        private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
         private readonly List<SourceLineSegment> _invalidLineSegments = new List<SourceLineSegment>();
 
-        private SourceTestSpecification(string name)
+        protected SourceTestSpecificationBase(string name, ITypeDependencyEnumerator typeDependencyEnumerator)
         {
             _name = name;
+            _typeDependencyEnumerator = typeDependencyEnumerator;
         }
 
-        public static SourceTestSpecification Create([CallerMemberName] string name = null) => new SourceTestSpecification(name);
-
-        public SourceTestSpecification ExpectInvalidSegment(int line, int startColumn, int endColumn)
+        public SourceTestSpecificationBase ExpectInvalidSegment(int line, int startColumn, int endColumn)
         {
             _invalidLineSegments.Add(new SourceLineSegment(line, startColumn, endColumn));
             return this;
@@ -40,6 +38,9 @@ namespace Codartis.NsDepCop.SourceTest
             ValidateCompilation(sourceFilePaths, referencedAssemblyPaths);
             AssertIllegalDependencies(sourceFilePaths, referencedAssemblyPaths);
         }
+
+        protected static void DebugMessageHandler(IEnumerable<string> messages)
+            => Debug.WriteLine(string.Join(Environment.NewLine, messages));
 
         private void ValidateCompilation(IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
         {
@@ -63,18 +64,12 @@ namespace Codartis.NsDepCop.SourceTest
                 (typeDependency, sourceLineSegment) => sourceLineSegment.Equals(typeDependency));
         }
 
-        private static IEnumerable<TypeDependency> GetIllegalDependencies(string baseFolder,
+        private IEnumerable<TypeDependency> GetIllegalDependencies(string baseFolder,
             IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
         {
-            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(DebugMessageHandler);
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, DebugMessageHandler);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(_typeDependencyEnumerator, DebugMessageHandler);
             var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(baseFolder);
             return dependencyAnalyzer.AnalyzeProject(sourceFiles, referencedAssemblies);
-        }
-
-        private static void DebugMessageHandler(IEnumerable<string> messages)
-        {
-            Debug.WriteLine(string.Join(Environment.NewLine, messages));
         }
 
         private static string GetTestFileFullPath(string testName)

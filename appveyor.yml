@@ -30,7 +30,7 @@ build:
   verbosity: minimal
 
 test:
-  assemblies: '**\*Test.dll'
+  assemblies: '**\*Test*.dll'
 
 artifacts:
 - path: 'source\NsDepCop.VisualStudioIntegration.Vs2015\bin\$(configuration)\NsDepCop*.vsix'

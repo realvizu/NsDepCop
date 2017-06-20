@@ -1,0 +1,278 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8F13F23A-CE64-49B0-851C-26E9CE7F4167}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Codartis.NsDepCop.SourceTest</RootNamespace>
+    <AssemblyName>NsDepCop.SourceTest.Roslyn1x</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FluentAssertions, Version=4.19.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.4.19.2\lib\net45\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentAssertions.Core, Version=4.19.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.4.19.2\lib\net45\FluentAssertions.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.2.2\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.1.2.2\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Reflection.Metadata, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.Metadata.1.2.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.assert, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.assert.2.2.0\lib\netstandard1.1\xunit.assert.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.core, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.extensibility.core.2.2.0\lib\netstandard1.1\xunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.execution.desktop, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.extensibility.execution.2.2.0\lib\net452\xunit.execution.desktop.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\include\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\include\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
+    <Content Include="..\NsDepCop.SourceTest.Roslyn2x\AliasQualifiedName\AliasQualifiedName.cs">
+      <Link>AliasQualifiedName\AliasQualifiedName.cs</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ArrayType\ArrayType.cs">
+      <Link>ArrayType\ArrayType.cs</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+      
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ObjectCreationExpression\ObjectCreationExpression.cs">
+          <Link>ObjectCreationExpression\ObjectCreationExpression.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\VeryComplexType\VeryComplexType.cs">
+          <Link>VeryComplexType\VeryComplexType.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\VarWithConstructedGenericType\VarWithConstructedGenericType.cs">
+          <Link>VarWithConstructedGenericType\VarWithConstructedGenericType.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Var\Var.cs">
+          <Link>Var\Var.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\QualifiedName\QualifiedName.cs">
+          <Link>QualifiedName\QualifiedName.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\PointerType\PointerType.cs">
+          <Link>PointerType\PointerType.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\NullableType\NullableType.cs">
+          <Link>NullableType\NullableType.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\NestedType\NestedType.cs">
+          <Link>NestedType\NestedType.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\MemberAccessExpression\MemberAccessExpression.cs">
+          <Link>MemberAccessExpression\MemberAccessExpression.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\InvocationWithTypeArg\InvocationWithTypeArg.cs">
+          <Link>InvocationWithTypeArg\InvocationWithTypeArg.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\InvocationExpression\InvocationExpression.cs">
+          <Link>InvocationExpression\InvocationExpression.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\GenericTypeArgument\GenericTypeArgument.cs">
+          <Link>GenericTypeArgument\GenericTypeArgument.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\GenericName\GenericName.cs">
+          <Link>GenericName\GenericName.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ExtensionMethodInvocation\ExtensionMethodInvocation.cs">
+          <Link>ExtensionMethodInvocation\ExtensionMethodInvocation.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\EveryUserDefinedTypeKind\EveryUserDefinedTypeKind.cs">
+          <Link>EveryUserDefinedTypeKind\EveryUserDefinedTypeKind.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ElementAccess\ElementAccess.cs">
+          <Link>ElementAccess\ElementAccess.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Delegates\Delegates.cs">
+          <Link>Delegates\Delegates.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Attributes\Attributes.cs">
+          <Link>Attributes\Attributes.cs</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+
+    <Compile Include="..\NsDepCop.SourceTest.Roslyn2x\SourceLineSegment.cs">
+      <Link>SourceLineSegment.cs</Link>
+    </Compile>
+    <Compile Include="..\NsDepCop.SourceTest.Roslyn2x\SourceTests.cs">
+      <Link>SourceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\NsDepCop.SourceTest.Roslyn2x\SourceTestSpecificationBase.cs">
+      <Link>SourceTestSpecificationBase.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SourceTestSpecification.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\NsDepCop.SourceTest.Roslyn2x\AliasQualifiedName\config.nsdepcop">
+      <Link>AliasQualifiedName\config.nsdepcop</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ArrayType\config.nsdepcop">
+      <Link>ArrayType\config.nsdepcop</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ObjectCreationExpression\config.nsdepcop">
+          <Link>ObjectCreationExpression\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\VeryComplexType\config.nsdepcop">
+          <Link>VeryComplexType\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\VarWithConstructedGenericType\config.nsdepcop">
+          <Link>VarWithConstructedGenericType\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Var\config.nsdepcop">
+          <Link>Var\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\QualifiedName\config.nsdepcop">
+          <Link>QualifiedName\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\PointerType\config.nsdepcop">
+          <Link>PointerType\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\NullableType\config.nsdepcop">
+          <Link>NullableType\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\NestedType\config.nsdepcop">
+          <Link>NestedType\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\MemberAccessExpression\config.nsdepcop">
+          <Link>MemberAccessExpression\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\InvocationWithTypeArg\config.nsdepcop">
+          <Link>InvocationWithTypeArg\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\InvocationExpression\config.nsdepcop">
+          <Link>InvocationExpression\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\GenericTypeArgument\config.nsdepcop">
+          <Link>GenericTypeArgument\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\GenericName\config.nsdepcop">
+          <Link>GenericName\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ExtensionMethodInvocation\config.nsdepcop">
+          <Link>ExtensionMethodInvocation\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\EveryUserDefinedTypeKind\config.nsdepcop">
+          <Link>EveryUserDefinedTypeKind\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ElementAccess\config.nsdepcop">
+          <Link>ElementAccess\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Delegates\config.nsdepcop">
+          <Link>Delegates\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Attributes\config.nsdepcop">
+          <Link>Attributes\config.nsdepcop</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">
+      <Project>{bc26589e-79b0-4f55-b64d-db11534d3476}</Project>
+      <Name>NsDepCop.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NsDepCop.ParserAdapter.Roslyn1x\NsDepCop.ParserAdapter.Roslyn1x.csproj">
+      <Project>{80771e79-4d7c-44e4-8813-2511254bdbad}</Project>
+      <Name>NsDepCop.ParserAdapter.Roslyn1x</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NsDepCop.TestUtil\NsDepCop.TestUtil.csproj">
+      <Project>{c60a83ed-3d03-4179-a2d6-e9ab6263b99e}</Project>
+      <Name>NsDepCop.TestUtil</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

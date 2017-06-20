@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Codartis.NsDepCop.SourceTest</RootNamespace>
-    <AssemblyName>NsDepCop.SourceTest</AssemblyName>
+    <AssemblyName>NsDepCop.SourceTest.Roslyn2x</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -177,8 +177,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="SourceLineSegment.cs" />
+    <Compile Include="Cs7SourceTests.cs" />
     <Compile Include="SourceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SourceTestSpecificationBase.cs" />
     <Compile Include="SourceTestSpecification.cs" />
     <Content Include="ObjectCreationExpression\ObjectCreationExpression.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
