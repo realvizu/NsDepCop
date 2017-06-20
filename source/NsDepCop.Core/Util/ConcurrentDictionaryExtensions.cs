@@ -22,10 +22,9 @@ namespace Codartis.NsDepCop.Core.Util
         public static TValue GetOrAdd<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict,
             TKey key, Func<TKey, TValue> generator, out bool added)
         {
-            TValue value;
             while (true)
             {
-                if (dict.TryGetValue(key, out value))
+                if (dict.TryGetValue(key, out TValue value))
                 {
                     added = false;
                     return value;

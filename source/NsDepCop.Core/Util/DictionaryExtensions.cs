@@ -4,7 +4,7 @@ using System.Linq;
 namespace Codartis.NsDepCop.Core.Util
 {
     /// <summary>
-    /// Static helper class that implements extension methods for a dictionary that has an enumerable value object.
+    /// Static helper class that implements extension methods for a dictionary whose value is a collection type.
     /// </summary>
     public static class DictionaryExtensions
     {

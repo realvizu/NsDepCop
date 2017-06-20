@@ -199,10 +199,15 @@ namespace Codartis.NsDepCop.MsBuildTask
             LogBuildEvent(issueKind.Value, message, _infoImportance, code, path, startLine, startColumn, endLine, endColumn);
         }
 
+        private void LogTraceMessage(string message)
+        {
+            LogBuildEvent(IssueKind.Info, message, MessageImportance.Low);
+        }
+
         private void LogTraceMessage(IEnumerable<string> messages)
         {
             foreach (var message in messages)
-                LogBuildEvent(IssueKind.Info, message, MessageImportance.Low);
+                LogTraceMessage(message);
         }
 
         private void LogBuildEvent(IssueKind issueKind, string message, MessageImportance messageImportance, string code = null,
@@ -265,12 +270,20 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// </summary>
         private void SetUpAssemblyBindingRedirect()
         {
-            var executingAssemblyConfigPath = Assembly.GetExecutingAssembly().Location + ".config";
-            var executingAssemblyConfigXml = LoadXml(executingAssemblyConfigPath);
-            _assemblyBindingRedirectMap = AssemblyBindingRedirectMap.ParseXml(executingAssemblyConfigXml);
+            try
+            {
+                var executingAssemblyConfigPath = Assembly.GetExecutingAssembly().Location + ".config";
+                var executingAssemblyConfigXml = LoadXml(executingAssemblyConfigPath);
+                _assemblyBindingRedirectMap = AssemblyBindingRedirectMap.ParseXml(executingAssemblyConfigXml);
 
-            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ResolveAssembly;
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+                AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ResolveAssembly;
+                AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+            }
+            catch (Exception e)
+            {
+                // If binding redirect handling cannot be established then silently fail back to the host provided service.
+                LogTraceMessage(e.ToString());
+            }
         }
 
         /// <summary>

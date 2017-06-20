@@ -9,7 +9,7 @@ using Codartis.NsDepCop.Core.Util;
 namespace Codartis.NsDepCop.Core.Implementation.Analysis
 {
     /// <summary>
-    /// Finds illegal type dependencies according to a dependency rule set.
+    /// Finds illegal type dependencies using a config and a type dependency enumerator. Enables config refresh.
     /// </summary>
     /// <remarks>
     /// Uses read-writer lock to avoid config refresh while running analysis.

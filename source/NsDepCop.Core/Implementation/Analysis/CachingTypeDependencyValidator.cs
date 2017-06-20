@@ -16,7 +16,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         public int HitCount { get; private set; }
         public int MissCount { get; private set; }
 
-        public CachingTypeDependencyValidator(IDependencyRules dependencyRules, MessageHandler traceMessageHandler)
+        public CachingTypeDependencyValidator(IDependencyRules dependencyRules, MessageHandler traceMessageHandler = null)
             : base(dependencyRules)
         {
             _traceMessageHandler = traceMessageHandler;

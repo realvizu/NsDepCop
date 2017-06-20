@@ -3,7 +3,10 @@ using Codartis.NsDepCop.Core.Interface.Config;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
 {
-    public static class DumpExtensions
+    /// <summary>
+    /// Static helper class for formatting rule config data into strings.
+    /// </summary>
+    public static class RuleConfigToStringsFormatter
     {
         public static IEnumerable<string> ToStrings(this IDictionary<NamespaceDependencyRule, TypeNameSet> allowRules)
         {

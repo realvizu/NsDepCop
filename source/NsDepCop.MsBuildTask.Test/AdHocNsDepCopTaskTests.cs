@@ -3,23 +3,20 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Microsoft.Build.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rhino.Mocks;
+using Moq;
+using Xunit;
 
 namespace Codartis.NsDepCop.MsBuildTask.Test
 {
     /// <summary>
     /// Testbed for adhoc NsDepCopTask tests to repro bugs found in the context of specific C# projects.
     /// </summary>
-    [TestClass]
     public class AdHocNsDepCopTaskTests : NsDepCopTaskTestBase
     {
         private const string ReferenceAssemblyFolderRoot = @"c:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\";
         private const string CsprojXmlNamespace = @"http://schemas.microsoft.com/developer/msbuild/2003";
 
-
-        [TestMethod]
-        [Ignore] // For manual running only
+        [Fact(Skip = "For manual running only")]
         public void TestACsproj()
         {
             RunNsDepCopTaskForCsproj(@"C:\Work\GitHub\softvis\SoftVis.Diagramming\SoftVis.Diagramming\SoftVis.Diagramming.csproj");
@@ -69,14 +66,14 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         private static NsDepCopTask CreateNsDepCopTaskWithStubBuildEngine(string baseDirectory, 
             IEnumerable<string> sourceFileNames, IEnumerable<string> referencedFilePaths)
         {
-            var mockBuildEngine = MockRepository.GenerateStub<IBuildEngine>();
+            var mockBuildEngineMock = new Mock<IBuildEngine>(MockBehavior.Strict);
 
             var nsDepCopTask = new NsDepCopTask
             {
                 BaseDirectory = new TestTaskItem(baseDirectory),
                 Compile = CreateTaskItems(CreateFullPathFileNames(baseDirectory, sourceFileNames)),
                 ReferencePath = CreateTaskItems(referencedFilePaths),
-                BuildEngine = mockBuildEngine,
+                BuildEngine = mockBuildEngineMock.Object,
             };
 
             return nsDepCopTask;

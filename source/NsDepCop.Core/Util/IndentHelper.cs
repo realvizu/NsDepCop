@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace Codartis.NsDepCop.Core.Util
 {
+    /// <summary>
+    /// Static helper class that formats strings with indentation.
+    /// </summary>
     public static class IndentHelper
     {
         public const int IndentSize = 2;

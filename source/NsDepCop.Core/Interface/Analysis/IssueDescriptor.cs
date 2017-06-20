@@ -11,17 +11,17 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
         /// <summary>
         /// The issue's short, unique identifier.
         /// </summary>
-        public string Id { get; private set; }
+        public string Id { get; }
 
         /// <summary>
         /// The default severity of the issue.
         /// </summary>
-        public IssueKind DefaultKind { get; private set; }
+        public IssueKind DefaultKind { get; }
 
         /// <summary>
         /// A static description of the issue.
         /// </summary>
-        public string StaticDescription { get; private set; }
+        public string StaticDescription { get; }
 
         public IssueDescriptor(string id, IssueKind defaultKind, string staticDescription)
         {

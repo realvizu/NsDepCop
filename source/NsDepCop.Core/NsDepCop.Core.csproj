@@ -63,7 +63,7 @@
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
     <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
-    <Compile Include="Implementation\Config\DumpExtensions.cs" />
+    <Compile Include="Implementation\Config\RuleConfigToStringsFormatter.cs" />
     <Compile Include="Interface\Config\IConfigInitializer.cs" />
     <Compile Include="Util\DateTimeProvider.cs" />
     <Compile Include="Util\IndentHelper.cs" />

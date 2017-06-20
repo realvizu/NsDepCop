@@ -7,8 +7,7 @@ using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
 using FluentAssertions;
 using Microsoft.Build.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rhino.Mocks;
+using Moq;
 
 namespace Codartis.NsDepCop.MsBuildTask.Test
 {
@@ -17,24 +16,24 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
     /// </summary>
     public abstract class MockedNsDepCopTaskTestBase : NsDepCopTaskTestBase
     {
+        protected readonly Mock<IBuildEngine> BuildEngineMock = new Mock<IBuildEngine>();
+
         /// <summary>
         /// Executes the test case using both analyzers.
         /// </summary>
         /// <param name="specification">The test case specification.</param>
-        protected static void ExecuteTest(TestCaseSpecification specification)
+        protected void ExecuteTest(TestCaseSpecification specification)
         {
             var nsDepCopTask = SetUpNsDepCopTaskForTest(specification);
             nsDepCopTask.Execute().Should().Be(specification.ExpectedReturnValue);
-            nsDepCopTask.BuildEngine.VerifyAllExpectations();
         }
 
         /// <summary>
         /// Creates the specified expectations on a mock IBuildEngine.
         /// </summary>
-        /// <param name="mockBuildEngine">The mock build engine.</param>
         /// <param name="expectedLogEntries">The expected log entry events.</param>
         /// <param name="baseDirecytory">The base directory of the source files.</param>
-        protected static void ExpectEvents(IBuildEngine mockBuildEngine, IEnumerable<LogEntryParameters> expectedLogEntries,
+        protected void ExpectEvents(IEnumerable<LogEntryParameters> expectedLogEntries,
             string baseDirecytory = null)
         {
             foreach (var expectedLogEntry in expectedLogEntries.EmptyIfNull())
@@ -42,24 +41,18 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 switch (expectedLogEntry.IssueKind)
                 {
                     case IssueKind.Info:
-                        mockBuildEngine
-                            .Expect(i => i.LogMessageEvent(Arg<BuildMessageEventArgs>
-                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory))))
-                            .Repeat.Once();
+                        BuildEngineMock.Setup(i => i.LogMessageEvent(
+                            It.Is<BuildMessageEventArgs>(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory))));
                         break;
 
                     case IssueKind.Warning:
-                        mockBuildEngine
-                            .Expect(i => i.LogWarningEvent(Arg<BuildWarningEventArgs>
-                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory))))
-                            .Repeat.Once();
+                        BuildEngineMock.Setup(i => i.LogWarningEvent(
+                            It.Is<BuildWarningEventArgs>(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory))));
                         break;
 
                     case IssueKind.Error:
-                        mockBuildEngine
-                            .Expect(i => i.LogErrorEvent(Arg<BuildErrorEventArgs>
-                                .Matches(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory))))
-                            .Repeat.Once();
+                        BuildEngineMock.Setup(i => i.LogErrorEvent(
+                            It.Is<BuildErrorEventArgs>(e => LogEntryEqualsExpected(e, expectedLogEntry, baseDirecytory))));
                         break;
 
                     default:
@@ -88,41 +81,28 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         /// </summary>
         /// <param name="specification">The test case specification.</param>
         /// <returns>A new NsDepCopTask instance ready for testing.</returns>
-        private static NsDepCopTask SetUpNsDepCopTaskForTest(TestCaseSpecification specification)
+        private NsDepCopTask SetUpNsDepCopTaskForTest(TestCaseSpecification specification)
         {
             var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Assert.IsNotNull(assemblyDirectory);
-
             var baseDirectory = Path.Combine(assemblyDirectory, specification.TestFilesFolderName);
 
-            var mockBuildEngine = MockRepository.GenerateStrictMock<IBuildEngine>();
-
-            ExpectAnyDiagnosticEvents(mockBuildEngine);
-
             if (specification.ExpectStartEvent)
-                ExpectStartEvent(mockBuildEngine);
+                ExpectStartEvent();
 
-            ExpectEvents(mockBuildEngine, specification.ExpectedLogEntries, baseDirectory);
+            ExpectEvents(specification.ExpectedLogEntries, baseDirectory);
 
             if (specification.ExpectEndEvent)
-                ExpectEndEvent(mockBuildEngine);
+                ExpectEndEvent();
 
             var nsDepCopTask = new NsDepCopTask
             {
                 BaseDirectory = new TestTaskItem(baseDirectory),
                 Compile = CreateTaskItems(CreateFullPathFileNames(baseDirectory, specification.SourceFileNames)),
                 ReferencePath = CreateTaskItems(CreateFullPathFileNames(assemblyDirectory, specification.ReferencedFilePaths)),
-                BuildEngine = mockBuildEngine,
+                BuildEngine = BuildEngineMock.Object,
             };
 
             return nsDepCopTask;
-        }
-
-        private static void ExpectAnyDiagnosticEvents(IBuildEngine mockBuildEngine)
-        {
-            mockBuildEngine
-                .Expect(i => i.LogMessageEvent(Arg<BuildMessageEventArgs>.Matches(e => e.Importance == MessageImportance.Low)))
-                .Repeat.Any();
         }
 
         private static bool LogEntryEqualsExpected(dynamic logEntry, LogEntryParameters expectedLogEntry, string baseDirecytory)
@@ -163,17 +143,17 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                    && logEntry.EndColumnNumber == expectedLogEntry.EndColumn;
         }
 
-        private static void ExpectStartEvent(IBuildEngine mockBuildEngine)
+        private void ExpectStartEvent()
         {
-            ExpectEvents(mockBuildEngine, new[]
+            ExpectEvents(new[]
             {
                 new LogEntryParameters { IssueKind = NsDepCopTask.TaskStartedIssue.DefaultKind, Code = NsDepCopTask.TaskStartedIssue.Id },
             });
         }
 
-        private static void ExpectEndEvent(IBuildEngine mockBuildEngine)
+        private void ExpectEndEvent()
         {
-            ExpectEvents(mockBuildEngine, new[]
+            ExpectEvents(new[]
             {
                 new LogEntryParameters { IssueKind = NsDepCopTask.TaskFinishedIssue.DefaultKind, Code = NsDepCopTask.TaskFinishedIssue.Id },
             });

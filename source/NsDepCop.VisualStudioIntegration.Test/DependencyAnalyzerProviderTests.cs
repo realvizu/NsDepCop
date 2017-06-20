@@ -1,22 +1,20 @@
 ﻿using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Xunit;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 {
-    [TestClass]
     public class DependencyAnalyzerProviderTests
     {
-        private Mock<IDependencyAnalyzerFactory> _dependencyAnalyzerFactoryMock;
+        private readonly Mock<IDependencyAnalyzerFactory> _dependencyAnalyzerFactoryMock;
 
-        [TestInitialize]
-        public void TestInitialize()
+        public DependencyAnalyzerProviderTests()
         {
             _dependencyAnalyzerFactoryMock = new Mock<IDependencyAnalyzerFactory>();
         }
 
-        [TestMethod]
+        [Fact]
         public void GetDependencyAnalyzer_RetrievedOnce_CallsFactory()
         {
             const string filePath = "myFilePath";
@@ -28,7 +26,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
             _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromMultiLevelXmlConfigFile(It.IsAny<string>()), Times.Once);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetDependencyAnalyzer_RetrievedTwice_CallsFactoryThenAnalyzerRefresh()
         {
             const string filePath = "myFilePath";

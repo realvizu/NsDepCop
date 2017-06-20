@@ -2,26 +2,24 @@
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Xunit;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 {
-    [TestClass]
     public class CachingDependencyAnalyzerProviderTests
     {
-        private Mock<IDependencyAnalyzerProvider> _embeddedDependencyAnalyzerProvider;
-        private MockDateTimeProvider _mockDateTimeProvider;
+        private readonly Mock<IDependencyAnalyzerProvider> _embeddedDependencyAnalyzerProvider;
+        private readonly MockDateTimeProvider _mockDateTimeProvider;
         private static readonly TimeSpan CacheTimeSpan = TimeSpan.FromSeconds(1);
 
-        [TestInitialize]
-        public void TestInitialize()
+        public CachingDependencyAnalyzerProviderTests()
         {
             _embeddedDependencyAnalyzerProvider = new Mock<IDependencyAnalyzerProvider>();
             _mockDateTimeProvider = new MockDateTimeProvider();
         }
 
-        [TestMethod]
+        [Fact]
         public void GetDependencyAnalyzer_RetrievedOnce_CallsEmbeddedProviderOnce()
         {
             const string filePath = "myFilePath";
@@ -35,7 +33,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
             _embeddedDependencyAnalyzerProvider.Verify(i => i.GetDependencyAnalyzer(filePath), Times.Once);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetDependencyAnalyzer_RetrievedTwice_CacheTimeNotPassed_ReturnsSameItemTwice()
         {
             const string filePath = "myFilePath";
@@ -53,7 +51,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
             _embeddedDependencyAnalyzerProvider.Verify(i => i.GetDependencyAnalyzer(filePath), Times.Once);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetDependencyAnalyzer_RetrievedTwice_CacheTimePassed_ReturnsDifferentItems()
         {
             const string filePath = "myFilePath";
