@@ -157,38 +157,36 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Content Include="TestFiles_NoConfigFile\Placeholder.cs">
+    <Content Include="NoConfigFile\Placeholder.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_TooManyIssues\TooManyIssues.cs">
+    <Content Include="TooManyIssues\TooManyIssues.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_DepViolation_IdentifierName_ReportInfo\DepViolation_IdentifierName_ReportInfo.cs">
+    <Content Include="DependencyViolation_ReportInfo\DependencyViolation_ReportInfo.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_DepViolation_IdentifierName_ReportError\DepViolation_IdentifierName_ReportError.cs">
+    <Content Include="DependencyViolation_ReportError\DependencyViolation_ReportError.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="AdHocNsDepCopTaskTests.cs" />
-    <Compile Include="LogEntryParameters.cs" />
-    <Compile Include="MockedNsDepCopTaskTestBase.cs" />
-    <Compile Include="NsDepCopTaskTestBase.cs" />
+    <Content Include="AllowedDependency\AllowedDependency.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="NsDepCopTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="TestFiles_DepViolation_IdentifierName_ReportWarning\DepViolation_IdentifierName_ReportWarning.cs">
+    <Content Include="DependencyViolation_ReportWarning\DependencyViolation_ReportWarning.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_MultipleSourceFiles\SourceFile1.cs">
+    <Content Include="MultipleSourceFiles\SourceFile1.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_MultipleSourceFiles\SourceFile2.cs">
+    <Content Include="MultipleSourceFiles\SourceFile2.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="TestCaseSpecification.cs" />
-    <Content Include="TestFiles_MaxIssueCountEqualsIssueCount\MaxIssueCountEqualsIssueCount.cs">
+    <Content Include="MaxIssueCountEqualsIssueCount\MaxIssueCountEqualsIssueCount.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_ConfigInfoImportanceIsHigh\ConfigInfoImportanceIsHigh.cs">
+    <Content Include="ConfigInfoImportanceIsHigh\ConfigInfoImportanceIsHigh.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="TestTaskItem.cs" />
@@ -202,50 +200,54 @@
       <Project>{2acfcacc-fc7d-4192-9b9f-c916784d93b3}</Project>
       <Name>NsDepCop.MsBuildTask</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NsDepCop.TestUtil\NsDepCop.TestUtil.csproj">
+      <Project>{c60a83ed-3d03-4179-a2d6-e9ab6263b99e}</Project>
+      <Name>NsDepCop.TestUtil</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_ConfigDisabled\config.nsdepcop">
+    <Content Include="ConfigDisabled\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_DepViolation_IdentifierName_ReportWarning\config.nsdepcop">
+    <Content Include="DependencyViolation_ReportWarning\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_TooManyIssues\config.nsdepcop">
+    <Content Include="TooManyIssues\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_DepViolation_IdentifierName_ReportInfo\config.nsdepcop">
+    <Content Include="DependencyViolation_ReportInfo\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_DepViolation_IdentifierName_ReportError\config.nsdepcop">
+    <Content Include="DependencyViolation_ReportError\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_ConfigFileExtraElementsIgnored\config.nsdepcop">
+    <Content Include="ConfigFileExtraElementsIgnored\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_NonXmlConfigFile\config.nsdepcop">
+    <Content Include="NonXmlConfigFile\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_NoSourceFiles\config.nsdepcop">
+    <Content Include="NoSourceFiles\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_MultipleSourceFiles\config.nsdepcop">
+    <Content Include="MultipleSourceFiles\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -253,16 +255,19 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AllowedDependency\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="TestFiles_ConfigFileErrorCausesException\config.nsdepcop">
+    <Content Include="ConfigFileErrorCausesException\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_MaxIssueCountEqualsIssueCount\config.nsdepcop">
+    <Content Include="MaxIssueCountEqualsIssueCount\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestFiles_ConfigInfoImportanceIsHigh\config.nsdepcop">
+    <Content Include="ConfigInfoImportanceIsHigh\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config">
