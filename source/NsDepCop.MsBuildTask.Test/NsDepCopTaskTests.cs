@@ -86,6 +86,16 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [Fact]
+        public void TaskInfoImportanceIsLow()
+        {
+            var nsDepCopTask = CreateNsDepCopTask();
+            nsDepCopTask.InfoImportance = new TestTaskItem("Low");
+            nsDepCopTask.Execute().Should().BeTrue();
+
+            _loggerMock.VerifySet(i => i.InfoImportance = MessageImportance.Low);
+        }
+
+        [Fact]
         public void TooManyIssues()
         {
             CreateNsDepCopTask().Execute().Should().BeTrue();
@@ -145,6 +155,16 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
 
             VerifyTaskExceptionLogged(Times.Never());
             VerifyConfigExceptionLogged(Times.Once());
+        }
+
+        [Fact]
+        public void UnexpectedException_TaskExceptionLogged()
+        {
+            _loggerMock.Setup(i => i.LogTraceMessage(It.IsAny<IEnumerable<string>>())).Throws<Exception>();
+
+            CreateNsDepCopTask().Execute().Should().BeFalse();
+
+            VerifyTaskExceptionLogged(Times.Once());
         }
 
         private NsDepCopTask CreateNsDepCopTask([CallerMemberName] string taskName = null)
