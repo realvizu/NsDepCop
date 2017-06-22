@@ -141,6 +141,9 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyBindingRedirectMap.cs" />
+    <Compile Include="AssemblyBindingRedirector.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="MsBuildLoggerGateway.cs" />
     <Compile Include="VersionRedirect.cs" />
     <Compile Include="AssemblyIdentity.cs" />
     <Compile Include="ImportanceExtensions.cs" />

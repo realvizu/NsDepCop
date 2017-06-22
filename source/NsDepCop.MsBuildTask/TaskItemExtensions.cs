@@ -4,9 +4,6 @@ namespace Codartis.NsDepCop.MsBuildTask
 {
     public static class TaskItemExtensions
     {
-        public static string GetValue(this ITaskItem taskItem)
-        {
-            return taskItem?.ItemSpec;
-        }
+        public static string GetValue(this ITaskItem taskItem) => taskItem?.ItemSpec;
     }
 }

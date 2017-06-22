@@ -79,181 +79,29 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Content Include="..\NsDepCop.SourceTest.Roslyn2x\AliasQualifiedName\AliasQualifiedName.cs">
-      <Link>AliasQualifiedName\AliasQualifiedName.cs</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ArrayType\ArrayType.cs">
-      <Link>ArrayType\ArrayType.cs</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-      
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ObjectCreationExpression\ObjectCreationExpression.cs">
-          <Link>ObjectCreationExpression\ObjectCreationExpression.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\VeryComplexType\VeryComplexType.cs">
-          <Link>VeryComplexType\VeryComplexType.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\VarWithConstructedGenericType\VarWithConstructedGenericType.cs">
-          <Link>VarWithConstructedGenericType\VarWithConstructedGenericType.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Var\Var.cs">
-          <Link>Var\Var.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\QualifiedName\QualifiedName.cs">
-          <Link>QualifiedName\QualifiedName.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\PointerType\PointerType.cs">
-          <Link>PointerType\PointerType.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\NullableType\NullableType.cs">
-          <Link>NullableType\NullableType.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\NestedType\NestedType.cs">
-          <Link>NestedType\NestedType.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\MemberAccessExpression\MemberAccessExpression.cs">
-          <Link>MemberAccessExpression\MemberAccessExpression.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\InvocationWithTypeArg\InvocationWithTypeArg.cs">
-          <Link>InvocationWithTypeArg\InvocationWithTypeArg.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\InvocationExpression\InvocationExpression.cs">
-          <Link>InvocationExpression\InvocationExpression.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\GenericTypeArgument\GenericTypeArgument.cs">
-          <Link>GenericTypeArgument\GenericTypeArgument.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\GenericName\GenericName.cs">
-          <Link>GenericName\GenericName.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ExtensionMethodInvocation\ExtensionMethodInvocation.cs">
-          <Link>ExtensionMethodInvocation\ExtensionMethodInvocation.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\EveryUserDefinedTypeKind\EveryUserDefinedTypeKind.cs">
-          <Link>EveryUserDefinedTypeKind\EveryUserDefinedTypeKind.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ElementAccess\ElementAccess.cs">
-          <Link>ElementAccess\ElementAccess.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Delegates\Delegates.cs">
-          <Link>Delegates\Delegates.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Attributes\Attributes.cs">
-          <Link>Attributes\Attributes.cs</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-
     <Compile Include="..\NsDepCop.SourceTest.Roslyn2x\SourceLineSegment.cs">
       <Link>SourceLineSegment.cs</Link>
-    </Compile>
-    <Compile Include="..\NsDepCop.SourceTest.Roslyn2x\SourceTests.cs">
-      <Link>SourceTests.cs</Link>
     </Compile>
     <Compile Include="..\NsDepCop.SourceTest.Roslyn2x\SourceTestSpecificationBase.cs">
       <Link>SourceTestSpecificationBase.cs</Link>
     </Compile>
+    <Content Include="AnalyzerFeature_AllowedDependency\AnalyzerFeature_AllowedDependency.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs6_EveryUserDefinedTypeKind\Cs6_EveryUserDefinedTypeKind.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Roslyn1xSmokeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceTestSpecification.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\NsDepCop.SourceTest.Roslyn2x\AliasQualifiedName\config.nsdepcop">
-      <Link>AliasQualifiedName\config.nsdepcop</Link>
+    <Content Include="AnalyzerFeature_AllowedDependency\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ArrayType\config.nsdepcop">
-      <Link>ArrayType\config.nsdepcop</Link>
+    <Content Include="Cs6_EveryUserDefinedTypeKind\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ObjectCreationExpression\config.nsdepcop">
-          <Link>ObjectCreationExpression\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\VeryComplexType\config.nsdepcop">
-          <Link>VeryComplexType\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\VarWithConstructedGenericType\config.nsdepcop">
-          <Link>VarWithConstructedGenericType\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Var\config.nsdepcop">
-          <Link>Var\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\QualifiedName\config.nsdepcop">
-          <Link>QualifiedName\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\PointerType\config.nsdepcop">
-          <Link>PointerType\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\NullableType\config.nsdepcop">
-          <Link>NullableType\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\NestedType\config.nsdepcop">
-          <Link>NestedType\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\MemberAccessExpression\config.nsdepcop">
-          <Link>MemberAccessExpression\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\InvocationWithTypeArg\config.nsdepcop">
-          <Link>InvocationWithTypeArg\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\InvocationExpression\config.nsdepcop">
-          <Link>InvocationExpression\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\GenericTypeArgument\config.nsdepcop">
-          <Link>GenericTypeArgument\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\GenericName\config.nsdepcop">
-          <Link>GenericName\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ExtensionMethodInvocation\config.nsdepcop">
-          <Link>ExtensionMethodInvocation\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\EveryUserDefinedTypeKind\config.nsdepcop">
-          <Link>EveryUserDefinedTypeKind\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\ElementAccess\config.nsdepcop">
-          <Link>ElementAccess\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Delegates\config.nsdepcop">
-          <Link>Delegates\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\NsDepCop.SourceTest.Roslyn2x\Attributes\config.nsdepcop">
-          <Link>Attributes\config.nsdepcop</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

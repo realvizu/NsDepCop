@@ -118,36 +118,6 @@
 //        }
 
 //        [Fact]
-//        public void Execute_AllowedDependency()
-//        {
-//            ExecuteTest(new TestCaseSpecification
-//            {
-//                TestFilesFolderName = "TestFiles_AllowedDependency",
-//                SourceFileNames = new[] { "AllowedDependency.cs" },
-//            });
-//        }
-
-//        [Fact]
-//        public void Execute_SameNamespaceAlwaysAllowed()
-//        {
-//            ExecuteTest(new TestCaseSpecification
-//            {
-//                TestFilesFolderName = "TestFiles_SameNamespaceAlwaysAllowed",
-//                SourceFileNames = new[] { "SameNamespaceAlwaysAllowed.cs" },
-//            });
-//        }
-
-//        [Fact]
-//        public void Execute_SameNamespaceAllowedEvenWhenVisibleMembersDefined()
-//        {
-//            ExecuteTest(new TestCaseSpecification
-//            {
-//                TestFilesFolderName = "TestFiles_SameNamespaceAllowedEvenWhenVisibleMembersDefined",
-//                SourceFileNames = new[] { "SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs" },
-//            });
-//        }
-
-//        [Fact]
 //        public void Execute_DepViolation_IdentifierName_ReportWarning()
 //        {
 //            const string sourceFileName = "DepViolation_IdentifierName_ReportWarning.cs";
@@ -249,33 +219,6 @@
 //                {
 //                    CreateLogEntryParameters(sourceFile1, 7, 17, 7, 23),
 //                    CreateLogEntryParameters(sourceFile2, 7, 17, 7, 23),
-//                },
-//            });
-//        }
-
-//        [Fact]
-//        public void Execute_AllowedDependency_ByChildCanDependOnParentImplicitlyOption()
-//        {
-//            ExecuteTest(new TestCaseSpecification
-//            {
-//                TestFilesFolderName = "TestFiles_ByChildCanDependOnParentImplicitlyOption",
-//                SourceFileNames = new[] { "ChildToParentDependency.cs" },
-//            });
-//        }
-
-//        [Fact]
-//        public void Execute_AllowedDependencyWithInvisibleMembers()
-//        {
-//            const string sourceFileName = "AllowedDependencyWithInvisibleMembers.cs";
-//            ExecuteTest(new TestCaseSpecification
-//            {
-//                TestFilesFolderName = "TestFiles_AllowedDependencyWithInvisibleMembers",
-//                SourceFileNames = new[] { sourceFileName },
-//                ExpectedLogEntries = new[]
-//                {
-//                    CreateLogEntryParameters(sourceFileName, 6, 19, 6, 32),
-//                    CreateLogEntryParameters(sourceFileName, 8, 19, 8, 43),
-//                    CreateLogEntryParameters(sourceFileName, 9, 19, 9, 47)
 //                },
 //            });
 //        }

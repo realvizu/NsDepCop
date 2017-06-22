@@ -170,20 +170,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="AdHocNsDepCopTaskTests.cs" />
-    <Content Include="TestFiles_AllowedDependency\AllowedDependency.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestFiles_AllowedDependencyWithInvisibleMembers\AllowedDependencyWithInvisibleMembers.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Compile Include="LogEntryParameters.cs" />
     <Compile Include="MockedNsDepCopTaskTestBase.cs" />
     <Compile Include="NsDepCopTaskTestBase.cs" />
     <Compile Include="NsDepCopTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="TestFiles_SameNamespaceAlwaysAllowed\SameNamespaceAlwaysAllowed.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="TestFiles_DepViolation_IdentifierName_ReportWarning\DepViolation_IdentifierName_ReportWarning.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -194,12 +185,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="TestCaseSpecification.cs" />
-    <Content Include="TestFiles_ByChildCanDependOnParentImplicitlyOption\ChildToParentDependency.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestFiles_SameNamespaceAllowedEvenWhenVisibleMembersDefined\SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="TestFiles_MaxIssueCountEqualsIssueCount\MaxIssueCountEqualsIssueCount.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -220,11 +205,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestFiles_ConfigDisabled\config.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="TestFiles_SameNamespaceAlwaysAllowed\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -273,24 +253,9 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestFiles_AllowedDependency\config.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestFiles_AllowedDependencyWithInvisibleMembers\config.nsdepcop">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="TestFiles_ByChildCanDependOnParentImplicitlyOption\config.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="TestFiles_SameNamespaceAllowedEvenWhenVisibleMembersDefined\config.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="TestFiles_ConfigFileErrorCausesException\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

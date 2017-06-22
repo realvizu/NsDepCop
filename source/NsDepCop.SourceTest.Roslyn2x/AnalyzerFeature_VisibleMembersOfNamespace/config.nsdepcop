@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig>
+
+    <Allowed From="A" To="C" />
+    <Allowed From="B" To="C" />
+
+    <VisibleMembers OfNamespace="C">
+        <Type Name="VisibleType" />
+        <Type Name="OnlyGenericIsVisibleType`1" />
+    </VisibleMembers>
+    
+</NsDepCopConfig>
