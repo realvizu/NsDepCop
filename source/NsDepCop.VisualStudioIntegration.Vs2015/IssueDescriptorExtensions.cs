@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// <summary>
         /// Format string to create a help link for diagnostics. The parameter is the diagnostic's code in lowercase.
         /// </summary>
-        private const string HelpLinkFormat = @"https://github.com/realvizu/NsDepCop/blob/VS2015/doc/Diagnostics.md#{0}";
+        private const string HelpLinkFormat = @"https://github.com/realvizu/NsDepCop/blob/master/doc/Diagnostics.md#{0}";
 
         public static DiagnosticDescriptor ToDiagnosticDescriptor<TIssue>(this IssueDescriptor<TIssue> issueDescriptor)
         {

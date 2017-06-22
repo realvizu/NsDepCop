@@ -2,6 +2,7 @@
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
@@ -57,17 +58,14 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// </summary>
         public ITaskItem InfoImportance { get; set; }
 
-        private readonly ILogger _logger;
-        private readonly AssemblyBindingRedirector _assemblyBindingRedirector;
+        private ILogger _logger;
+        private AssemblyBindingRedirector _assemblyBindingRedirector;
 
+        /// <summary>
+        /// This ctor is for MsBuild.
+        /// </summary>
         public NsDepCopTask()
-        {
-            _logger = new MsBuildLoggerGateway(BuildEngine);
-
-            // Must handle assembly binding redirect because MsBuild does not provide it.
-            // See: https://github.com/Microsoft/msbuild/issues/1309
-            _assemblyBindingRedirector = new AssemblyBindingRedirector(_logger.LogTraceMessage);
-        }
+        { }
 
         /// <summary>
         /// This ctor is for unit testing. 
@@ -78,8 +76,11 @@ namespace Codartis.NsDepCop.MsBuildTask
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        private IEnumerable<string> SourceFilePaths => Compile.ToList().Select(i => i.ItemSpec);
-        private IEnumerable<string> ReferencedAssemblyPaths => ReferencePath.ToList().Select(i => i.ItemSpec);
+        private string ProjectFolder => BaseDirectory.ItemSpec;
+
+        private IEnumerable<string> SourceFilePaths => Compile.Select(i => AbsolutePath(i.ItemSpec, ProjectFolder));
+
+        private IEnumerable<string> ReferencedAssemblyPaths => ReferencePath.Select(i => i.ItemSpec);
 
         /// <summary>
         /// Executes the custom MsBuild task. Called by the MsBuild tool.
@@ -89,8 +90,15 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// </returns>
         public override bool Execute()
         {
+            if (_logger == null)
+                _logger = new MsBuildLoggerGateway(BuildEngine);
+
             try
             {
+                // Must handle assembly binding redirect because MsBuild does not provide it.
+                // See: https://github.com/Microsoft/msbuild/issues/1309
+                _assemblyBindingRedirector = new AssemblyBindingRedirector(_logger.LogTraceMessage);
+
                 _logger.LogTraceMessage(GetInputParameterDiagnosticMessages());
 
                 var defaultInfoImportance = ParseNullable<Importance>(InfoImportance.GetValue());
@@ -100,8 +108,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                 var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, _logger.LogTraceMessage)
                     .SetDefaultInfoImportance(defaultInfoImportance);
 
-                var configFolderPath = BaseDirectory.ItemSpec;
-                using (var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(configFolderPath))
+                using (var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(ProjectFolder))
                 {
                     var runWasSuccessful = true;
 
@@ -121,7 +128,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                             break;
 
                         case AnalyzerConfigState.Enabled:
-                            runWasSuccessful = ExecuteAnalysis(dependencyAnalyzer, configFolderPath);
+                            runWasSuccessful = ExecuteAnalysis(dependencyAnalyzer, ProjectFolder);
                             break;
 
                         default:
@@ -201,5 +208,10 @@ namespace Codartis.NsDepCop.MsBuildTask
                 ? (TEnum?)result
                 : null;
         }
+
+        private static string AbsolutePath(string absoluteOrRelativePath, string relativeTo)
+            => Path.IsPathRooted(absoluteOrRelativePath)
+                ? absoluteOrRelativePath
+                : Path.Combine(relativeTo, absoluteOrRelativePath);
     }
 }
