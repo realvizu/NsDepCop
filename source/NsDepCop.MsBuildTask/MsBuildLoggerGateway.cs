@@ -28,13 +28,13 @@ namespace Codartis.NsDepCop.MsBuildTask
                 LogTraceMessage(message);
         }
 
-        public void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T issueParameter, IssueKind? issueKindOverride = null, SourceSegment sourceSegment = null) 
+        public void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T issueParameter, IssueKind? issueKindOverride = null, SourceSegment? sourceSegment = null) 
             => LogIssue(issueDescriptor, issueDescriptor.GetDynamicDescription(issueParameter), issueKindOverride, sourceSegment);
 
         public void LogIssue(IssueDescriptor issueDescriptor)
             => LogIssue(issueDescriptor, null, null, null);
 
-        private void LogIssue(IssueDescriptor issueDescriptor, string dynamicMessage, IssueKind? issueKindOverride, SourceSegment sourceSegment)
+        private void LogIssue(IssueDescriptor issueDescriptor, string dynamicMessage, IssueKind? issueKindOverride, SourceSegment? sourceSegment)
         {
             var issueKind = issueKindOverride ?? issueDescriptor.DefaultKind;
             var message = dynamicMessage ?? issueDescriptor.StaticDescription;

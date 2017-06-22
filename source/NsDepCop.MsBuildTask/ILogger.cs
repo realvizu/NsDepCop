@@ -30,7 +30,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// <param name="issueKindOverride">The severity of the issue. Optional. If specified then overrides the issue's default severity.</param>
         /// <param name="sourceSegment">The source segment where the issue was found. Optional.</param>
         void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T issueParameter = default(T), 
-            IssueKind? issueKindOverride = null, SourceSegment sourceSegment = null);
+            IssueKind? issueKindOverride = null, SourceSegment? sourceSegment = null);
 
         /// <summary>
         /// Log a collection of trace messages. 

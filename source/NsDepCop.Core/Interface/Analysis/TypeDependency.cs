@@ -43,7 +43,7 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
             FromTypeName = fromTypeName;
             ToNamespaceName = toNamespaceName ?? throw new ArgumentNullException(nameof(toNamespaceName));
             ToTypeName = toTypeName;
-            SourceSegment = sourceSegment ?? throw new ArgumentNullException(nameof(sourceSegment));
+            SourceSegment = sourceSegment;
         }
 
         public override string ToString() => $"{FromNamespaceName}.{FromTypeName}->{ToNamespaceName}.{ToTypeName}";

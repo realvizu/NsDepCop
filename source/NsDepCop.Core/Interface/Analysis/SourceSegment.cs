@@ -3,7 +3,7 @@
     /// <summary>
     /// Describes a certain segment of a source file.
     /// </summary>
-    public class SourceSegment
+    public struct SourceSegment
     {
         /// <summary>
         /// The line number of the segment's start (1-based).
