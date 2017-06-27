@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Codartis.NsDepCop.Core.Implementation.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis;
@@ -106,9 +105,9 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         private void SetUpEnabledConfig(int maxIssueCount = 100)
         {
             var analyzerConfigMock = new Mock<IAnalyzerConfig>();
-            analyzerConfigMock.Setup(i => i.AllowRules).Returns(ImmutableDictionary<NamespaceDependencyRule, TypeNameSet>.Empty);
-            analyzerConfigMock.Setup(i => i.DisallowRules).Returns(ImmutableHashSet<NamespaceDependencyRule>.Empty);
-            analyzerConfigMock.Setup(i => i.VisibleTypesByNamespace).Returns(ImmutableDictionary<Namespace, TypeNameSet>.Empty);
+            analyzerConfigMock.Setup(i => i.AllowRules).Returns(new Dictionary<NamespaceDependencyRule, TypeNameSet>());
+            analyzerConfigMock.Setup(i => i.DisallowRules).Returns(new HashSet<NamespaceDependencyRule>());
+            analyzerConfigMock.Setup(i => i.VisibleTypesByNamespace).Returns(new Dictionary<Namespace, TypeNameSet>());
             analyzerConfigMock.Setup(i => i.MaxIssueCount).Returns(maxIssueCount);
 
             _configProviderMock.Setup(i => i.ConfigState).Returns(AnalyzerConfigState.Enabled);

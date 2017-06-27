@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
@@ -39,9 +38,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 IssueKind ?? ConfigDefaults.IssueKind,
                 InfoImportance ?? DefaultInfoImportance ?? ConfigDefaults.InfoImportance,
                 ChildCanDependOnParentImplicitly ?? ConfigDefaults.ChildCanDependOnParentImplicitly,
-                AllowRules.ToImmutableDictionary(),
-                DisallowRules.ToImmutableHashSet(),
-                VisibleTypesByNamespace.ToImmutableDictionary(),
+                AllowRules,
+                DisallowRules,
+                VisibleTypesByNamespace,
                 MaxIssueCount ?? ConfigDefaults.MaxIssueCount
                 );
         }

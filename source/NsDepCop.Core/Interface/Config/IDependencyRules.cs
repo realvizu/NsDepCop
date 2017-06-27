@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
 
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
@@ -19,17 +19,17 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// Dictionary of allowed dependency rules. The key is a namespace dependency rule, 
         /// the value is a set of type names defined in the target namespace and visible for the source namespace(s).
         /// </summary>
-        ImmutableDictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
+        Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
 
         /// <summary>
         /// The set of disallowed dependency rules.
         /// </summary>
-        ImmutableHashSet<NamespaceDependencyRule> DisallowRules { get; }
+        HashSet<NamespaceDependencyRule> DisallowRules { get; }
 
         /// <summary>
         /// Dictionary of visible types by target namespace. The key is the name of a namespace, 
         /// the value is a set of type names defined in the namespace and visible outside of the namespace.
         /// </summary>
-        ImmutableDictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+        Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
     }
 }

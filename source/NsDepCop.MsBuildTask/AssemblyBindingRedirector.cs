@@ -1,8 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
-using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.MsBuildTask
 {
@@ -10,34 +10,30 @@ namespace Codartis.NsDepCop.MsBuildTask
     /// Implements assembly binding redirection by loading the executing dll's config file
     /// and hooking into the current AppDomain's AssemblyResolve events.
     /// </summary>
-    public class AssemblyBindingRedirector
+    public static class AssemblyBindingRedirector
     {
-        private readonly MessageHandler _traceMessageHandler;
-        private AssemblyBindingRedirectMap _assemblyBindingRedirectMap;
+        private static readonly AssemblyBindingRedirectMap AssemblyBindingRedirectMap;
 
-        public AssemblyBindingRedirector(MessageHandler traceMessageHandler)
-        {
-            _traceMessageHandler = traceMessageHandler;
-
-            Initialize();
-        }
-
-        private void Initialize()
+        static AssemblyBindingRedirector()
         {
             try
             {
                 var executingAssemblyConfigPath = Assembly.GetExecutingAssembly().Location + ".config";
                 var executingAssemblyConfigXml = LoadXml(executingAssemblyConfigPath);
-                _assemblyBindingRedirectMap = AssemblyBindingRedirectMap.ParseXml(executingAssemblyConfigXml);
+                AssemblyBindingRedirectMap = AssemblyBindingRedirectMap.ParseXml(executingAssemblyConfigXml);
 
-                AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += ResolveAssembly;
                 AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
             }
             catch (Exception e)
             {
                 // If binding redirect handling cannot be established then silently fail back to the host provided service.
-                _traceMessageHandler?.Invoke(new[] { e.ToString() });
+                Trace.WriteLine($"AssemblyBindingRedirector ctor exception: {e}");
             }
+        }
+
+        public static void Initialize()
+        {
+            // Just to make sure that the static ctor was invoked.
         }
 
         /// <summary>
@@ -47,11 +43,11 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// <param name="sender">Unused.</param>
         /// <param name="e">Assembly resolve event arguments.</param>
         /// <returns>The loaded assembly or null.</returns>
-        private Assembly ResolveAssembly(object sender, ResolveEventArgs e)
+        private static Assembly ResolveAssembly(object sender, ResolveEventArgs e)
         {
-            var assemblyName = new AssemblyName(e.Name);
+            var assemblyName = new AssemblyName(AppDomain.CurrentDomain.ApplyPolicy(e.Name));
 
-            var redirectToVersion = _assemblyBindingRedirectMap.Find(assemblyName);
+            var redirectToVersion = AssemblyBindingRedirectMap.Find(assemblyName);
             if (redirectToVersion == null || redirectToVersion == assemblyName.Version)
                 return null;
 

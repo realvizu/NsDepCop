@@ -59,13 +59,16 @@ namespace Codartis.NsDepCop.MsBuildTask
         public ITaskItem InfoImportance { get; set; }
 
         private ILogger _logger;
-        private AssemblyBindingRedirector _assemblyBindingRedirector;
 
         /// <summary>
         /// This ctor is for MsBuild.
         /// </summary>
         public NsDepCopTask()
-        { }
+        {
+            // Must handle assembly binding redirect because MsBuild does not provide it.
+            // See: https://github.com/Microsoft/msbuild/issues/1309
+            AssemblyBindingRedirector.Initialize();
+        }
 
         /// <summary>
         /// This ctor is for unit testing. 
@@ -95,10 +98,6 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             try
             {
-                // Must handle assembly binding redirect because MsBuild does not provide it.
-                // See: https://github.com/Microsoft/msbuild/issues/1309
-                _assemblyBindingRedirector = new AssemblyBindingRedirector(_logger.LogTraceMessage);
-
                 _logger.LogTraceMessage(GetInputParameterDiagnosticMessages());
 
                 var defaultInfoImportance = ParseNullable<Importance>(InfoImportance.GetValue());

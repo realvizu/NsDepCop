@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
 using Codartis.NsDepCop.Core.Interface.Config;
 
 namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
@@ -23,9 +22,9 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         }
 
         public bool ChildCanDependOnParentImplicitly => _childCanDependOnParentImplicitly;
-        public ImmutableDictionary<NamespaceDependencyRule, TypeNameSet> AllowRules => _allowedDependencies.ToImmutableDictionary();
-        public ImmutableHashSet<NamespaceDependencyRule> DisallowRules => _disallowedDependencies.ToImmutableHashSet();
-        public ImmutableDictionary<Namespace, TypeNameSet> VisibleTypesByNamespace => _visibleTypesByTargetNamespace.ToImmutableDictionary();
+        public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules => _allowedDependencies;
+        public HashSet<NamespaceDependencyRule> DisallowRules => _disallowedDependencies;
+        public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace => _visibleTypesByTargetNamespace;
 
         public DependencyRulesBuilder SetChildCanDependOnParentImplicitly(bool value)
         {

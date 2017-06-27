@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
@@ -11,9 +11,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// </summary>
     internal class TypeDependencyValidator : ITypeDependencyValidator
     {
-        private readonly ImmutableDictionary<NamespaceDependencyRule, TypeNameSet> _allowRules;
-        private readonly ImmutableHashSet<NamespaceDependencyRule> _disallowRules;
-        private readonly ImmutableDictionary<Namespace, TypeNameSet> _visibleTypesPerNamespaces;
+        private readonly Dictionary<NamespaceDependencyRule, TypeNameSet> _allowRules;
+        private readonly HashSet<NamespaceDependencyRule> _disallowRules;
+        private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesPerNamespaces;
         private readonly bool _childCanDependOnParentImplicitly;
 
         public TypeDependencyValidator(IDependencyRules dependencyRules)

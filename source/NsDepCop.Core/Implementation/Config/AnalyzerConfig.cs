@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using Codartis.NsDepCop.Core.Interface.Config;
 
 namespace Codartis.NsDepCop.Core.Implementation.Config
@@ -14,9 +13,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public Importance InfoImportance { get; }
 
         public bool ChildCanDependOnParentImplicitly { get; }
-        public ImmutableDictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
-        public ImmutableHashSet<NamespaceDependencyRule> DisallowRules { get; }
-        public ImmutableDictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+        public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
+        public HashSet<NamespaceDependencyRule> DisallowRules { get; }
+        public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
         public int MaxIssueCount { get; }
 
         public AnalyzerConfig(
@@ -24,9 +23,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             IssueKind issueKind,
             Importance infoImportance,
             bool childCanDependOnParentImplicitly,
-            ImmutableDictionary<NamespaceDependencyRule, TypeNameSet> allowRules,
-            ImmutableHashSet<NamespaceDependencyRule> disallowRules,
-            ImmutableDictionary<Namespace, TypeNameSet> visibleTypesByNamespace,
+            Dictionary<NamespaceDependencyRule, TypeNameSet> allowRules,
+            HashSet<NamespaceDependencyRule> disallowRules,
+            Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace,
             int maxIssueCount)
         {
             IsEnabled = isEnabled;
