@@ -16,7 +16,10 @@ namespace Codartis.NsDepCop.MsBuildTask
     /// <summary>
     /// Implements a custom MsBuild task that performs namespace dependency analysis  and reports disallowed dependencies.
     /// </summary>
-    public class NsDepCopTask : Task
+    /// <remarks>
+    /// Must be AppDomain-isolated to avoid interference with other tasks when performing binding redirection.
+    /// </remarks>
+    public class NsDepCopTask : AppDomainIsolatedTask
     {
         public static readonly IssueDescriptor<string> TaskStartedIssue =
             new IssueDescriptor<string>("NSDEPCOPSTART", IssueKind.Info, null, i => $"Analysing project in folder: {i}");
