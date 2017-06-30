@@ -12,7 +12,7 @@ namespace Codartis.NsDepCop.ConsoleHost
     /// <summary>
     /// Implements the console host.
     /// </summary>
-    internal class Program
+    public class Program
     {
         private static bool _isVerbose;
 
