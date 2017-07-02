@@ -21,8 +21,8 @@
         <copyright>Copyright 2013-2017 Ferenc Vizkeleti</copyright>
         <tags>static code analysis tool C# csharp namespace dependency dependencies enforce rule</tags>
         <releaseNotes>
-            New: C# 7 support.
-            Note: if you don't need C# 7 support then use v1.6.1 which is faster.
+New: C# 7 support.
+Note: if you don't need C# 7 support then use v1.6.1 which is faster.
         </releaseNotes>
     </metadata>
     <files>
