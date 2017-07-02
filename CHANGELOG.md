@@ -1,5 +1,14 @@
 # NsDepCop Change Log
 
+## v1.7.0
+(07/2017)
+
+- [x] New: C# 7 support.
+- [x] New: Visual Studio 2017 support.
+- [x] Removed: MSI installer.
+  - [x] Config XML schema support is now available as a Visual Studio Extension (only for VS2017).
+  - [x] Global MSBuild-integration is discontinued. Please use per-project MSBuild integration via the NuGet package.
+
 ## v1.6.1
 (04/2017)
 

@@ -1,12 +1,21 @@
-# NsDepCop FAQ
+# NsDepCop Troubleshooting
 
-1. [Anonymous types raise false alarms](#faq01)
-1. [Setup is unable to add NsDepCop target to the C# build workflow](#faq02)
-1. [Setup is unable to remove NsDepCop target from the C# build workflow](#faq03)
-1. [Where can I download the .NET Compiler Platform (Roslyn) End User Preview (for Visual Studio 2013)?](#faq04)
+* [NsDepCop NuGet package is not adding config.nsdepcop file to the project](#item4)
+* [Anonymous types raise false alarms](#item3)
+* [Setup is unable to add NsDepCop target to the C# build workflow](#item2)
+* [Setup is unable to remove NsDepCop target from the C# build workflow](#item1)
 
-## FAQ01
-### Anonymous types raise false alarms
+<a name="item4"></a>
+## NsDepCop NuGet package is not adding config.nsdepcop file to the project
+If the project uses the **PackageReference** package manager format then content files are not added to the project. 
+*(Anybody knows how to make it work? The new ContentFiles method doesn't work either because that's for immutable files.)*
+
+Solution:
+* Use the **packages.config** package manager format.
+* Or add config.nsdepcop to the project manually.
+
+<a name="item3"></a>
+## Anonymous types raise false alarms
 
 > Applies to versions before v1.6 only. NsDepCop v1.6 leaves anonymous types out of the analysis. 
 
@@ -22,8 +31,8 @@ Or to be more lax:
 <Allowed From="*" To="." />
 ```
 
-## FAQ02
-### Setup is unable to add NsDepCop target to the C# build workflow
+<a name="item2"></a>
+## Setup is unable to add NsDepCop target to the C# build workflow
 
 In order to insert the NsDepCop task into the C# project build workflow, setup creates (or modifies) the "**Custom.After.Microsoft.CSharp.targets**" file at "(Program Files folder)\MsBuild\v14.0".
 It redefines the "BuildDependsOn" property group to include the NsDepCop target as the last step just before the "Build" target executes. 
@@ -52,15 +61,9 @@ After:
 </PropertyGroup>
 ```
 
-## FAQ03
-### Setup is unable to remove NsDepCop target from the C# build workflow
+<a name="item1"></a>
+## Setup is unable to remove NsDepCop target from the C# build workflow
 
 The same problem as above when uninstalling NsDepCop. 
 The "**Custom.After.Microsoft.CSharp.targets**" file at "(Program Files folder)\MsBuild\v14.0" contains a definition of the BuildDependsOn property group that is different from the content that setup creates. 
 You have to remove the NsDepCop string from the BuildDependsOn definition manually.
-
-## FAQ04
-### Where can I download the .NET Compiler Platform (Roslyn) End User Preview (for Visual Studio 2013)?
-
-Unfortunately .NET Compiler Platform (Roslyn) End User Preview (for Visual Studio 2013) is not available from Microsoft to download any more.
-You can find it in the source tree: [VS2013\prereq\Roslyn End User Preview.vsix](https://github.com/realvizu/NsDepCop/blob/VS2013/prereq/Roslyn%20End%20User%20Preview.vsix)
