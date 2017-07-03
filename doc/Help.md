@@ -4,6 +4,7 @@
 * [Config inheritance](#config-inheritance)
 * [Controlling verbosity](#controlling-verbosity)
 * [Config XML schema](#config-xml-schema)
+* [Config XML schema support in Visual Studio](#config-xml-schema-support-in-visual-studio)
 * [Machine-wide MSBuild integration](#machine-wide-msbuild-integration)
 
 
@@ -182,7 +183,17 @@ Advanced settings:
 E.g.: if you want NsDepCop info messages to show up at minimal MSBuild verbosity then set `InfoImportance` to High.
 
 ## Config XML schema
-See the XSD schema of config.nsdepcop [here](../source/NsDepCop.Setup/NsDepCopConfigSchema/NsDepCopConfig.xsd).
+See the XSD schema of config.nsdepcop [here](../source/NsDepCop.ConfigSchema/NsDepCopConfig.xsd).
+
+## Config XML schema support in Visual Studio
+Add NsDepCop config XML schema to the Visual Studio schema cache to get validation and IntelliSense when editing NsDepCop config files.
+
+* For Visual Studio 2017 install this extension: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop%20Config%20XML%20Schema%20Support-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCopConfigXMLSchemaSupport)
+* For Visual Studio 2015:
+  * Use [NsDepCop v1.6.1 installer](https://github.com/realvizu/NsDepCop/releases/download/v1.6.1/NsDepCop-1.6.1.msi) and choose "Config XML schema support in VS".
+  * Or just copy the following files into the VS2015 schema cache folder (vs2015installdir/Xml/Schemas):
+    * [NsDepCopCatalog.xml](../source/NsDepCop.ConfigSchema/NsDepCopCatalog.xml)
+    * [NsDepCopConfig.xsd](../source/NsDepCop.ConfigSchema/NsDepCopConfig.xsd)
 
 ## Machine-wide MSBuild integration
 * This is a legacy option in the MSI installer and requires admin privilege.
@@ -190,4 +201,4 @@ See the XSD schema of config.nsdepcop [here](../source/NsDepCop.Setup/NsDepCopCo
 * Runs NsDepCop when building any C# project that has a config.nsdepcop file.
 * The drawback of this method is that you have to install the tool on every environment where you want to use it.
 * The NuGet (per-project MSBuild integration) approach is much better because that works in every environment with zero install: the tool gets pulled down by the nuget package restore.
- 
+

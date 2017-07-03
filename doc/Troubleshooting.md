@@ -8,11 +8,11 @@
 <a name="item4"></a>
 ## NsDepCop NuGet package is not adding config.nsdepcop file to the project
 If the project uses the **PackageReference** package manager format then content files are not added to the project. 
-*(Anybody knows how to make it work? The new ContentFiles method doesn't work either because that's for immutable files.)*
-
-Solution:
+Workaround:
 * Use the **packages.config** package manager format.
-* Or add config.nsdepcop to the project manually.
+* Or **add** config.nsdepcop to the project **manually**.
+  * Right-click on project >> Add >> New Item... >> NsDepCop Config File
+  * Or simple add a file called config.nsdepcop and fill it in using the examples in [Help](Help.md).
 
 <a name="item3"></a>
 ## Anonymous types raise false alarms
