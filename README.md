@@ -27,11 +27,11 @@ See the [**Help**](doc/Help.md) for details.
 
 * Install the **NsDepCop Config XML Schema Support** for Visual Studio to get validation and IntelliSense while editing the config.nsdepcop files.
   * For Visual Studio 2017: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop%20Config%20XML%20Schema%20Support-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCopConfigXMLSchemaSupport)
-  * For Visual Studio 2015: see the instructions in [Help](doc/Help.md##config-xml-schema-support-in-visual-studio).
+  * For Visual Studio 2015: see the instructions in [Help](doc/Help.md#config-xml-schema-support-in-visual-studio).
 
 ## Versions
 * See the [**Change Log**](CHANGELOG.md) for version history.
-* See the [**Upgrade instructions**](CHANGELOG.md#upgrading) if upgrading from versions prior v1.6.0.
+* See the [**Upgrade instructions**](CHANGELOG.md#upgrading) if upgrading from versions prior to v1.6.0.
 * See the [**Milestones**](https://github.com/realvizu/NsDepCop/milestones) for planned releases.
 * See the [**Old Versions**](doc/Versions.md).
 
