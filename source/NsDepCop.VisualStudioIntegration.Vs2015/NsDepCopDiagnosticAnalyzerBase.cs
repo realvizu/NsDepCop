@@ -209,10 +209,6 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             vsActivityLog.LogEntry((uint)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR, ProductConstants.ToolName, exception.ToString());
         }
 
-        protected static void LogTraceMessage(IEnumerable<string> messages)
-        {
-            foreach (var message in messages)
-                Trace.WriteLine($"[{ProductConstants.ToolName}] {message}");
-        }
+        protected static void LogTraceMessage(string message) => Trace.WriteLine($"[{ProductConstants.ToolName}] {message}");
     }
 }

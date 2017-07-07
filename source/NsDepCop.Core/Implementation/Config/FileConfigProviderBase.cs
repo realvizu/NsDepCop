@@ -84,6 +84,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 && _configLastLoadUtc < File.GetLastWriteTimeUtc(ConfigFilePath);
         }
 
-        private void LogTraceMessage(string message) => TraceMessageHandler?.Invoke(new[] { message });
+        private void LogTraceMessage(string message) => TraceMessageHandler?.Invoke(message);
     }
 }

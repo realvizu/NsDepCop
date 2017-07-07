@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -39,8 +38,7 @@ namespace Codartis.NsDepCop.SourceTest
             AssertIllegalDependencies(sourceFilePaths, referencedAssemblyPaths);
         }
 
-        protected static void DebugMessageHandler(IEnumerable<string> messages)
-            => Debug.WriteLine(string.Join(Environment.NewLine, messages));
+        protected static void DebugMessageHandler(string message) => Debug.WriteLine(message);
 
         private void ValidateCompilation(IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
         {

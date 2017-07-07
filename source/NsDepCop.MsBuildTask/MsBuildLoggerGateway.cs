@@ -28,6 +28,8 @@ namespace Codartis.NsDepCop.MsBuildTask
                 LogTraceMessage(message);
         }
 
+        public void LogTraceMessage(string message) => LogBuildEvent(IssueKind.Info, message, MessageImportance.Low);
+
         public void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T issueParameter, IssueKind? issueKindOverride = null, SourceSegment? sourceSegment = null) 
             => LogIssue(issueDescriptor, issueDescriptor.GetDynamicDescription(issueParameter), issueKindOverride, sourceSegment);
 
@@ -48,8 +50,6 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             LogBuildEvent(issueKind, message, InfoImportance, code, path, startLine, startColumn, endLine, endColumn);
         }
-
-        private void LogTraceMessage(string message) => LogBuildEvent(IssueKind.Info, message, MessageImportance.Low);
 
         private void LogBuildEvent(IssueKind issueKind, string message, MessageImportance messageImportance, string code = null,
             string path = null, int startLine = 0, int startColumn = 0, int endLine = 0, int endColumn = 0)

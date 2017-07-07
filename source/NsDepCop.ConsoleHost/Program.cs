@@ -78,10 +78,10 @@ namespace Codartis.NsDepCop.ConsoleHost
             return elapsedTimeSpan;
         }
 
-        private static void LogTraceToConsole(IEnumerable<string> messages)
+        private static void LogTraceToConsole(string message)
         {
             if (_isVerbose)
-                Console.WriteLine(string.Join(Environment.NewLine, messages));
+                Console.WriteLine(message);
         }
 
         private static void DumpIllegalDependencies(IReadOnlyCollection<TypeDependency> typeDependencies)

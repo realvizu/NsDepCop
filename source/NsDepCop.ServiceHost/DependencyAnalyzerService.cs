@@ -16,23 +16,21 @@ namespace Codartis.NsDepCop.ServiceHost
     {
         public AnalyzerMessageBase[] AnalyzeProject(IAnalyzerConfig config, string[] sourcePaths, string[] referencedAssemblyPaths)
         {
-            var traceMessageBuffer = new List<IEnumerable<string>>();
+            var traceMessageBuffer = new List<string>();
             var typeDependencyValidator = new CachingTypeDependencyValidator(config);
             var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(i => traceMessageBuffer.Add(i));
 
             var typeDependencies = typeDependencyEnumerator.GetTypeDependencies(sourcePaths, referencedAssemblyPaths);
             var illegalDependencies = typeDependencies.Where(i => !typeDependencyValidator.IsAllowedDependency(i)).Take(config.MaxIssueCount);
-            traceMessageBuffer.Add(GetCacheStatisticsMessage(typeDependencyValidator).ToList());
+
+            traceMessageBuffer.Add(GetCacheStatisticsMessage(typeDependencyValidator));
 
             var traceMessages = traceMessageBuffer.Select(i => new TraceMessage(i));
             var illegalDependencyMessages = illegalDependencies.Select(i => new IllegalDependencyMessage(i));
             return illegalDependencyMessages.OfType<AnalyzerMessageBase>().Concat(traceMessages).ToArray();
         }
 
-        private static IEnumerable<string> GetCacheStatisticsMessage(ICacheStatisticsProvider cache)
-        {
-            if (cache != null)
-                yield return $"Cache hits: {cache.HitCount}, misses: {cache.MissCount}, efficiency (hits/all): {cache.EfficiencyPercent:P}";
-        }
+        private static string GetCacheStatisticsMessage(ICacheStatisticsProvider cache) => 
+            $"Cache hits: {cache.HitCount}, misses: {cache.MissCount}, efficiency (hits/all): {cache.EfficiencyPercent:P}";
     }
 }

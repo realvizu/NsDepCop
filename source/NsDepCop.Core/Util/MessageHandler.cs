@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace Codartis.NsDepCop.Core.Util
+﻿namespace Codartis.NsDepCop.Core.Util
 {
     /// <summary>
-    /// A delegate that receives string messages.
+    /// A delegate that receives a string message.
     /// </summary>
-    /// <param name="messages">A collection of string messages.</param>
-    public delegate void MessageHandler(IEnumerable<string> messages);
+    /// <param name="message">A message.</param>
+    public delegate void MessageHandler(string message);
 }

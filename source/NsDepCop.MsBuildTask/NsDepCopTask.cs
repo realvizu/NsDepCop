@@ -181,7 +181,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                         break;
 
                     case TraceMessage traceMessage:
-                        _logger.LogTraceMessage(traceMessage.Messages);
+                        _logger.LogTraceMessage(traceMessage.Message);
                         break;
                 }
             }

@@ -46,6 +46,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             return isAllowedDependency;
         }
 
-        private void LogTraceMessage(string message) => _traceMessageHandler?.Invoke(new[] { message });
+        private void LogTraceMessage(string message) => _traceMessageHandler?.Invoke(message);
     }
 }

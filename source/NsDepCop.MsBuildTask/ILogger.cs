@@ -35,7 +35,13 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// <summary>
         /// Log a collection of trace messages. 
         /// </summary>
-        /// <param name="messages">Messages collection.</param>
+        /// <param name="messages">A message collection.</param>
         void LogTraceMessage(IEnumerable<string> messages);
+
+        /// <summary>
+        /// Logs a trace message. 
+        /// </summary>
+        /// <param name="message">A string message.</param>
+        void LogTraceMessage(string message);
     }
 }

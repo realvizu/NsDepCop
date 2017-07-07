@@ -92,6 +92,6 @@ namespace Codartis.NsDepCop.ParserAdapter
             }
         }
 
-        private void LogTraceMessage(string message) => _traceMessageHandler?.Invoke(new[] { message });
+        private void LogTraceMessage(string message) => _traceMessageHandler?.Invoke(message);
     }
 }

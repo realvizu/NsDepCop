@@ -169,7 +169,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         private static string GetConfigFilePath(string folderPath) => Path.Combine(folderPath, ProductConstants.DefaultConfigFileName);
 
-        private void LogTraceMessage(IEnumerable<string> messages) => TraceMessageHandler?.Invoke(messages);
-        private void LogTraceMessage(string message) => LogTraceMessage(new[] { message });
+        private void LogTraceMessage(IEnumerable<string> messages)
+        {
+            foreach (var message in messages)
+                LogTraceMessage(message);
+        }
+
+        private void LogTraceMessage(string message) => TraceMessageHandler?.Invoke(message);
     }
 }

@@ -31,6 +31,6 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             return projectFilePath;
         }
 
-        private void LogTraceMessage(string message) => _traceMessageHandler?.Invoke(new[] { message });
+        private void LogTraceMessage(string message) => _traceMessageHandler?.Invoke(message);
     }
 }

@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Codartis.NsDepCop.Core.Interface.Analysis.Service
 {
     /// <summary>
-    /// A trace message. Can contain multiple strings.
+    /// A trace message.
     /// </summary>
     [Serializable]
     public class TraceMessage : AnalyzerMessageBase
     {
-        public IEnumerable<string> Messages { get; }
+        public string Message { get; }
 
-        public TraceMessage(IEnumerable<string> messages)
+        public TraceMessage(string message)
         {
-            Messages = messages;
+            Message = message;
         }
     }
 }
