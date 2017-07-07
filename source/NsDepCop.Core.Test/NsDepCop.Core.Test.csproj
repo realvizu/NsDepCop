@@ -80,6 +80,7 @@
     <Compile Include="Factory\DependencyAnalyzerFactoryTests.cs" />
     <Compile Include="Implementation\Analysis\CachingTypeDependencyValidatorTests.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzerTests.cs" />
+    <Compile Include="Implementation\Analysis\RefreshableDependencyAnalyzerTests.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilderTests.cs" />
     <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests.cs" />
     <Compile Include="Implementation\Config\XmlConfigParserTests.cs" />

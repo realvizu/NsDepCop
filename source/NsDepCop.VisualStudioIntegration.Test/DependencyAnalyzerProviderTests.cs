@@ -33,7 +33,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 
             var dependencyAnalyzerProvider = CreateDependencyAnalyzerProvider();
 
-            var analyzerMock = new Mock<IDependencyAnalyzer>();
+            var analyzerMock = new Mock<IRefreshableDependencyAnalyzer>();
             _dependencyAnalyzerFactoryMock.Setup(i => i.CreateFromMultiLevelXmlConfigFile(It.IsAny<string>()))
                 .Returns(analyzerMock.Object);
 
@@ -46,9 +46,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
             analyzerMock.Verify(i => i.RefreshConfig(), Times.Once);
         }
 
-        private IDependencyAnalyzerProvider CreateDependencyAnalyzerProvider()
+        private IAnalyzerProvider CreateDependencyAnalyzerProvider()
         {
-            return new DependencyAnalyzerProvider(_dependencyAnalyzerFactoryMock.Object);
+            return new AnalyzerProvider(_dependencyAnalyzerFactoryMock.Object);
         }
     }
 }

@@ -9,13 +9,13 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 {
     public class CachingDependencyAnalyzerProviderTests
     {
-        private readonly Mock<IDependencyAnalyzerProvider> _embeddedDependencyAnalyzerProvider;
+        private readonly Mock<IAnalyzerProvider> _embeddedDependencyAnalyzerProvider;
         private readonly MockDateTimeProvider _mockDateTimeProvider;
         private static readonly TimeSpan CacheTimeSpan = TimeSpan.FromSeconds(1);
 
         public CachingDependencyAnalyzerProviderTests()
         {
-            _embeddedDependencyAnalyzerProvider = new Mock<IDependencyAnalyzerProvider>();
+            _embeddedDependencyAnalyzerProvider = new Mock<IAnalyzerProvider>();
             _mockDateTimeProvider = new MockDateTimeProvider();
         }
 
@@ -26,7 +26,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
  
             var dependencyAnalyzerProvider = CreateDependencyAnalyzerProvider();
 
-            var result1 = new Mock<IDependencyAnalyzer>().Object;
+            var result1 = new Mock<IRefreshableDependencyAnalyzer>().Object;
             _embeddedDependencyAnalyzerProvider.Setup(i => i.GetDependencyAnalyzer(filePath)).Returns(result1);
             dependencyAnalyzerProvider.GetDependencyAnalyzer(filePath).Should().Be(result1);
 
@@ -40,11 +40,11 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 
             var dependencyAnalyzerProvider = CreateDependencyAnalyzerProvider();
 
-            var result1 = new Mock<IDependencyAnalyzer>().Object;
+            var result1 = new Mock<IRefreshableDependencyAnalyzer>().Object;
             _embeddedDependencyAnalyzerProvider.Setup(i => i.GetDependencyAnalyzer(filePath)).Returns(result1);
             dependencyAnalyzerProvider.GetDependencyAnalyzer(filePath).Should().Be(result1);
 
-            var result2 = new Mock<IDependencyAnalyzer>().Object;
+            var result2 = new Mock<IRefreshableDependencyAnalyzer>().Object;
             _embeddedDependencyAnalyzerProvider.Setup(i => i.GetDependencyAnalyzer(filePath)).Returns(result2);
             dependencyAnalyzerProvider.GetDependencyAnalyzer(filePath).Should().Be(result1);
 
@@ -58,22 +58,22 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 
             var dependencyAnalyzerProvider = CreateDependencyAnalyzerProvider();
 
-            var result1 = new Mock<IDependencyAnalyzer>().Object;
+            var result1 = new Mock<IRefreshableDependencyAnalyzer>().Object;
             _embeddedDependencyAnalyzerProvider.Setup(i => i.GetDependencyAnalyzer(filePath)).Returns(result1);
             dependencyAnalyzerProvider.GetDependencyAnalyzer(filePath).Should().Be(result1);
 
             _mockDateTimeProvider.UtcNow += TimeSpan.FromSeconds(1);
 
-            var result2 = new Mock<IDependencyAnalyzer>().Object;
+            var result2 = new Mock<IRefreshableDependencyAnalyzer>().Object;
             _embeddedDependencyAnalyzerProvider.Setup(i => i.GetDependencyAnalyzer(filePath)).Returns(result2);
             dependencyAnalyzerProvider.GetDependencyAnalyzer(filePath).Should().Be(result2);
 
             _embeddedDependencyAnalyzerProvider.Verify(i => i.GetDependencyAnalyzer(filePath), Times.Exactly(2));
         }
 
-        private IDependencyAnalyzerProvider CreateDependencyAnalyzerProvider()
+        private IAnalyzerProvider CreateDependencyAnalyzerProvider()
         {
-            return new CachingDependencyAnalyzerProvider(_embeddedDependencyAnalyzerProvider.Object, _mockDateTimeProvider, CacheTimeSpan);
+            return new CachingAnalyzerProvider(_embeddedDependencyAnalyzerProvider.Object, _mockDateTimeProvider, CacheTimeSpan);
         }
     }
 }

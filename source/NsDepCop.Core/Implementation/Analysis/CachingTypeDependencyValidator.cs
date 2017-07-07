@@ -8,7 +8,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// <summary>
     /// Validates type dependencies to a set of allowed/disallowed rules and caches the results.
     /// </summary>
-    public class CachingTypeDependencyValidator : TypeDependencyValidator, ICacheStatisticsProvider
+    internal class CachingTypeDependencyValidator : TypeDependencyValidator, ICacheStatisticsProvider
     {
         private readonly MessageHandler _traceMessageHandler;
         private readonly ConcurrentDictionary<TypeDependency, bool> _dependencyValidationCache;
@@ -16,7 +16,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         public int HitCount { get; private set; }
         public int MissCount { get; private set; }
 
-        public CachingTypeDependencyValidator(IDependencyRules dependencyRules, MessageHandler traceMessageHandler = null)
+        public CachingTypeDependencyValidator(IDependencyRules dependencyRules, MessageHandler traceMessageHandler)
             : base(dependencyRules)
         {
             _traceMessageHandler = traceMessageHandler;

@@ -288,17 +288,17 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\CachingDependencyAnalyzerProvider.cs">
-      <Link>CachingDependencyAnalyzerProvider.cs</Link>
+    <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\AnalyzerProvider.cs">
+      <Link>AnalyzerProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\CachingAnalyzerProvider.cs">
+      <Link>CachingAnalyzerProvider.cs</Link>
     </Compile>
     <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\CachingProjectFileResolver.cs">
       <Link>CachingProjectFileResolver.cs</Link>
     </Compile>
-    <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\DependencyAnalyzerProvider.cs">
-      <Link>DependencyAnalyzerProvider.cs</Link>
-    </Compile>
-    <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\IDependencyAnalyzerProvider.cs">
-      <Link>IDependencyAnalyzerProvider.cs</Link>
+    <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\IAnalyzerProvider.cs">
+      <Link>IAnalyzerProvider.cs</Link>
     </Compile>
     <Compile Include="..\NsDepCop.VisualStudioIntegration.Vs2015\IProjectFileResolver.cs">
       <Link>IProjectFileResolver.cs</Link>

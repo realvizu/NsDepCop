@@ -54,12 +54,16 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Factory\ConfigProviderFactory.cs" />
     <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
+    <Compile Include="Factory\IConfigProviderFactory.cs" />
     <Compile Include="Factory\IDependencyAnalyzerFactory.cs" />
+    <Compile Include="Implementation\Analysis\RefreshableDependencyAnalyzer.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
     <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
     <Compile Include="Implementation\Config\RuleConfigToStringsFormatter.cs" />
+    <Compile Include="Interface\Analysis\IRefreshableDependencyAnalyzer.cs" />
     <Compile Include="Interface\Analysis\Service\AnalyzerMessageBase.cs" />
     <Compile Include="Interface\Analysis\Service\IDependencyAnalyzerService.cs" />
     <Compile Include="Interface\Analysis\Service\IllegalDependencyMessage.cs" />

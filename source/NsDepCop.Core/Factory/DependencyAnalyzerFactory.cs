@@ -1,6 +1,5 @@
 ﻿using System;
 using Codartis.NsDepCop.Core.Implementation.Analysis;
-using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
@@ -14,37 +13,36 @@ namespace Codartis.NsDepCop.Core.Factory
     {
         private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
         private readonly MessageHandler _traceMessageHandler;
-        private Importance? _defaultInfoImportance;
+        private readonly IConfigProviderFactory _configProviderFactory;
 
-        public DependencyAnalyzerFactory(ITypeDependencyEnumerator typeDependencyEnumerator, MessageHandler traceMessageHandler = null)
+        public DependencyAnalyzerFactory(ITypeDependencyEnumerator typeDependencyEnumerator, MessageHandler traceMessageHandler)
         {
             _typeDependencyEnumerator = typeDependencyEnumerator ?? throw new ArgumentNullException(nameof(typeDependencyEnumerator));
             _traceMessageHandler = traceMessageHandler;
+            _configProviderFactory = new ConfigProviderFactory(_traceMessageHandler);
         }
 
         public DependencyAnalyzerFactory SetDefaultInfoImportance(Importance? defaultInfoImportance)
         {
-            _defaultInfoImportance = defaultInfoImportance;
+            _configProviderFactory.SetDefaultInfoImportance(defaultInfoImportance);
             return this;
         }
 
-        public IDependencyAnalyzer CreateFromXmlConfigFile(string configFilePath)
+        public IDependencyAnalyzer Create(IAnalyzerConfig config)
         {
-            var configProvider = new XmlFileConfigProvider(configFilePath, _traceMessageHandler);
-            ApplyConfigDefaults(configProvider);
-            return new DependencyAnalyzer(configProvider, _typeDependencyEnumerator, _traceMessageHandler);
+            return new DependencyAnalyzer(config, _typeDependencyEnumerator, _traceMessageHandler);
         }
 
-        public IDependencyAnalyzer CreateFromMultiLevelXmlConfigFile(string folderPath)
+        public IRefreshableDependencyAnalyzer CreateFromXmlConfigFile(string configFilePath)
         {
-            var configProvider = new MultiLevelXmlFileConfigProvider(folderPath, _traceMessageHandler);
-            ApplyConfigDefaults(configProvider);
-            return new DependencyAnalyzer(configProvider, _typeDependencyEnumerator, _traceMessageHandler);
+            var configProvider = _configProviderFactory.CreateFromXmlConfigFile(configFilePath);
+            return new RefreshableDependencyAnalyzer(configProvider, _typeDependencyEnumerator, _traceMessageHandler);
         }
 
-        private void ApplyConfigDefaults(ConfigProviderBase configProvider)
+        public IRefreshableDependencyAnalyzer CreateFromMultiLevelXmlConfigFile(string folderPath)
         {
-            configProvider.SetDefaultInfoImportance(_defaultInfoImportance);
+            var configProvider = _configProviderFactory.CreateFromMultiLevelXmlConfigFile(folderPath);
+            return new RefreshableDependencyAnalyzer(configProvider, _typeDependencyEnumerator, _traceMessageHandler);
         }
     }
 }

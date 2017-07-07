@@ -49,6 +49,6 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         }
 
         private  DependencyAnalyzerFactory CreateDependencyAnalyzerFactory() 
-            => new DependencyAnalyzerFactory(_typeDependencyEnumeratorMock.Object);
+            => new DependencyAnalyzerFactory(_typeDependencyEnumeratorMock.Object, traceMessageHandler: null);
     }
 }

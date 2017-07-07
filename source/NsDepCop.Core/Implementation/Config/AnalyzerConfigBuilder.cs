@@ -8,7 +8,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <summary>
     /// Builds analyzer config objects.
     /// </summary>
-    public class AnalyzerConfigBuilder : IConfigInitializer<AnalyzerConfigBuilder>, IDiagnosticSupport
+    internal class AnalyzerConfigBuilder : IConfigInitializer<AnalyzerConfigBuilder>, IDiagnosticSupport
     {
         public Importance? DefaultInfoImportance { get; private set; }
 

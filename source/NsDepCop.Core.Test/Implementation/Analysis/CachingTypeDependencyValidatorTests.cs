@@ -33,6 +33,6 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         }
 
         private static CachingTypeDependencyValidator CreateCachingTypeDependencyValidator(IDependencyRules ruleConfig)
-            => new CachingTypeDependencyValidator(ruleConfig);
+            => new CachingTypeDependencyValidator(ruleConfig, traceMessageHandler: null);
     }
 }

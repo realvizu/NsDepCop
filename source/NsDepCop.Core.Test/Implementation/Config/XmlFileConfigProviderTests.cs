@@ -131,7 +131,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 
         private static XmlFileConfigProvider CreateConfigProvider(string path)
         {
-            return new XmlFileConfigProvider(path);
+            return new XmlFileConfigProvider(path, traceMessageHandler: null);
         }
     }
 }

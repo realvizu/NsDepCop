@@ -15,7 +15,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <remarks>
     /// Base class ensures that all operations are executed in an atomic way so no extra locking needed.
     /// </remarks>
-    public sealed class MultiLevelXmlFileConfigProvider : ConfigProviderBase
+    internal sealed class MultiLevelXmlFileConfigProvider : ConfigProviderBase
     {
         private ConfigLoadResult _lastConfigLoadResult;
         private int _lastInheritanceDepth;
@@ -31,7 +31,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public string ProjectFolder { get; }
 
-        public MultiLevelXmlFileConfigProvider(string projectFolder, MessageHandler traceMessageHandler = null)
+        public MultiLevelXmlFileConfigProvider(string projectFolder, MessageHandler traceMessageHandler)
             : base(traceMessageHandler)
         {
             ProjectFolder = projectFolder;

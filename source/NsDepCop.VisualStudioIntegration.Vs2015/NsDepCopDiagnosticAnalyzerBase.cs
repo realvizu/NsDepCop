@@ -28,7 +28,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private static readonly TimeSpan ProjectFileCachingTimeSpan = TimeSpan.FromMilliseconds(2000);
 
         private readonly IProjectFileResolver _projectFileResolver;
-        private readonly IDependencyAnalyzerProvider _analyzerProvider;
+        private readonly IAnalyzerProvider _analyzerProvider;
 
         /// <summary>
         /// Descriptor for the 'Illegal namespace dependency' diagnostic.
@@ -196,11 +196,11 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             return new CachingProjectFileResolver(projectFileResolver, new DateTimeProvider(), ProjectFileCachingTimeSpan);
         }
 
-        private static CachingDependencyAnalyzerProvider CreateDependencyAnalyzerProvider(ITypeDependencyEnumerator typeDependencyEnumerator)
+        private static CachingAnalyzerProvider CreateDependencyAnalyzerProvider(ITypeDependencyEnumerator typeDependencyEnumerator)
         {
             var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogTraceMessage);
-            var embeddedDependencyAnalyzerProvider = new DependencyAnalyzerProvider(dependencyAnalyzerFactory);
-            return new CachingDependencyAnalyzerProvider(embeddedDependencyAnalyzerProvider, new DateTimeProvider(), AnalyzerCachingTimeSpan);
+            var analyzerProvider = new AnalyzerProvider(dependencyAnalyzerFactory);
+            return new CachingAnalyzerProvider(analyzerProvider, new DateTimeProvider(), AnalyzerCachingTimeSpan);
         }
 
         private static void LogExceptionToActivityLog(Exception exception)

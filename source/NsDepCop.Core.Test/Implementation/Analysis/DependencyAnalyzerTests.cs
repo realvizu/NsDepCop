@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Codartis.NsDepCop.Core.Implementation.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis;
@@ -14,46 +13,22 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
     {
         private static readonly SourceSegment DummySourceSegment = new SourceSegment(1, 1, 1, 1, null, null);
 
-        private readonly Mock<IConfigProvider> _configProviderMock = new Mock<IConfigProvider>();
+        private readonly Mock<IAnalyzerConfig> _configMock = new Mock<IAnalyzerConfig>();
         private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock = new Mock<ITypeDependencyEnumerator>();
-
-        [Theory]
-        [InlineData(AnalyzerConfigState.NoConfig)]
-        [InlineData(AnalyzerConfigState.ConfigError)]
-        [InlineData(AnalyzerConfigState.Disabled)]
-        public void AnalyzeSyntaxNode_ConfigNotEnabled_Exception(AnalyzerConfigState configState)
-        {
-            _configProviderMock.Setup(i => i.ConfigState).Returns(configState);
-
-            var dependencyAnalyzer = CreateDependencyAnalyzer();
-            Assert.Throws<InvalidOperationException>(() => dependencyAnalyzer.AnalyzeSyntaxNode(null, null));
-        }
 
         [Fact]
         public void AnalyzeSyntaxNode_NoTypeDependencies_EmptyResult()
         {
-            SetUpEnabledConfig();
+            SetUpConfig();
 
             var dependencyAnalyzer = CreateDependencyAnalyzer();
             dependencyAnalyzer.AnalyzeSyntaxNode(null, null).Should().BeEmpty();
         }
 
-        [Theory]
-        [InlineData(AnalyzerConfigState.NoConfig)]
-        [InlineData(AnalyzerConfigState.ConfigError)]
-        [InlineData(AnalyzerConfigState.Disabled)]
-        public void AnalyzeProject_ConfigNotEnabled_Exception(AnalyzerConfigState configState)
-        {
-            _configProviderMock.Setup(i => i.ConfigState).Returns(configState);
-
-            var dependencyAnalyzer = CreateDependencyAnalyzer();
-            Assert.Throws<InvalidOperationException>(() => dependencyAnalyzer.AnalyzeProject(null, null));
-        }
-
         [Fact]
         public void AnalyzeProject_NoTypeDependencies_EmptyResult()
         {
-            SetUpEnabledConfig();
+            SetUpConfig();
 
             var dependencyAnalyzer = CreateDependencyAnalyzer();
             dependencyAnalyzer.AnalyzeProject(null, null).Should().BeEmpty();
@@ -62,7 +37,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [Fact]
         public void AnalyzeProject_TypeDependenciesReturned()
         {
-            SetUpEnabledConfig();
+            SetUpConfig();
 
             _typeDependencyEnumeratorMock
                 .Setup(i => i.GetTypeDependencies(It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>()))
@@ -75,7 +50,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         [Fact]
         public void AnalyzeProject_MaxIssueCountHonored()
         {
-            SetUpEnabledConfig(maxIssueCount: 2);
+            SetUpConfig(maxIssueCount: 2);
 
             _typeDependencyEnumeratorMock
                 .Setup(i => i.GetTypeDependencies(It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>()))
@@ -85,37 +60,15 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyAnalyzer.AnalyzeProject(null, null).Should().HaveCount(2);
         }
 
-        [Fact]
-        public void RefreshConfig_Works()
+        private void SetUpConfig(int maxIssueCount = 100)
         {
-            SetUpEnabledConfig(maxIssueCount: 2);
-
-            _typeDependencyEnumeratorMock
-                .Setup(i => i.GetTypeDependencies(It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>()))
-                .Returns(Enumerable.Repeat(new TypeDependency("N1", "T1", "N2", "T2", DummySourceSegment), 10));
-
-            var dependencyAnalyzer = CreateDependencyAnalyzer();
-            dependencyAnalyzer.AnalyzeProject(null, null).Should().HaveCount(2);
-
-            SetUpEnabledConfig(maxIssueCount: 4);
-            dependencyAnalyzer.RefreshConfig();
-            dependencyAnalyzer.AnalyzeProject(null, null).Should().HaveCount(4);
-        }
-
-        private void SetUpEnabledConfig(int maxIssueCount = 100)
-        {
-            var analyzerConfigMock = new Mock<IAnalyzerConfig>();
-            analyzerConfigMock.Setup(i => i.AllowRules).Returns(new Dictionary<NamespaceDependencyRule, TypeNameSet>());
-            analyzerConfigMock.Setup(i => i.DisallowRules).Returns(new HashSet<NamespaceDependencyRule>());
-            analyzerConfigMock.Setup(i => i.VisibleTypesByNamespace).Returns(new Dictionary<Namespace, TypeNameSet>());
-            analyzerConfigMock.Setup(i => i.MaxIssueCount).Returns(maxIssueCount);
-
-            _configProviderMock.Setup(i => i.ConfigState).Returns(AnalyzerConfigState.Enabled);
-            _configProviderMock.Setup(i => i.ConfigException).Returns<Exception>(null);
-            _configProviderMock.Setup(i => i.Config).Returns(analyzerConfigMock.Object);
+            _configMock.Setup(i => i.AllowRules).Returns(new Dictionary<NamespaceDependencyRule, TypeNameSet>());
+            _configMock.Setup(i => i.DisallowRules).Returns(new HashSet<NamespaceDependencyRule>());
+            _configMock.Setup(i => i.VisibleTypesByNamespace).Returns(new Dictionary<Namespace, TypeNameSet>());
+            _configMock.Setup(i => i.MaxIssueCount).Returns(maxIssueCount);
         }
 
         private DependencyAnalyzer CreateDependencyAnalyzer()
-            => new DependencyAnalyzer(_configProviderMock.Object, _typeDependencyEnumeratorMock.Object);
+            => new DependencyAnalyzer(_configMock.Object, _typeDependencyEnumeratorMock.Object, traceMessageHandler: null);
     }
 }

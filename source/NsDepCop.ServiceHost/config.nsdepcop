@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <NsDepCopConfig InheritanceDepth="1">
-    <Allowed From="Codartis.NsDepCop.ServiceHost" To="Codartis.NsDepCop.Core.*" />
+    <Allowed From="Codartis.NsDepCop.ServiceHost" To="Codartis.NsDepCop.Core.Interface.*" />
+    <Allowed From="Codartis.NsDepCop.ServiceHost" To="Codartis.NsDepCop.Core.Factory" />
     <Allowed From="Codartis.NsDepCop.ServiceHost" To="Codartis.NsDepCop.ParserAdapter.Roslyn2x" />
 </NsDepCopConfig>

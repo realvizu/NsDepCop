@@ -260,12 +260,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CachingProjectFileResolver.cs" />
     <Compile Include="TimeBasedCacheBase.cs" />
-    <Compile Include="CachingDependencyAnalyzerProvider.cs" />
+    <Compile Include="CachingAnalyzerProvider.cs" />
     <Compile Include="VisualStudioServiceGateway.cs" />
     <Compile Include="WorkspaceProjectFileResolver.cs" />
-    <Compile Include="DependencyAnalyzerProvider.cs" />
+    <Compile Include="AnalyzerProvider.cs" />
     <Compile Include="IProjectFileResolver.cs" />
-    <Compile Include="IDependencyAnalyzerProvider.cs" />
+    <Compile Include="IAnalyzerProvider.cs" />
     <Compile Include="IssueDescriptorExtensions.cs" />
     <Compile Include="IssueKindExtension.cs" />
     <Compile Include="IssueKindTranslator.cs" />

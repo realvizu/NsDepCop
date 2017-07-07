@@ -264,7 +264,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 
         private static MultiLevelXmlFileConfigProvider CreateConfigProvider(string folder)
         {
-            return new MultiLevelXmlFileConfigProvider(folder);
+            return new MultiLevelXmlFileConfigProvider(folder, traceMessageHandler: null);
         }
     }
 }

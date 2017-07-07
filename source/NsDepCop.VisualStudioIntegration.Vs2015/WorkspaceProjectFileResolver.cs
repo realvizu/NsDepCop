@@ -11,7 +11,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     {
         private readonly MessageHandler _traceMessageHandler;
 
-        public WorkspaceProjectFileResolver(MessageHandler traceMessageHandler = null)
+        public WorkspaceProjectFileResolver(MessageHandler traceMessageHandler)
         {
             _traceMessageHandler = traceMessageHandler;
         }

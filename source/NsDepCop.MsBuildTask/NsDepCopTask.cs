@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Codartis.NsDepCop.Core.Implementation.Config;
+using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Service;
@@ -112,8 +112,8 @@ namespace Codartis.NsDepCop.MsBuildTask
                 var defaultInfoImportance = EnumHelper.ParseNullable<Importance>(InfoImportance.GetValue());
                 _logger.InfoImportance = defaultInfoImportance?.ToMessageImportance() ?? MessageImportance.Normal;
 
-                var configProvider = new MultiLevelXmlFileConfigProvider(ProjectFolder, _logger.LogTraceMessage)
-                    .SetDefaultInfoImportance(defaultInfoImportance);
+                var configProviderFactory = new ConfigProviderFactory(_logger.LogTraceMessage).SetDefaultInfoImportance(defaultInfoImportance);
+                var configProvider = configProviderFactory.CreateFromMultiLevelXmlConfigFile(ProjectFolder);
 
                 var runWasSuccessful = true;
 
