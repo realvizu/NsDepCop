@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
-using System.Threading;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis.Service;
 
@@ -38,9 +38,7 @@ namespace Codartis.NsDepCop.ServiceHost
             {
                 RegisterRemotingService();
 
-                while (IsProcessAlive(parentProcessId))
-                    Thread.Sleep(1000);
-
+                WaitForParentProcessExit(parentProcessId);
                 return 0;
             }
             catch (Exception e)
@@ -61,16 +59,10 @@ namespace Codartis.NsDepCop.ServiceHost
                 WellKnownObjectMode.SingleCall);
         }
 
-        private static bool IsProcessAlive(int processId)
+        private static void WaitForParentProcessExit(int parentProcessId)
         {
-            try
-            {
-                return !Process.GetProcessById(processId).HasExited;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            var parentProcess = Process.GetProcesses().FirstOrDefault(i => i.Id == parentProcessId);
+            parentProcess?.WaitForExit();
         }
 
         private static void Usage()
