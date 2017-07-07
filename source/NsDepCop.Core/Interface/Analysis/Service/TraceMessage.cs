@@ -7,7 +7,7 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis.Service
     /// A trace message. Can contain multiple strings.
     /// </summary>
     [Serializable]
-    public class TraceMessage
+    public class TraceMessage : AnalyzerMessageBase
     {
         public IEnumerable<string> Messages { get; }
 

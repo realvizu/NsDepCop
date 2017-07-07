@@ -172,15 +172,17 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             foreach (var analyzerMessage in analyzerMessages)
             {
-                if (analyzerMessage.IllegalDependencyMessage != null)
+                switch (analyzerMessage)
                 {
-                    var illegalDependency = analyzerMessage.IllegalDependencyMessage.IllegalDependency;
-                    _logger.LogIssue(IssueDefinitions.IllegalDependencyIssue, illegalDependency, issueKind, illegalDependency.SourceSegment);
-                    dependencyIssueCount++;
-                }
-                else
-                {
-                    _logger.LogTraceMessage(analyzerMessage.TraceMessage.Messages);
+                    case IllegalDependencyMessage illegalDependencyMessage:
+                        var illegalDependency = illegalDependencyMessage.IllegalDependency;
+                        _logger.LogIssue(IssueDefinitions.IllegalDependencyIssue, illegalDependency, issueKind, illegalDependency.SourceSegment);
+                        dependencyIssueCount++;
+                        break;
+
+                    case TraceMessage traceMessage:
+                        _logger.LogTraceMessage(traceMessage.Messages);
+                        break;
                 }
             }
 

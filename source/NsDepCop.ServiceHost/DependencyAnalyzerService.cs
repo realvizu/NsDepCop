@@ -24,9 +24,9 @@ namespace Codartis.NsDepCop.ServiceHost
             var illegalDependencies = typeDependencies.Where(i => !typeDependencyValidator.IsAllowedDependency(i)).Take(config.MaxIssueCount);
             traceMessageBuffer.Add(GetCacheStatisticsMessage(typeDependencyValidator).ToList());
 
-            var traceMessages = traceMessageBuffer.Select(i => new AnalyzerMessageBase(new TraceMessage(i)));
-            var illegalDependencyMessages = illegalDependencies.Select(i => new AnalyzerMessageBase(new IllegalDependencyMessage(i)));
-            return illegalDependencyMessages.ToArray().Concat(traceMessages).ToArray();
+            var traceMessages = traceMessageBuffer.Select(i => new TraceMessage(i));
+            var illegalDependencyMessages = illegalDependencies.Select(i => new IllegalDependencyMessage(i));
+            return illegalDependencyMessages.OfType<AnalyzerMessageBase>().Concat(traceMessages).ToArray();
         }
 
         private static IEnumerable<string> GetCacheStatisticsMessage(ICacheStatisticsProvider cache)
