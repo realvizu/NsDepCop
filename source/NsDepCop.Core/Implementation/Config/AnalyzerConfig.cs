@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Codartis.NsDepCop.Core.Interface.Config;
 
@@ -6,6 +7,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <summary>
     /// Describes the config for a dependency analyzer. Immutable.
     /// </summary>
+    [Serializable]
     internal class AnalyzerConfig : IAnalyzerConfig
     {
         public bool IsEnabled { get; }

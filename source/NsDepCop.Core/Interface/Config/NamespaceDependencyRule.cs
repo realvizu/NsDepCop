@@ -4,10 +4,13 @@ using System.Text;
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
-    /// Represents a dependency rule between 2 namespace specifications.
+    /// Represents a dependency rule between 2 namespace specifications. Immutable.
+    /// </summary>
+    /// <remarks>
     /// The 'From' namespace specification depends on the 'To' namespace specification.
     /// A namespace specification can represent more than just a single namespace (eg. a subtree of namespaces).
-    /// </summary>
+    /// </remarks>
+    [Serializable]
     public class NamespaceDependencyRule
     {
         /// <summary>

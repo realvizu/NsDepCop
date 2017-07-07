@@ -4,11 +4,12 @@ using System.Linq;
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
-    /// Represents a namespace, eg. 'A.B'
+    /// Represents a namespace, eg. 'A.B'. Immutable.
     /// </summary>
     /// <remarks>
     /// The global namespace is also a namespace and it's represented by '.' (a dot)
     /// </remarks>
+    [Serializable]
     public sealed class Namespace : NamespaceSpecification
     {
         public const string RootNamespaceMarker = ".";

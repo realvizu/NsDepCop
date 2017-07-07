@@ -4,11 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{49913F01-47E6-4860-B0BC-359E2255BB5C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Codartis.NsDepCop.ParserAdapter</RootNamespace>
-    <AssemblyName>NsDepCop.ParserAdapter.Roslyn2x</AssemblyName>
+    <ProjectGuid>{BCBDF14E-53EC-4E8F-A977-8F485B8F2B5D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Codartis.NsDepCop.ServiceHost</RootNamespace>
+    <AssemblyName>NsDepCop.ServiceHost</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -16,6 +15,7 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -26,6 +26,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -35,11 +36,11 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CodeAnalysis, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.2.0.0\lib\netstandard1.3\Microsoft.CodeAnalysis.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.2.2.0\lib\netstandard1.3\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.2.0.0\lib\netstandard1.3\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.2.2.0\lib\netstandard1.3\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -85,6 +86,7 @@
     <Reference Include="System.Runtime.InteropServices, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.InteropServices.4.3.0\lib\net462\System.Runtime.InteropServices.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
     </Reference>
@@ -103,8 +105,8 @@
     <Reference Include="System.Threading.Thread, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Thread.4.3.0\lib\net46\System.Threading.Thread.dll</HintPath>
     </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -132,38 +134,23 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\ISyntaxNodeAnalyzer.cs">
-      <Link>ISyntaxNodeAnalyzer.cs</Link>
-    </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\RoslynTypeDependencyEnumeratorBase.cs">
-      <Link>RoslynTypeDependencyEnumeratorBase.cs</Link>
-    </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\SyntaxNodeAnalyzer.cs">
-      <Link>SyntaxNodeAnalyzer.cs</Link>
-    </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\SyntaxNodeExtensions.cs">
-      <Link>SyntaxNodeExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\NsDepCop.ParserAdapter.Roslyn1x\TypeDependencyEnumeratorSyntaxVisitor.cs">
-      <Link>TypeDependencyEnumeratorSyntaxVisitor.cs</Link>
-    </Compile>
-    <Compile Include="Roslyn2x\Roslyn2TypeDependencyEnumerator.cs" />
-    <Compile Include="Roslyn2x\Roslyn2SyntaxNodeAnalyzer.cs" />
+    <Compile Include="DependencyAnalyzerService.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="App.config" />
     <None Include="config.nsdepcop" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj">
       <Project>{bc26589e-79b0-4f55-b64d-db11534d3476}</Project>
       <Name>NsDepCop.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NsDepCop.ParserAdapter.Roslyn2x\NsDepCop.ParserAdapter.Roslyn2x.csproj">
+      <Project>{49913f01-47e6-4860-b0bc-359e2255bb5c}</Project>
+      <Name>NsDepCop.ParserAdapter.Roslyn2x</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

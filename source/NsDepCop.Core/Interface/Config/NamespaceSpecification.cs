@@ -3,8 +3,9 @@
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
-    /// Represents a namespace or a namespace tree.
+    /// Represents a namespace or a namespace tree. Immutable.
     /// </summary>
+    [Serializable]
     public abstract class NamespaceSpecification
     {
         public const char NamespacePartSeparator = '.';

@@ -2,24 +2,24 @@
 using Microsoft.Build.Utilities;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Codartis.NsDepCop.Core.Factory;
+using System.Reflection;
+using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Service;
 using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
-using Codartis.NsDepCop.ParserAdapter.Roslyn2x;
 
 namespace Codartis.NsDepCop.MsBuildTask
 {
     /// <summary>
-    /// Implements a custom MsBuild task that performs namespace dependency analysis  and reports disallowed dependencies.
+    /// Implements a custom MsBuild task that performs namespace dependency analysis and reports disallowed dependencies.
     /// </summary>
     /// <remarks>
-    /// Must be AppDomain-isolated to avoid interference with other tasks when performing binding redirection.
+    /// Invokes the analyzer from an out-of-process server via remoting 
+    /// to avoid DLL version conflicts with the host process and to improve performance.
     /// </remarks>
-    public class NsDepCopTask : AppDomainIsolatedTask
+    public class NsDepCopTask : Task
     {
         public static readonly IssueDescriptor<string> TaskStartedIssue =
             new IssueDescriptor<string>("NSDEPCOPSTART", IssueKind.Info, null, i => $"Analysing project in folder: {i}");
@@ -29,6 +29,8 @@ namespace Codartis.NsDepCop.MsBuildTask
 
         public static readonly IssueDescriptor<Exception> TaskExceptionIssue =
             new IssueDescriptor<Exception>("NSDEPCOPEX", IssueKind.Error, null, i => $"Exception during NsDepCopTask execution: {i.ToString()}");
+
+        private const string AnalyzerServiceAddress = "ipc://NsDepCop/DependencyAnalyzerService";
 
         /// <summary>
         /// MsBuild task item list that contains the name and full path 
@@ -64,13 +66,13 @@ namespace Codartis.NsDepCop.MsBuildTask
         private ILogger _logger;
 
         /// <summary>
-        /// This ctor is for MsBuild.
+        /// Parameterless ctor is needed by MsBuild.
         /// </summary>
         public NsDepCopTask()
         {
-            // Must handle assembly binding redirect because MsBuild does not provide it.
-            // See: https://github.com/Microsoft/msbuild/issues/1309
-            AssemblyBindingRedirector.Initialize();
+            // Remoting loads assemblies at deserialization (even already loaded ones) 
+            // and we must help it to find the NsDepCop assemblies.
+            DirectoryBasedAssemblyResolver.Initialize(Assembly.GetExecutingAssembly().GetDirectory());
         }
 
         /// <summary>
@@ -83,9 +85,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         }
 
         private string ProjectFolder => BaseDirectory.ItemSpec;
-
-        private IEnumerable<string> SourceFilePaths => Compile.Select(i => AbsolutePath(i.ItemSpec, ProjectFolder));
-
+        private IEnumerable<string> SourceFilePaths => Compile.Select(i => i.ItemSpec.ToAbsolutePath(ProjectFolder));
         private IEnumerable<string> ReferencedAssemblyPaths => ReferencePath.Select(i => i.ItemSpec);
 
         /// <summary>
@@ -97,48 +97,49 @@ namespace Codartis.NsDepCop.MsBuildTask
         public override bool Execute()
         {
             if (_logger == null)
+            {
+                // This must not be moved to the ctor because BuildEngine is not yet inicialized at construction time.
                 _logger = new MsBuildLoggerGateway(BuildEngine);
+            }
 
             try
             {
                 _logger.LogTraceMessage(GetInputParameterDiagnosticMessages());
 
-                var defaultInfoImportance = ParseNullable<Importance>(InfoImportance.GetValue());
+                ServiceActivator.ActivateDependencyAnalyzerService();
+
+                var defaultInfoImportance = EnumHelper.ParseNullable<Importance>(InfoImportance.GetValue());
                 _logger.InfoImportance = defaultInfoImportance?.ToMessageImportance() ?? MessageImportance.Normal;
 
-                var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(_logger.LogTraceMessage);
-                var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, _logger.LogTraceMessage)
+                var configProvider = new MultiLevelXmlFileConfigProvider(ProjectFolder, _logger.LogTraceMessage)
                     .SetDefaultInfoImportance(defaultInfoImportance);
 
-                using (var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(ProjectFolder))
+                var runWasSuccessful = true;
+
+                switch (configProvider.ConfigState)
                 {
-                    var runWasSuccessful = true;
+                    case AnalyzerConfigState.NoConfig:
+                        _logger.LogIssue(IssueDefinitions.NoConfigFileIssue);
+                        break;
 
-                    switch (dependencyAnalyzer.ConfigState)
-                    {
-                        case AnalyzerConfigState.NoConfig:
-                            _logger.LogIssue(IssueDefinitions.NoConfigFileIssue);
-                            break;
+                    case AnalyzerConfigState.Disabled:
+                        _logger.LogIssue(IssueDefinitions.ConfigDisabledIssue);
+                        break;
 
-                        case AnalyzerConfigState.Disabled:
-                            _logger.LogIssue(IssueDefinitions.ConfigDisabledIssue);
-                            break;
+                    case AnalyzerConfigState.ConfigError:
+                        _logger.LogIssue(IssueDefinitions.ConfigExceptionIssue, configProvider.ConfigException);
+                        runWasSuccessful = false;
+                        break;
 
-                        case AnalyzerConfigState.ConfigError:
-                            _logger.LogIssue(IssueDefinitions.ConfigExceptionIssue, dependencyAnalyzer.ConfigException);
-                            runWasSuccessful = false;
-                            break;
+                    case AnalyzerConfigState.Enabled:
+                        runWasSuccessful = ExecuteAnalysis(configProvider.Config, ProjectFolder);
+                        break;
 
-                        case AnalyzerConfigState.Enabled:
-                            runWasSuccessful = ExecuteAnalysis(dependencyAnalyzer, ProjectFolder);
-                            break;
-
-                        default:
-                            throw new Exception($"Unexpected ConfigState: {dependencyAnalyzer.ConfigState}");
-                    }
-
-                    return runWasSuccessful;
+                    default:
+                        throw new Exception($"Unexpected ConfigState: {configProvider.ConfigState}");
                 }
+
+                return runWasSuccessful;
             }
             catch (Exception e)
             {
@@ -147,39 +148,46 @@ namespace Codartis.NsDepCop.MsBuildTask
             }
         }
 
-        private bool ExecuteAnalysis(IDependencyAnalyzer dependencyAnalyzer, string configFolderPath)
+        private bool ExecuteAnalysis(IAnalyzerConfig config, string configFolderPath)
         {
-            var config = dependencyAnalyzer.Config;
             _logger.InfoImportance = config.InfoImportance.ToMessageImportance();
 
             var startTime = DateTime.Now;
             _logger.LogIssue(TaskStartedIssue, configFolderPath);
 
-            var illegalDependencies = dependencyAnalyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths);
-            var issuesReported = ReportIllegalDependencies(illegalDependencies, config.IssueKind, config.MaxIssueCount);
+            var dependencyAnalyzerClient = new DependencyAnalyzerClient(AnalyzerServiceAddress);
+            var analyzerMessages = dependencyAnalyzerClient.AnalyzeProject(config, SourceFilePaths.ToArray(), ReferencedAssemblyPaths.ToArray());
+            var dependencyIssueCount = ReportAnalyzerMessages(analyzerMessages, config.IssueKind, config.MaxIssueCount);
 
             var endTime = DateTime.Now;
             _logger.LogIssue(TaskFinishedIssue, endTime - startTime);
 
-            _logger.LogTraceMessage(GetCacheStatisticsMessage(dependencyAnalyzer));
-
-            var errorIssueDetected = issuesReported > 0 && config.IssueKind == IssueKind.Error;
+            var errorIssueDetected = dependencyIssueCount > 0 && config.IssueKind == IssueKind.Error;
             return !errorIssueDetected;
         }
 
-        private int ReportIllegalDependencies(IEnumerable<TypeDependency> illegalDependencies, IssueKind issueKind, int maxIssueCount)
+        private int ReportAnalyzerMessages(IEnumerable<AnalyzerMessageBase> analyzerMessages, IssueKind issueKind, int maxIssueCount)
         {
-            var issueCount = 0;
-            foreach (var illegalDependency in illegalDependencies)
+            var dependencyIssueCount = 0;
+
+            foreach (var analyzerMessage in analyzerMessages)
             {
-                _logger.LogIssue(IssueDefinitions.IllegalDependencyIssue, illegalDependency, issueKind, illegalDependency.SourceSegment);
-                issueCount++;
+                if (analyzerMessage.IllegalDependencyMessage != null)
+                {
+                    var illegalDependency = analyzerMessage.IllegalDependencyMessage.IllegalDependency;
+                    _logger.LogIssue(IssueDefinitions.IllegalDependencyIssue, illegalDependency, issueKind, illegalDependency.SourceSegment);
+                    dependencyIssueCount++;
+                }
+                else
+                {
+                    _logger.LogTraceMessage(analyzerMessage.TraceMessage.Messages);
+                }
             }
 
-            if (issueCount == maxIssueCount)
+            if (dependencyIssueCount == maxIssueCount)
                 _logger.LogIssue(IssueDefinitions.TooManyIssuesIssue);
 
-            return issueCount;
+            return dependencyIssueCount;
         }
 
         private IEnumerable<string> GetInputParameterDiagnosticMessages()
@@ -196,24 +204,5 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             yield return $"  BaseDirectory={BaseDirectory.ItemSpec}";
         }
-
-        private static IEnumerable<string> GetCacheStatisticsMessage(ICacheStatisticsProvider cache)
-        {
-            if (cache != null)
-                yield return $"Cache hits: {cache.HitCount}, misses: {cache.MissCount}, efficiency (hits/all): {cache.EfficiencyPercent:P}";
-        }
-
-        private static TEnum? ParseNullable<TEnum>(string valueAsString)
-            where TEnum : struct
-        {
-            return Enum.TryParse(valueAsString, out TEnum result)
-                ? (TEnum?)result
-                : null;
-        }
-
-        private static string AbsolutePath(string absoluteOrRelativePath, string relativeTo)
-            => Path.IsPathRooted(absoluteOrRelativePath)
-                ? absoluteOrRelativePath
-                : Path.Combine(relativeTo, absoluteOrRelativePath);
     }
 }

@@ -1,8 +1,11 @@
-﻿namespace Codartis.NsDepCop.Core.Interface.Analysis
+﻿using System;
+
+namespace Codartis.NsDepCop.Core.Interface.Analysis
 {
     /// <summary>
-    /// Describes a certain segment of a source file.
+    /// Describes a certain segment of a source file. Immutable.
     /// </summary>
+    [Serializable]
     public struct SourceSegment
     {
         /// <summary>

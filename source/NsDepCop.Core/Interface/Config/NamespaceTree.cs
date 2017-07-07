@@ -1,11 +1,14 @@
-﻿namespace Codartis.NsDepCop.Core.Interface.Config
+﻿using System;
+
+namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
-    /// Represents a namespace tree, eg. 'System.IO.*'
+    /// Represents a namespace tree, eg. 'System.IO.*'. Immutable.
     /// </summary>
     /// <remarks>
     /// The 'any namespace' (represented by a star '*') is also a namespace tree that contains every namespace.
     /// </remarks>
+    [Serializable]
     public sealed class NamespaceTree : NamespaceSpecification
     {
         private readonly Namespace _treeRootNamespace;

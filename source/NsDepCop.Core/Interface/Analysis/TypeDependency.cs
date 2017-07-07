@@ -3,8 +3,9 @@
 namespace Codartis.NsDepCop.Core.Interface.Analysis
 {
     /// <summary>
-    /// Describes a dependency between two types.
+    /// Describes a dependency between two types. Immutable.
     /// </summary>
+    [Serializable]
     public struct TypeDependency
     {
         /// <summary>
