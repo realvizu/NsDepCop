@@ -6,16 +6,20 @@ using System.Reflection;
 
 namespace Codartis.NsDepCop.MsBuildTask
 {
-    public static class ServiceActivator
+    /// <summary>
+    /// Activates the out-of-process analyzer service.
+    /// </summary>
+    public static class AnalyzerServiceActivator
     {
-        public static void ActivateDependencyAnalyzerService()
+        private const string ServiceHostProcessName = "NsDepCop.ServiceHost";
+
+        public static void Activate()
         {
-            var serverName = "NsDepCop.ServiceHost";
-            if (!ServerExists(serverName))
+            if (!ServerExists(ServiceHostProcessName))
             {
                 var codeBase = new Uri(Assembly.GetExecutingAssembly().CodeBase);
                 var workingFolder = Path.GetDirectoryName(codeBase.AbsolutePath);
-                CreateServer(workingFolder, serverName + ".exe");
+                CreateServer(workingFolder, ServiceHostProcessName + ".exe");
             }
         }
 
@@ -40,7 +44,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             }
             catch (Exception e)
             {
-                Trace.WriteLine($"ServiceActivator.CreateServer failed: {e}");
+                Trace.WriteLine($"AnalyzerServiceActivator.CreateServer failed: {e}");
             }
         }
     }

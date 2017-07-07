@@ -11,6 +11,8 @@ namespace Codartis.NsDepCop.MsBuildTask
     /// </summary>
     public class DependencyAnalyzerClient : IDependencyAnalyzerService
     {
+        private const string CommunicationErrorMessage = "Unable to communicate with NsDepCop service.";
+
         private static readonly TimeSpan[] RetryTimeSpans =
         {
             TimeSpan.FromMilliseconds(10),
@@ -45,12 +47,13 @@ namespace Codartis.NsDepCop.MsBuildTask
                 catch (Exception e)
                 {
                     lastException = e;
-                    Trace.WriteLine($"[NsDepCop] Retrying after {retryTimeSpan}. Exception was: {e}");
+                    Trace.WriteLine($"[NsDepCop] {CommunicationErrorMessage} Trying to activate service and retrying after {retryTimeSpan}. Exception: {e}");
+                    AnalyzerServiceActivator.Activate();
                     Thread.Sleep(retryTimeSpan);
                 }
             }
 
-            throw new Exception($"Unable to communicate with NsDepCop service: {lastException}");
+            throw new Exception($"{CommunicationErrorMessage} Exception: {lastException}");
         }
     }
 }

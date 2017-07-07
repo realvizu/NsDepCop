@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 
 namespace Codartis.NsDepCop.TestUtil
 {
@@ -60,6 +61,9 @@ namespace Codartis.NsDepCop.TestUtil
         {
             if (File.Exists(filename))
                 File.Delete(filename);
+
+            while (File.Exists(filename))
+                Thread.Sleep(100);
         }
     }
 }
