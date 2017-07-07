@@ -12,7 +12,7 @@ Workaround:
 * Use the **packages.config** package manager format.
 * Or **add** config.nsdepcop to the project **manually**.
   * Right-click on project >> Add >> New Item... >> NsDepCop Config File
-  * Or simple add a file called config.nsdepcop and fill it in using the examples in [Help](Help.md).
+  * Or simply add a file called config.nsdepcop and fill it in using the examples in [Help](Help.md).
 
 <a name="item3"></a>
 ## Anonymous types raise false alarms
