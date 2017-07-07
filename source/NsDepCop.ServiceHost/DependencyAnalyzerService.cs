@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Codartis.NsDepCop.Core.Implementation.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Service;
@@ -16,18 +15,20 @@ namespace Codartis.NsDepCop.ServiceHost
     {
         public AnalyzerMessageBase[] AnalyzeProject(IAnalyzerConfig config, string[] sourcePaths, string[] referencedAssemblyPaths)
         {
-            var traceMessageBuffer = new List<string>();
-            var typeDependencyValidator = new CachingTypeDependencyValidator(config);
-            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(i => traceMessageBuffer.Add(i));
+            var resultBuilder = new AnalyzeProjectResultBuilder();
+
+            var typeDependencyValidator = new CachingTypeDependencyValidator(config, i => resultBuilder.AddTrace(i));
+            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(i => resultBuilder.AddTrace(i));
 
             var typeDependencies = typeDependencyEnumerator.GetTypeDependencies(sourcePaths, referencedAssemblyPaths);
             var illegalDependencies = typeDependencies.Where(i => !typeDependencyValidator.IsAllowedDependency(i)).Take(config.MaxIssueCount);
 
-            traceMessageBuffer.Add(GetCacheStatisticsMessage(typeDependencyValidator));
+            foreach (var illegalDependency in illegalDependencies)
+                resultBuilder.AddIllegalDependency(illegalDependency);
 
-            var traceMessages = traceMessageBuffer.Select(i => new TraceMessage(i));
-            var illegalDependencyMessages = illegalDependencies.Select(i => new IllegalDependencyMessage(i));
-            return illegalDependencyMessages.OfType<AnalyzerMessageBase>().Concat(traceMessages).ToArray();
+            resultBuilder.AddTrace(GetCacheStatisticsMessage(typeDependencyValidator));
+
+            return resultBuilder.ToArray();
         }
 
         private static string GetCacheStatisticsMessage(ICacheStatisticsProvider cache) => 
