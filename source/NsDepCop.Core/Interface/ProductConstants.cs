@@ -1,4 +1,6 @@
-﻿namespace Codartis.NsDepCop.Core.Interface
+﻿using System.Reflection;
+
+namespace Codartis.NsDepCop.Core.Interface
 {
     /// <summary>
     /// Product-wide constant values.
@@ -7,5 +9,6 @@
     {
         public const string ToolName = "NsDepCop";
         public const string DefaultConfigFileName = "config.nsdepcop";
+        public static readonly string Version = $"{Assembly.GetExecutingAssembly().GetName().Version}";
     }
 }

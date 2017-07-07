@@ -30,7 +30,8 @@ namespace Codartis.NsDepCop.MsBuildTask
         public static readonly IssueDescriptor<Exception> TaskExceptionIssue =
             new IssueDescriptor<Exception>("NSDEPCOPEX", IssueKind.Error, null, i => $"Exception during NsDepCopTask execution: {i.ToString()}");
 
-        private const string AnalyzerServiceAddress = "ipc://NsDepCop/DependencyAnalyzerService";
+        private static readonly string AnalyzerServiceAddress = 
+            $"ipc://{ProductConstants.ToolName}-{ProductConstants.Version}/{nameof(IDependencyAnalyzerService)}-{ProductConstants.Version}";
 
         /// <summary>
         /// MsBuild task item list that contains the name and full path 

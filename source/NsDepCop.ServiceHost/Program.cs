@@ -5,6 +5,8 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading;
+using Codartis.NsDepCop.Core.Interface;
+using Codartis.NsDepCop.Core.Interface.Analysis.Service;
 
 namespace Codartis.NsDepCop.ServiceHost
 {
@@ -16,6 +18,9 @@ namespace Codartis.NsDepCop.ServiceHost
     /// </remarks>
     public class Program
     {
+        private static readonly string PipeName = $"{ProductConstants.ToolName}-{ProductConstants.Version}";
+        private static readonly string ServiceName = $"{nameof(IDependencyAnalyzerService)}-{ProductConstants.Version}";
+
         /// <summary>
         /// Entry point of the application.
         /// </summary>
@@ -40,6 +45,7 @@ namespace Codartis.NsDepCop.ServiceHost
             }
             catch (Exception e)
             {
+                Trace.WriteLine($"[{ProductConstants.ToolName}] ServiceHost exception caught: {e}");
                 Console.WriteLine($"Exception caught: {e}");
                 return -2;
             }
@@ -47,11 +53,11 @@ namespace Codartis.NsDepCop.ServiceHost
 
         private static void RegisterRemotingService()
         {
-            ChannelServices.RegisterChannel(new IpcChannel("NsDepCop"), false);
+            ChannelServices.RegisterChannel(new IpcChannel(PipeName), false);
 
             RemotingConfiguration.RegisterWellKnownServiceType(
                 typeof(DependencyAnalyzerService),
-                nameof(DependencyAnalyzerService),
+                ServiceName, 
                 WellKnownObjectMode.SingleCall);
         }
 
