@@ -175,6 +175,9 @@
     <Content Include="TaskInfoImportanceIsLow\TaskInfoImportanceIsLow.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Serialization\Serialization.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="MsBuildLoggerGatewayTests.cs" />
     <Compile Include="NsDepCopTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -264,6 +267,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AllowedDependency\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Serialization\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="app.config">

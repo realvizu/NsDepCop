@@ -10,6 +10,7 @@ using FluentAssertions;
 using Microsoft.Build.Framework;
 using Moq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Codartis.NsDepCop.MsBuildTask.Test
 {
@@ -18,7 +19,16 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
     /// </summary>
     public class NsDepCopTaskTests : FileBasedTestsBase
     {
-        private readonly Mock<ILogger> _loggerMock = new Mock<ILogger>();
+        private readonly Mock<ILogger> _loggerMock;
+
+        public NsDepCopTaskTests(ITestOutputHelper output)
+        {
+            _loggerMock = new Mock<ILogger>();
+
+            _loggerMock.Setup(i => i.LogIssue(NsDepCopTask.TaskExceptionIssue, It.IsAny<Exception>(), null, null))
+                .Callback<IssueDescriptor<Exception>, Exception, IssueKind?, SourceSegment?>(
+                    (i1, i2, i3, i4) => output.WriteLine($"Exception caught in task: {i2}"));
+        }
 
         [Fact]
         public void AllowedDependency()
@@ -165,6 +175,15 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             CreateNsDepCopTask().Execute().Should().BeFalse();
 
             VerifyTaskExceptionLogged(Times.Once());
+        }
+
+        [Fact]
+        public void Serialization()
+        {
+            CreateNsDepCopTask().Execute().Should().BeFalse();
+
+            VerifyTaskExceptionLogged(Times.Never());
+            VerifyDependencyIssueLogged(Times.Exactly(3));
         }
 
         private NsDepCopTask CreateNsDepCopTask([CallerMemberName] string taskName = null)

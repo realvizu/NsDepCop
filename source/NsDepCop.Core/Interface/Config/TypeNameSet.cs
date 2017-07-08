@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
@@ -16,6 +17,11 @@ namespace Codartis.NsDepCop.Core.Interface.Config
 
         public TypeNameSet(IEnumerable<string> collection)
             : base(collection)
+        {
+        }
+
+        protected TypeNameSet(SerializationInfo info, StreamingContext context) 
+            : base(info, context)
         {
         }
 
