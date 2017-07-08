@@ -206,6 +206,7 @@ You can control the lifetime of NsDepCop ServiceHost by controlling the lifetime
 * If you set it to 0 then new MSBuild processes are started for each build and they exit when the build finishes. So do NsDepCop ServiceHost.
 * If you set it to **1** then MSBuild processes are kept alive until the Visual Studio instance that started them exits. **This option gives the best build (and NsDepCop) performance.**
 
+<a name="machine-wide-msbuild-integration"></a>
 ## Machine-wide MSBuild integration (Deprecated)
 * This is a legacy option in the MSI installer and requires admin privilege.
 * Hooks into the MSBuild C# build process by modifying the "Custom.After.Microsoft.CSharp.targets" file. It does not modify any C# project files.

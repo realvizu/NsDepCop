@@ -5,11 +5,11 @@ using Xunit;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 {
-    public class DependencyAnalyzerProviderTests
+    public class AnalyzerProviderTests
     {
         private readonly Mock<IDependencyAnalyzerFactory> _dependencyAnalyzerFactoryMock;
 
-        public DependencyAnalyzerProviderTests()
+        public AnalyzerProviderTests()
         {
             _dependencyAnalyzerFactoryMock = new Mock<IDependencyAnalyzerFactory>();
         }
@@ -19,9 +19,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
         {
             const string filePath = "myFilePath";
 
-            var dependencyAnalyzerProvider = CreateDependencyAnalyzerProvider();
+            var analyzerProvider = CreateAnalyzerProvider();
 
-            dependencyAnalyzerProvider.GetDependencyAnalyzer(filePath);
+            analyzerProvider.GetDependencyAnalyzer(filePath);
 
             _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromMultiLevelXmlConfigFile(It.IsAny<string>()), Times.Once);
         }
@@ -31,22 +31,22 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
         {
             const string filePath = "myFilePath";
 
-            var dependencyAnalyzerProvider = CreateDependencyAnalyzerProvider();
+            var analyzerProvider = CreateAnalyzerProvider();
 
             var analyzerMock = new Mock<IRefreshableDependencyAnalyzer>();
             _dependencyAnalyzerFactoryMock.Setup(i => i.CreateFromMultiLevelXmlConfigFile(It.IsAny<string>()))
                 .Returns(analyzerMock.Object);
 
-            dependencyAnalyzerProvider.GetDependencyAnalyzer(filePath);
+            analyzerProvider.GetDependencyAnalyzer(filePath);
             _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromMultiLevelXmlConfigFile(It.IsAny<string>()), Times.Once);
             analyzerMock.Verify(i => i.RefreshConfig(), Times.Never);
 
-            dependencyAnalyzerProvider.GetDependencyAnalyzer(filePath);
+            analyzerProvider.GetDependencyAnalyzer(filePath);
             _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromMultiLevelXmlConfigFile(It.IsAny<string>()), Times.Once);
             analyzerMock.Verify(i => i.RefreshConfig(), Times.Once);
         }
 
-        private IAnalyzerProvider CreateDependencyAnalyzerProvider()
+        private IAnalyzerProvider CreateAnalyzerProvider()
         {
             return new AnalyzerProvider(_dependencyAnalyzerFactoryMock.Object);
         }
