@@ -21,7 +21,7 @@ See project site for details (https://github.com/realvizu/NsDepCop).
         <copyright>Copyright 2013-2017 Ferenc Vizkeleti</copyright>
         <tags>static code analysis tool C# csharp namespace dependency dependencies enforce rule</tags>
         <releaseNotes>
-Performance enhancement: analyzer runs in a dedicated service process.
+Performance enhancement: the analyzer keeps running in its own process to avoid repeated creation cost. Shuts down with parent process.
         </releaseNotes>
     </metadata>
     <files>

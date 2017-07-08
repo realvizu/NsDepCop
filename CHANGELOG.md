@@ -1,5 +1,11 @@
 # NsDepCop Change Log
 
+## v1.7.1
+(07/2017)
+
+- [x] Performance enhancement when run by MSBuild. 
+  - [x] The analyzer keeps running in its own process to avoid repeated creation cost. Shuts down with parent process.
+
 ## v1.7.0
 (07/2017)
 
