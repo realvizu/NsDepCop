@@ -2,6 +2,5 @@
 <NsDepCopConfig InheritanceDepth="1">
     <Allowed From="Codartis.NsDepCop.MsBuildTask" To="Codartis.NsDepCop.Core.Interface.*" />
     <Allowed From="Codartis.NsDepCop.MsBuildTask" To="Codartis.NsDepCop.Core.Factory" />
-    <Allowed From="Codartis.NsDepCop.MsBuildTask" To="Codartis.NsDepCop.ServiceHost" />
     <Allowed From="Codartis.NsDepCop.MsBuildTask" To="Microsoft.Build.*" />
 </NsDepCopConfig>
