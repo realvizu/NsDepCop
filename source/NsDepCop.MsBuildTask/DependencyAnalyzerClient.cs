@@ -15,8 +15,8 @@ namespace Codartis.NsDepCop.MsBuildTask
 
         private static readonly TimeSpan[] RetryTimeSpans =
         {
-            TimeSpan.FromMilliseconds(10),
             TimeSpan.FromMilliseconds(100),
+            TimeSpan.FromMilliseconds(500),
             TimeSpan.FromMilliseconds(1000),
             TimeSpan.FromMilliseconds(5000),
         };
@@ -47,7 +47,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                 catch (Exception e)
                 {
                     lastException = e;
-                    Trace.WriteLine($"[NsDepCop] {CommunicationErrorMessage} Trying to activate service and retrying after {retryTimeSpan}. Exception: {e}");
+                    Trace.WriteLine($"[NsDepCop] {CommunicationErrorMessage} Trying to activate service and retrying after {retryTimeSpan}. Exception: {e.Message}");
                     AnalyzerServiceActivator.Activate();
                     Thread.Sleep(retryTimeSpan);
                 }

@@ -107,8 +107,6 @@ namespace Codartis.NsDepCop.MsBuildTask
             {
                 _logger.LogTraceMessage(GetInputParameterDiagnosticMessages());
 
-                AnalyzerServiceActivator.Activate();
-
                 var defaultInfoImportance = EnumHelper.ParseNullable<Importance>(InfoImportance.GetValue());
                 _logger.InfoImportance = defaultInfoImportance?.ToMessageImportance() ?? MessageImportance.Normal;
 
