@@ -10,9 +10,8 @@ What is this [**dependency control**](doc/DependencyControl.md) anyway?
 
 ## Getting Started
 
-1. Add the **NsDepCop NuGet package** to your C# projects.
-   * Latest version, supports C# 7 language features: [![NuGet Package](https://img.shields.io/nuget/v/NsDepCop.svg)](https://nuget.org/packages/NsDepCop)
-   * If you don't need C# 7 support then use the previous version which is faster: [![NuGet Package 1.6.1](https://img.shields.io/badge/nuget-1.6.1-blue.svg)](https://nuget.org/packages/NsDepCop/1.6.1)
+1. Add the **NsDepCop NuGet package** to your C# projects: [![NuGet Package](https://img.shields.io/nuget/v/NsDepCop.svg)](https://nuget.org/packages/NsDepCop)
+   * If you have v1.7.0 then you should update to v1.7.1 because that's much faster.
 1. A file called **config.nsdepcop** is automatically added to your project. Edit it and describe [**dependency rules**](doc/Help.md#dependency-rules).
    * If your project doesn't use the packages.config package manager format then you'll have to [add config.nsdepcop manually](doc/Troubleshooting.md#item4).
 1. When you **build** the project, dependency violations will be reported in the build output just like compiler errors/warnings.

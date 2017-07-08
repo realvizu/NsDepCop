@@ -5,7 +5,8 @@
 * [Controlling verbosity](#controlling-verbosity)
 * [Config XML schema](#config-xml-schema)
 * [Config XML schema support in Visual Studio](#config-xml-schema-support-in-visual-studio)
-* [Machine-wide MSBuild integration](#machine-wide-msbuild-integration)
+* [NsDepCop ServiceHost](#nsdepcop-servicehost)
+* [Machine-wide MSBuild integration (Deprecated)](#machine-wide-msbuild-integration)
 
 
 ## Dependency rules
@@ -195,10 +196,21 @@ Add NsDepCop config XML schema to the Visual Studio schema cache to get validati
     * [NsDepCopCatalog.xml](../source/NsDepCop.ConfigSchema/NsDepCopCatalog.xml)
     * [NsDepCopConfig.xsd](../source/NsDepCop.ConfigSchema/NsDepCopConfig.xsd)
 
-## Machine-wide MSBuild integration
+## NsDepCop ServiceHost
+NsDepCop NuGet package **v1.7.1** have introduced the NsDepCop ServiceHost to improve build performance.
+* It runs in the background as a standalone process, communicates via named pipes and serves requests coming from NsDepCopTask instances running inside MSBuild processes.
+* It is started automatically when needed by an NsDepCopTask and quits automatically when the MSBuild process that started it exits.
+* By running continuously it avoids the repeated startup times which is significant.
+
+You can control the lifetime of NsDepCop ServiceHost by controlling the lifetime of the MSBuild processes by modifying the **MSBUILDDISABLENODEREUSE** environment variable.
+* If you set it to 0 then new MSBuild processes are started for each build and they exit when the build finishes. So do NsDepCop ServiceHost.
+* If you set it to **1** then MSBuild processes are kept alive until the Visual Studio instance that started them exits. **This option gives the best build (and NsDepCop) performance.**
+
+## Machine-wide MSBuild integration (Deprecated)
 * This is a legacy option in the MSI installer and requires admin privilege.
 * Hooks into the MSBuild C# build process by modifying the "Custom.After.Microsoft.CSharp.targets" file. It does not modify any C# project files.
 * Runs NsDepCop when building any C# project that has a config.nsdepcop file.
+  
 * The drawback of this method is that you have to install the tool on every environment where you want to use it.
 * The NuGet (per-project MSBuild integration) approach is much better because that works in every environment with zero install: the tool gets pulled down by the nuget package restore.
 
