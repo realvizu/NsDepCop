@@ -1,5 +1,6 @@
 # NsDepCop Help
 
+* [Supported project types](#supported-project-types)
 * [Dependency rules](#dependency-rules)
 * [Config inheritance](#config-inheritance)
 * [Controlling verbosity](#controlling-verbosity)
@@ -8,6 +9,10 @@
 * [NsDepCop ServiceHost](#nsdepcop-servicehost)
 * [Machine-wide MSBuild integration (Deprecated)](#machine-wide-msbuild-integration)
 
+## Supported project types
+
+* Projects with a **csproj** project file are supported.
+* Projects with an **xproj** project file are not supported.
 
 ## Dependency rules
 
