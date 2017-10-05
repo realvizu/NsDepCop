@@ -208,8 +208,8 @@ NsDepCop NuGet package **v1.7.1** have introduced the NsDepCop ServiceHost to im
 * By running continuously it avoids the repeated startup times which is significant.
 
 You can control the lifetime of NsDepCop ServiceHost by controlling the lifetime of the MSBuild processes by modifying the **MSBUILDDISABLENODEREUSE** environment variable.
-* If you set it to 0 then new MSBuild processes are started for each build and they exit when the build finishes. So do NsDepCop ServiceHost.
-* If you set it to **1** then MSBuild processes are kept alive until the Visual Studio instance that started them exits. **This option gives the best build (and NsDepCop) performance.**
+* If you set it to 1 then new MSBuild processes are started for each build and they exit when the build finishes. So do NsDepCop ServiceHost.
+* If you set it to **0** then MSBuild processes are kept alive until the Visual Studio instance that started them exits. **This option gives the best build (and NsDepCop) performance.**
 
 <a name="machine-wide-msbuild-integration"></a>
 ## Machine-wide MSBuild integration (Deprecated)
