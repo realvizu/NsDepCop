@@ -13,19 +13,13 @@ namespace Codartis.NsDepCop.MsBuildTask
     {
         private const string CommunicationErrorMessage = "Unable to communicate with NsDepCop service.";
 
-        private static readonly TimeSpan[] RetryTimeSpans =
-        {
-            TimeSpan.FromMilliseconds(100),
-            TimeSpan.FromMilliseconds(500),
-            TimeSpan.FromMilliseconds(1000),
-            TimeSpan.FromMilliseconds(5000),
-        };
-
         private readonly string _serviceAddress;
+        private readonly TimeSpan[] _retryTimeSpans;
 
-        public DependencyAnalyzerClient(string serviceAddress)
+        public DependencyAnalyzerClient(string serviceAddress, TimeSpan[] retryTimeSpans)
         {
             _serviceAddress = serviceAddress;
+            _retryTimeSpans = retryTimeSpans ?? new TimeSpan[0];
         }
 
         public AnalyzerMessageBase[] AnalyzeProject(IAnalyzerConfig config, string[] sourcePaths, string[] referencedAssemblyPaths)
@@ -36,20 +30,39 @@ namespace Codartis.NsDepCop.MsBuildTask
         private TResult PerformCallWithRetries<TResult>(Func<IDependencyAnalyzerService, TResult> serviceOperation)
         {
             Exception lastException = null;
+            var keepRetrying = true;
+            var retryCount = 0;
+            var maxRetryCount = _retryTimeSpans.Length;
 
-            foreach (var retryTimeSpan in RetryTimeSpans)
+            while (keepRetrying)
             {
                 try
                 {
+                    Trace.WriteLine($"[NsDepCop] calling analyzer service #{retryCount}");
                     var proxy = (IDependencyAnalyzerService)Activator.GetObject(typeof(IDependencyAnalyzerService), _serviceAddress);
-                    return serviceOperation.Invoke(proxy);
+                    var result = serviceOperation.Invoke(proxy);
+                    Trace.WriteLine($"[NsDepCop] calling analyzer service succeeded.");
+                    return result;
                 }
                 catch (Exception e)
                 {
+                    Trace.WriteLine($"[NsDepCop] calling analyzer service failed.");
                     lastException = e;
-                    Trace.WriteLine($"[NsDepCop] {CommunicationErrorMessage} Trying to activate service and retrying after {retryTimeSpan}. Exception: {e.Message}");
-                    AnalyzerServiceActivator.Activate();
-                    Thread.Sleep(retryTimeSpan);
+
+                    if (retryCount < maxRetryCount)
+                    {
+                        var retryTimeSpan = _retryTimeSpans[retryCount];
+                        Trace.WriteLine($"[NsDepCop] {CommunicationErrorMessage} Trying to activate service and retrying after {retryTimeSpan}. Exception: {e.Message}");
+
+                        AnalyzerServiceActivator.Activate();
+                        Thread.Sleep(retryTimeSpan);
+
+                        retryCount++;
+                    }
+                    else
+                    {
+                        keepRetrying = false;
+                    }
                 }
             }
 

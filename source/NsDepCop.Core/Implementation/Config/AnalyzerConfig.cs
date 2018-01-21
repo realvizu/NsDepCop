@@ -13,6 +13,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public bool IsEnabled { get; }
         public IssueKind IssueKind { get; }
         public Importance InfoImportance { get; }
+        public TimeSpan[] AnalyzerServiceCallRetryTimeSpans { get; }
 
         public bool ChildCanDependOnParentImplicitly { get; }
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
@@ -24,6 +25,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             bool isEnabled,
             IssueKind issueKind,
             Importance infoImportance,
+            TimeSpan[] analyzerServiceCallRetryTimeSpans,
             bool childCanDependOnParentImplicitly,
             Dictionary<NamespaceDependencyRule, TypeNameSet> allowRules,
             HashSet<NamespaceDependencyRule> disallowRules,
@@ -33,6 +35,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             IsEnabled = isEnabled;
             IssueKind = issueKind;
             InfoImportance = infoImportance;
+            AnalyzerServiceCallRetryTimeSpans = analyzerServiceCallRetryTimeSpans;
 
             ChildCanDependOnParentImplicitly = childCanDependOnParentImplicitly;
             AllowRules = allowRules;
@@ -46,6 +49,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             yield return $"IsEnabled={IsEnabled}";
             yield return $"IssueKind={IssueKind}";
             yield return $"InfoImportance={InfoImportance}";
+            yield return $"AnalyzerServiceCallRetryTimeSpans={string.Join(",", AnalyzerServiceCallRetryTimeSpans)}";
 
             yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
             foreach (var s in AllowRules.ToStrings()) yield return s;

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="NsDepCop..e8ae3b7e-3cd5-40ef-92ca-b22ef9d0cc24" Version="1.7.0" Language="en-US" Publisher="Codartis" />
+        <Identity Id="NsDepCop..e8ae3b7e-3cd5-40ef-92ca-b22ef9d0cc24" Version="1.7.2" Language="en-US" Publisher="Codartis" />
         <DisplayName>NsDepCop VS2015 - Code dependency checker for C#</DisplayName>
         <Description xml:space="preserve">Static code analysis tool that helps to enforce namespace and type dependency rules in C# projects by highlighting disallowed type usages in the code editor. You can also use this tool in your build process by adding the NsDepCop NuGet package to your projects.</Description>
         <MoreInfo>https://github.com/realvizu/NsDepCop</MoreInfo>

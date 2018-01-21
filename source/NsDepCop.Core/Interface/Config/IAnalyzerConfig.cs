@@ -1,3 +1,4 @@
+using System;
 using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Interface.Config
@@ -27,5 +28,11 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// Influences whether messages are emitted or suppressed by the host.
         /// </summary>
         Importance InfoImportance { get; }
+
+        /// <summary>
+        /// Gets an array of time spans used as wait intervals when calling the analyzer service.
+        /// The analyzer client will retry a failed call by using the next time span from this array until it runs out of array items.
+        /// </summary>
+        TimeSpan[] AnalyzerServiceCallRetryTimeSpans { get; }
     }
 }
