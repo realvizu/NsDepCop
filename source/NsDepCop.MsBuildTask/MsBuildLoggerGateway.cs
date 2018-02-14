@@ -29,12 +29,20 @@ namespace Codartis.NsDepCop.MsBuildTask
         }
 
         public void LogTraceMessage(string message) => LogBuildEvent(IssueKind.Info, message, MessageImportance.Low);
+        public void SetMaxWarningErrorThreshold(int? maxWarningErrorThreshold)
+        {
+            this._maxWarningErrorThreshold = maxWarningErrorThreshold;
+        }
 
         public void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T issueParameter, IssueKind? issueKindOverride = null, SourceSegment? sourceSegment = null) 
             => LogIssue(issueDescriptor, issueDescriptor.GetDynamicDescription(issueParameter), issueKindOverride, sourceSegment);
 
         public void LogIssue(IssueDescriptor issueDescriptor)
             => LogIssue(issueDescriptor, null, null, null);
+
+        private int numberOfLoggedWarnings = 0;
+        private bool tooManyWarningsErrorHasBeenLogged = false;
+        private int? _maxWarningErrorThreshold = null;
 
         private void LogIssue(IssueDescriptor issueDescriptor, string dynamicMessage, IssueKind? issueKindOverride, SourceSegment? sourceSegment)
         {
@@ -49,6 +57,17 @@ namespace Codartis.NsDepCop.MsBuildTask
             var endColumn = sourceSegment?.EndColumn ?? 0;
 
             LogBuildEvent(issueKind, message, InfoImportance, code, path, startLine, startColumn, endLine, endColumn);
+
+            if (issueKind == IssueKind.Warning)
+                numberOfLoggedWarnings++;
+
+            if (numberOfLoggedWarnings > (_maxWarningErrorThreshold ?? int.MaxValue) && !tooManyWarningsErrorHasBeenLogged)
+            {
+                tooManyWarningsErrorHasBeenLogged = true;
+
+                LogIssue(IssueDefinitions.MaxWarningErrorThresholdExceededIssue, "MaxWarningErrorThreshold has been exceeded", null, null);
+            }
+
         }
 
         private void LogBuildEvent(IssueKind issueKind, string message, MessageImportance messageImportance, string code = null,

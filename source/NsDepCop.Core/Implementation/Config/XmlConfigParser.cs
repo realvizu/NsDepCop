@@ -18,6 +18,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private const string IsEnabledAttributeName = "IsEnabled";
         private const string CodeIssueKindAttributeName = "CodeIssueKind";
         private const string MaxIssueCountAttributeName = "MaxIssueCount";
+        private const string MaxWarningErrorThresholdAttributeName = "MaxWarningErrorThreshold";
         private const string ImplicitParentDependencyAttributeName = "ChildCanDependOnParentImplicitly";
         private const string InfoImportanceAttributeName = "InfoImportance";
         private const string AllowedElementName = "Allowed";
@@ -51,6 +52,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             configBuilder.SetInfoImportance(ParseAttribute<Importance>(rootElement, InfoImportanceAttributeName, Enum.TryParse));
             configBuilder.SetChildCanDependOnParentImplicitly(ParseAttribute<bool>(rootElement, ImplicitParentDependencyAttributeName, bool.TryParse));
             configBuilder.SetMaxIssueCount(ParseAttribute<int>(rootElement, MaxIssueCountAttributeName, int.TryParse));
+            configBuilder.SetMaxWarningErrorThreshold(ParseAttribute<int>(rootElement, MaxWarningErrorThresholdAttributeName, int.TryParse));
         }
 
         private static void ParseChildElements(XElement rootElement, AnalyzerConfigBuilder configBuilder)

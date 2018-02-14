@@ -23,6 +23,13 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         int MaxIssueCount { get; }
 
         /// <summary>
+        /// Gets the max warning error threshold.
+        /// </summary>
+        int? MaxWarningErrorThreshold { get; }
+
+
+
+        /// <summary>
         /// Gets the importance level of information messages. 
         /// Influences whether messages are emitted or suppressed by the host.
         /// </summary>

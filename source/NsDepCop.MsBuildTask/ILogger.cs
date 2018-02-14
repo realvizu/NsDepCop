@@ -43,5 +43,7 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// </summary>
         /// <param name="message">A string message.</param>
         void LogTraceMessage(string message);
+
+        void SetMaxWarningErrorThreshold(int? maxWarningErrorThreshold);
     }
 }

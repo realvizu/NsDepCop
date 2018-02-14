@@ -23,6 +23,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public HashSet<NamespaceDependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
         public int? MaxIssueCount { get; private set; }
+        public int? MaxWarningErrorThreshold { get; private set; }
 
         public AnalyzerConfigBuilder()
         {
@@ -41,7 +42,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 AllowRules,
                 DisallowRules,
                 VisibleTypesByNamespace,
-                MaxIssueCount ?? ConfigDefaults.MaxIssueCount
+                MaxIssueCount ?? ConfigDefaults.MaxIssueCount,
+                MaxWarningErrorThreshold
                 );
         }
 
@@ -148,7 +150,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 MaxIssueCount = maxIssueCount;
             return this;
         }
+        public AnalyzerConfigBuilder SetMaxWarningErrorThreshold(int? maxWarningErrorThreshold)
+        {
+            if (maxWarningErrorThreshold.HasValue)
+                MaxWarningErrorThreshold = maxWarningErrorThreshold;
+            return this;
 
+        }
         public IEnumerable<string> ToStrings()
         {
             if (InheritanceDepth.HasValue) yield return $"InheritanceDepth={InheritanceDepth}";
@@ -161,6 +169,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (DisallowRules.Any()) foreach (var s in DisallowRules.ToStrings()) yield return s;
             if (VisibleTypesByNamespace.Any()) foreach (var s in VisibleTypesByNamespace.ToStrings()) yield return s;
             if (MaxIssueCount.HasValue) yield return $"MaxIssueCount={MaxIssueCount}";
+            if (MaxWarningErrorThreshold.HasValue) yield return $"MaxWarningErrorThreshold={MaxWarningErrorThreshold}";
+
         }
+
+
     }
 }
