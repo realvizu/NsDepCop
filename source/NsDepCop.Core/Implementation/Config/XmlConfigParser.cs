@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Xml;
@@ -21,6 +22,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private const string MaxIssueCountSeverityAttributeName = "MaxIssueCountSeverity";
         private const string ImplicitParentDependencyAttributeName = "ChildCanDependOnParentImplicitly";
         private const string InfoImportanceAttributeName = "InfoImportance";
+        private const string AnalyzerServiceCallRetryTimeSpansAttributeName = "AnalyzerServiceCallRetryTimeSpans";
         private const string AllowedElementName = "Allowed";
         private const string DisallowedElementName = "Disallowed";
         private const string VisibleMembersElementName = "VisibleMembers";
@@ -46,13 +48,37 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         private static void ParseRootNodeAttributes(XElement rootElement, AnalyzerConfigBuilder configBuilder)
         {
-            configBuilder.SetIsEnabled(ParseAttribute<bool>(rootElement, IsEnabledAttributeName, bool.TryParse));
-            configBuilder.SetInheritanceDepth(ParseAttribute<int>(rootElement, InheritanceDepthAttributeName, int.TryParse));
-            configBuilder.SetIssueKind(ParseAttribute<IssueKind>(rootElement, CodeIssueKindAttributeName, Enum.TryParse));
-            configBuilder.SetInfoImportance(ParseAttribute<Importance>(rootElement, InfoImportanceAttributeName, Enum.TryParse));
-            configBuilder.SetChildCanDependOnParentImplicitly(ParseAttribute<bool>(rootElement, ImplicitParentDependencyAttributeName, bool.TryParse));
-            configBuilder.SetMaxIssueCount(ParseAttribute<int>(rootElement, MaxIssueCountAttributeName, int.TryParse));
-            configBuilder.SetMaxIssueCountSeverity(ParseAttribute<IssueKind>(rootElement, MaxIssueCountSeverityAttributeName, Enum.TryParse));
+            configBuilder.SetIsEnabled(ParseValueType<bool>(rootElement, IsEnabledAttributeName, bool.TryParse));
+            configBuilder.SetInheritanceDepth(ParseValueType<int>(rootElement, InheritanceDepthAttributeName, int.TryParse));
+            configBuilder.SetIssueKind(ParseValueType<IssueKind>(rootElement, CodeIssueKindAttributeName, Enum.TryParse));
+            configBuilder.SetInfoImportance(ParseValueType<Importance>(rootElement, InfoImportanceAttributeName, Enum.TryParse));
+            configBuilder.SetAnalyzerServiceCallRetryTimeSpans(ParseReferenceType<TimeSpan[]>(rootElement, AnalyzerServiceCallRetryTimeSpansAttributeName,
+                TryParseTimeSpans));
+            configBuilder.SetChildCanDependOnParentImplicitly(ParseValueType<bool>(rootElement, ImplicitParentDependencyAttributeName, bool.TryParse));
+            configBuilder.SetMaxIssueCount(ParseValueType<int>(rootElement, MaxIssueCountAttributeName, int.TryParse));
+            configBuilder.SetMaxIssueCountSeverity(ParseValueType<IssueKind>(rootElement, MaxIssueCountSeverityAttributeName, Enum.TryParse));
+        }
+
+        private static bool TryParseTimeSpans(string s, out TimeSpan[] t)
+        {
+            t = new TimeSpan[0];
+
+            if (string.IsNullOrWhiteSpace(s))
+                return true;
+
+            var timeSpans = new List<TimeSpan>();
+
+            var stringParts = s.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim());
+            foreach (var stringPart in stringParts)
+            {
+                if (!int.TryParse(stringPart, out int value))
+                    return false;
+
+                timeSpans.Add(TimeSpan.FromMilliseconds(value));
+            }
+
+            t = timeSpans.ToArray();
+            return true;
         }
 
         private static void ParseChildElements(XElement rootElement, AnalyzerConfigBuilder configBuilder)
@@ -190,17 +216,21 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         /// <returns>True if successfully parsed, false otherwise.</returns>
         private delegate bool TryParseMethod<T>(string s, out T t);
 
-        /// <summary>
-        /// Parses an attribute of an element to the given type. 
-        /// Returns null if the attribute is not found.
-        /// </summary>
-        /// <typeparam name="T">The type of the parse result.</typeparam>
-        /// <param name="element">The element where the attribute is searched.</param>
-        /// <param name="attributeName">The name of the attribute.</param>
-        /// <param name="tryParseMethod">The method that should be used for parsing. Should return false on failure.</param>
-        /// <returns>The parsed value or null if the attribute is not found.</returns>
-        private static T? ParseAttribute<T>(XElement element, string attributeName, TryParseMethod<T> tryParseMethod)
-            where T : struct 
+        private static T? ParseValueType<T>(XElement element, string attributeName, TryParseMethod<T> tryParseMethod)
+            where T : struct
+        {
+            var attribute = element.Attribute(attributeName);
+            if (attribute == null)
+                return null;
+
+            if (tryParseMethod(attribute.Value, out var parseResult))
+                return parseResult;
+
+            throw new FormatException($"{GetLineInfo(element)}Error parsing '{attribute.Name}' value '{attribute.Value}'.");
+        }
+
+        private static T ParseReferenceType<T>(XElement element, string attributeName, TryParseMethod<T> tryParseMethod)
+            where T : class
         {
             var attribute = element.Attribute(attributeName);
             if (attribute == null)

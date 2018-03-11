@@ -154,7 +154,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             var startTime = DateTime.Now;
             _logger.LogIssue(TaskStartedIssue, configFolderPath);
 
-            var dependencyAnalyzerClient = new DependencyAnalyzerClient(AnalyzerServiceAddress);
+            var dependencyAnalyzerClient = new DependencyAnalyzerClient(AnalyzerServiceAddress, config.AnalyzerServiceCallRetryTimeSpans);
             var analyzerMessages = dependencyAnalyzerClient.AnalyzeProject(config, SourceFilePaths.ToArray(), ReferencedAssemblyPaths.ToArray());
             var dependencyIssueCount = ReportAnalyzerMessages(analyzerMessages, config.IssueKind, config.MaxIssueCount, config.MaxIssueCountSeverity);
 

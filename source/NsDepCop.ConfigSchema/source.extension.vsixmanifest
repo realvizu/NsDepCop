@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" ?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="66b6f3ec-3bff-4fa1-b58b-48a8f9f5128a" Version="1.7.0" Language="en-US" Publisher="Codartis" />
+        <Identity Id="66b6f3ec-3bff-4fa1-b58b-48a8f9f5128a" Version="1.7.2" Language="en-US" Publisher="Codartis" />
         <DisplayName>NsDepCop Config XML Schema Support</DisplayName>
         <Description xml:space="preserve">Provides validation and IntelliSense when editing NsDepCop config XML files.</Description>
         <MoreInfo>https://github.com/realvizu/NsDepCop</MoreInfo>

@@ -1,3 +1,5 @@
+using System;
+
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
@@ -12,5 +14,13 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         public const IssueKind MaxIssueCountSeverity = IssueKind.Warning;
         public const bool ChildCanDependOnParentImplicitly = false;
         public const Importance InfoImportance = Importance.Normal;
+
+        public static readonly TimeSpan[] AnalyzerServiceCallRetryTimeSpans =
+        {
+            TimeSpan.FromMilliseconds(100),
+            TimeSpan.FromMilliseconds(500),
+            TimeSpan.FromMilliseconds(1000),
+            TimeSpan.FromMilliseconds(5000),
+        };
     }
 }

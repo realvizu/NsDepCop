@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.NsDepCop.Core.Interface.Config;
@@ -17,6 +18,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public bool? IsEnabled { get; private set; }
         public IssueKind? IssueKind { get; private set; }
         public Importance? InfoImportance { get; private set; }
+        public TimeSpan[] AnalyzerServiceCallRetryTimeSpans { get; private set; }
 
         public bool? ChildCanDependOnParentImplicitly { get; private set; }
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
@@ -38,6 +40,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 IsEnabled ?? ConfigDefaults.IsEnabled,
                 IssueKind ?? ConfigDefaults.IssueKind,
                 InfoImportance ?? DefaultInfoImportance ?? ConfigDefaults.InfoImportance,
+                AnalyzerServiceCallRetryTimeSpans ?? ConfigDefaults.AnalyzerServiceCallRetryTimeSpans,
                 ChildCanDependOnParentImplicitly ?? ConfigDefaults.ChildCanDependOnParentImplicitly,
                 AllowRules,
                 DisallowRules,
@@ -54,6 +57,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             SetIsEnabled(analyzerConfigBuilder.IsEnabled);
             SetIssueKind(analyzerConfigBuilder.IssueKind);
             SetInfoImportance(analyzerConfigBuilder.InfoImportance);
+            SetAnalyzerServiceCallRetryTimeSpans(analyzerConfigBuilder.AnalyzerServiceCallRetryTimeSpans);
 
             SetChildCanDependOnParentImplicitly(analyzerConfigBuilder.ChildCanDependOnParentImplicitly);
             AddAllowRules(analyzerConfigBuilder.AllowRules);
@@ -96,6 +100,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             if (infoImportance.HasValue)
                 InfoImportance = infoImportance;
+            return this;
+        }
+
+        public AnalyzerConfigBuilder SetAnalyzerServiceCallRetryTimeSpans(TimeSpan[] analyzerServiceCallRetryTimeSpans)
+        {
+            if (analyzerServiceCallRetryTimeSpans!= null)
+                AnalyzerServiceCallRetryTimeSpans = analyzerServiceCallRetryTimeSpans;
             return this;
         }
 
@@ -165,6 +176,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (IsEnabled.HasValue) yield return $"IsEnabled={IsEnabled}";
             if (IssueKind.HasValue) yield return $"IssueKind={IssueKind}";
             if (InfoImportance.HasValue) yield return $"InfoImportance={InfoImportance}";
+            if (AnalyzerServiceCallRetryTimeSpans != null) yield return $"AnalyzerServiceCallRetryTimeSpans={string.Join(",", AnalyzerServiceCallRetryTimeSpans)}";
 
             if (ChildCanDependOnParentImplicitly.HasValue) yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
             if (AllowRules.Any()) foreach (var s in AllowRules.ToStrings()) yield return s;

@@ -74,6 +74,13 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="AnalyzerServiceCallRetryTimeSpans" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>
+                        Sets the interval lengths between subsequent retries when calling the analyzer service. Must be a list of integers (milliseconds) separated with comma. E.g.: 100,500,1000,5000
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
 
