@@ -39,12 +39,5 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
                 IssueKind.Error,
                 "Error loading NsDepCop config.",
                 i => $"{i?.Message}");
-
-        public static readonly IssueDescriptor<Exception> MaxWarningErrorThresholdExceededIssue =
-            new IssueDescriptor<Exception>(
-                "NSDEPCOP06",
-                IssueKind.Error,
-                "Too many warnings have been issued",
-                i => $"{i?.Message}");
     }
 }

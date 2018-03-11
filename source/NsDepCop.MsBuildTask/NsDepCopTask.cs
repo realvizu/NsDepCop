@@ -156,7 +156,7 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             var dependencyAnalyzerClient = new DependencyAnalyzerClient(AnalyzerServiceAddress);
             var analyzerMessages = dependencyAnalyzerClient.AnalyzeProject(config, SourceFilePaths.ToArray(), ReferencedAssemblyPaths.ToArray());
-            var dependencyIssueCount = ReportAnalyzerMessages(analyzerMessages, config.IssueKind, config.MaxIssueCount);
+            var dependencyIssueCount = ReportAnalyzerMessages(analyzerMessages, config.IssueKind, config.MaxIssueCount, config.MaxIssueCountSeverity);
 
             var endTime = DateTime.Now;
             _logger.LogIssue(TaskFinishedIssue, endTime - startTime);
@@ -165,7 +165,8 @@ namespace Codartis.NsDepCop.MsBuildTask
             return !errorIssueDetected;
         }
 
-        private int ReportAnalyzerMessages(IEnumerable<AnalyzerMessageBase> analyzerMessages, IssueKind issueKind, int maxIssueCount)
+        private int ReportAnalyzerMessages(IEnumerable<AnalyzerMessageBase> analyzerMessages, IssueKind issueKind, 
+            int maxIssueCount, IssueKind maxIssueCountSeverity)
         {
             var dependencyIssueCount = 0;
 
@@ -186,7 +187,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             }
 
             if (dependencyIssueCount == maxIssueCount)
-                _logger.LogIssue(IssueDefinitions.TooManyIssuesIssue);
+                _logger.LogIssue(IssueDefinitions.TooManyIssuesIssue, issueKindOverride: maxIssueCountSeverity);
 
             return dependencyIssueCount;
         }

@@ -70,23 +70,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
 
             VerifyLogMessageEvent("MyParameter", MessageImportance.Normal);
         }
-
-        [Fact]
-        public void ExceedingMaxWarningErrorThresholdCausesIssueToBeLogged()
-        {
-
-            //Given a logger
-            var msBuildLoggerGateway = CreateLogger();
-            //And that logger has a maxWarningErrorThreshold
-            msBuildLoggerGateway.SetMaxWarningErrorThreshold(0);
-            //When there have been more warnings logged than the maxWarningErrorThreshold
-            var issue = new IssueDescriptor<string>("MyCode", IssueKind.Warning, "MyDescription", i => i);
-            msBuildLoggerGateway.LogIssue(issue, "MyParameter");
-            //Then an error should be logged
-            VerifyLogErrorEvent(IssueDefinitions.MaxWarningErrorThresholdExceededIssue.Id, "MaxWarningErrorThreshold has been exceeded");
-        }
-
-
+        
         private MsBuildLoggerGateway CreateLogger() => new MsBuildLoggerGateway(_buildEngineMock.Object);
 
         private void VerifyLogMessageEvent(string message, MessageImportance messageImportance) =>

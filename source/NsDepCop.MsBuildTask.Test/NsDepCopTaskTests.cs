@@ -44,7 +44,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         {
             CreateNsDepCopTask().Execute().Should().BeTrue();
 
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.ConfigDisabledIssue));
+            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.ConfigDisabledIssue, null));
         }
 
         [Fact]
@@ -111,7 +111,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             CreateNsDepCopTask().Execute().Should().BeTrue();
 
             VerifyDependencyIssueLogged(Times.Exactly(2));
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.TooManyIssuesIssue), Times.Once);
+            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.TooManyIssuesIssue, IssueKind.Error), Times.Once);
         }
 
         [Fact]
@@ -120,7 +120,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             CreateNsDepCopTask().Execute().Should().BeTrue();
 
             VerifyDependencyIssueLogged(Times.Exactly(2));
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.TooManyIssuesIssue), Times.Once);
+            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.TooManyIssuesIssue, IssueKind.Warning), Times.Once);
         }
 
         [Fact]
@@ -155,7 +155,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             CreateNsDepCopTask().Execute().Should().BeTrue();
 
             VerifyTaskExceptionLogged(Times.Never());
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.NoConfigFileIssue));
+            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.NoConfigFileIssue, null));
         }
 
         [Fact]

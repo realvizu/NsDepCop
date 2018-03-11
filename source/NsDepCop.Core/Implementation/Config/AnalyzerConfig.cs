@@ -19,8 +19,18 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public HashSet<NamespaceDependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
         public int MaxIssueCount { get; }
-        public int? MaxWarningErrorThreshold { get; }
-        public AnalyzerConfig(bool isEnabled, IssueKind issueKind, Importance infoImportance, bool childCanDependOnParentImplicitly, Dictionary<NamespaceDependencyRule, TypeNameSet> allowRules, HashSet<NamespaceDependencyRule> disallowRules, Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace, int maxIssueCount, int? maxWarningErrorThreshold)
+        public IssueKind MaxIssueCountSeverity { get; }
+
+        public AnalyzerConfig(
+            bool isEnabled, 
+            IssueKind issueKind, 
+            Importance infoImportance, 
+            bool childCanDependOnParentImplicitly, 
+            Dictionary<NamespaceDependencyRule, TypeNameSet> allowRules, 
+            HashSet<NamespaceDependencyRule> disallowRules, 
+            Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace, 
+            int maxIssueCount,
+            IssueKind maxIssueCountSeverity)
         {
             IsEnabled = isEnabled;
             IssueKind = issueKind;
@@ -31,7 +41,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             DisallowRules = disallowRules;
             VisibleTypesByNamespace = visibleTypesByNamespace;
             MaxIssueCount = maxIssueCount;
-            MaxWarningErrorThreshold = maxWarningErrorThreshold;
+            MaxIssueCountSeverity = maxIssueCountSeverity;
         }
 
         public IEnumerable<string> ToStrings()
@@ -45,8 +55,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             foreach (var s in DisallowRules.ToStrings()) yield return s;
             foreach (var s in VisibleTypesByNamespace.ToStrings()) yield return s;
             yield return $"MaxIssueCount={MaxIssueCount}";
-            yield return $"MaxWarningErrorThreshold={MaxWarningErrorThreshold}";
-
+            yield return $"MaxIssueCountSeverity={MaxIssueCountSeverity}";
         }
     }
 }

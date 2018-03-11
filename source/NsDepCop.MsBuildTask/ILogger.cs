@@ -19,7 +19,8 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// Logs the given issue with its static description.
         /// </summary>
         /// <param name="issueDescriptor">Describes the issue's properties (severity, description).</param>
-        void LogIssue(IssueDescriptor issueDescriptor);
+        /// <param name="issueKindOverride">If specified then overrides the issue kind defined in the issue descriptor.</param>
+        void LogIssue(IssueDescriptor issueDescriptor, IssueKind? issueKindOverride = null);
 
         /// <summary>
         /// Logs the given issue with a dynamic message using the given issue parameter.
@@ -43,7 +44,5 @@ namespace Codartis.NsDepCop.MsBuildTask
         /// </summary>
         /// <param name="message">A string message.</param>
         void LogTraceMessage(string message);
-
-        void SetMaxWarningErrorThreshold(int? maxWarningErrorThreshold);
     }
 }
