@@ -38,15 +38,11 @@ namespace Codartis.NsDepCop.MsBuildTask
             {
                 try
                 {
-                    Trace.WriteLine($"[NsDepCop] calling analyzer service #{retryCount}");
                     var proxy = (IDependencyAnalyzerService)Activator.GetObject(typeof(IDependencyAnalyzerService), _serviceAddress);
-                    var result = serviceOperation.Invoke(proxy);
-                    Trace.WriteLine($"[NsDepCop] calling analyzer service succeeded.");
-                    return result;
+                    return serviceOperation.Invoke(proxy);
                 }
                 catch (Exception e)
                 {
-                    Trace.WriteLine($"[NsDepCop] calling analyzer service failed.");
                     lastException = e;
 
                     if (retryCount < maxRetryCount)

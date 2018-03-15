@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
+using System.Security.Principal;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis.Service;
 
@@ -51,12 +53,32 @@ namespace Codartis.NsDepCop.ServiceHost
 
         private static void RegisterRemotingService()
         {
-            ChannelServices.RegisterChannel(new IpcChannel(PipeName), false);
+            ChannelServices.RegisterChannel(CreateIpcChannel(PipeName), false);
 
             RemotingConfiguration.RegisterWellKnownServiceType(
                 typeof(DependencyAnalyzerService),
                 ServiceName, 
                 WellKnownObjectMode.SingleCall);
+        }
+
+        private static IpcChannel CreateIpcChannel(string portName)
+        {
+            var everyoneAccountName = GetAccountNameForSid(WellKnownSidType.WorldSid);
+
+            var properties = new Hashtable
+            {
+                ["portName"] = portName,
+                ["authorizedGroup"] = everyoneAccountName
+            };
+
+            return new IpcChannel(properties, null, null);
+        }
+
+        private static string GetAccountNameForSid(WellKnownSidType wellKnownSidType)
+        {
+            var sid = new SecurityIdentifier(wellKnownSidType, null);
+            var account = (NTAccount) sid.Translate(typeof(NTAccount));
+            return account.ToString();
         }
 
         private static void WaitForParentProcessExit(int parentProcessId)
