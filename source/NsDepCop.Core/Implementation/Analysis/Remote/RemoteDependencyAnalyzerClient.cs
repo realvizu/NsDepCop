@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using Codartis.NsDepCop.Core.Interface.Analysis.Service;
+using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Config;
 
-namespace Codartis.NsDepCop.MsBuildTask
+namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 {
     /// <summary>
     /// Client for calling dependency analyzer service via remoting.
     /// </summary>
-    public class DependencyAnalyzerClient : IDependencyAnalyzerService
+    public class RemoteDependencyAnalyzerClient : IRemoteDependencyAnalyzer
     {
         private const string CommunicationErrorMessage = "Unable to communicate with NsDepCop service.";
 
         private readonly string _serviceAddress;
         private readonly TimeSpan[] _retryTimeSpans;
 
-        public DependencyAnalyzerClient(string serviceAddress, TimeSpan[] retryTimeSpans)
+        public RemoteDependencyAnalyzerClient(string serviceAddress, TimeSpan[] retryTimeSpans)
         {
             _serviceAddress = serviceAddress;
             _retryTimeSpans = retryTimeSpans ?? new TimeSpan[0];
@@ -27,7 +27,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             return PerformCallWithRetries(i => i.AnalyzeProject(config, sourcePaths, referencedAssemblyPaths));
         }
 
-        private TResult PerformCallWithRetries<TResult>(Func<IDependencyAnalyzerService, TResult> serviceOperation)
+        private TResult PerformCallWithRetries<TResult>(Func<IRemoteDependencyAnalyzer, TResult> serviceOperation)
         {
             Exception lastException = null;
             var keepRetrying = true;
@@ -38,7 +38,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             {
                 try
                 {
-                    var proxy = (IDependencyAnalyzerService)Activator.GetObject(typeof(IDependencyAnalyzerService), _serviceAddress);
+                    var proxy = (IRemoteDependencyAnalyzer)Activator.GetObject(typeof(IRemoteDependencyAnalyzer), _serviceAddress);
                     return serviceOperation.Invoke(proxy);
                 }
                 catch (Exception e)

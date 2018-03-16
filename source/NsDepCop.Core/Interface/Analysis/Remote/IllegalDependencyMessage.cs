@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.NsDepCop.Core.Interface.Analysis.Service
+namespace Codartis.NsDepCop.Core.Interface.Analysis.Remote
 {
     /// <summary>
     /// A message containing an illegal type dependency.

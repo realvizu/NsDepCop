@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using Codartis.NsDepCop.Core.Interface;
 
-namespace Codartis.NsDepCop.MsBuildTask
+namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 {
     /// <summary>
     /// Activates the out-of-process analyzer service.

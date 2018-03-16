@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Analysis.Service;
+using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 
 namespace Codartis.NsDepCop.ServiceHost
 {

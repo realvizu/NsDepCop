@@ -7,7 +7,7 @@ using System.Reflection;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Analysis.Service;
+using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Config;
 
 namespace Codartis.NsDepCop.MsBuildTask
@@ -31,7 +31,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             new IssueDescriptor<Exception>("NSDEPCOPEX", IssueKind.Error, null, i => $"Exception during NsDepCopTask execution: {i.ToString()}");
 
         private static readonly string AnalyzerServiceAddress = 
-            $"ipc://{ProductConstants.ToolName}-{ProductConstants.Version}/{nameof(IDependencyAnalyzerService)}-{ProductConstants.Version}";
+            $"ipc://{ProductConstants.ToolName}-{ProductConstants.Version}/{nameof(IRemoteDependencyAnalyzer)}-{ProductConstants.Version}";
 
         /// <summary>
         /// MsBuild task item list that contains the name and full path 
@@ -154,7 +154,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             var startTime = DateTime.Now;
             _logger.LogIssue(TaskStartedIssue, configFolderPath);
 
-            var dependencyAnalyzerClient = new DependencyAnalyzerClient(AnalyzerServiceAddress, config.AnalyzerServiceCallRetryTimeSpans);
+            var dependencyAnalyzerClient = RemoteDependencyAnalyzerFactory.CreateClient(AnalyzerServiceAddress, config.AnalyzerServiceCallRetryTimeSpans);
             var analyzerMessages = dependencyAnalyzerClient.AnalyzeProject(config, SourceFilePaths.ToArray(), ReferencedAssemblyPaths.ToArray());
             var dependencyIssueCount = ReportAnalyzerMessages(analyzerMessages, config.IssueKind, config.MaxIssueCount, config.MaxIssueCountSeverity);
 

@@ -8,7 +8,7 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Security.Principal;
 using Codartis.NsDepCop.Core.Interface;
-using Codartis.NsDepCop.Core.Interface.Analysis.Service;
+using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 
 namespace Codartis.NsDepCop.ServiceHost
 {
@@ -21,7 +21,7 @@ namespace Codartis.NsDepCop.ServiceHost
     public class Program
     {
         private static readonly string PipeName = $"{ProductConstants.ToolName}-{ProductConstants.Version}";
-        private static readonly string ServiceName = $"{nameof(IDependencyAnalyzerService)}-{ProductConstants.Version}";
+        private static readonly string ServiceName = $"{nameof(IRemoteDependencyAnalyzer)}-{ProductConstants.Version}";
 
         /// <summary>
         /// Entry point of the application.
@@ -56,7 +56,7 @@ namespace Codartis.NsDepCop.ServiceHost
             ChannelServices.RegisterChannel(CreateIpcChannel(PipeName), false);
 
             RemotingConfiguration.RegisterWellKnownServiceType(
-                typeof(DependencyAnalyzerService),
+                typeof(RemoteDependencyAnalyzerServer),
                 ServiceName, 
                 WellKnownObjectMode.SingleCall);
         }

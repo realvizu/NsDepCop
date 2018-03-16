@@ -58,16 +58,19 @@
     <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
     <Compile Include="Factory\IConfigProviderFactory.cs" />
     <Compile Include="Factory\IDependencyAnalyzerFactory.cs" />
+    <Compile Include="Factory\RemoteDependencyAnalyzerFactory.cs" />
     <Compile Include="Implementation\Analysis\RefreshableDependencyAnalyzer.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
     <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
     <Compile Include="Implementation\Config\RuleConfigToStringsFormatter.cs" />
     <Compile Include="Interface\Analysis\IRefreshableDependencyAnalyzer.cs" />
-    <Compile Include="Interface\Analysis\Service\AnalyzerMessageBase.cs" />
-    <Compile Include="Interface\Analysis\Service\IDependencyAnalyzerService.cs" />
-    <Compile Include="Interface\Analysis\Service\IllegalDependencyMessage.cs" />
-    <Compile Include="Interface\Analysis\Service\TraceMessage.cs" />
+    <Compile Include="Implementation\Analysis\Remote\AnalyzerServiceActivator.cs" />
+    <Compile Include="Implementation\Analysis\Remote\RemoteDependencyAnalyzerClient.cs" />
+    <Compile Include="Interface\Analysis\Remote\AnalyzerMessageBase.cs" />
+    <Compile Include="Interface\Analysis\Remote\IRemoteDependencyAnalyzer.cs" />
+    <Compile Include="Interface\Analysis\Remote\IllegalDependencyMessage.cs" />
+    <Compile Include="Interface\Analysis\Remote\TraceMessage.cs" />
     <Compile Include="Interface\Config\IConfigInitializer.cs" />
     <Compile Include="Util\DateTimeProvider.cs" />
     <Compile Include="Util\IndentHelper.cs" />
@@ -123,6 +126,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NsDepCop.1.7.1\build\NsDepCop.targets" Condition="Exists('..\packages\NsDepCop.1.7.1\build\NsDepCop.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

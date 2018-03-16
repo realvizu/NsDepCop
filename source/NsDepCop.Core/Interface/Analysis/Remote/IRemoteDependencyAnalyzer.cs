@@ -1,14 +1,14 @@
 ﻿using Codartis.NsDepCop.Core.Interface.Config;
 
-namespace Codartis.NsDepCop.Core.Interface.Analysis.Service
+namespace Codartis.NsDepCop.Core.Interface.Analysis.Remote
 {
     /// <summary>
-    /// Service interface for the dependency analyzer.
+    /// Service interface for a remote (out-of-process) dependency analyzer.
     /// </summary>
     /// <remarks>
     /// Uses remotable types and stateless operations.
     /// </remarks>
-    public interface IDependencyAnalyzerService
+    public interface IRemoteDependencyAnalyzer
     {
         /// <summary>
         /// Performs dependency analysis for a project.

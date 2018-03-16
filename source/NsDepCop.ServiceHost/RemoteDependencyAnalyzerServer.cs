@@ -1,6 +1,6 @@
 ﻿using System;
 using Codartis.NsDepCop.Core.Factory;
-using Codartis.NsDepCop.Core.Interface.Analysis.Service;
+using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.ParserAdapter.Roslyn2x;
 
@@ -9,12 +9,12 @@ namespace Codartis.NsDepCop.ServiceHost
     /// <summary>
     /// Implements dependency analyzer service as a remoting server.
     /// </summary>
-    public class DependencyAnalyzerService : MarshalByRefObject, IDependencyAnalyzerService
+    public class RemoteDependencyAnalyzerServer : MarshalByRefObject, IRemoteDependencyAnalyzer
     {
         private readonly AnalyzeProjectResultBuilder _resultBuilder;
         private readonly IDependencyAnalyzerFactory _dependencyAnalyzerFactory;
 
-        public DependencyAnalyzerService()
+        public RemoteDependencyAnalyzerServer()
         {
             _resultBuilder = new AnalyzeProjectResultBuilder();
             var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogTrace);
