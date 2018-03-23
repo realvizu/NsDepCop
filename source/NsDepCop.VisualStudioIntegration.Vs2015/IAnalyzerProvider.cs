@@ -4,7 +4,7 @@ using Codartis.NsDepCop.Core.Interface.Analysis;
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
     /// <summary>
-    /// Provides refreshable dependency analyzer instances.
+    /// Provides configured dependency analyzer instances.
     /// </summary>
     public interface IAnalyzerProvider : IDisposable
     {
@@ -13,6 +13,6 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// </summary>
         /// <param name="csprojFilePath">The full path of a C# project file.</param>
         /// <returns>A dependency analyzer, or null if cannot be retrieved.</returns>
-        IRefreshableDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath);
+        IConfiguredDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath);
     }
 }

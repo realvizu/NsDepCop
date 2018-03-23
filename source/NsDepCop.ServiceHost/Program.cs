@@ -20,9 +20,6 @@ namespace Codartis.NsDepCop.ServiceHost
     /// </remarks>
     public class Program
     {
-        private static readonly string PipeName = $"{ProductConstants.ToolName}-{ProductConstants.Version}";
-        private static readonly string ServiceName = $"{nameof(IRemoteDependencyAnalyzer)}-{ProductConstants.Version}";
-
         /// <summary>
         /// Entry point of the application.
         /// </summary>
@@ -53,11 +50,11 @@ namespace Codartis.NsDepCop.ServiceHost
 
         private static void RegisterRemotingService()
         {
-            ChannelServices.RegisterChannel(CreateIpcChannel(PipeName), false);
+            ChannelServices.RegisterChannel(CreateIpcChannel(ServiceAddressProvider.PipeName), false);
 
             RemotingConfiguration.RegisterWellKnownServiceType(
                 typeof(RemoteDependencyAnalyzerServer),
-                ServiceName, 
+                ServiceAddressProvider.ServiceName, 
                 WellKnownObjectMode.SingleCall);
         }
 

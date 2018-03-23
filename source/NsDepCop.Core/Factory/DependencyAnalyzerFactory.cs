@@ -1,5 +1,5 @@
-﻿using System;
-using Codartis.NsDepCop.Core.Implementation.Analysis;
+﻿using Codartis.NsDepCop.Core.Implementation.Analysis;
+using Codartis.NsDepCop.Core.Implementation.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
@@ -9,40 +9,25 @@ namespace Codartis.NsDepCop.Core.Factory
     /// <summary>
     /// Creates dependency analyzer objects.
     /// </summary>
-    public class DependencyAnalyzerFactory : IDependencyAnalyzerFactory, IConfigInitializer<DependencyAnalyzerFactory>
+    public class DependencyAnalyzerFactory
     {
-        private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
+        private readonly IAnalyzerConfig _config;
         private readonly MessageHandler _traceMessageHandler;
-        private readonly IConfigProviderFactory _configProviderFactory;
 
-        public DependencyAnalyzerFactory(ITypeDependencyEnumerator typeDependencyEnumerator, MessageHandler traceMessageHandler)
+        public DependencyAnalyzerFactory(IAnalyzerConfig config, MessageHandler traceMessageHandler)
         {
-            _typeDependencyEnumerator = typeDependencyEnumerator ?? throw new ArgumentNullException(nameof(typeDependencyEnumerator));
+            _config = config;
             _traceMessageHandler = traceMessageHandler;
-            _configProviderFactory = new ConfigProviderFactory(_traceMessageHandler);
         }
 
-        public DependencyAnalyzerFactory SetDefaultInfoImportance(Importance? defaultInfoImportance)
+        public IDependencyAnalyzer CreateInProcess(ITypeDependencyEnumerator typeDependencyEnumerator)
         {
-            _configProviderFactory.SetDefaultInfoImportance(defaultInfoImportance);
-            return this;
+            return new DependencyAnalyzer(_config, typeDependencyEnumerator, _traceMessageHandler);
         }
 
-        public IDependencyAnalyzer Create(IAnalyzerConfig config)
+        public IDependencyAnalyzer CreateRemote(string serviceAddress)
         {
-            return new DependencyAnalyzer(config, _typeDependencyEnumerator, _traceMessageHandler);
-        }
-
-        public IRefreshableDependencyAnalyzer CreateFromXmlConfigFile(string configFilePath)
-        {
-            var configProvider = _configProviderFactory.CreateFromXmlConfigFile(configFilePath);
-            return new RefreshableDependencyAnalyzer(configProvider, _typeDependencyEnumerator, _traceMessageHandler);
-        }
-
-        public IRefreshableDependencyAnalyzer CreateFromMultiLevelXmlConfigFile(string folderPath)
-        {
-            var configProvider = _configProviderFactory.CreateFromMultiLevelXmlConfigFile(folderPath);
-            return new RefreshableDependencyAnalyzer(configProvider, _typeDependencyEnumerator, _traceMessageHandler);
+            return new RemoteDependencyAnalyzerClient(_config, serviceAddress, _traceMessageHandler);
         }
     }
 }

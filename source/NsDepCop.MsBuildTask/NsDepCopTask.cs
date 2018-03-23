@@ -30,9 +30,6 @@ namespace Codartis.NsDepCop.MsBuildTask
         public static readonly IssueDescriptor<Exception> TaskExceptionIssue =
             new IssueDescriptor<Exception>("NSDEPCOPEX", IssueKind.Error, null, i => $"Exception during NsDepCopTask execution: {i.ToString()}");
 
-        private static readonly string AnalyzerServiceAddress = 
-            $"ipc://{ProductConstants.ToolName}-{ProductConstants.Version}/{nameof(IRemoteDependencyAnalyzer)}-{ProductConstants.Version}";
-
         /// <summary>
         /// MsBuild task item list that contains the name and full path 
         /// of the assemblies referenced in the current project.
@@ -154,9 +151,10 @@ namespace Codartis.NsDepCop.MsBuildTask
             var startTime = DateTime.Now;
             _logger.LogIssue(TaskStartedIssue, configFolderPath);
 
-            var dependencyAnalyzerClient = RemoteDependencyAnalyzerFactory.CreateClient(AnalyzerServiceAddress, config.AnalyzerServiceCallRetryTimeSpans);
-            var analyzerMessages = dependencyAnalyzerClient.AnalyzeProject(config, SourceFilePaths.ToArray(), ReferencedAssemblyPaths.ToArray());
-            var dependencyIssueCount = ReportAnalyzerMessages(analyzerMessages, config.IssueKind, config.MaxIssueCount, config.MaxIssueCountSeverity);
+            var analyzerFactory = new DependencyAnalyzerFactory(config, _logger.LogTraceMessage);
+            var analyzerClient = analyzerFactory.CreateRemote(ServiceAddressProvider.ServiceAddress);
+            var illegalDependencies = analyzerClient.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths);
+            var dependencyIssueCount = ReportAnalyzerMessages(illegalDependencies, config.IssueKind, config.MaxIssueCount, config.MaxIssueCountSeverity);
 
             var endTime = DateTime.Now;
             _logger.LogIssue(TaskFinishedIssue, endTime - startTime);
@@ -165,25 +163,15 @@ namespace Codartis.NsDepCop.MsBuildTask
             return !errorIssueDetected;
         }
 
-        private int ReportAnalyzerMessages(IEnumerable<AnalyzerMessageBase> analyzerMessages, IssueKind issueKind, 
-            int maxIssueCount, IssueKind maxIssueCountSeverity)
+        private int ReportAnalyzerMessages(IEnumerable<TypeDependency> illegalDependencies, 
+            IssueKind issueKind, int maxIssueCount, IssueKind maxIssueCountSeverity)
         {
             var dependencyIssueCount = 0;
 
-            foreach (var analyzerMessage in analyzerMessages)
+            foreach (var illegalDependency in illegalDependencies)
             {
-                switch (analyzerMessage)
-                {
-                    case IllegalDependencyMessage illegalDependencyMessage:
-                        var illegalDependency = illegalDependencyMessage.IllegalDependency;
-                        _logger.LogIssue(IssueDefinitions.IllegalDependencyIssue, illegalDependency, issueKind, illegalDependency.SourceSegment);
-                        dependencyIssueCount++;
-                        break;
-
-                    case TraceMessage traceMessage:
-                        _logger.LogTraceMessage(traceMessage.Message);
-                        break;
-                }
+                _logger.LogIssue(IssueDefinitions.IllegalDependencyIssue, illegalDependency, issueKind, illegalDependency.SourceSegment);
+                dependencyIssueCount++;
             }
 
             if (dependencyIssueCount == maxIssueCount)

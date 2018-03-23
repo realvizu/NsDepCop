@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
+using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.ParserAdapter.Roslyn2x;
 using CommandLine;
 
@@ -24,7 +26,7 @@ namespace Codartis.NsDepCop.ConsoleHost
 
             try
             {
-                ValidateProject(options);
+                Execute(options);
                 return 0;
             }
             catch (Exception e)
@@ -35,32 +37,46 @@ namespace Codartis.NsDepCop.ConsoleHost
             return -1;
         }
 
-        private static void ValidateProject(CommandLineOptions options)
+        private static void Execute(CommandLineOptions options)
         {
             Console.WriteLine($"Analysing {options.CsprojFile}, repeats={options.RepeatCount}, useSingleFileConfig={options.UseSingleFileConfig} ...");
 
             _isVerbose = options.IsVerbose;
 
+            var directoryPath = Path.GetDirectoryName(options.CsprojFile);
+            if (directoryPath == null)
+                throw new Exception("DirectoryPath is null.");
+
+            var configProvider = CreateConfigProvider(directoryPath, options.UseSingleFileConfig);
+            var analyzer = CreateAnalyzer(configProvider.Config, options.UseRemoteAnalyzer);
+
             var csProjParser = new CsProjParser(options.CsprojFile);
-            var dependencyAnalyzer = CreateDependencyAnalyzer(options);
 
             var runTimeSpans = new List<TimeSpan>();
             for (var i = 0; i < options.RepeatCount; i++)
-                runTimeSpans.Add(AnalyseCsProj(dependencyAnalyzer, csProjParser));
+                runTimeSpans.Add(AnalyseCsProj(analyzer, csProjParser));
 
             DumpRunTimes(runTimeSpans);
         }
 
-        private static IDependencyAnalyzer CreateDependencyAnalyzer(CommandLineOptions options)
+        private static IConfigProvider CreateConfigProvider(string directoryPath, bool useSingleFileConfig)
         {
-            var directoryPath = Path.GetDirectoryName(options.CsprojFile);
+            var configProviderFactory = new ConfigProviderFactory(LogTraceToConsole);
+
+            return useSingleFileConfig
+                ? configProviderFactory.CreateFromXmlConfigFile(Path.Combine(directoryPath, "config.nsdepcop"))
+                : configProviderFactory.CreateFromMultiLevelXmlConfigFile(directoryPath);
+        }
+
+        private static IDependencyAnalyzer CreateAnalyzer(IAnalyzerConfig config, bool useRemoteAnalyzer)
+        {
+            var analyzerFactory = new DependencyAnalyzerFactory(config, LogTraceToConsole);
+
+            if (useRemoteAnalyzer)
+                return analyzerFactory.CreateRemote(ServiceAddressProvider.ServiceAddress);
 
             var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogTraceToConsole);
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogTraceToConsole);
-
-            return options.UseSingleFileConfig
-                ? dependencyAnalyzerFactory.CreateFromXmlConfigFile(Path.Combine(directoryPath, "config.nsdepcop"))
-                : dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(directoryPath);
+            return analyzerFactory.CreateInProcess(typeDependencyEnumerator);
         }
 
         private static TimeSpan AnalyseCsProj(IDependencyAnalyzer dependencyAnalyzer, CsProjParser csProjParser)

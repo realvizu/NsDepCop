@@ -55,21 +55,22 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Factory\ConfigProviderFactory.cs" />
+    <Compile Include="Factory\ConfiguredDependencyAnalyzerFactory.cs" />
     <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
     <Compile Include="Factory\IConfigProviderFactory.cs" />
-    <Compile Include="Factory\IDependencyAnalyzerFactory.cs" />
-    <Compile Include="Factory\RemoteDependencyAnalyzerFactory.cs" />
-    <Compile Include="Implementation\Analysis\RefreshableDependencyAnalyzer.cs" />
+    <Compile Include="Factory\IConfiguredDependencyAnalyzerFactory.cs" />
+    <Compile Include="Implementation\Analysis\ConfiguredDependencyAnalyzer.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
     <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
     <Compile Include="Implementation\Config\RuleConfigToStringsFormatter.cs" />
-    <Compile Include="Interface\Analysis\IRefreshableDependencyAnalyzer.cs" />
+    <Compile Include="Interface\Analysis\IConfiguredDependencyAnalyzer.cs" />
     <Compile Include="Implementation\Analysis\Remote\AnalyzerServiceActivator.cs" />
     <Compile Include="Implementation\Analysis\Remote\RemoteDependencyAnalyzerClient.cs" />
     <Compile Include="Interface\Analysis\Remote\AnalyzerMessageBase.cs" />
-    <Compile Include="Interface\Analysis\Remote\IRemoteDependencyAnalyzer.cs" />
     <Compile Include="Interface\Analysis\Remote\IllegalDependencyMessage.cs" />
+    <Compile Include="Interface\Analysis\Remote\IRemoteDependencyAnalyzer.cs" />
+    <Compile Include="Interface\Analysis\Remote\ServiceAddressProvider.cs" />
     <Compile Include="Interface\Analysis\Remote\TraceMessage.cs" />
     <Compile Include="Interface\Config\IConfigInitializer.cs" />
     <Compile Include="Util\DateTimeProvider.cs" />

@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Factory
 {
-    public class DependencyAnalyzerFactoryTests : FileBasedTestsBase
+    public class ConfiguredDependencyAnalyzerFactoryTests : FileBasedTestsBase
     {
         private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock = new Mock<ITypeDependencyEnumerator>();
 
@@ -16,7 +16,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         public void CreateFromXmlConfigFile_Enabled()
         {
             var configFilePath = GetFilePathInTestClassFolder("config.nsdepcop");
-            var dependencyAnalyzer = CreateDependencyAnalyzerFactory().CreateFromXmlConfigFile(configFilePath);
+            var dependencyAnalyzer = CreateFactory().CreateFromXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
         }
@@ -25,7 +25,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         public void CreateFromXmlConfigFile_EnabledWithDefaultInfoImportance()
         {
             var configFilePath = GetFilePathInTestClassFolder("config.nsdepcop");
-            var dependencyAnalyzer = CreateDependencyAnalyzerFactory().SetDefaultInfoImportance(Importance.High).CreateFromXmlConfigFile(configFilePath);
+            var dependencyAnalyzer = CreateFactory().SetDefaultInfoImportance(Importance.High).CreateFromXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.InfoImportance.Should().Be(Importance.High);
         }
@@ -34,7 +34,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         public void CreateFromMultiLevelXmlConfigFile_Enabled()
         {
             var configFilePath = GetFilePathInTestClassFolder("");
-            var dependencyAnalyzer = CreateDependencyAnalyzerFactory().CreateFromMultiLevelXmlConfigFile(configFilePath);
+            var dependencyAnalyzer = CreateFactory().CreateFromMultiLevelXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
         }
@@ -43,12 +43,12 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         public void CreateFromMultiLevelXmlConfigFile_EnabledWithDefaultInfoImportance()
         {
             var configFilePath = GetFilePathInTestClassFolder("");
-            var dependencyAnalyzer = CreateDependencyAnalyzerFactory().SetDefaultInfoImportance(Importance.High).CreateFromMultiLevelXmlConfigFile(configFilePath);
+            var dependencyAnalyzer = CreateFactory().SetDefaultInfoImportance(Importance.High).CreateFromMultiLevelXmlConfigFile(configFilePath);
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.InfoImportance.Should().Be(Importance.High);
         }
 
-        private  DependencyAnalyzerFactory CreateDependencyAnalyzerFactory() 
-            => new DependencyAnalyzerFactory(_typeDependencyEnumeratorMock.Object, traceMessageHandler: null);
+        private  ConfiguredDependencyAnalyzerFactory CreateFactory() 
+            => new ConfiguredDependencyAnalyzerFactory(_typeDependencyEnumeratorMock.Object, traceMessageHandler: null);
     }
 }

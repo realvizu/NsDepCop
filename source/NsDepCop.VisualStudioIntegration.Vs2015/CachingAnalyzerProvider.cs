@@ -5,9 +5,9 @@ using Codartis.NsDepCop.Core.Util;
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
     /// <summary>
-    /// Retrieves refreshable dependency analyzers and caches them for a certain time span.
+    /// Retrieves configured dependency analyzers and caches them for a certain time span.
     /// </summary>
-    public class CachingAnalyzerProvider : TimeBasedCacheBase<string, IRefreshableDependencyAnalyzer>, IAnalyzerProvider
+    public sealed class CachingAnalyzerProvider : TimeBasedCacheBase<string, IConfiguredDependencyAnalyzer>, IAnalyzerProvider
     {
         private readonly IAnalyzerProvider _analyzerProvider;
 
@@ -19,8 +19,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public void Dispose() => _analyzerProvider?.Dispose();
 
-        public IRefreshableDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath) => GetOrAdd(csprojFilePath);
+        public IConfiguredDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath) => GetOrAdd(csprojFilePath);
 
-        protected override IRefreshableDependencyAnalyzer RetrieveItemToCache(string key) => _analyzerProvider.GetDependencyAnalyzer(key);
+        protected override IConfiguredDependencyAnalyzer RetrieveItemToCache(string key) => _analyzerProvider.GetDependencyAnalyzer(key);
     }
 }

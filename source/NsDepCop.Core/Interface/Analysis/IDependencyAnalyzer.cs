@@ -4,7 +4,7 @@ using Codartis.NsDepCop.Core.Util;
 namespace Codartis.NsDepCop.Core.Interface.Analysis
 {
     /// <summary>
-    /// Analyzes dependencies in source code based on a config.
+    /// Analyzes dependencies in source code.
     /// </summary>
     public interface IDependencyAnalyzer : ICacheStatisticsProvider
     {

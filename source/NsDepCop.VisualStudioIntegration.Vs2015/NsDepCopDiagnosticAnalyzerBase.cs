@@ -198,7 +198,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static CachingAnalyzerProvider CreateDependencyAnalyzerProvider(ITypeDependencyEnumerator typeDependencyEnumerator)
         {
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogTraceMessage);
+            var dependencyAnalyzerFactory = new ConfiguredDependencyAnalyzerFactory(typeDependencyEnumerator, LogTraceMessage);
             var analyzerProvider = new AnalyzerProvider(dependencyAnalyzerFactory);
             return new CachingAnalyzerProvider(analyzerProvider, new DateTimeProvider(), AnalyzerCachingTimeSpan);
         }

@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
 {
-    public class RefreshableDependencyAnalyzerTests
+    public class ConfiguredDependencyAnalyzerTests
     {
         private static readonly SourceSegment DummySourceSegment = new SourceSegment(1, 1, 1, 1, null, null);
 
@@ -25,8 +25,8 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         {
             _configProviderMock.Setup(i => i.ConfigState).Returns(configState);
 
-            var refreshableDependencyAnalyzer = CreateRefreshableDependencyAnalyzer();
-            Assert.Throws<InvalidOperationException>(() => refreshableDependencyAnalyzer.AnalyzeSyntaxNode(null, null));
+            var dependencyAnalyzer = CreateAnalyzer();
+            Assert.Throws<InvalidOperationException>(() => dependencyAnalyzer.AnalyzeSyntaxNode(null, null));
         }
 
         [Theory]
@@ -37,8 +37,8 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         {
             _configProviderMock.Setup(i => i.ConfigState).Returns(configState);
 
-            var refreshableDependencyAnalyzer = CreateRefreshableDependencyAnalyzer();
-            Assert.Throws<InvalidOperationException>(() => refreshableDependencyAnalyzer.AnalyzeProject(null, null));
+            var dependencyAnalyzer = CreateAnalyzer();
+            Assert.Throws<InvalidOperationException>(() => dependencyAnalyzer.AnalyzeProject(null, null));
         }
 
         [Fact]
@@ -50,12 +50,12 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
                 .Setup(i => i.GetTypeDependencies(It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>()))
                 .Returns(Enumerable.Repeat(new TypeDependency("N1", "T1", "N2", "T2", DummySourceSegment), 10));
 
-            var refreshableDependencyAnalyzer = CreateRefreshableDependencyAnalyzer();
-            refreshableDependencyAnalyzer.AnalyzeProject(null, null).Should().HaveCount(2);
+            var dependencyAnalyzer = CreateAnalyzer();
+            dependencyAnalyzer.AnalyzeProject(null, null).Should().HaveCount(2);
 
             SetUpEnabledConfig(maxIssueCount: 4);
-            refreshableDependencyAnalyzer.RefreshConfig();
-            refreshableDependencyAnalyzer.AnalyzeProject(null, null).Should().HaveCount(4);
+            dependencyAnalyzer.RefreshConfig();
+            dependencyAnalyzer.AnalyzeProject(null, null).Should().HaveCount(4);
         }
 
         private void SetUpEnabledConfig(int maxIssueCount = 100)
@@ -71,7 +71,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             _configProviderMock.Setup(i => i.Config).Returns(analyzerConfigMock.Object);
         }
 
-        private RefreshableDependencyAnalyzer CreateRefreshableDependencyAnalyzer()
-            => new RefreshableDependencyAnalyzer(_configProviderMock.Object, _typeDependencyEnumeratorMock.Object, traceMessageHandler: null);
+        private ConfiguredDependencyAnalyzer CreateAnalyzer()
+            => new ConfiguredDependencyAnalyzer(_configProviderMock.Object, _typeDependencyEnumeratorMock.Object, traceMessageHandler: null);
     }
 }

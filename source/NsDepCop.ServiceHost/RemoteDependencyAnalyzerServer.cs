@@ -7,25 +7,17 @@ using Codartis.NsDepCop.ParserAdapter.Roslyn2x;
 namespace Codartis.NsDepCop.ServiceHost
 {
     /// <summary>
-    /// Implements dependency analyzer service as a remoting server.
+    /// Implements dependency analyzer service as a remoting server. Stateless.
     /// </summary>
     public class RemoteDependencyAnalyzerServer : MarshalByRefObject, IRemoteDependencyAnalyzer
     {
-        private readonly AnalyzeProjectResultBuilder _resultBuilder;
-        private readonly IDependencyAnalyzerFactory _dependencyAnalyzerFactory;
-
-        public RemoteDependencyAnalyzerServer()
-        {
-            _resultBuilder = new AnalyzeProjectResultBuilder();
-            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogTrace);
-            _dependencyAnalyzerFactory = new DependencyAnalyzerFactory(typeDependencyEnumerator, LogTrace);
-        }
-
         public AnalyzerMessageBase[] AnalyzeProject(IAnalyzerConfig config, string[] sourcePaths, string[] referencedAssemblyPaths)
         {
             var resultBuilder = new AnalyzeProjectResultBuilder();
 
-            var dependencyAnalyzer = _dependencyAnalyzerFactory.Create(config);
+            var analyzerFactory = new DependencyAnalyzerFactory(config, resultBuilder.AddTrace);
+            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(resultBuilder.AddTrace);
+            var dependencyAnalyzer = analyzerFactory.CreateInProcess(typeDependencyEnumerator);
             var illegalDependencies = dependencyAnalyzer.AnalyzeProject(sourcePaths, referencedAssemblyPaths);
 
             foreach (var illegalDependency in illegalDependencies)
@@ -33,7 +25,5 @@ namespace Codartis.NsDepCop.ServiceHost
 
             return resultBuilder.ToArray();
         }
-
-        private void LogTrace(string i) => _resultBuilder.AddTrace(i);
     }
 }

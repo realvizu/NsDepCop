@@ -10,9 +10,9 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class NsDepCopDiagnosticAnalyzer : NsDepCopDiagnosticAnalyzerBase
     {
-        public NsDepCopDiagnosticAnalyzer() 
-            : base (new Roslyn1TypeDependencyEnumerator(LogTraceMessage))
+        public NsDepCopDiagnosticAnalyzer()
+            : base(new Roslyn1TypeDependencyEnumerator(LogTraceMessage))
         {
         }
-   }
+    }
 }

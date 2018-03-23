@@ -65,7 +65,7 @@ namespace Codartis.NsDepCop.SourceTest
         private IEnumerable<TypeDependency> GetIllegalDependencies(string baseFolder,
             IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
         {
-            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(_typeDependencyEnumerator, DebugMessageHandler);
+            var dependencyAnalyzerFactory = new ConfiguredDependencyAnalyzerFactory(_typeDependencyEnumerator, DebugMessageHandler);
             var dependencyAnalyzer = dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(baseFolder);
             return dependencyAnalyzer.AnalyzeProject(sourceFiles, referencedAssemblies);
         }

@@ -17,9 +17,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         private readonly MessageHandler _traceMessageHandler;
         private readonly CachingTypeDependencyValidator _typeDependencyValidator;
 
-        public DependencyAnalyzer(IAnalyzerConfig config,
-            ITypeDependencyEnumerator typeDependencyEnumerator,
-            MessageHandler traceMessageHandler)
+        public DependencyAnalyzer(IAnalyzerConfig config, ITypeDependencyEnumerator typeDependencyEnumerator, MessageHandler traceMessageHandler)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _typeDependencyEnumerator = typeDependencyEnumerator ?? throw new ArgumentNullException(nameof(typeDependencyEnumerator));
@@ -33,14 +31,16 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
         public IEnumerable<TypeDependency> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {
-            var illegalDependencies = GetIllegalDependencies(_typeDependencyEnumerator.GetTypeDependencies(sourceFilePaths, referencedAssemblyPaths));
+            var typeDependencies = _typeDependencyEnumerator.GetTypeDependencies(sourceFilePaths, referencedAssemblyPaths);
+            var illegalDependencies = GetIllegalDependencies(typeDependencies);
             _traceMessageHandler?.Invoke(GetCacheStatisticsMessage());
             return illegalDependencies;
         }
 
         public IEnumerable<TypeDependency> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
         {
-            return GetIllegalDependencies(_typeDependencyEnumerator.GetTypeDependencies(syntaxNode, semanticModel));
+            var typeDependencies = _typeDependencyEnumerator.GetTypeDependencies(syntaxNode, semanticModel);
+            return GetIllegalDependencies(typeDependencies);
         }
 
         private IEnumerable<TypeDependency> GetIllegalDependencies(IEnumerable<TypeDependency> typeDependencies)

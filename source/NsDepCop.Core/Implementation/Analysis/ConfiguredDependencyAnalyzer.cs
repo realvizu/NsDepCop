@@ -13,7 +13,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// <remarks>
     /// Uses read-writer lock to avoid config refresh while running analysis.
     /// </remarks>
-    internal class RefreshableDependencyAnalyzer : IRefreshableDependencyAnalyzer, IDisposable
+    internal class ConfiguredDependencyAnalyzer : IConfiguredDependencyAnalyzer, IDisposable
     {
         private readonly IConfigProvider _configProvider;
         private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
@@ -23,7 +23,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         private IAnalyzerConfig _config;
         private DependencyAnalyzer _dependencyAnalyzer;
 
-        public RefreshableDependencyAnalyzer(IConfigProvider configProvider, 
+        public ConfiguredDependencyAnalyzer(IConfigProvider configProvider, 
             ITypeDependencyEnumerator typeDependencyEnumerator, 
             MessageHandler traceMessageHandler)
         {
@@ -107,7 +107,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         private void UpdateAnalyzer()
         {
             _dependencyAnalyzer = ConfigState == AnalyzerConfigState.Enabled 
-                ? new DependencyAnalyzer(_config, _typeDependencyEnumerator, _traceMessageHandler) 
+                ? new DependencyAnalyzer(Config, _typeDependencyEnumerator, _traceMessageHandler) 
                 : null;
         }
 

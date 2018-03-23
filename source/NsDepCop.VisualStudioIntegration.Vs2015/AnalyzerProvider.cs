@@ -11,19 +11,19 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// Creates and stores dependency analyzers for C# projects.
     /// Ensures that the analyzers' configs are always refreshed.
     /// </summary>
-    public class AnalyzerProvider : IAnalyzerProvider
+    public sealed class AnalyzerProvider : IAnalyzerProvider
     {
-        private readonly IDependencyAnalyzerFactory _dependencyAnalyzerFactory;
+        private readonly IConfiguredDependencyAnalyzerFactory _dependencyAnalyzerFactory;
 
         /// <summary>
         /// Maps project files to their corresponding dependency analyzer. The key is the project file name with full path.
         /// </summary>
-        private readonly ConcurrentDictionary<string, IRefreshableDependencyAnalyzer> _projectFileToDependencyAnalyzerMap;
+        private readonly ConcurrentDictionary<string, IConfiguredDependencyAnalyzer> _projectFileToDependencyAnalyzerMap;
 
-        public AnalyzerProvider(IDependencyAnalyzerFactory dependencyAnalyzerFactory)
+        public AnalyzerProvider(IConfiguredDependencyAnalyzerFactory dependencyAnalyzerFactory)
         {
             _dependencyAnalyzerFactory = dependencyAnalyzerFactory ?? throw new ArgumentNullException(nameof(dependencyAnalyzerFactory));
-            _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IRefreshableDependencyAnalyzer>();
+            _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IConfiguredDependencyAnalyzer>();
         }
 
         public void Dispose()
@@ -33,13 +33,12 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                     disposable.Dispose();
         }
 
-        public IRefreshableDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath)
+        public IConfiguredDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath)
         {
             if (string.IsNullOrWhiteSpace(csprojFilePath))
                 throw new ArgumentException("Filename must not be null or whitespace.", nameof(csprojFilePath));
 
-            bool added;
-            var dependencyAnalyzer = _projectFileToDependencyAnalyzerMap.GetOrAdd(csprojFilePath, CreateDependencyAnalyzer, out added);
+            var dependencyAnalyzer = _projectFileToDependencyAnalyzerMap.GetOrAdd(csprojFilePath, CreateDependencyAnalyzer, out var added);
 
             if (!added)
                 dependencyAnalyzer.RefreshConfig();
@@ -47,7 +46,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             return dependencyAnalyzer;
         }
 
-        private IRefreshableDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
+        private IConfiguredDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
         {
             var projectFileDirectory = Path.GetDirectoryName(projectFilePath);
             return _dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(projectFileDirectory);
