@@ -20,7 +20,7 @@ namespace Codartis.NsDepCop.ConsoleHost
         [Option('s', "singleconfig", DefaultValue = false, HelpText = "Uses a single config file (not multi level).")]
         public bool UseSingleFileConfig { get; set; }
 
-        [Option('r', "remote", DefaultValue = false, HelpText = "Runs analysis in a remote (out-of-process) server.")]
+        [Option('o', "outofprocess", DefaultValue = false, HelpText = "Runs analysis in a remote (out-of-process) server.")]
         public bool UseRemoteAnalyzer { get; set; }
 
         [HelpOption]
