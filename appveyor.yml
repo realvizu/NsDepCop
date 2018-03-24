@@ -1,8 +1,8 @@
 image: Visual Studio 2017
 
 environment:
-  shortversion: '1.7.2'
-  informationalversion: '1.7.2-beta1'
+  shortversion: '1.8.0'
+  informationalversion: '1.8.0-beta1'
 
 version: '$(shortversion).{build}'
 
