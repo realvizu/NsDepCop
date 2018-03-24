@@ -28,6 +28,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
             foreach (var illegalDependency in illegalDependencies)
                 resultBuilder.AddIllegalDependency(illegalDependency);
 
+            resultBuilder.AddCacheStatistics(dependencyAnalyzer.HitCount, dependencyAnalyzer.MissCount, dependencyAnalyzer.EfficiencyPercent);
+
             return resultBuilder.ToArray();
         }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Codartis.NsDepCop.Core.Interface.Analysis;
@@ -28,9 +27,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
             _traceMessageHandler = traceMessageHandler;
         }
 
-        public int HitCount { get; }
-        public int MissCount { get; }
-        public double EfficiencyPercent { get; }
+        public int HitCount { get; private set; }
+        public int MissCount { get; private set; }
+        public double EfficiencyPercent { get; private set; }
 
         public IEnumerable<TypeDependency> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {
@@ -45,6 +44,11 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
                         break;
                     case TraceMessage traceMessage:
                         _traceMessageHandler(traceMessage.Message);
+                        break;
+                    case CacheStatisticsMessage cacheStatisticsMessage:
+                        HitCount = cacheStatisticsMessage.HitCount;
+                        MissCount = cacheStatisticsMessage.MissCount;
+                        EfficiencyPercent= cacheStatisticsMessage.EfficiencyPercent;
                         break;
                     default:
                         throw new Exception($"Unexpected {nameof(AnalyzerMessageBase)} descendant {analyzerMessage.GetType().Name}");

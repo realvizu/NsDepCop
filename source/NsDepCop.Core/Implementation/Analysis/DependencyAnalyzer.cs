@@ -14,15 +14,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     {
         private readonly IAnalyzerConfig _config;
         private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
-        private readonly MessageHandler _traceMessageHandler;
         private readonly CachingTypeDependencyValidator _typeDependencyValidator;
 
         public DependencyAnalyzer(IAnalyzerConfig config, ITypeDependencyEnumerator typeDependencyEnumerator, MessageHandler traceMessageHandler)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _typeDependencyEnumerator = typeDependencyEnumerator ?? throw new ArgumentNullException(nameof(typeDependencyEnumerator));
-            _traceMessageHandler = traceMessageHandler;
-            _typeDependencyValidator = new CachingTypeDependencyValidator(_config, _traceMessageHandler);
+            _typeDependencyValidator = new CachingTypeDependencyValidator(_config, traceMessageHandler);
         }
 
         public int HitCount => _typeDependencyValidator?.HitCount ?? 0;
@@ -32,9 +30,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         public IEnumerable<TypeDependency> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {
             var typeDependencies = _typeDependencyEnumerator.GetTypeDependencies(sourceFilePaths, referencedAssemblyPaths);
-            var illegalDependencies = GetIllegalDependencies(typeDependencies);
-            _traceMessageHandler?.Invoke(GetCacheStatisticsMessage());
-            return illegalDependencies;
+            return GetIllegalDependencies(typeDependencies);
         }
 
         public IEnumerable<TypeDependency> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
@@ -45,10 +41,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
         private IEnumerable<TypeDependency> GetIllegalDependencies(IEnumerable<TypeDependency> typeDependencies)
         {
-            return typeDependencies.Where(i => !_typeDependencyValidator.IsAllowedDependency(i)).Take(_config.MaxIssueCount);
+            return typeDependencies
+                .Where(i => !_typeDependencyValidator.IsAllowedDependency(i))
+                .Take(_config.MaxIssueCount);
         }
-
-        private string GetCacheStatisticsMessage() =>
-            $"Cache hits: {HitCount}, misses: {MissCount}, efficiency (hits/all): {EfficiencyPercent:P}";
     }
 }

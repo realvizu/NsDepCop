@@ -6,6 +6,7 @@ using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 using Codartis.NsDepCop.ParserAdapter.Roslyn2x;
 using CommandLine;
 
@@ -66,6 +67,8 @@ namespace Codartis.NsDepCop.ConsoleHost
                 if (options.IsVerbose) Console.WriteLine();
 
                 var (runTime, illegalDependencies) = AnalyseCsProj(analyzer, csProjParser);
+
+                if (options.IsVerbose) Console.WriteLine(GetCacheStatisticsMessage(analyzer));
 
                 runTimeSpans.Add(runTime);
                 lastIllegalDependencies = illegalDependencies;
@@ -140,5 +143,8 @@ namespace Codartis.NsDepCop.ConsoleHost
             var minRunTimeSpan = TimeSpan.FromMilliseconds(runTimeSpans.Min(i => i.TotalMilliseconds));
             Console.WriteLine($"Min run time: {minRunTimeSpan:mm\\:ss\\.fff}");
         }
+
+        private static string GetCacheStatisticsMessage(ICacheStatisticsProvider analyzer) =>
+            $"Cache hits: {analyzer.HitCount}, misses: {analyzer.MissCount}, efficiency (hits/all): {analyzer.EfficiencyPercent:P}";
     }
 }

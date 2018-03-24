@@ -13,6 +13,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 
         public void AddTrace(string message) => _buffer.Add(new TraceMessage(message));
         public void AddIllegalDependency(TypeDependency typeDependency) => _buffer.Add(new IllegalDependencyMessage(typeDependency));
+        public void AddCacheStatistics(int hits, int misses, double efficiency) => _buffer.Add(new CacheStatisticsMessage(hits, misses, efficiency));
 
         public AnalyzerMessageBase[] ToArray() => _buffer.ToArray();
     }

@@ -9,6 +9,7 @@ using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.MsBuildTask
 {
@@ -156,6 +157,8 @@ namespace Codartis.NsDepCop.MsBuildTask
             var illegalDependencies = analyzerClient.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths);
             var dependencyIssueCount = ReportAnalyzerMessages(illegalDependencies, config.IssueKind, config.MaxIssueCount, config.MaxIssueCountSeverity);
 
+            _logger.LogTraceMessage(GetCacheStatisticsMessage(analyzerClient));
+
             var endTime = DateTime.Now;
             _logger.LogIssue(TaskFinishedIssue, endTime - startTime);
 
@@ -179,6 +182,9 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             return dependencyIssueCount;
         }
+
+        private static string GetCacheStatisticsMessage(ICacheStatisticsProvider analyzer) =>
+            $"Cache hits: {analyzer.HitCount}, misses: {analyzer.MissCount}, efficiency (hits/all): {analyzer.EfficiencyPercent:P}";
 
         private IEnumerable<string> GetInputParameterDiagnosticMessages()
         {

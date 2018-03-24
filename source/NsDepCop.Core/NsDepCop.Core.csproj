@@ -73,6 +73,7 @@
     <Compile Include="Interface\Analysis\Remote\IllegalDependencyMessage.cs" />
     <Compile Include="Interface\Analysis\Remote\IRemoteDependencyAnalyzer.cs" />
     <Compile Include="Interface\Analysis\Remote\ServiceAddressProvider.cs" />
+    <Compile Include="Interface\Analysis\Remote\CacheStatisticsMessage.cs" />
     <Compile Include="Interface\Analysis\Remote\TraceMessage.cs" />
     <Compile Include="Interface\Config\IConfigInitializer.cs" />
     <Compile Include="Util\DateTimeProvider.cs" />
