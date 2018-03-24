@@ -14,7 +14,7 @@ namespace Codartis.NsDepCop.ConsoleHost
     /// <summary>
     /// Implements the console host.
     /// </summary>
-    public class Program
+    public static class Program
     {
         private static bool _isVerbose;
 
@@ -39,7 +39,12 @@ namespace Codartis.NsDepCop.ConsoleHost
 
         private static void Execute(CommandLineOptions options)
         {
-            Console.WriteLine($"Analysing {options.CsprojFile}, repeats={options.RepeatCount}, useSingleFileConfig={options.UseSingleFileConfig} ...");
+            Console.WriteLine($"Analysing {options.CsprojFile}");
+            Console.WriteLine($"  repeats={options.RepeatCount}");
+            Console.WriteLine($"  useSingleFileConfig={options.UseSingleFileConfig}");
+            Console.WriteLine($"  outofprocess={options.UseOufOfProcessAnalyzer}");
+            Console.WriteLine($"  verbose={options.IsVerbose}");
+            Console.WriteLine();
 
             _isVerbose = options.IsVerbose;
 
@@ -48,14 +53,32 @@ namespace Codartis.NsDepCop.ConsoleHost
                 throw new Exception("DirectoryPath is null.");
 
             var configProvider = CreateConfigProvider(directoryPath, options.UseSingleFileConfig);
-            var analyzer = CreateAnalyzer(configProvider.Config, options.UseRemoteAnalyzer);
+            var analyzer = CreateAnalyzer(configProvider.Config, options.UseOufOfProcessAnalyzer);
 
             var csProjParser = new CsProjParser(options.CsprojFile);
 
             var runTimeSpans = new List<TimeSpan>();
+            TypeDependency[] lastIllegalDependencies = null;
             for (var i = 0; i < options.RepeatCount; i++)
-                runTimeSpans.Add(AnalyseCsProj(analyzer, csProjParser));
+            {
+                if (options.IsVerbose) Console.WriteLine();
+                Console.WriteLine($"Starting iteration {i + 1}...");
+                if (options.IsVerbose) Console.WriteLine();
 
+                var (runTime, illegalDependencies) = AnalyseCsProj(analyzer, csProjParser);
+
+                runTimeSpans.Add(runTime);
+                lastIllegalDependencies = illegalDependencies;
+            }
+
+            Console.WriteLine();
+            DumpIllegalDependencies(lastIllegalDependencies);
+
+            Console.WriteLine();
+            for (var i = 0; i < options.RepeatCount; i++)
+                Console.WriteLine($"Iteration {i + 1:00} took: {runTimeSpans[i]:mm\\:ss\\.fff}");
+
+            Console.WriteLine();
             DumpRunTimes(runTimeSpans);
         }
 
@@ -79,19 +102,18 @@ namespace Codartis.NsDepCop.ConsoleHost
             return analyzerFactory.CreateInProcess(typeDependencyEnumerator);
         }
 
-        private static TimeSpan AnalyseCsProj(IDependencyAnalyzer dependencyAnalyzer, CsProjParser csProjParser)
+        private static (TimeSpan runTime, TypeDependency[] illegalDependencies) AnalyseCsProj(IDependencyAnalyzer dependencyAnalyzer, CsProjParser csProjParser)
         {
             var startTime = DateTime.Now;
 
-            var illegalDependencies = dependencyAnalyzer.AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths).ToList();
+            var illegalDependencies = dependencyAnalyzer
+                .AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths)
+                .ToArray();
 
             var endTime = DateTime.Now;
             var elapsedTimeSpan = endTime - startTime;
-            Console.WriteLine($"Analysis took: {elapsedTimeSpan:mm\\:ss\\.fff}");
 
-            DumpIllegalDependencies(illegalDependencies);
-
-            return elapsedTimeSpan;
+            return (elapsedTimeSpan, illegalDependencies);
         }
 
         private static void LogTraceToConsole(string message)
@@ -100,11 +122,12 @@ namespace Codartis.NsDepCop.ConsoleHost
                 Console.WriteLine(message);
         }
 
-        private static void DumpIllegalDependencies(IReadOnlyCollection<TypeDependency> typeDependencies)
+        private static void DumpIllegalDependencies(TypeDependency[] typeDependencies)
         {
-            Console.WriteLine($"Illegal dependencies count={typeDependencies.Count}");
             foreach (var typeDependency in typeDependencies)
                 Console.WriteLine(FormatIssue(typeDependency));
+
+            Console.WriteLine($"Illegal dependencies count={typeDependencies.Length}");
         }
 
         private static string FormatIssue(TypeDependency typeDependency)

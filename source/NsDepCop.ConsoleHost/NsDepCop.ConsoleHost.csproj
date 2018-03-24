@@ -154,6 +154,10 @@
       <Project>{49913f01-47e6-4860-b0bc-359e2255bb5c}</Project>
       <Name>NsDepCop.ParserAdapter.Roslyn2x</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NsDepCop.ServiceHost\NsDepCop.ServiceHost.csproj">
+      <Project>{bcbdf14e-53ec-4e8f-a977-8f485b8f2b5d}</Project>
+      <Name>NsDepCop.ServiceHost</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

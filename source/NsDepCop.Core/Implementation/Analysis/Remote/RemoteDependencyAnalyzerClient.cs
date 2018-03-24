@@ -79,9 +79,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
                     if (retryCount < maxRetryCount)
                     {
                         var retryTimeSpan = retryTimeSpans[retryCount];
-                        Trace.WriteLine($"[NsDepCop] {CommunicationErrorMessage} Trying to activate service and retrying after {retryTimeSpan}. Exception: {e.Message}");
+                        _traceMessageHandler($"{CommunicationErrorMessage} Trying to activate service and retrying after {retryTimeSpan}. Exception: {e.Message}");
 
-                        AnalyzerServiceActivator.Activate();
+                        AnalyzerServiceActivator.Activate(_traceMessageHandler);
                         Thread.Sleep(retryTimeSpan);
 
                         retryCount++;
