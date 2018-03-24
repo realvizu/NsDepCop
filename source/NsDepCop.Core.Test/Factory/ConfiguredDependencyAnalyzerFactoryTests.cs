@@ -13,42 +13,28 @@ namespace Codartis.NsDepCop.Core.Test.Factory
         private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock = new Mock<ITypeDependencyEnumerator>();
 
         [Fact]
-        public void CreateFromXmlConfigFile_Enabled()
+        public void CreateInProcess_ConfigIsEnabled()
         {
-            var configFilePath = GetFilePathInTestClassFolder("config.nsdepcop");
-            var dependencyAnalyzer = CreateFactory().CreateFromXmlConfigFile(configFilePath);
+            var configFilePath = GetFilePathInTestClassFolder("");
+            var dependencyAnalyzer = CreateFactory().CreateInProcess(configFilePath, _typeDependencyEnumeratorMock.Object);
+
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
         }
 
         [Fact]
-        public void CreateFromXmlConfigFile_EnabledWithDefaultInfoImportance()
+        public void CreateInProcess_ConfigIsEnabledWithDefaultInfoImportance()
         {
-            var configFilePath = GetFilePathInTestClassFolder("config.nsdepcop");
-            var dependencyAnalyzer = CreateFactory().SetDefaultInfoImportance(Importance.High).CreateFromXmlConfigFile(configFilePath);
+            var configFilePath = GetFilePathInTestClassFolder("");
+            var dependencyAnalyzer = CreateFactory()
+                .SetDefaultInfoImportance(Importance.High)
+                .CreateInProcess(configFilePath, _typeDependencyEnumeratorMock.Object);
+
             dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             dependencyAnalyzer.Config.InfoImportance.Should().Be(Importance.High);
         }
 
-        [Fact]
-        public void CreateFromMultiLevelXmlConfigFile_Enabled()
-        {
-            var configFilePath = GetFilePathInTestClassFolder("");
-            var dependencyAnalyzer = CreateFactory().CreateFromMultiLevelXmlConfigFile(configFilePath);
-            dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
-            dependencyAnalyzer.Config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
-        }
-
-        [Fact]
-        public void CreateFromMultiLevelXmlConfigFile_EnabledWithDefaultInfoImportance()
-        {
-            var configFilePath = GetFilePathInTestClassFolder("");
-            var dependencyAnalyzer = CreateFactory().SetDefaultInfoImportance(Importance.High).CreateFromMultiLevelXmlConfigFile(configFilePath);
-            dependencyAnalyzer.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
-            dependencyAnalyzer.Config.InfoImportance.Should().Be(Importance.High);
-        }
-
-        private  ConfiguredDependencyAnalyzerFactory CreateFactory() 
-            => new ConfiguredDependencyAnalyzerFactory(_typeDependencyEnumeratorMock.Object, traceMessageHandler: null);
+        private static ConfiguredDependencyAnalyzerFactory CreateFactory() 
+            => new ConfiguredDependencyAnalyzerFactory(traceMessageHandler: null);
     }
 }

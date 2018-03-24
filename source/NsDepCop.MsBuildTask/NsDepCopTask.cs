@@ -7,6 +7,7 @@ using System.Reflection;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
 using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
@@ -108,12 +109,14 @@ namespace Codartis.NsDepCop.MsBuildTask
                 var defaultInfoImportance = EnumHelper.ParseNullable<Importance>(InfoImportance.GetValue());
                 _logger.InfoImportance = defaultInfoImportance?.ToMessageImportance() ?? MessageImportance.Normal;
 
-                var configProviderFactory = new ConfigProviderFactory(_logger.LogTraceMessage).SetDefaultInfoImportance(defaultInfoImportance);
-                var configProvider = configProviderFactory.CreateFromMultiLevelXmlConfigFile(ProjectFolder);
+                var analyzerFactory = new ConfiguredDependencyAnalyzerFactory(_logger.LogTraceMessage)
+                    .SetDefaultInfoImportance(defaultInfoImportance);
+
+                var analyzer = analyzerFactory.CreateOutOfProcess(ProjectFolder, ServiceAddressProvider.ServiceAddress);
 
                 var runWasSuccessful = true;
 
-                switch (configProvider.ConfigState)
+                switch (analyzer.ConfigState)
                 {
                     case AnalyzerConfigState.NoConfig:
                         _logger.LogIssue(IssueDefinitions.NoConfigFileIssue);
@@ -124,16 +127,16 @@ namespace Codartis.NsDepCop.MsBuildTask
                         break;
 
                     case AnalyzerConfigState.ConfigError:
-                        _logger.LogIssue(IssueDefinitions.ConfigExceptionIssue, configProvider.ConfigException);
+                        _logger.LogIssue(IssueDefinitions.ConfigExceptionIssue, analyzer.ConfigException);
                         runWasSuccessful = false;
                         break;
 
                     case AnalyzerConfigState.Enabled:
-                        runWasSuccessful = ExecuteAnalysis(configProvider.Config, ProjectFolder);
+                        runWasSuccessful = ExecuteAnalysis(analyzer, ProjectFolder);
                         break;
 
                     default:
-                        throw new Exception($"Unexpected ConfigState: {configProvider.ConfigState}");
+                        throw new Exception($"Unexpected ConfigState: {analyzer.ConfigState}");
                 }
 
                 return runWasSuccessful;
@@ -145,19 +148,18 @@ namespace Codartis.NsDepCop.MsBuildTask
             }
         }
 
-        private bool ExecuteAnalysis(IAnalyzerConfig config, string configFolderPath)
+        private bool ExecuteAnalysis(IConfiguredDependencyAnalyzer analyzer, string configFolderPath)
         {
+            var config = analyzer.Config;
             _logger.InfoImportance = config.InfoImportance.ToMessageImportance();
 
             var startTime = DateTime.Now;
             _logger.LogIssue(TaskStartedIssue, configFolderPath);
 
-            var analyzerFactory = new DependencyAnalyzerFactory(config, _logger.LogTraceMessage);
-            var analyzerClient = analyzerFactory.CreateRemote(ServiceAddressProvider.ServiceAddress);
-            var illegalDependencies = analyzerClient.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths);
+            var illegalDependencies = analyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths);
             var dependencyIssueCount = ReportAnalyzerMessages(illegalDependencies, config.IssueKind, config.MaxIssueCount, config.MaxIssueCountSeverity);
 
-            _logger.LogTraceMessage(GetCacheStatisticsMessage(analyzerClient));
+            _logger.LogTraceMessage(GetCacheStatisticsMessage(analyzer));
 
             var endTime = DateTime.Now;
             _logger.LogIssue(TaskFinishedIssue, endTime - startTime);

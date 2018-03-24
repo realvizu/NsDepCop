@@ -25,7 +25,7 @@ namespace Codartis.NsDepCop.Core.Factory
             return new DependencyAnalyzer(_config, typeDependencyEnumerator, _traceMessageHandler);
         }
 
-        public IDependencyAnalyzer CreateRemote(string serviceAddress)
+        public IDependencyAnalyzer CreateOutOfProcess(string serviceAddress)
         {
             return new RemoteDependencyAnalyzerClient(_config, serviceAddress, _traceMessageHandler);
         }

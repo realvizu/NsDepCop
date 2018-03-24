@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
 using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
@@ -14,15 +15,19 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     public sealed class AnalyzerProvider : IAnalyzerProvider
     {
         private readonly IConfiguredDependencyAnalyzerFactory _dependencyAnalyzerFactory;
+        private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
 
         /// <summary>
         /// Maps project files to their corresponding dependency analyzer. The key is the project file name with full path.
         /// </summary>
         private readonly ConcurrentDictionary<string, IConfiguredDependencyAnalyzer> _projectFileToDependencyAnalyzerMap;
 
-        public AnalyzerProvider(IConfiguredDependencyAnalyzerFactory dependencyAnalyzerFactory)
+        public AnalyzerProvider(
+            IConfiguredDependencyAnalyzerFactory dependencyAnalyzerFactory,
+            ITypeDependencyEnumerator typeDependencyEnumerator)
         {
             _dependencyAnalyzerFactory = dependencyAnalyzerFactory ?? throw new ArgumentNullException(nameof(dependencyAnalyzerFactory));
+            _typeDependencyEnumerator = typeDependencyEnumerator ?? throw new ArgumentNullException(nameof(typeDependencyEnumerator));
             _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IConfiguredDependencyAnalyzer>();
         }
 
@@ -49,7 +54,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private IConfiguredDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
         {
             var projectFileDirectory = Path.GetDirectoryName(projectFilePath);
-            return _dependencyAnalyzerFactory.CreateFromMultiLevelXmlConfigFile(projectFileDirectory);
+            return _dependencyAnalyzerFactory.CreateInProcess(projectFileDirectory, _typeDependencyEnumerator);
         }
     }
 }

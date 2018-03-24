@@ -1,5 +1,6 @@
 ﻿using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
 using Moq;
 using Xunit;
 
@@ -8,10 +9,12 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
     public class AnalyzerProviderTests
     {
         private readonly Mock<IConfiguredDependencyAnalyzerFactory> _dependencyAnalyzerFactoryMock;
+        private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock;
 
         public AnalyzerProviderTests()
         {
             _dependencyAnalyzerFactoryMock = new Mock<IConfiguredDependencyAnalyzerFactory>();
+            _typeDependencyEnumeratorMock = new Mock<ITypeDependencyEnumerator>();
         }
 
         [Fact]
@@ -23,7 +26,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 
             analyzerProvider.GetDependencyAnalyzer(filePath);
 
-            _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromMultiLevelXmlConfigFile(It.IsAny<string>()), Times.Once);
+            VerifyFactoryCall(Times.Once());
         }
 
         [Fact]
@@ -34,21 +37,33 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
             var analyzerProvider = CreateAnalyzerProvider();
 
             var analyzerMock = new Mock<IConfiguredDependencyAnalyzer>();
-            _dependencyAnalyzerFactoryMock.Setup(i => i.CreateFromMultiLevelXmlConfigFile(It.IsAny<string>()))
-                .Returns(analyzerMock.Object);
+            SetUpFactoryCall(analyzerMock.Object);
 
             analyzerProvider.GetDependencyAnalyzer(filePath);
-            _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromMultiLevelXmlConfigFile(It.IsAny<string>()), Times.Once);
+            VerifyFactoryCall(Times.Once());
             analyzerMock.Verify(i => i.RefreshConfig(), Times.Never);
 
             analyzerProvider.GetDependencyAnalyzer(filePath);
-            _dependencyAnalyzerFactoryMock.Verify(i => i.CreateFromMultiLevelXmlConfigFile(It.IsAny<string>()), Times.Once);
+            VerifyFactoryCall(Times.Once());
             analyzerMock.Verify(i => i.RefreshConfig(), Times.Once);
+        }
+
+        private void SetUpFactoryCall(IConfiguredDependencyAnalyzer analyzer)
+        {
+            _dependencyAnalyzerFactoryMock
+                .Setup(i => i.CreateInProcess(It.IsAny<string>(), _typeDependencyEnumeratorMock.Object))
+                .Returns(analyzer);
+        }
+
+        private void VerifyFactoryCall(Times times)
+        {
+            _dependencyAnalyzerFactoryMock
+                .Verify(i => i.CreateInProcess(It.IsAny<string>(), _typeDependencyEnumeratorMock.Object), times);
         }
 
         private IAnalyzerProvider CreateAnalyzerProvider()
         {
-            return new AnalyzerProvider(_dependencyAnalyzerFactoryMock.Object);
+            return new AnalyzerProvider(_dependencyAnalyzerFactoryMock.Object, _typeDependencyEnumeratorMock.Object);
         }
     }
 }

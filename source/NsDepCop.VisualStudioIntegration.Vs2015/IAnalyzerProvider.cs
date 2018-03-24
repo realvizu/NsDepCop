@@ -1,5 +1,5 @@
 using System;
-using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {

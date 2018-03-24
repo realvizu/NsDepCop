@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Threading;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
 using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
 
-namespace Codartis.NsDepCop.Core.Implementation.Analysis
+namespace Codartis.NsDepCop.Core.Implementation.Analysis.Configured
 {
     /// <summary>
-    /// A dependency analyzer with a refreshable config.
+    /// A dependency analyzer bundled together with its config provider.
+    /// The config can be refreshed.
     /// </summary>
     /// <remarks>
     /// Uses read-writer lock to avoid config refresh while running analysis.
@@ -16,20 +17,16 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     internal class ConfiguredDependencyAnalyzer : IConfiguredDependencyAnalyzer, IDisposable
     {
         private readonly IConfigProvider _configProvider;
-        private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
-        private readonly MessageHandler _traceMessageHandler;
+        private readonly Func<IDependencyAnalyzer> _dependencyAnalyzerCreateFunc;
         private readonly ReaderWriterLockSlim _configRefreshLock;
 
         private IAnalyzerConfig _config;
-        private DependencyAnalyzer _dependencyAnalyzer;
+        private IDependencyAnalyzer _dependencyAnalyzer;
 
-        public ConfiguredDependencyAnalyzer(IConfigProvider configProvider, 
-            ITypeDependencyEnumerator typeDependencyEnumerator, 
-            MessageHandler traceMessageHandler)
+        public ConfiguredDependencyAnalyzer(IConfigProvider configProvider, Func<IDependencyAnalyzer> dependencyAnalyzerCreateFunc)
         {
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
-            _typeDependencyEnumerator = typeDependencyEnumerator ?? throw new ArgumentNullException(nameof(typeDependencyEnumerator));
-            _traceMessageHandler = traceMessageHandler;
+            _dependencyAnalyzerCreateFunc = dependencyAnalyzerCreateFunc ?? throw new ArgumentNullException(nameof(dependencyAnalyzerCreateFunc));
             _configRefreshLock = new ReaderWriterLockSlim();
 
             UpdateConfig();
@@ -106,8 +103,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
         private void UpdateAnalyzer()
         {
-            _dependencyAnalyzer = ConfigState == AnalyzerConfigState.Enabled 
-                ? new DependencyAnalyzer(Config, _typeDependencyEnumerator, _traceMessageHandler) 
+            _dependencyAnalyzer = ConfigState == AnalyzerConfigState.Enabled
+                ? _dependencyAnalyzerCreateFunc()
                 : null;
         }
 

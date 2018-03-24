@@ -58,7 +58,6 @@ namespace Codartis.NsDepCop.ConsoleHost
                 throw new Exception($"ConfigState={configProvider.ConfigState}, ConfigException={configProvider.ConfigException}");
 
             var analyzer = CreateAnalyzer(configProvider.Config, options.UseOufOfProcessAnalyzer);
-
             var csProjParser = new CsProjParser(options.CsprojFile);
 
             var runTimeSpans = new List<TimeSpan>();
@@ -97,18 +96,19 @@ namespace Codartis.NsDepCop.ConsoleHost
                 : configProviderFactory.CreateFromMultiLevelXmlConfigFile(directoryPath);
         }
 
-        private static IDependencyAnalyzer CreateAnalyzer(IAnalyzerConfig config, bool useRemoteAnalyzer)
+        private static IDependencyAnalyzer CreateAnalyzer(IAnalyzerConfig config, bool useOutOfProcessAnalyzer)
         {
+            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogTraceToConsole);
+
             var analyzerFactory = new DependencyAnalyzerFactory(config, LogTraceToConsole);
 
-            if (useRemoteAnalyzer)
-                return analyzerFactory.CreateRemote(ServiceAddressProvider.ServiceAddress);
-
-            var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogTraceToConsole);
-            return analyzerFactory.CreateInProcess(typeDependencyEnumerator);
+            return useOutOfProcessAnalyzer
+                ? analyzerFactory.CreateOutOfProcess(ServiceAddressProvider.ServiceAddress)
+                : analyzerFactory.CreateInProcess(typeDependencyEnumerator);
         }
 
-        private static (TimeSpan runTime, TypeDependency[] illegalDependencies) AnalyseCsProj(IDependencyAnalyzer dependencyAnalyzer, CsProjParser csProjParser)
+        private static (TimeSpan runTime, TypeDependency[] illegalDependencies) 
+            AnalyseCsProj(IDependencyAnalyzer dependencyAnalyzer, CsProjParser csProjParser)
         {
             var startTime = DateTime.Now;
 

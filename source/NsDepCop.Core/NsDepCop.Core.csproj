@@ -59,14 +59,14 @@
     <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
     <Compile Include="Factory\IConfigProviderFactory.cs" />
     <Compile Include="Factory\IConfiguredDependencyAnalyzerFactory.cs" />
-    <Compile Include="Implementation\Analysis\ConfiguredDependencyAnalyzer.cs" />
+    <Compile Include="Implementation\Analysis\Configured\ConfiguredDependencyAnalyzer.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\Analysis\Remote\AnalyzeProjectResultBuilder.cs" />
     <Compile Include="Implementation\Analysis\Remote\RemoteDependencyAnalyzerServerBase.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
     <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
     <Compile Include="Implementation\Config\RuleConfigToStringsFormatter.cs" />
-    <Compile Include="Interface\Analysis\IConfiguredDependencyAnalyzer.cs" />
+    <Compile Include="Interface\Analysis\Configured\IConfiguredDependencyAnalyzer.cs" />
     <Compile Include="Implementation\Analysis\Remote\AnalyzerServiceActivator.cs" />
     <Compile Include="Implementation\Analysis\Remote\RemoteDependencyAnalyzerClient.cs" />
     <Compile Include="Interface\Analysis\Remote\AnalyzerMessageBase.cs" />

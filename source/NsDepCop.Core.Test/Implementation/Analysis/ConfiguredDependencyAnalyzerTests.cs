@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Codartis.NsDepCop.Core.Implementation.Analysis;
+using Codartis.NsDepCop.Core.Implementation.Analysis.Configured;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using FluentAssertions;
@@ -15,6 +16,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         private static readonly SourceSegment DummySourceSegment = new SourceSegment(1, 1, 1, 1, null, null);
 
         private readonly Mock<IConfigProvider> _configProviderMock = new Mock<IConfigProvider>();
+        private readonly Mock<IAnalyzerConfig> _configMock = new Mock<IAnalyzerConfig>();
         private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock = new Mock<ITypeDependencyEnumerator>();
 
         [Theory]
@@ -60,18 +62,21 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
 
         private void SetUpEnabledConfig(int maxIssueCount = 100)
         {
-            var analyzerConfigMock = new Mock<IAnalyzerConfig>();
-            analyzerConfigMock.Setup(i => i.AllowRules).Returns(new Dictionary<NamespaceDependencyRule, TypeNameSet>());
-            analyzerConfigMock.Setup(i => i.DisallowRules).Returns(new HashSet<NamespaceDependencyRule>());
-            analyzerConfigMock.Setup(i => i.VisibleTypesByNamespace).Returns(new Dictionary<Namespace, TypeNameSet>());
-            analyzerConfigMock.Setup(i => i.MaxIssueCount).Returns(maxIssueCount);
+            _configMock.Setup(i => i.AllowRules).Returns(new Dictionary<NamespaceDependencyRule, TypeNameSet>());
+            _configMock.Setup(i => i.DisallowRules).Returns(new HashSet<NamespaceDependencyRule>());
+            _configMock.Setup(i => i.VisibleTypesByNamespace).Returns(new Dictionary<Namespace, TypeNameSet>());
+            _configMock.Setup(i => i.MaxIssueCount).Returns(maxIssueCount);
 
             _configProviderMock.Setup(i => i.ConfigState).Returns(AnalyzerConfigState.Enabled);
             _configProviderMock.Setup(i => i.ConfigException).Returns<Exception>(null);
-            _configProviderMock.Setup(i => i.Config).Returns(analyzerConfigMock.Object);
+            _configProviderMock.Setup(i => i.Config).Returns(_configMock.Object);
         }
 
         private ConfiguredDependencyAnalyzer CreateAnalyzer()
-            => new ConfiguredDependencyAnalyzer(_configProviderMock.Object, _typeDependencyEnumeratorMock.Object, traceMessageHandler: null);
+        {
+            return new ConfiguredDependencyAnalyzer(
+                _configProviderMock.Object,
+                () => new DependencyAnalyzer(_configMock.Object, _typeDependencyEnumeratorMock.Object, traceMessageHandler: null));
+        }
     }
 }

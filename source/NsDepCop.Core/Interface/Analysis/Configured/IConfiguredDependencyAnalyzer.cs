@@ -1,6 +1,6 @@
 ﻿using Codartis.NsDepCop.Core.Interface.Config;
 
-namespace Codartis.NsDepCop.Core.Interface.Analysis
+namespace Codartis.NsDepCop.Core.Interface.Analysis.Configured
 {
     /// <summary>
     /// A dependency analyzer that also manages its config.
