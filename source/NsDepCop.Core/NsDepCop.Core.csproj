@@ -61,6 +61,8 @@
     <Compile Include="Factory\IConfiguredDependencyAnalyzerFactory.cs" />
     <Compile Include="Implementation\Analysis\ConfiguredDependencyAnalyzer.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
+    <Compile Include="Implementation\Analysis\Remote\AnalyzeProjectResultBuilder.cs" />
+    <Compile Include="Implementation\Analysis\Remote\RemoteDependencyAnalyzerServerBase.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
     <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
     <Compile Include="Implementation\Config\RuleConfigToStringsFormatter.cs" />

@@ -2,7 +2,7 @@
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 
-namespace Codartis.NsDepCop.ServiceHost
+namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 {
     /// <summary>
     /// Builds the result array of the AnalyzeProject operation.
