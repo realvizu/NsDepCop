@@ -54,6 +54,9 @@ namespace Codartis.NsDepCop.ConsoleHost
                 throw new Exception("DirectoryPath is null.");
 
             var configProvider = CreateConfigProvider(directoryPath, options.UseSingleFileConfig);
+            if (configProvider.ConfigState != AnalyzerConfigState.Enabled)
+                throw new Exception($"ConfigState={configProvider.ConfigState}, ConfigException={configProvider.ConfigException}");
+
             var analyzer = CreateAnalyzer(configProvider.Config, options.UseOufOfProcessAnalyzer);
 
             var csProjParser = new CsProjParser(options.CsprojFile);
@@ -62,13 +65,13 @@ namespace Codartis.NsDepCop.ConsoleHost
             TypeDependency[] lastIllegalDependencies = null;
             for (var i = 0; i < options.RepeatCount; i++)
             {
-                if (options.IsVerbose) Console.WriteLine();
+                if (_isVerbose) Console.WriteLine();
                 Console.WriteLine($"Starting iteration {i + 1}...");
-                if (options.IsVerbose) Console.WriteLine();
+                if (_isVerbose) Console.WriteLine();
 
                 var (runTime, illegalDependencies) = AnalyseCsProj(analyzer, csProjParser);
 
-                if (options.IsVerbose) Console.WriteLine(GetCacheStatisticsMessage(analyzer));
+                if (_isVerbose) Console.WriteLine(GetCacheStatisticsMessage(analyzer));
 
                 runTimeSpans.Add(runTime);
                 lastIllegalDependencies = illegalDependencies;

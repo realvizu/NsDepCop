@@ -10,8 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		config.nsdepcop = config.nsdepcop
 		..\Contribute.md = ..\Contribute.md
 		..\LICENSE = ..\LICENSE
-		measure.cmd = measure.cmd
-		perf-results.txt = perf-results.txt
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
@@ -271,5 +269,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EBB04CE1-A8C8-417E-95FF-EF622AD8EAFE}
 	EndGlobalSection
 EndGlobal
