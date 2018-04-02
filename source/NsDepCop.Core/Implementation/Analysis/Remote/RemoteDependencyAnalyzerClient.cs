@@ -22,8 +22,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 
         public RemoteDependencyAnalyzerClient(IAnalyzerConfig config, string serviceAddress, MessageHandler traceMessageHandler)
         {
-            _config = config;
-            _serviceAddress = serviceAddress;
+            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _serviceAddress = serviceAddress ?? throw new ArgumentNullException(nameof(serviceAddress));
             _traceMessageHandler = traceMessageHandler;
         }
 
@@ -33,8 +33,50 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 
         public IEnumerable<TypeDependency> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {
-            var analyzerMessages = PerformCallWithRetries(i => i.AnalyzeProject(_config, sourceFilePaths.ToArray(), referencedAssemblyPaths.ToArray()));
+            var retryTimeSpans = _config.AnalyzerServiceCallRetryTimeSpans;
+            var retryCount = 0;
 
+            var retryResult = RetryHelper.Retry(
+                () => InvokeRemoteAnalyzer(sourceFilePaths, referencedAssemblyPaths),
+                retryTimeSpans.Length,
+                e => ActivateServerAndWaitBeforeRetry(e, retryCount++, retryTimeSpans));
+
+            return retryResult.Match(
+                ProcessAnalyzerMessages,
+                OnAllRetriesFailed);
+        }
+
+        public IEnumerable<TypeDependency> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        private AnalyzerMessageBase[] InvokeRemoteAnalyzer(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
+        {
+            _traceMessageHandler?.Invoke("Calling analyzer service.");
+
+            var proxy = (IRemoteDependencyAnalyzer)Activator.GetObject(typeof(IRemoteDependencyAnalyzer), _serviceAddress);
+            var result = proxy.AnalyzeProject(_config, sourceFilePaths.ToArray(), referencedAssemblyPaths.ToArray());
+
+            _traceMessageHandler?.Invoke("Calling analyzer service succeeded.");
+
+            return result;
+        }
+
+        private void ActivateServerAndWaitBeforeRetry(Exception e, int retryCount, TimeSpan[] retryTimeSpans)
+        {
+            _traceMessageHandler?.Invoke($"{CommunicationErrorMessage} Exception: {e.Message}");
+
+            _traceMessageHandler?.Invoke($"Trying to activate analyzer service (attempt #{retryCount + 1}).");
+            AnalyzerServiceActivator.Activate(_traceMessageHandler);
+
+            var sleepTimeSpan = retryTimeSpans[retryCount];
+            _traceMessageHandler?.Invoke($"Retrying service call after: {sleepTimeSpan}.");
+            Thread.Sleep(sleepTimeSpan);
+        }
+
+        private IEnumerable<TypeDependency> ProcessAnalyzerMessages(AnalyzerMessageBase[] analyzerMessages)
+        {
             foreach (var analyzerMessage in analyzerMessages)
             {
                 switch (analyzerMessage)
@@ -43,12 +85,12 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
                         yield return illegalDependencyMessage.IllegalDependency;
                         break;
                     case TraceMessage traceMessage:
-                        _traceMessageHandler(traceMessage.Message);
+                        _traceMessageHandler?.Invoke(traceMessage.Message);
                         break;
                     case CacheStatisticsMessage cacheStatisticsMessage:
                         HitCount = cacheStatisticsMessage.HitCount;
                         MissCount = cacheStatisticsMessage.MissCount;
-                        EfficiencyPercent= cacheStatisticsMessage.EfficiencyPercent;
+                        EfficiencyPercent = cacheStatisticsMessage.EfficiencyPercent;
                         break;
                     default:
                         throw new Exception($"Unexpected {nameof(AnalyzerMessageBase)} descendant {analyzerMessage.GetType().Name}");
@@ -56,48 +98,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
             }
         }
 
-        public IEnumerable<TypeDependency> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
+        private static IEnumerable<TypeDependency> OnAllRetriesFailed(Exception exception)
         {
-            throw new NotImplementedException();
-        }
-
-        private TResult PerformCallWithRetries<TResult>(Func<IRemoteDependencyAnalyzer, TResult> serviceOperation)
-        {
-            Exception lastException = null;
-            var keepRetrying = true;
-            var retryCount = 0;
-            var retryTimeSpans = _config.AnalyzerServiceCallRetryTimeSpans;
-            var maxRetryCount = retryTimeSpans.Length;
-
-            while (keepRetrying)
-            {
-                try
-                {
-                    var proxy = (IRemoteDependencyAnalyzer)Activator.GetObject(typeof(IRemoteDependencyAnalyzer), _serviceAddress);
-                    return serviceOperation.Invoke(proxy);
-                }
-                catch (Exception e)
-                {
-                    lastException = e;
-
-                    if (retryCount < maxRetryCount)
-                    {
-                        var retryTimeSpan = retryTimeSpans[retryCount];
-                        _traceMessageHandler($"{CommunicationErrorMessage} Trying to activate service and retrying after {retryTimeSpan}. Exception: {e.Message}");
-
-                        AnalyzerServiceActivator.Activate(_traceMessageHandler);
-                        Thread.Sleep(retryTimeSpan);
-
-                        retryCount++;
-                    }
-                    else
-                    {
-                        keepRetrying = false;
-                    }
-                }
-            }
-
-            throw new Exception($"{CommunicationErrorMessage} Exception: {lastException}");
+            throw new Exception($"{CommunicationErrorMessage} All retries failed.", exception);
         }
     }
 }

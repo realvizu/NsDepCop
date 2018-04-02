@@ -50,6 +50,9 @@
     <Reference Include="Moq, Version=4.7.49.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.7.49\lib\net45\Moq.dll</HintPath>
     </Reference>
+    <Reference Include="OneOf, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OneOf.2.1.123\lib\net451\OneOf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -81,6 +84,7 @@
     <Compile Include="Implementation\Analysis\CachingTypeDependencyValidatorTests.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzerTests.cs" />
     <Compile Include="Implementation\Analysis\ConfiguredDependencyAnalyzerTests.cs" />
+    <Compile Include="Util\RetryHelperTests.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilderTests.cs" />
     <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests.cs" />
     <Compile Include="Implementation\Config\XmlConfigParserTests.cs" />

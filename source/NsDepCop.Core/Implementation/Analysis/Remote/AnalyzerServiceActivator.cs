@@ -28,8 +28,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 
         private static void CreateServer(string workingFolderPath, string serviceExePath, string arguments, MessageHandler traceMessageHandler)
         {
-            traceMessageHandler($"Starting {serviceExePath} with parameter {arguments}");
-            traceMessageHandler($"  Working folder is {workingFolderPath}");
+            traceMessageHandler?.Invoke($"Starting {serviceExePath} with parameter {arguments}");
+            traceMessageHandler?.Invoke($"  Working folder is {workingFolderPath}");
 
             try
             {
@@ -45,7 +45,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
             }
             catch (Exception e)
             {
-                traceMessageHandler($"AnalyzerServiceActivator.CreateServer failed: {e}");
+                traceMessageHandler?.Invoke($"AnalyzerServiceActivator.CreateServer failed: {e}");
             }
         }
     }
