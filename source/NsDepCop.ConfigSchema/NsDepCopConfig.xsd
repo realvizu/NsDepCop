@@ -60,6 +60,13 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="MaxIssueCountSeverity" type="CodeIssueKind" use="optional">
+                <xs:annotation>
+                    <xs:documentation>
+                        Sets the severity of the event when MaxIssueCount is reached: Info, Warning (default), Error.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="ChildCanDependOnParentImplicitly" type="xs:boolean" use="optional">
                 <xs:annotation>
                     <xs:documentation>
