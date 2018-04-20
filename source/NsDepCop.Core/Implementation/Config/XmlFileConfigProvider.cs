@@ -11,6 +11,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// </remarks>
     internal sealed class XmlFileConfigProvider : FileConfigProviderBase
     {
+        private XDocument _configXDocument;
+
         public XmlFileConfigProvider(string configFilePath, MessageHandler traceMessageHandler)
             : base(configFilePath, traceMessageHandler)
         {
@@ -20,8 +22,16 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         protected override AnalyzerConfigBuilder CreateConfigBuilderFromFile(string configFilePath)
         {
-            var configXml = XDocument.Load(configFilePath, LoadOptions.SetLineInfo);
-            return XmlConfigParser.Parse(configXml);
+            _configXDocument = XDocument.Load(configFilePath, LoadOptions.SetLineInfo);
+            return XmlConfigParser.Parse(_configXDocument);
+        }
+
+        protected override ConfigLoadResult UpdateMaxIssueCountCore(int newValue)
+        {
+            XmlConfigParser.UpdateMaxIssueCount(_configXDocument, newValue);
+            _configXDocument.Save(ConfigFilePath);
+
+            return LoadConfigCore();
         }
     }
 }

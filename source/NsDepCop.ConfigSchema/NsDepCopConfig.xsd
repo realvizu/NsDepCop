@@ -67,6 +67,13 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="AutoLowerMaxIssueCount" type="xs:boolean" use="optional">
+                <xs:annotation>
+                    <xs:documentation>
+                        If set to true then after analysis automatically sets MaxIssueCount to the current issue count if it is lower than the current MaxIssueCount. Default is false.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="ChildCanDependOnParentImplicitly" type="xs:boolean" use="optional">
                 <xs:annotation>
                     <xs:documentation>

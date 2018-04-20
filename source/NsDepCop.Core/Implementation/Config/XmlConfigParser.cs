@@ -20,6 +20,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private const string CodeIssueKindAttributeName = "CodeIssueKind";
         private const string MaxIssueCountAttributeName = "MaxIssueCount";
         private const string MaxIssueCountSeverityAttributeName = "MaxIssueCountSeverity";
+        private const string AutoLowerMaxIssueCountAttributeName = "AutoLowerMaxIssueCount";
         private const string ImplicitParentDependencyAttributeName = "ChildCanDependOnParentImplicitly";
         private const string InfoImportanceAttributeName = "InfoImportance";
         private const string AnalyzerServiceCallRetryTimeSpansAttributeName = "AnalyzerServiceCallRetryTimeSpans";
@@ -36,14 +37,26 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             var configBuilder = new AnalyzerConfigBuilder();
 
-            var rootElement = configXml.Element(RootElementName);
-            if (rootElement == null)
-                throw new Exception($"'{RootElementName}' root element not found.");
-
+            var rootElement = GetRootElement(configXml);
             ParseRootNodeAttributes(rootElement, configBuilder);
             ParseChildElements(rootElement, configBuilder);
 
             return configBuilder;
+        }
+
+        public static void UpdateMaxIssueCount(XDocument configXml, int newValue)
+        {
+            var rootElement = GetRootElement(configXml);
+
+            AddOrUpdateAttribute(rootElement, MaxIssueCountAttributeName, newValue.ToString());
+        }
+
+        private static XElement GetRootElement(XDocument configXml)
+        {
+            var rootElement = configXml.Element(RootElementName);
+            if (rootElement == null)
+                throw new Exception($"'{RootElementName}' root element not found.");
+            return rootElement;
         }
 
         private static void ParseRootNodeAttributes(XElement rootElement, AnalyzerConfigBuilder configBuilder)
@@ -57,6 +70,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             configBuilder.SetChildCanDependOnParentImplicitly(ParseValueType<bool>(rootElement, ImplicitParentDependencyAttributeName, bool.TryParse));
             configBuilder.SetMaxIssueCount(ParseValueType<int>(rootElement, MaxIssueCountAttributeName, int.TryParse));
             configBuilder.SetMaxIssueCountSeverity(ParseValueType<IssueKind>(rootElement, MaxIssueCountSeverityAttributeName, Enum.TryParse));
+            configBuilder.SetAutoLowerMaxIssueCount(ParseValueType<bool>(rootElement, AutoLowerMaxIssueCountAttributeName, bool.TryParse));
         }
 
         private static bool TryParseTimeSpans(string s, out TimeSpan[] t)
@@ -205,6 +219,16 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private static string GetAttributeValue(XElement xElement, string attributeName)
         {
             return xElement.Attribute(attributeName)?.Value;
+        }
+
+        private static void AddOrUpdateAttribute(XElement element, string attributeName, string newValue)
+        {
+            var attribute = element.Attribute(attributeName);
+
+            if (attribute == null)
+                element.Add(new XAttribute(attributeName, newValue));
+            else
+                attribute.Value = newValue;
         }
 
         /// <summary>

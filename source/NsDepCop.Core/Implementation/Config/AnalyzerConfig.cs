@@ -21,6 +21,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
         public int MaxIssueCount { get; }
         public IssueKind MaxIssueCountSeverity { get; }
+        public bool AutoLowerMaxIssueCount { get; }
 
         public AnalyzerConfig(
             bool isEnabled, 
@@ -32,7 +33,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             HashSet<NamespaceDependencyRule> disallowRules, 
             Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace, 
             int maxIssueCount,
-            IssueKind maxIssueCountSeverity)
+            IssueKind maxIssueCountSeverity,
+            bool autoLowerMaxIssueCount)
         {
             IsEnabled = isEnabled;
             IssueKind = issueKind;
@@ -45,6 +47,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             VisibleTypesByNamespace = visibleTypesByNamespace;
             MaxIssueCount = maxIssueCount;
             MaxIssueCountSeverity = maxIssueCountSeverity;
+            AutoLowerMaxIssueCount = autoLowerMaxIssueCount;
         }
 
         public IEnumerable<string> ToStrings()

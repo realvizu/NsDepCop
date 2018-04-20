@@ -257,6 +257,42 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.Config.MaxIssueCount.Should().Be(ConfigDefaults.MaxIssueCount);
         }
 
+        [Fact]
+        public void UpdateMaxIssueCount_Level1ContainsNoMaxIssueCount_SetToNewValue()
+        {
+            var path = GetFilePathInTestClassFolder(@"UpdateMaxIssueCount_Level1ContainsNoMaxIssueCount\Level2\Level1");
+
+            RemoveAttribute(GetConfigFilePath(path), "MaxIssueCount");
+
+            var configProvider = CreateConfigProvider(path);
+            configProvider.Config.MaxIssueCount.Should().Be(42);
+
+            Thread.Sleep(10);
+            configProvider.UpdateMaxIssueCount(142);
+            configProvider.Config.MaxIssueCount.Should().Be(142);
+
+            GetAttribute(GetConfigFilePath(path.Replace(@"\Level1", "")), "MaxIssueCount").Should().Be(42.ToString());
+            GetAttribute(GetConfigFilePath(path), "MaxIssueCount").Should().Be(142.ToString());
+        }
+
+        [Fact]
+        public void UpdateMaxIssueCount_Level1ContainsMaxIssueCount_SetToNewValue()
+        {
+            var path = GetFilePathInTestClassFolder(@"UpdateMaxIssueCount_Level1ContainsMaxIssueCount\Level2\Level1");
+
+            SetAttribute(GetConfigFilePath(path), "MaxIssueCount", 42.ToString());
+
+            var configProvider = CreateConfigProvider(path);
+            configProvider.Config.MaxIssueCount.Should().Be(42);
+
+            Thread.Sleep(10);
+            configProvider.UpdateMaxIssueCount(142);
+            configProvider.Config.MaxIssueCount.Should().Be(142);
+
+            GetAttribute(GetConfigFilePath(path.Replace(@"\Level1", "")), "MaxIssueCount").Should().BeNull();
+            GetAttribute(GetConfigFilePath(path), "MaxIssueCount").Should().Be(142.ToString());
+        }
+
         private static string GetConfigFilePath(string path)
         {
             return Path.Combine(path, ProductConstants.DefaultConfigFileName);

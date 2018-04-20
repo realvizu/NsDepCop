@@ -4,5 +4,7 @@
     CodeIssueKind="Error"
     MaxIssueCount="42"
     ChildCanDependOnParentImplicitly="true"
-    InfoImportance="Normal">
+    InfoImportance="Normal"
+    MaxIssueCountSeverity="Error"
+    AutoLowerMaxIssueCount="true">
 </NsDepCopConfig>

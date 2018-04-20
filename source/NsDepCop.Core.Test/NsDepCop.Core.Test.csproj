@@ -141,6 +141,18 @@
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ConfigDisabledAtHigherLevelButEnabledAtProjectLevel\Level2\Level1\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\UpdateMaxIssueCount_Level1ContainsMaxIssueCount\Level2\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\UpdateMaxIssueCount_Level1ContainsMaxIssueCount\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\UpdateMaxIssueCount_Level1ContainsNoMaxIssueCount\Level2\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\UpdateMaxIssueCount_Level1ContainsNoMaxIssueCount\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_InheritanceDepthChanged\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

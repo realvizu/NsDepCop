@@ -26,7 +26,12 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// <summary>
         /// Gets the severity of reaching the max issue count.
         /// </summary>
-        IssueKind MaxIssueCountSeverity { get; } 
+        IssueKind MaxIssueCountSeverity { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether MaxIssueCount is automatically updated whenever a lower count is achieved.
+        /// </summary>
+        bool AutoLowerMaxIssueCount { get; }
 
         /// <summary>
         /// Gets the importance level of information messages. 

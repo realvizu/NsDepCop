@@ -16,9 +16,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         private ConfigLoadResult _configLoadResult;
 
         /// <summary>
-        /// This lock ensures that no property can be read while refreshing the config.
+        /// This lock ensures that no property can be read while loading or saving the config.
         /// </summary>
-        protected readonly object RefreshLockObject = new object();
+        protected readonly object SaveLoadLockObject = new object();
 
         protected MessageHandler TraceMessageHandler { get; }
         protected Importance? DefaultInfoImportance { get; private set; }
@@ -38,7 +38,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             get
             {
-                lock (RefreshLockObject)
+                lock (SaveLoadLockObject)
                 {
                     EnsureInitialized();
                     return _configLoadResult.Config;
@@ -50,7 +50,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             get
             {
-                lock (RefreshLockObject)
+                lock (SaveLoadLockObject)
                 {
                     EnsureInitialized();
                     return _configLoadResult.ConfigBuilder;
@@ -62,7 +62,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             get
             {
-                lock (RefreshLockObject)
+                lock (SaveLoadLockObject)
                 {
                     EnsureInitialized();
                     return _configLoadResult.ConfigState;
@@ -74,7 +74,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             get
             {
-                lock (RefreshLockObject)
+                lock (SaveLoadLockObject)
                 {
                     EnsureInitialized();
                     return _configLoadResult.ConfigException;
@@ -84,23 +84,40 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public void RefreshConfig()
         {
-            lock (RefreshLockObject)
+            lock (SaveLoadLockObject)
             {
                 EnsureInitialized();
                 _configLoadResult = RefreshConfigCore();
             }
         }
 
+        public void UpdateMaxIssueCount(int newValue)
+        {
+            lock (SaveLoadLockObject)
+            {
+                EnsureInitialized();
+
+                if (_configLoadResult.ConfigState != AnalyzerConfigState.Enabled)
+                    throw new InvalidOperationException($"Cannot {nameof(UpdateMaxIssueCount)} in {_configLoadResult.ConfigState} state.");
+
+                _configLoadResult = UpdateMaxIssueCountCore(newValue);
+            }
+        }
+
         protected abstract ConfigLoadResult LoadConfigCore();
         protected abstract ConfigLoadResult RefreshConfigCore();
+        protected abstract ConfigLoadResult UpdateMaxIssueCountCore(int newValue);
 
         protected void EnsureInitialized()
         {
+            lock (SaveLoadLockObject)
+            {
                 if (_isInitialized)
                     return;
 
                 _isInitialized = true;
                 _configLoadResult = LoadConfigCore();
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         public const IssueKind IssueKind = Config.IssueKind.Warning;
         public const int MaxIssueCount = 100;
         public const IssueKind MaxIssueCountSeverity = IssueKind.Warning;
+        public const bool AutoLowerMaxIssueCount = false;
         public const bool ChildCanDependOnParentImplicitly = false;
         public const Importance InfoImportance = Importance.Normal;
 

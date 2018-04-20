@@ -21,6 +21,8 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder.MaxIssueCount.Should().BeNull();
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeNull();
             configBuilder.InfoImportance.Should().BeNull();
+            configBuilder.MaxIssueCountSeverity.Should().BeNull();
+            configBuilder.AutoLowerMaxIssueCount.Should().BeNull();
         }
 
         [Fact]
@@ -34,6 +36,8 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder.MaxIssueCount.ShouldBeEquivalentTo(42);
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeTrue();
             configBuilder.InfoImportance.ShouldBeEquivalentTo(Importance.Normal);
+            configBuilder.MaxIssueCountSeverity.ShouldBeEquivalentTo(IssueKind.Error);
+            configBuilder.AutoLowerMaxIssueCount.Should().BeTrue();
         }
 
         [Fact]
@@ -164,6 +168,24 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             var xDocument = LoadXml("InvalidAttributeValue.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
             a.ShouldThrow<Exception>().WithMessage("*Error parsing 'IsEnabled' value*");
+        }
+
+        [Fact]
+        public void UpdateMaxIssueCount_HasMaxIssueCountAttribute_Works()
+        {
+            const int newMaxIssueCount = 101;
+            var xDocument = LoadXml("RootAttributes.nsdepcop");
+            XmlConfigParser.UpdateMaxIssueCount(xDocument, newMaxIssueCount);
+            xDocument.Element("NsDepCopConfig")?.Attribute("MaxIssueCount")?.Value.Should().Be(newMaxIssueCount.ToString());
+        }
+
+        [Fact]
+        public void UpdateMaxIssueCount_NoMaxIssueCountAttribute_Works()
+        {
+            const int newMaxIssueCount = 101;
+            var xDocument = LoadXml("NoRootAttributes.nsdepcop");
+            XmlConfigParser.UpdateMaxIssueCount(xDocument, newMaxIssueCount);
+            xDocument.Element("NsDepCopConfig")?.Attribute("MaxIssueCount")?.Value.Should().Be(newMaxIssueCount.ToString());
         }
 
         private XDocument LoadXml(string filename)

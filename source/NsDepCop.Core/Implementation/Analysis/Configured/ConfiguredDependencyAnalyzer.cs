@@ -90,6 +90,21 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Configured
             }
         }
 
+        public void UpdateMaxIssueCount(int newValue)
+        {
+            _configRefreshLock.EnterWriteLock();
+
+            try
+            {
+                _configProvider.UpdateMaxIssueCount(newValue);
+                UpdateConfig();
+            }
+            finally
+            {
+                _configRefreshLock.ExitWriteLock();
+            }
+        }
+
         private void UpdateConfig()
         {
             var oldConfig = _config;

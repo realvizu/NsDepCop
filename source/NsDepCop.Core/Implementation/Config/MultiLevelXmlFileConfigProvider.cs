@@ -41,7 +41,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             get
             {
-                lock (RefreshLockObject)
+                lock (SaveLoadLockObject)
                 {
                     EnsureInitialized();
                     return _fileConfigProviders.First().InheritanceDepth;
@@ -81,6 +81,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 foreach (var configProvider in _fileConfigProviders.Skip(1))
                     configProvider.RefreshConfig();
             }
+
+            return CombineFileConfigProvidersAndSaveResult();
+        }
+
+        protected override ConfigLoadResult UpdateMaxIssueCountCore(int newValue)
+        {
+            _fileConfigProviders.First().UpdateMaxIssueCount(newValue);
 
             return CombineFileConfigProvidersAndSaveResult();
         }

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Config;
 using FluentAssertions;
@@ -127,6 +128,57 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
 
             configProvider.RefreshConfig();
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.NoConfig);
+        }
+
+        [Fact]
+        public void UpdateMaxIssueCount_DisabledConfig_Throws()
+        {
+            var path = GetFilePathInTestClassFolder("UpdateMaxIssueCount_DisabledConfig.nsdepcop");
+
+            Delete(path);
+            CreateConfigFile(path, "false");
+
+            var configProvider = CreateConfigProvider(path);
+            configProvider.ConfigState.Should().Be(AnalyzerConfigState.Disabled);
+
+            Action a = () => configProvider.UpdateMaxIssueCount(142);
+            a.ShouldThrow<InvalidOperationException>().Where(i => i.Message.Contains(AnalyzerConfigState.Disabled.ToString()));
+
+            Delete(path);
+        }
+
+        [Fact]
+        public void UpdateMaxIssueCount_FromNoneToNewValue()
+        {
+            var path = GetFilePathInTestClassFolder("UpdateMaxIssueCount_FromNoneToNewValue.nsdepcop");
+
+            Delete(path);
+            CreateConfigFile(path, "true", maxIssueCount: null);
+
+            var configProvider = CreateConfigProvider(path);
+            configProvider.Config.MaxIssueCount.Should().Be(ConfigDefaults.MaxIssueCount);
+
+            configProvider.UpdateMaxIssueCount(142);
+            configProvider.Config.MaxIssueCount.Should().Be(142);
+
+            Delete(path);
+        }
+
+        [Fact]
+        public void UpdateMaxIssueCount_FromOldValueToNewValue()
+        {
+            var path = GetFilePathInTestClassFolder("UpdateMaxIssueCount_FromOldValueToNewValue.nsdepcop");
+
+            Delete(path);
+            CreateConfigFile(path, "true", maxIssueCount: 42);
+
+            var configProvider = CreateConfigProvider(path);
+            configProvider.Config.MaxIssueCount.Should().Be(42);
+
+            configProvider.UpdateMaxIssueCount(142);
+            configProvider.Config.MaxIssueCount.Should().Be(142);
+
+            Delete(path);
         }
 
         private static XmlFileConfigProvider CreateConfigProvider(string path)

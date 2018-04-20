@@ -26,6 +26,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
         public int? MaxIssueCount { get; private set; }
         public IssueKind? MaxIssueCountSeverity { get; private set; }
+        public bool? AutoLowerMaxIssueCount { get; private set; }
 
         public AnalyzerConfigBuilder()
         {
@@ -46,7 +47,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 DisallowRules,
                 VisibleTypesByNamespace,
                 MaxIssueCount ?? ConfigDefaults.MaxIssueCount,
-                MaxIssueCountSeverity ?? ConfigDefaults.MaxIssueCountSeverity
+                MaxIssueCountSeverity ?? ConfigDefaults.MaxIssueCountSeverity,
+                AutoLowerMaxIssueCount ?? ConfigDefaults.AutoLowerMaxIssueCount
                 );
         }
 
@@ -65,6 +67,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             AddVisibleTypesByNamespace(analyzerConfigBuilder.VisibleTypesByNamespace);
             SetMaxIssueCount(analyzerConfigBuilder.MaxIssueCount);
             SetMaxIssueCountSeverity(analyzerConfigBuilder.MaxIssueCountSeverity);
+            SetAutoLowerMaxIssueCount(analyzerConfigBuilder.AutoLowerMaxIssueCount);
 
             return this;
         }
@@ -167,6 +170,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             if (maxIssueCountSeverity.HasValue)
                 MaxIssueCountSeverity = maxIssueCountSeverity;
+            return this;
+        }
+
+        public AnalyzerConfigBuilder SetAutoLowerMaxIssueCount(bool? autoLowerMaxIssueCount)
+        {
+            if (autoLowerMaxIssueCount.HasValue)
+                AutoLowerMaxIssueCount = autoLowerMaxIssueCount;
             return this;
         }
 
