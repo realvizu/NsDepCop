@@ -66,6 +66,7 @@
     <Compile Include="Implementation\Analysis\DependencyAnalyzer.cs" />
     <Compile Include="Implementation\Analysis\Remote\AnalyzeProjectResultBuilder.cs" />
     <Compile Include="Implementation\Analysis\Remote\RemoteDependencyAnalyzerServerBase.cs" />
+    <Compile Include="Interface\Config\IUpdateableConfigProvider.cs" />
     <Compile Include="Util\RetryHelper.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
     <Compile Include="Implementation\Config\ConfigLoadResult.cs" />

@@ -26,11 +26,5 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// Reloads the config from its repository.
         /// </summary>
         void RefreshConfig();
-
-        /// <summary>
-        /// Updates the MaxIssueCount config parameter to the given value and persists the changes.
-        /// </summary>
-        /// <param name="newValue">The new value for MaxIssueCount.</param>
-        void UpdateMaxIssueCount(int newValue);
     }
 }

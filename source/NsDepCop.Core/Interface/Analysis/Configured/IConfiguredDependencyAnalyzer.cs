@@ -7,6 +7,7 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis.Configured
     /// </summary>
     /// <remarks>
     /// The config can be refreshed.
+    /// Handles AutoLowerMaxIssueCount.
     /// </remarks>
     public interface IConfiguredDependencyAnalyzer : IDependencyAnalyzer, IConfigProvider
     {

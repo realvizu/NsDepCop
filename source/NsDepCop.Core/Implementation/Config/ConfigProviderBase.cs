@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <remarks>
     /// Uses locking to ensure that no property can be read while refreshing the config.
     /// </remarks>
-    internal abstract class ConfigProviderBase : IConfigProvider, IConfigInitializer<ConfigProviderBase>
+    internal abstract class ConfigProviderBase : IUpdateableConfigProvider, IConfigInitializer<ConfigProviderBase>
     {
         private bool _isInitialized;
         private ConfigLoadResult _configLoadResult;

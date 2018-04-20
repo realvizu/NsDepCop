@@ -15,7 +15,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
     {
         private static readonly SourceSegment DummySourceSegment = new SourceSegment(1, 1, 1, 1, null, null);
 
-        private readonly Mock<IConfigProvider> _configProviderMock = new Mock<IConfigProvider>();
+        private readonly Mock<IUpdateableConfigProvider> _configProviderMock = new Mock<IUpdateableConfigProvider>();
         private readonly Mock<IAnalyzerConfig> _configMock = new Mock<IAnalyzerConfig>();
         private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock = new Mock<ITypeDependencyEnumerator>();
 
@@ -60,12 +60,36 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             dependencyAnalyzer.AnalyzeProject(null, null).Should().HaveCount(4);
         }
 
-        private void SetUpEnabledConfig(int maxIssueCount = 100)
+        [Theory]
+        [InlineData(3, 2, true)]
+        [InlineData(3, 3, false)]
+        [InlineData(3, 4, false)]
+        public void AutoLowerMaxIssueCount_Works(int maxIssueCount, int actualIssueCount, bool isUpdateCalled)
+        {
+            SetUpEnabledConfig(maxIssueCount: maxIssueCount, autoLowerMaxIssueCount: true);
+
+            _typeDependencyEnumeratorMock
+                .Setup(i => i.GetTypeDependencies(It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>()))
+                .Returns(Enumerable.Repeat(new TypeDependency("N1", "T1", "N2", "T2", DummySourceSegment), actualIssueCount));
+
+            var expectedIssueCount = Math.Min(actualIssueCount, maxIssueCount);
+
+            var dependencyAnalyzer = CreateAnalyzer();
+            dependencyAnalyzer.AnalyzeProject(null, null).Should().HaveCount(expectedIssueCount);
+
+            if (isUpdateCalled)
+                _configProviderMock.Verify(i => i.UpdateMaxIssueCount(expectedIssueCount));
+            else
+                _configProviderMock.Verify(i => i.UpdateMaxIssueCount(It.IsAny<int>()), Times.Never);
+        }
+
+        private void SetUpEnabledConfig(int maxIssueCount = 100, bool autoLowerMaxIssueCount = false)
         {
             _configMock.Setup(i => i.AllowRules).Returns(new Dictionary<NamespaceDependencyRule, TypeNameSet>());
             _configMock.Setup(i => i.DisallowRules).Returns(new HashSet<NamespaceDependencyRule>());
             _configMock.Setup(i => i.VisibleTypesByNamespace).Returns(new Dictionary<Namespace, TypeNameSet>());
             _configMock.Setup(i => i.MaxIssueCount).Returns(maxIssueCount);
+            _configMock.Setup(i => i.AutoLowerMaxIssueCount).Returns(autoLowerMaxIssueCount);
 
             _configProviderMock.Setup(i => i.ConfigState).Returns(AnalyzerConfigState.Enabled);
             _configProviderMock.Setup(i => i.ConfigException).Returns<Exception>(null);

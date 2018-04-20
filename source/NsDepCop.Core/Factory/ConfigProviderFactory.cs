@@ -23,14 +23,14 @@ namespace Codartis.NsDepCop.Core.Factory
             return this;
         }
 
-        public IConfigProvider CreateFromXmlConfigFile(string configFilePath)
+        public IUpdateableConfigProvider CreateFromXmlConfigFile(string configFilePath)
         {
             var configProvider = new XmlFileConfigProvider(configFilePath, _traceMessageHandler);
             ApplyConfigDefaults(configProvider);
             return configProvider;
         }
 
-        public IConfigProvider CreateFromMultiLevelXmlConfigFile(string folderPath)
+        public IUpdateableConfigProvider CreateFromMultiLevelXmlConfigFile(string folderPath)
         {
             var configProvider = new MultiLevelXmlFileConfigProvider(folderPath, _traceMessageHandler);
             ApplyConfigDefaults(configProvider);

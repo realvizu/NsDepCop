@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
@@ -9,25 +10,25 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Configured
 {
     /// <summary>
     /// A dependency analyzer bundled together with its config provider.
-    /// The config can be refreshed.
+    /// The config can be refreshed and updated.
     /// </summary>
     /// <remarks>
-    /// Uses read-writer lock to avoid config refresh while running analysis.
+    /// Uses read-writer lock to avoid config refresh and update while running analysis.
     /// </remarks>
     internal class ConfiguredDependencyAnalyzer : IConfiguredDependencyAnalyzer, IDisposable
     {
-        private readonly IConfigProvider _configProvider;
+        private readonly IUpdateableConfigProvider _configProvider;
         private readonly Func<IDependencyAnalyzer> _dependencyAnalyzerCreateFunc;
-        private readonly ReaderWriterLockSlim _configRefreshLock;
+        private readonly ReaderWriterLockSlim _configReadWriteRefreshLock;
 
         private IAnalyzerConfig _config;
         private IDependencyAnalyzer _dependencyAnalyzer;
 
-        public ConfiguredDependencyAnalyzer(IConfigProvider configProvider, Func<IDependencyAnalyzer> dependencyAnalyzerCreateFunc)
+        public ConfiguredDependencyAnalyzer(IUpdateableConfigProvider configProvider, Func<IDependencyAnalyzer> dependencyAnalyzerCreateFunc)
         {
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
             _dependencyAnalyzerCreateFunc = dependencyAnalyzerCreateFunc ?? throw new ArgumentNullException(nameof(dependencyAnalyzerCreateFunc));
-            _configRefreshLock = new ReaderWriterLockSlim();
+            _configReadWriteRefreshLock = new ReaderWriterLockSlim();
 
             UpdateConfig();
         }
@@ -42,28 +43,28 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Configured
 
         public void Dispose()
         {
-            _configRefreshLock?.Dispose();
+            _configReadWriteRefreshLock?.Dispose();
         }
 
         public IEnumerable<TypeDependency> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {
-            _configRefreshLock.EnterReadLock();
-
+            _configReadWriteRefreshLock.EnterUpgradeableReadLock();
             try
             {
                 EnsureValidStateForAnalysis();
-                return _dependencyAnalyzer.AnalyzeProject(sourceFilePaths, referencedAssemblyPaths);
+                var illegalDependencies = _dependencyAnalyzer.AnalyzeProject(sourceFilePaths, referencedAssemblyPaths).ToList();
+                LowerMaxIssueCountIfNeeded(illegalDependencies);
+                return illegalDependencies;
             }
             finally
             {
-                _configRefreshLock.ExitReadLock();
+                _configReadWriteRefreshLock.ExitUpgradeableReadLock();
             }
         }
 
         public IEnumerable<TypeDependency> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
         {
-            _configRefreshLock.EnterReadLock();
-
+            _configReadWriteRefreshLock.EnterReadLock();
             try
             {
                 EnsureValidStateForAnalysis();
@@ -71,14 +72,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Configured
             }
             finally
             {
-                _configRefreshLock.ExitReadLock();
+                _configReadWriteRefreshLock.ExitReadLock();
             }
         }
 
         public void RefreshConfig()
         {
-            _configRefreshLock.EnterWriteLock();
-
+            _configReadWriteRefreshLock.EnterWriteLock();
             try
             {
                 _configProvider.RefreshConfig();
@@ -86,14 +86,13 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Configured
             }
             finally
             {
-                _configRefreshLock.ExitWriteLock();
+                _configReadWriteRefreshLock.ExitWriteLock();
             }
         }
 
-        public void UpdateMaxIssueCount(int newValue)
+        private void UpdateMaxIssueCount(int newValue)
         {
-            _configRefreshLock.EnterWriteLock();
-
+            _configReadWriteRefreshLock.EnterWriteLock();
             try
             {
                 _configProvider.UpdateMaxIssueCount(newValue);
@@ -101,7 +100,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Configured
             }
             finally
             {
-                _configRefreshLock.ExitWriteLock();
+                _configReadWriteRefreshLock.ExitWriteLock();
             }
         }
 
@@ -127,6 +126,14 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Configured
         {
             if (_configProvider.ConfigState != AnalyzerConfigState.Enabled)
                 throw new InvalidOperationException($"Cannot analyze project because the analyzer state is {_configProvider.ConfigState}.");
+        }
+
+        private void LowerMaxIssueCountIfNeeded(List<TypeDependency> illegalDependencies)
+        {
+            if (_config.AutoLowerMaxIssueCount && illegalDependencies.Count < _config.MaxIssueCount)
+            {
+                UpdateMaxIssueCount(illegalDependencies.Count);
+            }
         }
     }
 }
