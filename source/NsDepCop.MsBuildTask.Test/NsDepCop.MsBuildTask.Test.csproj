@@ -160,7 +160,7 @@
     <Content Include="NoConfigFile\Placeholder.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TooManyIssues\TooManyIssues.cs">
+    <Content Include="IssueCountMoreThanMaxIssueCount_MaxIssueCountIssueLogged\IssueCountMoreThanMaxIssueCount_MaxIssueCountIssueLogged.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="DependencyViolation_ReportInfo\DependencyViolation_ReportInfo.cs">
@@ -190,7 +190,7 @@
     <Content Include="MultipleSourceFiles\SourceFile2.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="MaxIssueCountEqualsIssueCount\MaxIssueCountEqualsIssueCount.cs">
+    <Content Include="IssueCountEqualsToMaxIssueCount_MaxIssueCountIssueNotLogged\IssueCountEqualsToMaxIssueCount_MaxIssueCountIssueNotLogged.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ConfigInfoImportanceIsHigh\ConfigInfoImportanceIsHigh.cs">
@@ -227,7 +227,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TooManyIssues\config.nsdepcop">
+    <Content Include="IssueCountMoreThanMaxIssueCount_MaxIssueCountIssueLogged\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -278,7 +278,7 @@
     <Content Include="ConfigFileErrorCausesException\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="MaxIssueCountEqualsIssueCount\config.nsdepcop">
+    <Content Include="IssueCountEqualsToMaxIssueCount_MaxIssueCountIssueNotLogged\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ConfigInfoImportanceIsHigh\config.nsdepcop">

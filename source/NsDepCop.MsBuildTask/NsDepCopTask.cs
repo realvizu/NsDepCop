@@ -179,7 +179,7 @@ namespace Codartis.NsDepCop.MsBuildTask
                 dependencyIssueCount++;
             }
 
-            if (dependencyIssueCount == maxIssueCount)
+            if (dependencyIssueCount > maxIssueCount)
                 _logger.LogIssue(IssueDefinitions.TooManyIssuesIssue, issueKindOverride: maxIssueCountSeverity);
 
             return dependencyIssueCount;

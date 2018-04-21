@@ -135,7 +135,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                 issueCount++;
             }
 
-            if (issueCount == maxIssueCount)
+            if (issueCount > maxIssueCount)
                 context.ReportDiagnostic(CreateTooManyIssueDiagnostic(context.Node));
         }
 

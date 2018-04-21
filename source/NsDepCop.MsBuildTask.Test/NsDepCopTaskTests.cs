@@ -106,7 +106,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [Fact]
-        public void TooManyIssues()
+        public void IssueCountMoreThanMaxIssueCount_MaxIssueCountIssueLogged()
         {
             CreateNsDepCopTask().Execute().Should().BeTrue();
 
@@ -115,12 +115,12 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         }
 
         [Fact]
-        public void MaxIssueCountEqualsIssueCount()
+        public void IssueCountEqualsToMaxIssueCount_MaxIssueCountIssueNotLogged()
         {
             CreateNsDepCopTask().Execute().Should().BeTrue();
 
             VerifyDependencyIssueLogged(Times.Exactly(2));
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.TooManyIssuesIssue, IssueKind.Warning), Times.Once);
+            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.TooManyIssuesIssue, It.IsAny<IssueKind>()), Times.Never);
         }
 
         [Fact]

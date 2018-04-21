@@ -53,7 +53,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Configured
             {
                 EnsureValidStateForAnalysis();
                 var illegalDependencies = _dependencyAnalyzer.AnalyzeProject(sourceFilePaths, referencedAssemblyPaths).ToList();
-                LowerMaxIssueCountIfNeeded(illegalDependencies);
+                LowerMaxIssueCountIfNeeded(illegalDependencies.Count);
                 return illegalDependencies;
             }
             finally
@@ -128,11 +128,11 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Configured
                 throw new InvalidOperationException($"Cannot analyze project because the analyzer state is {_configProvider.ConfigState}.");
         }
 
-        private void LowerMaxIssueCountIfNeeded(List<TypeDependency> illegalDependencies)
+        private void LowerMaxIssueCountIfNeeded(int illegalDependencyCount)
         {
-            if (_config.AutoLowerMaxIssueCount && illegalDependencies.Count < _config.MaxIssueCount)
+            if (_config.AutoLowerMaxIssueCount && illegalDependencyCount < _config.MaxIssueCount)
             {
-                UpdateMaxIssueCount(illegalDependencies.Count);
+                UpdateMaxIssueCount(illegalDependencyCount);
             }
         }
     }
