@@ -1,6 +1,5 @@
 ﻿using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
 using Moq;
 using Xunit;
 
@@ -8,12 +7,12 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 {
     public class AnalyzerProviderTests
     {
-        private readonly Mock<IConfiguredDependencyAnalyzerFactory> _dependencyAnalyzerFactoryMock;
+        private readonly Mock<IDependencyAnalyzerFactory> _dependencyAnalyzerFactoryMock;
         private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock;
 
         public AnalyzerProviderTests()
         {
-            _dependencyAnalyzerFactoryMock = new Mock<IConfiguredDependencyAnalyzerFactory>();
+            _dependencyAnalyzerFactoryMock = new Mock<IDependencyAnalyzerFactory>();
             _typeDependencyEnumeratorMock = new Mock<ITypeDependencyEnumerator>();
         }
 
@@ -36,7 +35,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 
             var analyzerProvider = CreateAnalyzerProvider();
 
-            var analyzerMock = new Mock<IConfiguredDependencyAnalyzer>();
+            var analyzerMock = new Mock<IDependencyAnalyzer>();
             SetUpFactoryCall(analyzerMock.Object);
 
             analyzerProvider.GetDependencyAnalyzer(filePath);
@@ -48,7 +47,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
             analyzerMock.Verify(i => i.RefreshConfig(), Times.Once);
         }
 
-        private void SetUpFactoryCall(IConfiguredDependencyAnalyzer analyzer)
+        private void SetUpFactoryCall(IDependencyAnalyzer analyzer)
         {
             _dependencyAnalyzerFactoryMock
                 .Setup(i => i.CreateInProcess(It.IsAny<string>(), _typeDependencyEnumeratorMock.Object))

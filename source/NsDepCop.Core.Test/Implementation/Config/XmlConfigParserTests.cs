@@ -23,6 +23,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder.InfoImportance.Should().BeNull();
             configBuilder.MaxIssueCountSeverity.Should().BeNull();
             configBuilder.AutoLowerMaxIssueCount.Should().BeNull();
+            configBuilder.AnalyzerServiceCallRetryTimeSpans.Should().BeNull();
         }
 
         [Fact]
@@ -38,6 +39,9 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configBuilder.InfoImportance.ShouldBeEquivalentTo(Importance.Normal);
             configBuilder.MaxIssueCountSeverity.ShouldBeEquivalentTo(IssueKind.Error);
             configBuilder.AutoLowerMaxIssueCount.Should().BeTrue();
+            configBuilder.AnalyzerServiceCallRetryTimeSpans.ShouldBeEquivalentTo(
+                new[] {TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1)}
+            );
         }
 
         [Fact]

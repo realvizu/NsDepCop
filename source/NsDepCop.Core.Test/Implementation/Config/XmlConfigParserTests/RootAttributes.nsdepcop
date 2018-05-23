@@ -6,5 +6,6 @@
     ChildCanDependOnParentImplicitly="true"
     InfoImportance="Normal"
     MaxIssueCountSeverity="Error"
-    AutoLowerMaxIssueCount="true">
+    AutoLowerMaxIssueCount="true" 
+    AnalyzerServiceCallRetryTimeSpans="100, 1000">
 </NsDepCopConfig>

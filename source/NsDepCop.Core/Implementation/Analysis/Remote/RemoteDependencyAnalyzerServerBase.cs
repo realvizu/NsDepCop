@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Config;
@@ -17,22 +19,34 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
     /// </remarks>
     public abstract class RemoteDependencyAnalyzerServerBase : MarshalByRefObject, IRemoteDependencyAnalyzer
     {
-        public AnalyzerMessageBase[] AnalyzeProject(IAnalyzerConfig config, string[] sourcePaths, string[] referencedAssemblyPaths)
+        public IRemoteMessage[] AnalyzeProject(IAnalyzerConfig config, string[] sourcePaths, string[] referencedAssemblyPaths)
         {
-            var resultBuilder = new AnalyzeProjectResultBuilder();
+            var messageBuffer = new List<IRemoteMessage>();
 
-            var typeDependencyEnumerator = GetTypeDependencyEnumerator(resultBuilder.AddTrace);
-            var dependencyAnalyzer = new DependencyAnalyzer(config, typeDependencyEnumerator, resultBuilder.AddTrace);
-            var illegalDependencies = dependencyAnalyzer.AnalyzeProject(sourcePaths, referencedAssemblyPaths);
+            var typeDependencyEnumerator = GetTypeDependencyEnumerator(WrapIntoTraceMessage(messageBuffer));
+            var typeDependencyValidator = new CachingTypeDependencyValidator(config, WrapIntoTraceMessage(messageBuffer));
 
-            foreach (var illegalDependency in illegalDependencies)
-                resultBuilder.AddIllegalDependency(illegalDependency);
+            var illegalDependencyMessages = typeDependencyEnumerator
+                .GetTypeDependencies(sourcePaths, referencedAssemblyPaths)
+                .Where(i => !typeDependencyValidator.IsAllowedDependency(i))
+                .Take(config.MaxIssueCount + 1)
+                .Select(i => new RemoteIllegalDependencyMessage(i));
 
-            resultBuilder.AddCacheStatistics(dependencyAnalyzer.HitCount, dependencyAnalyzer.MissCount, dependencyAnalyzer.EfficiencyPercent);
+            messageBuffer.AddRange(illegalDependencyMessages);
 
-            return resultBuilder.ToArray();
+            WrapIntoTraceMessage(messageBuffer)(GetCacheStatisticsMessage(typeDependencyValidator));
+
+            return messageBuffer.ToArray();
         }
 
         protected abstract ITypeDependencyEnumerator GetTypeDependencyEnumerator(MessageHandler traceMessageHandler);
+
+        private static MessageHandler WrapIntoTraceMessage(List<IRemoteMessage> messageBuffer)
+        {
+            return i => messageBuffer.Add(new RemoteTraceMessage(i));
+        }
+
+        private static string GetCacheStatisticsMessage(ICacheStatisticsProvider i) =>
+            $"Cache hits: {i.HitCount}, misses: {i.MissCount}, efficiency (hits/all): {i.EfficiencyPercent:P}";
     }
 }

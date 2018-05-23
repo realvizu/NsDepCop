@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
@@ -65,9 +66,9 @@ namespace Codartis.NsDepCop.SourceTest
         private IEnumerable<TypeDependency> GetIllegalDependencies(string baseFolder,
             IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
         {
-            var dependencyAnalyzerFactory = new ConfiguredDependencyAnalyzerFactory(DebugMessageHandler); 
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(DebugMessageHandler); 
             var dependencyAnalyzer = dependencyAnalyzerFactory.CreateInProcess(baseFolder, _typeDependencyEnumerator);
-            return dependencyAnalyzer.AnalyzeProject(sourceFiles, referencedAssemblies);
+            return dependencyAnalyzer.AnalyzeProject(sourceFiles, referencedAssemblies).OfType<IllegalDependencyMessage>().Select(i => i.IllegalDependency);
         }
 
         private static string GetTestFileFullPath(string testName)

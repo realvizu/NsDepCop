@@ -37,6 +37,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             ProjectFolder = projectFolder;
         }
 
+        public override string ConfigLocation => ProjectFolder;
+
         public int InheritanceDepth
         {
             get

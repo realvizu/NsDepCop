@@ -1,27 +1,38 @@
 ﻿using System.Collections.Generic;
-using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
+using Codartis.NsDepCop.Core.Interface.Config;
 
 namespace Codartis.NsDepCop.Core.Interface.Analysis
 {
     /// <summary>
-    /// Analyzes dependencies in source code.
+    /// Performs dependency analysis on a project or a syntax node.
     /// </summary>
-    public interface IDependencyAnalyzer : ICacheStatisticsProvider
+    public interface IDependencyAnalyzer
     {
         /// <summary>
-        /// Analyses a project (source files and referenced assemblies) and returns illegal dependencies (according to the rules described in the config).
+        /// Analyzes a project (source files and referenced assemblies).
         /// </summary>
         /// <param name="sourceFilePaths">A collection of the full path of source files.</param>
         /// <param name="referencedAssemblyPaths">A collection of the full path of referenced assemblies.</param>
-        /// <returns>A collection of illegal dependencies. Empty collection if none found.</returns>
-        IEnumerable<TypeDependency> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths);
+        /// <returns>Issue and info messages, including illegal dependency issues.</returns>
+        IEnumerable<AnalyzerMessageBase> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths);
 
         /// <summary>
-        /// Analyzes a syntax node and returns illegal dependencies (according to the rules described in the config).
+        /// Analyzes a syntax node.
         /// </summary>
         /// <param name="syntaxNode">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the project being analyzed.</param>
-        /// <returns>A collection of illegal dependencies. Empty collection if none found.</returns>
-        IEnumerable<TypeDependency> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel);
+        /// <returns>Issue and info messages, including illegal dependency issues.</returns>
+        IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel);
+
+        /// <summary>
+        /// Gets the importance of the info messages.
+        /// </summary>
+        Importance InfoImportance { get; }
+
+        /// <summary>
+        /// Re-reads the config.
+        /// </summary>
+        void RefreshConfig();
     }
 }

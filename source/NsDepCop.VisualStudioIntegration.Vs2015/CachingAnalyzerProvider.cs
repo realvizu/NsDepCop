@@ -1,5 +1,5 @@
 ﻿using System;
-using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
+using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
@@ -7,7 +7,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// <summary>
     /// Retrieves configured dependency analyzers and caches them for a certain time span.
     /// </summary>
-    public sealed class CachingAnalyzerProvider : TimeBasedCacheBase<string, IConfiguredDependencyAnalyzer>, IAnalyzerProvider
+    public sealed class CachingAnalyzerProvider : TimeBasedCacheBase<string, IDependencyAnalyzer>, IAnalyzerProvider
     {
         private readonly IAnalyzerProvider _analyzerProvider;
 
@@ -19,8 +19,8 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public void Dispose() => _analyzerProvider?.Dispose();
 
-        public IConfiguredDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath) => GetOrAdd(csprojFilePath);
+        public IDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath) => GetOrAdd(csprojFilePath);
 
-        protected override IConfiguredDependencyAnalyzer RetrieveItemToCache(string key) => _analyzerProvider.GetDependencyAnalyzer(key);
+        protected override IDependencyAnalyzer RetrieveItemToCache(string key) => _analyzerProvider.GetDependencyAnalyzer(key);
     }
 }

@@ -17,9 +17,6 @@ namespace Codartis.NsDepCop.ConsoleHost
         [Option('v', "verbose", DefaultValue = false, HelpText = "Verbose output with internal diagnostic messages.")]
         public bool IsVerbose { get; set; }
 
-        [Option('s', "singleconfig", DefaultValue = false, HelpText = "Uses a single config file (not multi level).")]
-        public bool UseSingleFileConfig { get; set; }
-
         [Option('o', "outofprocess", DefaultValue = false, HelpText = "Runs analysis in separate service process (NsDepCop.ServiceHost).")]
         public bool UseOufOfProcessAnalyzer { get; set; }
 

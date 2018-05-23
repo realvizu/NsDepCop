@@ -26,6 +26,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             ConfigFilePath = configFilePath;
         }
 
+        public override string ConfigLocation => ConfigFilePath;
+
         public int InheritanceDepth => ConfigBuilder?.InheritanceDepth ?? ConfigDefaults.InheritanceDepth;
 
         public bool HasConfigFileChanged()

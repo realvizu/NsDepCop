@@ -3,10 +3,15 @@
 namespace Codartis.NsDepCop.Core.Interface.Config
 {
     /// <summary>
-    /// Provides config info and config state.
+    /// Provides config info and config state from some kind of repository.
     /// </summary>
     public interface IConfigProvider
     {
+        /// <summary>
+        /// Gets the importance of the info messages.
+        /// </summary>
+        Importance InfoImportance { get; }
+
         /// <summary>
         /// Gets the config used by the analyzers.
         /// </summary>
@@ -21,6 +26,11 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// Gets the config exception or null if there was no exception.
         /// </summary>
         Exception ConfigException { get; }
+
+        /// <summary>
+        /// Gets the config location as a string.
+        /// </summary>
+        string ConfigLocation { get; }
 
         /// <summary>
         /// Reloads the config from its repository.

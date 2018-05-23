@@ -28,11 +28,15 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             TraceMessageHandler = traceMessageHandler;
         }
 
+        public abstract string ConfigLocation { get; }
+
         public ConfigProviderBase SetDefaultInfoImportance(Importance? defaultInfoImportance)
         {
             DefaultInfoImportance = defaultInfoImportance;
             return this;
         }
+
+        public Importance InfoImportance => Config?.InfoImportance ?? DefaultInfoImportance ?? Importance.Normal;
 
         public IAnalyzerConfig Config
         {

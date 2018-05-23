@@ -4,9 +4,8 @@ using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
-using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
 using Codartis.NsDepCop.ParserAdapter.Roslyn2x;
 using CommandLine;
 
@@ -42,7 +41,6 @@ namespace Codartis.NsDepCop.ConsoleHost
         {
             Console.WriteLine($"Analysing {options.CsprojFile}");
             Console.WriteLine($"  repeats={options.RepeatCount}");
-            Console.WriteLine($"  useSingleFileConfig={options.UseSingleFileConfig}");
             Console.WriteLine($"  outofprocess={options.UseOufOfProcessAnalyzer}");
             Console.WriteLine($"  verbose={options.IsVerbose}");
             Console.WriteLine();
@@ -53,31 +51,25 @@ namespace Codartis.NsDepCop.ConsoleHost
             if (directoryPath == null)
                 throw new Exception("DirectoryPath is null.");
 
-            var configProvider = CreateConfigProvider(directoryPath, options.UseSingleFileConfig);
-            if (configProvider.ConfigState != AnalyzerConfigState.Enabled)
-                throw new Exception($"ConfigState={configProvider.ConfigState}, ConfigException={configProvider.ConfigException}");
-
-            var analyzer = CreateAnalyzer(configProvider.Config, options.UseOufOfProcessAnalyzer);
+            var analyzer = CreateAnalyzer(directoryPath, options.UseOufOfProcessAnalyzer);
             var csProjParser = new CsProjParser(options.CsprojFile);
 
             var runTimeSpans = new List<TimeSpan>();
-            TypeDependency[] lastIllegalDependencies = null;
+            AnalyzerMessageBase[] lastMessages = null;
             for (var i = 0; i < options.RepeatCount; i++)
             {
                 if (_isVerbose) Console.WriteLine();
                 Console.WriteLine($"Starting iteration {i + 1}...");
                 if (_isVerbose) Console.WriteLine();
 
-                var (runTime, illegalDependencies) = AnalyseCsProj(analyzer, csProjParser);
-
-                if (_isVerbose) Console.WriteLine(GetCacheStatisticsMessage(analyzer));
+                var (runTime, analyzerMessages) = AnalyseCsProj(analyzer, csProjParser);
 
                 runTimeSpans.Add(runTime);
-                lastIllegalDependencies = illegalDependencies;
+                lastMessages = analyzerMessages;
             }
 
             Console.WriteLine();
-            DumpIllegalDependencies(lastIllegalDependencies);
+            DumpAnalyzerMessages(lastMessages);
 
             Console.WriteLine();
             for (var i = 0; i < options.RepeatCount; i++)
@@ -87,39 +79,29 @@ namespace Codartis.NsDepCop.ConsoleHost
             DumpRunTimes(runTimeSpans);
         }
 
-        private static IConfigProvider CreateConfigProvider(string directoryPath, bool useSingleFileConfig)
-        {
-            var configProviderFactory = new ConfigProviderFactory(LogTraceToConsole);
-
-            return useSingleFileConfig
-                ? configProviderFactory.CreateFromXmlConfigFile(Path.Combine(directoryPath, "config.nsdepcop"))
-                : configProviderFactory.CreateFromMultiLevelXmlConfigFile(directoryPath);
-        }
-
-        private static IDependencyAnalyzer CreateAnalyzer(IAnalyzerConfig config, bool useOutOfProcessAnalyzer)
+        private static IDependencyAnalyzer CreateAnalyzer(string configFolderPath, bool useOutOfProcessAnalyzer)
         {
             var typeDependencyEnumerator = new Roslyn2TypeDependencyEnumerator(LogTraceToConsole);
-
-            var analyzerFactory = new DependencyAnalyzerFactory(config, LogTraceToConsole);
+            var analyzerFactory = new DependencyAnalyzerFactory(LogTraceToConsole);
 
             return useOutOfProcessAnalyzer
-                ? analyzerFactory.CreateOutOfProcess(ServiceAddressProvider.ServiceAddress)
-                : analyzerFactory.CreateInProcess(typeDependencyEnumerator);
+                ? analyzerFactory.CreateOutOfProcess(configFolderPath, ServiceAddressProvider.ServiceAddress)
+                : analyzerFactory.CreateInProcess(configFolderPath, typeDependencyEnumerator);
         }
 
-        private static (TimeSpan runTime, TypeDependency[] illegalDependencies) 
+        private static (TimeSpan runTime, AnalyzerMessageBase[] analyzerMessages) 
             AnalyseCsProj(IDependencyAnalyzer dependencyAnalyzer, CsProjParser csProjParser)
         {
             var startTime = DateTime.Now;
 
-            var illegalDependencies = dependencyAnalyzer
+            var analyzerMessages = dependencyAnalyzer
                 .AnalyzeProject(csProjParser.SourceFilePaths, csProjParser.ReferencedAssemblyPaths)
                 .ToArray();
 
             var endTime = DateTime.Now;
             var elapsedTimeSpan = endTime - startTime;
 
-            return (elapsedTimeSpan, illegalDependencies);
+            return (elapsedTimeSpan, analyzerMessages);
         }
 
         private static void LogTraceToConsole(string message)
@@ -128,17 +110,12 @@ namespace Codartis.NsDepCop.ConsoleHost
                 Console.WriteLine(message);
         }
 
-        private static void DumpIllegalDependencies(TypeDependency[] typeDependencies)
+        private static void DumpAnalyzerMessages(AnalyzerMessageBase[] analyzerMessages)
         {
-            foreach (var typeDependency in typeDependencies)
-                Console.WriteLine(FormatIssue(typeDependency));
+            foreach (var analyzerMessage in analyzerMessages)
+                Console.WriteLine(analyzerMessage);
 
-            Console.WriteLine($"Illegal dependencies count={typeDependencies.Length}");
-        }
-
-        private static string FormatIssue(TypeDependency typeDependency)
-        {
-            return $"{IssueDefinitions.IllegalDependencyIssue.GetDynamicDescription(typeDependency)} at {typeDependency.SourceSegment}";
+            Console.WriteLine($"Illegal dependencies count={analyzerMessages.OfType<IllegalDependencyMessage>().Count()}");
         }
 
         private static void DumpRunTimes(List<TimeSpan> runTimeSpans)
@@ -146,8 +123,5 @@ namespace Codartis.NsDepCop.ConsoleHost
             var minRunTimeSpan = TimeSpan.FromMilliseconds(runTimeSpans.Min(i => i.TotalMilliseconds));
             Console.WriteLine($"Min run time: {minRunTimeSpan:mm\\:ss\\.fff}");
         }
-
-        private static string GetCacheStatisticsMessage(ICacheStatisticsProvider analyzer) =>
-            $"Cache hits: {analyzer.HitCount}, misses: {analyzer.MissCount}, efficiency (hits/all): {analyzer.EfficiencyPercent:P}";
     }
 }

@@ -7,10 +7,9 @@ using System.Reflection;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
+using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.MsBuildTask
 {
@@ -23,12 +22,6 @@ namespace Codartis.NsDepCop.MsBuildTask
     /// </remarks>
     public class NsDepCopTask : Task
     {
-        public static readonly IssueDescriptor<string> TaskStartedIssue =
-            new IssueDescriptor<string>("NSDEPCOPSTART", IssueKind.Info, null, i => $"Analysing project in folder: {i}");
-
-        public static readonly IssueDescriptor<TimeSpan> TaskFinishedIssue =
-            new IssueDescriptor<TimeSpan>("NSDEPCOPFINISH", IssueKind.Info, null, i => $"Analysis took: {i:mm\\:ss\\.fff}");
-
         public static readonly IssueDescriptor<Exception> TaskExceptionIssue =
             new IssueDescriptor<Exception>("NSDEPCOPEX", IssueKind.Error, null, i => $"Exception during NsDepCopTask execution: {i.ToString()}");
 
@@ -104,39 +97,59 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             try
             {
+                var runWasSuccessful = true;
+
                 _logger.LogTraceMessage(GetInputParameterDiagnosticMessages());
 
                 var defaultInfoImportance = EnumHelper.ParseNullable<Importance>(InfoImportance.GetValue());
-                _logger.InfoImportance = defaultInfoImportance?.ToMessageImportance() ?? MessageImportance.Normal;
-
-                var analyzerFactory = new ConfiguredDependencyAnalyzerFactory(_logger.LogTraceMessage)
-                    .SetDefaultInfoImportance(defaultInfoImportance);
-
+                var analyzerFactory = new DependencyAnalyzerFactory(_logger.LogTraceMessage).SetDefaultInfoImportance(defaultInfoImportance);
                 var analyzer = analyzerFactory.CreateOutOfProcess(ProjectFolder, ServiceAddressProvider.ServiceAddress);
+                var analyzerMessages = analyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths);
 
-                var runWasSuccessful = true;
+                _logger.InfoImportance = analyzer.InfoImportance.ToMessageImportance();
 
-                switch (analyzer.ConfigState)
+                foreach (var analyzerMessage in analyzerMessages)
                 {
-                    case AnalyzerConfigState.NoConfig:
-                        _logger.LogIssue(IssueDefinitions.NoConfigFileIssue);
-                        break;
+                    switch (analyzerMessage)
+                    {
+                        case IllegalDependencyMessage illegalDependencyMessage:
+                            _logger.LogIssue(
+                                IssueDefinitions.IllegalDependencyIssue, 
+                                illegalDependencyMessage.IllegalDependency, 
+                                illegalDependencyMessage.IssueKind,
+                                illegalDependencyMessage.IllegalDependency.SourceSegment);
+                            break;
 
-                    case AnalyzerConfigState.Disabled:
-                        _logger.LogIssue(IssueDefinitions.ConfigDisabledIssue);
-                        break;
+                        case ConfigErrorMessage configErrorMessage:
+                            _logger.LogIssue(IssueDefinitions.ConfigExceptionIssue, configErrorMessage.Exception);
+                            break;
 
-                    case AnalyzerConfigState.ConfigError:
-                        _logger.LogIssue(IssueDefinitions.ConfigExceptionIssue, analyzer.ConfigException);
-                        runWasSuccessful = false;
-                        break;
+                        case TooManyIssuesMessage tooManyIssuesMessage:
+                            _logger.LogIssue(IssueDefinitions.TooManyIssuesIssue, tooManyIssuesMessage.IssueKind);
+                            break;
 
-                    case AnalyzerConfigState.Enabled:
-                        runWasSuccessful = ExecuteAnalysis(analyzer, ProjectFolder);
-                        break;
+                        case NoConfigFileMessage _:
+                            _logger.LogIssue(IssueDefinitions.NoConfigFileIssue);
+                            break;
 
-                    default:
-                        throw new Exception($"Unexpected ConfigState: {analyzer.ConfigState}");
+                        case ConfigDisabledMessage _:
+                            _logger.LogIssue(IssueDefinitions.ConfigDisabledIssue);
+                            break;
+
+                        case AnalysisStartedMessage analysisStartedMessage:
+                            _logger.LogIssue(IssueDefinitions.AnalysisStartedIssue, analysisStartedMessage.ProjectLocation);
+                            break;
+
+                        case AnalysisFinishedMessage analysisFinishedMessage:
+                            _logger.LogIssue(IssueDefinitions.AnalysisFinishedIssue, analysisFinishedMessage.AnalysisDuration);
+                            break;
+
+                        default:
+                            throw new Exception($"Unexpected analyzer message type: {analyzerMessage?.GetType().Name}");
+                    }
+
+                    if (analyzerMessage is IssueMessageBase issueMessage)
+                        runWasSuccessful = runWasSuccessful && issueMessage.IssueKind != IssueKind.Error;
                 }
 
                 return runWasSuccessful;
@@ -147,46 +160,6 @@ namespace Codartis.NsDepCop.MsBuildTask
                 return false;
             }
         }
-
-        private bool ExecuteAnalysis(IConfiguredDependencyAnalyzer analyzer, string configFolderPath)
-        {
-            var config = analyzer.Config;
-            _logger.InfoImportance = config.InfoImportance.ToMessageImportance();
-
-            var startTime = DateTime.Now;
-            _logger.LogIssue(TaskStartedIssue, configFolderPath);
-
-            var illegalDependencies = analyzer.AnalyzeProject(SourceFilePaths, ReferencedAssemblyPaths);
-            var dependencyIssueCount = ReportAnalyzerMessages(illegalDependencies, config.IssueKind, config.MaxIssueCount, config.MaxIssueCountSeverity);
-
-            _logger.LogTraceMessage(GetCacheStatisticsMessage(analyzer));
-
-            var endTime = DateTime.Now;
-            _logger.LogIssue(TaskFinishedIssue, endTime - startTime);
-
-            var errorIssueDetected = dependencyIssueCount > 0 && config.IssueKind == IssueKind.Error;
-            return !errorIssueDetected;
-        }
-
-        private int ReportAnalyzerMessages(IEnumerable<TypeDependency> illegalDependencies, 
-            IssueKind issueKind, int maxIssueCount, IssueKind maxIssueCountSeverity)
-        {
-            var dependencyIssueCount = 0;
-
-            foreach (var illegalDependency in illegalDependencies)
-            {
-                _logger.LogIssue(IssueDefinitions.IllegalDependencyIssue, illegalDependency, issueKind, illegalDependency.SourceSegment);
-                dependencyIssueCount++;
-            }
-
-            if (dependencyIssueCount > maxIssueCount)
-                _logger.LogIssue(IssueDefinitions.TooManyIssuesIssue, issueKindOverride: maxIssueCountSeverity);
-
-            return dependencyIssueCount;
-        }
-
-        private static string GetCacheStatisticsMessage(ICacheStatisticsProvider analyzer) =>
-            $"Cache hits: {analyzer.HitCount}, misses: {analyzer.MissCount}, efficiency (hits/all): {analyzer.EfficiencyPercent:P}";
 
         private IEnumerable<string> GetInputParameterDiagnosticMessages()
         {

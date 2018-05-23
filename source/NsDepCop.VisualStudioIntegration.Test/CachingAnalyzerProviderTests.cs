@@ -1,5 +1,5 @@
 ﻿using System;
-using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
+using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
 using Moq;
@@ -26,7 +26,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
  
             var cachingAnalyzerProvider = CreateCachingAnalyzerProvider();
 
-            var result1 = new Mock<IConfiguredDependencyAnalyzer>().Object;
+            var result1 = new Mock<IDependencyAnalyzer>().Object;
             _embeddedAnalyzerProvider.Setup(i => i.GetDependencyAnalyzer(filePath)).Returns(result1);
             cachingAnalyzerProvider.GetDependencyAnalyzer(filePath).Should().Be(result1);
 
@@ -40,11 +40,11 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 
             var cachingAnalyzerProvider = CreateCachingAnalyzerProvider();
 
-            var result1 = new Mock<IConfiguredDependencyAnalyzer>().Object;
+            var result1 = new Mock<IDependencyAnalyzer>().Object;
             _embeddedAnalyzerProvider.Setup(i => i.GetDependencyAnalyzer(filePath)).Returns(result1);
             cachingAnalyzerProvider.GetDependencyAnalyzer(filePath).Should().Be(result1);
 
-            var result2 = new Mock<IConfiguredDependencyAnalyzer>().Object;
+            var result2 = new Mock<IDependencyAnalyzer>().Object;
             _embeddedAnalyzerProvider.Setup(i => i.GetDependencyAnalyzer(filePath)).Returns(result2);
             cachingAnalyzerProvider.GetDependencyAnalyzer(filePath).Should().Be(result1);
 
@@ -58,13 +58,13 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
 
             var cachingAnalyzerProvider = CreateCachingAnalyzerProvider();
 
-            var result1 = new Mock<IConfiguredDependencyAnalyzer>().Object;
+            var result1 = new Mock<IDependencyAnalyzer>().Object;
             _embeddedAnalyzerProvider.Setup(i => i.GetDependencyAnalyzer(filePath)).Returns(result1);
             cachingAnalyzerProvider.GetDependencyAnalyzer(filePath).Should().Be(result1);
 
             _mockDateTimeProvider.UtcNow += TimeSpan.FromSeconds(1);
 
-            var result2 = new Mock<IConfiguredDependencyAnalyzer>().Object;
+            var result2 = new Mock<IDependencyAnalyzer>().Object;
             _embeddedAnalyzerProvider.Setup(i => i.GetDependencyAnalyzer(filePath)).Returns(result2);
             cachingAnalyzerProvider.GetDependencyAnalyzer(filePath).Should().Be(result2);
 

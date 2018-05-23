@@ -9,25 +9,33 @@ namespace Codartis.NsDepCop.Core.Factory
     /// <summary>
     /// Creates dependency analyzer objects.
     /// </summary>
-    public class DependencyAnalyzerFactory
+    public sealed class DependencyAnalyzerFactory : IDependencyAnalyzerFactory, IConfigInitializer<DependencyAnalyzerFactory>
     {
-        private readonly IAnalyzerConfig _config;
         private readonly MessageHandler _traceMessageHandler;
+        private readonly IConfigProviderFactory _configProviderFactory;
 
-        public DependencyAnalyzerFactory(IAnalyzerConfig config, MessageHandler traceMessageHandler)
+        public DependencyAnalyzerFactory(MessageHandler traceMessageHandler)
         {
-            _config = config;
             _traceMessageHandler = traceMessageHandler;
+            _configProviderFactory = new ConfigProviderFactory(_traceMessageHandler);
         }
 
-        public IDependencyAnalyzer CreateInProcess(ITypeDependencyEnumerator typeDependencyEnumerator)
+        public DependencyAnalyzerFactory SetDefaultInfoImportance(Importance? defaultInfoImportance)
         {
-            return new DependencyAnalyzer(_config, typeDependencyEnumerator, _traceMessageHandler);
+            _configProviderFactory.SetDefaultInfoImportance(defaultInfoImportance);
+            return this;
         }
 
-        public IDependencyAnalyzer CreateOutOfProcess(string serviceAddress)
+        public IDependencyAnalyzer CreateInProcess(string folderPath, ITypeDependencyEnumerator typeDependencyEnumerator)
         {
-            return new RemoteDependencyAnalyzerClient(_config, serviceAddress, _traceMessageHandler);
+            var configProvider = _configProviderFactory.CreateFromMultiLevelXmlConfigFile(folderPath);
+            return new InProcessDependencyAnalyzer(configProvider, typeDependencyEnumerator, _traceMessageHandler);
+        }
+
+        public IDependencyAnalyzer CreateOutOfProcess(string folderPath, string serviceAddress)
+        {
+            var configProvider = _configProviderFactory.CreateFromMultiLevelXmlConfigFile(folderPath);
+            return new RemoteDependencyAnalyzerClient(configProvider, serviceAddress, _traceMessageHandler);
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.IO;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
 using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
@@ -14,21 +13,19 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
     /// </summary>
     public sealed class AnalyzerProvider : IAnalyzerProvider
     {
-        private readonly IConfiguredDependencyAnalyzerFactory _dependencyAnalyzerFactory;
+        private readonly IDependencyAnalyzerFactory _dependencyAnalyzerFactory;
         private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
 
         /// <summary>
         /// Maps project files to their corresponding dependency analyzer. The key is the project file name with full path.
         /// </summary>
-        private readonly ConcurrentDictionary<string, IConfiguredDependencyAnalyzer> _projectFileToDependencyAnalyzerMap;
+        private readonly ConcurrentDictionary<string, IDependencyAnalyzer> _projectFileToDependencyAnalyzerMap;
 
-        public AnalyzerProvider(
-            IConfiguredDependencyAnalyzerFactory dependencyAnalyzerFactory,
-            ITypeDependencyEnumerator typeDependencyEnumerator)
+        public AnalyzerProvider(IDependencyAnalyzerFactory dependencyAnalyzerFactory, ITypeDependencyEnumerator typeDependencyEnumerator)
         {
             _dependencyAnalyzerFactory = dependencyAnalyzerFactory ?? throw new ArgumentNullException(nameof(dependencyAnalyzerFactory));
             _typeDependencyEnumerator = typeDependencyEnumerator ?? throw new ArgumentNullException(nameof(typeDependencyEnumerator));
-            _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IConfiguredDependencyAnalyzer>();
+            _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IDependencyAnalyzer>();
         }
 
         public void Dispose()
@@ -38,7 +35,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
                     disposable.Dispose();
         }
 
-        public IConfiguredDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath)
+        public IDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath)
         {
             if (string.IsNullOrWhiteSpace(csprojFilePath))
                 throw new ArgumentException("Filename must not be null or whitespace.", nameof(csprojFilePath));
@@ -51,7 +48,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             return dependencyAnalyzer;
         }
 
-        private IConfiguredDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
+        private IDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
         {
             var projectFileDirectory = Path.GetDirectoryName(projectFilePath);
             return _dependencyAnalyzerFactory.CreateInProcess(projectFileDirectory, _typeDependencyEnumerator);

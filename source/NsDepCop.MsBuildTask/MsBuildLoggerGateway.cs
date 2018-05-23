@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.MsBuildTask
     /// <summary>
     /// Logs issues and messages using the MsBuild engine.
     /// </summary>
-    public class MsBuildLoggerGateway : ILogger
+    public sealed class MsBuildLoggerGateway : ILogger
     {
         private readonly IBuildEngine _buildEngine;
 

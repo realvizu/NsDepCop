@@ -39,5 +39,20 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
                 IssueKind.Error,
                 "Error loading NsDepCop config.",
                 i => $"{i?.Message}");
+
+        public static readonly IssueDescriptor<string> AnalysisStartedIssue =
+            new IssueDescriptor<string>(
+                "NSDEPCOPSTART", 
+                IssueKind.Info, 
+                null, 
+                i => $"Analysing project in folder: {i}");
+
+        public static readonly IssueDescriptor<TimeSpan> AnalysisFinishedIssue =
+            new IssueDescriptor<TimeSpan>(
+                "NSDEPCOPFINISH", 
+                IssueKind.Info, 
+                null, 
+                i => $"Analysis took: {i:mm\\:ss\\.fff}");
+
     }
 }

@@ -80,10 +80,9 @@
     <Compile Include="..\include\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Factory\ConfiguredDependencyAnalyzerFactoryTests.cs" />
+    <Compile Include="Factory\DependencyAnalyzerFactoryTests.cs" />
     <Compile Include="Implementation\Analysis\CachingTypeDependencyValidatorTests.cs" />
-    <Compile Include="Implementation\Analysis\DependencyAnalyzerTests.cs" />
-    <Compile Include="Implementation\Analysis\ConfiguredDependencyAnalyzerTests.cs" />
+    <Compile Include="Implementation\Analysis\InProcessDependencyAnalyzerTests.cs" />
     <Compile Include="Util\RetryHelperTests.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilderTests.cs" />
     <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests.cs" />
@@ -114,8 +113,9 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Factory\ConfiguredDependencyAnalyzerFactoryTests\config.nsdepcop">
+    <None Include="Factory\DependencyAnalyzerFactoryTests\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Attributes_MissingDoesNotOverwrite\Level2\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

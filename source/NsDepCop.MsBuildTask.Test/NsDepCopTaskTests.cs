@@ -37,6 +37,8 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
 
             VerifyTaskExceptionLogged(Times.Never());
             VerifyDependencyIssueLogged(Times.Never());
+            VerifyAnalysisStartedLogged(Times.Once());
+            VerifyAnalysisFinishedLogged(Times.Once());
         }
 
         [Fact]
@@ -44,7 +46,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         {
             CreateNsDepCopTask().Execute().Should().BeTrue();
 
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.ConfigDisabledIssue, null));
+            VerifyConfigDisabledLogged(Times.Once());
         }
 
         [Fact]
@@ -108,10 +110,10 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [Fact]
         public void IssueCountMoreThanMaxIssueCount_MaxIssueCountIssueLogged()
         {
-            CreateNsDepCopTask().Execute().Should().BeTrue();
+            CreateNsDepCopTask().Execute().Should().BeFalse();
 
             VerifyDependencyIssueLogged(Times.Exactly(2));
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.TooManyIssuesIssue, IssueKind.Error), Times.Once);
+            VerifyTooManyIssuesLogged(Times.Once(), IssueKind.Error);
         }
 
         [Fact]
@@ -120,7 +122,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             CreateNsDepCopTask().Execute().Should().BeTrue();
 
             VerifyDependencyIssueLogged(Times.Exactly(2));
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.TooManyIssuesIssue, It.IsAny<IssueKind>()), Times.Never);
+            VerifyTooManyIssuesLogged(Times.Never());
         }
 
         [Fact]
@@ -155,7 +157,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             CreateNsDepCopTask().Execute().Should().BeTrue();
 
             VerifyTaskExceptionLogged(Times.Never());
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.NoConfigFileIssue, null));
+            VerifyNoConfigFileLogged(Times.Once());
         }
 
         [Fact]
@@ -234,5 +236,21 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
 
         private void VerifyConfigExceptionLogged(Times times) =>
             _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.ConfigExceptionIssue, It.IsAny<Exception>(), null, null), times);
+
+        private void VerifyAnalysisStartedLogged(Times times) =>
+            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.AnalysisStartedIssue, It.IsAny<string>(), null, null), times);
+
+        private void VerifyAnalysisFinishedLogged(Times times) =>
+            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.AnalysisFinishedIssue, It.IsAny<TimeSpan>(), null, null), times);
+
+        private void VerifyTooManyIssuesLogged(Times times, IssueKind? issueKind = null) =>
+            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.TooManyIssuesIssue, issueKind), times);
+
+        private void VerifyNoConfigFileLogged(Times times) =>
+            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.NoConfigFileIssue, null), times);
+
+        private void VerifyConfigDisabledLogged(Times times) =>
+            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.ConfigDisabledIssue, null), times);
+
     }
 }

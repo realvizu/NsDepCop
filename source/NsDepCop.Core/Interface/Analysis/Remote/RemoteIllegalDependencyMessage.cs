@@ -3,14 +3,14 @@
 namespace Codartis.NsDepCop.Core.Interface.Analysis.Remote
 {
     /// <summary>
-    /// A message containing an illegal type dependency.
+    /// An illegal dependency message from a remote dependency analyzer.
     /// </summary>
     [Serializable]
-    public class IllegalDependencyMessage : AnalyzerMessageBase
+    public class RemoteIllegalDependencyMessage : IRemoteMessage
     {
         public TypeDependency IllegalDependency { get; }
 
-        public IllegalDependencyMessage(TypeDependency illegalDependency)
+        public RemoteIllegalDependencyMessage(TypeDependency illegalDependency)
         {
             IllegalDependency = illegalDependency;
         }

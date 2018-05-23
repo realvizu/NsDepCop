@@ -30,8 +30,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             if (typeDependency.FromNamespaceName == typeDependency.ToNamespaceName)
                 return true;
 
-            bool added;
-            var isAllowedDependency = _dependencyValidationCache.GetOrAdd(typeDependency, base.IsAllowedDependency, out added);
+            var isAllowedDependency = _dependencyValidationCache.GetOrAdd(typeDependency, base.IsAllowedDependency, out var added);
 
             if (added)
             {

@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
 using Microsoft.CodeAnalysis;
@@ -100,48 +100,42 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             if (dependencyAnalyzer == null)
                 return;
 
-            var configState = dependencyAnalyzer.ConfigState;
-            switch (configState)
+            var analyzerMessages = dependencyAnalyzer.AnalyzeSyntaxNode(new RoslynSyntaxNode(syntaxNode), new RoslynSemanticModel(semanticModel));
+
+            foreach (var analyzerMessage in analyzerMessages)
             {
-                case AnalyzerConfigState.NoConfig:
-                    break;
+                switch (analyzerMessage)
+                {
+                    case ConfigErrorMessage configErrorMessage:
+                        ReportConfigException(context, configErrorMessage.Exception);
+                        break;
 
-                case AnalyzerConfigState.ConfigError:
-                    ReportConfigException(context, dependencyAnalyzer.ConfigException);
-                    break;
+                    case IllegalDependencyMessage illegalDependencyMessage:
+                        ReportIllegalDependency(context, illegalDependencyMessage.IllegalDependency, illegalDependencyMessage.IssueKind);
+                        break;
 
-                case AnalyzerConfigState.Enabled:
-                    var config = dependencyAnalyzer.Config;
-                    var illegalDependencies = dependencyAnalyzer.AnalyzeSyntaxNode(new RoslynSyntaxNode(syntaxNode), new RoslynSemanticModel(semanticModel));
-                    ReportIllegalDependencies(illegalDependencies, context, config.IssueKind, config.MaxIssueCount);
-                    break;
-
-                case AnalyzerConfigState.Disabled:
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(configState), configState, "Unexpected value.");
+                    case TooManyIssuesMessage _:
+                        ReportTooManyIssues(context);
+                        break;
+                }
             }
         }
 
-        private static void ReportIllegalDependencies(IEnumerable<TypeDependency> illegalDependencies,
-            SyntaxNodeAnalysisContext context, IssueKind issueKind, int maxIssueCount)
+        private static void ReportIllegalDependency(SyntaxNodeAnalysisContext context, TypeDependency illegalDependency, IssueKind issueKind)
         {
-            var issueCount = 0;
-            foreach (var typeDependency in illegalDependencies)
-            {
-                var diagnostic = CreateIllegalDependencyDiagnostic(context.Node, typeDependency, issueKind);
-                context.ReportDiagnostic(diagnostic);
-                issueCount++;
-            }
-
-            if (issueCount > maxIssueCount)
-                context.ReportDiagnostic(CreateTooManyIssueDiagnostic(context.Node));
+            var diagnostic = CreateIllegalDependencyDiagnostic(context.Node, illegalDependency, issueKind);
+            context.ReportDiagnostic(diagnostic);
         }
 
         private static void ReportConfigException(SyntaxNodeAnalysisContext context, Exception exception)
         {
             var diagnostic = CreateConfigExceptionDiagnostic(context.Node, exception);
+            context.ReportDiagnostic(diagnostic);
+        }
+
+        private static void ReportTooManyIssues(SyntaxNodeAnalysisContext context)
+        {
+            var diagnostic = CreateTooManyIssueDiagnostic(context.Node);
             context.ReportDiagnostic(diagnostic);
         }
 
@@ -198,7 +192,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static CachingAnalyzerProvider CreateDependencyAnalyzerProvider(ITypeDependencyEnumerator typeDependencyEnumerator)
         {
-            var dependencyAnalyzerFactory = new ConfiguredDependencyAnalyzerFactory(LogTraceMessage);
+            var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(LogTraceMessage);
             var analyzerProvider = new AnalyzerProvider(dependencyAnalyzerFactory, typeDependencyEnumerator);
             return new CachingAnalyzerProvider(analyzerProvider, new DateTimeProvider(), AnalyzerCachingTimeSpan);
         }
@@ -206,7 +200,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         private static void LogExceptionToActivityLog(Exception exception)
         {
             var vsActivityLog = VisualStudioServiceGateway.GetActivityLogService();
-            vsActivityLog.LogEntry((uint)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR, ProductConstants.ToolName, exception.ToString());
+            vsActivityLog.LogEntry((uint) __ACTIVITYLOG_ENTRYTYPE.ALE_ERROR, ProductConstants.ToolName, exception.ToString());
         }
 
         protected static void LogTraceMessage(string message) => Debug.WriteLine($"[{ProductConstants.ToolName}] {message}");

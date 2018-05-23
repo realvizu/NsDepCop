@@ -1,5 +1,5 @@
 using System;
-using Codartis.NsDepCop.Core.Interface.Analysis.Configured;
+using Codartis.NsDepCop.Core.Interface.Analysis;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
@@ -13,6 +13,6 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// </summary>
         /// <param name="csprojFilePath">The full path of a C# project file.</param>
         /// <returns>A dependency analyzer, or null if cannot be retrieved.</returns>
-        IConfiguredDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath);
+        IDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath);
     }
 }
