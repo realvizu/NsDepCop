@@ -16,7 +16,6 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis.Messages
             ProjectLocation = projectLocation;
         }
 
-        public override string ToString()
-            => IssueDefinitions.AnalysisStartedIssue.DescriptionFormatterDelegate.Invoke(ProjectLocation);
+        public override string ToString() => $"Analysing project in folder: {ProjectLocation}";
     }
 }

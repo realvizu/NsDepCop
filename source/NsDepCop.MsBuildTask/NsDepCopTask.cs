@@ -137,11 +137,11 @@ namespace Codartis.NsDepCop.MsBuildTask
                             break;
 
                         case AnalysisStartedMessage analysisStartedMessage:
-                            _logger.LogIssue(IssueDefinitions.AnalysisStartedIssue, analysisStartedMessage.ProjectLocation);
+                            _logger.LogInfo(analysisStartedMessage.ToString());
                             break;
 
                         case AnalysisFinishedMessage analysisFinishedMessage:
-                            _logger.LogIssue(IssueDefinitions.AnalysisFinishedIssue, analysisFinishedMessage.AnalysisDuration);
+                            _logger.LogInfo(analysisFinishedMessage.ToString());
                             break;
 
                         default:

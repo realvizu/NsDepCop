@@ -16,7 +16,6 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis.Messages
             AnalysisDuration = analysisDuration;
         }
 
-        public override string ToString() 
-            => IssueDefinitions.AnalysisFinishedIssue.DescriptionFormatterDelegate.Invoke(AnalysisDuration);
+        public override string ToString() => $"Analysis took: {AnalysisDuration:mm\\:ss\\.fff}";
     }
 }

@@ -34,6 +34,12 @@ namespace Codartis.NsDepCop.MsBuildTask
             IssueKind? issueKindOverride = null, SourceSegment? sourceSegment = null);
 
         /// <summary>
+        /// Logs the given info message with the configured InfoImportance.
+        /// </summary>
+        /// <param name="message">The message text.</param>
+        void LogInfo(string message);
+
+        /// <summary>
         /// Log a collection of trace messages. 
         /// </summary>
         /// <param name="messages">A message collection.</param>

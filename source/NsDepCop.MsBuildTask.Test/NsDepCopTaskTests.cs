@@ -37,8 +37,6 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
 
             VerifyTaskExceptionLogged(Times.Never());
             VerifyDependencyIssueLogged(Times.Never());
-            VerifyAnalysisStartedLogged(Times.Once());
-            VerifyAnalysisFinishedLogged(Times.Once());
         }
 
         [Fact]
@@ -236,12 +234,6 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
 
         private void VerifyConfigExceptionLogged(Times times) =>
             _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.ConfigExceptionIssue, It.IsAny<Exception>(), null, null), times);
-
-        private void VerifyAnalysisStartedLogged(Times times) =>
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.AnalysisStartedIssue, It.IsAny<string>(), null, null), times);
-
-        private void VerifyAnalysisFinishedLogged(Times times) =>
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.AnalysisFinishedIssue, It.IsAny<TimeSpan>(), null, null), times);
 
         private void VerifyTooManyIssuesLogged(Times times, IssueKind? issueKind = null) =>
             _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.TooManyIssuesIssue, issueKind), times);
