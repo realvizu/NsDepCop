@@ -30,7 +30,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var folder = GetFilePathInTestClassFolder(@"Attributes_LowerLevelWins\Level2\Level1");
             var configProvider = CreateConfigProvider(folder);
-            configProvider.Config.IssueKind.Should().Be(IssueKind.Info);
+            configProvider.Config.DependencyIssueSeverity.Should().Be(IssueKind.Info);
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
         {
             var folder = GetFilePathInTestClassFolder(@"Attributes_MissingDoesNotOverwrite\Level2\Level1");
             var configProvider = CreateConfigProvider(folder);
-            configProvider.Config.IssueKind.Should().Be(IssueKind.Error);
+            configProvider.Config.DependencyIssueSeverity.Should().Be(IssueKind.Error);
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             configProvider.ConfigException.Should().BeNull();
-            configProvider.Config.IssueKind.Should().Be(ConfigDefaults.IssueKind);
+            configProvider.Config.DependencyIssueSeverity.Should().Be(ConfigDefaults.DependencyIssueSeverity);
         }
 
         [Fact]
@@ -140,7 +140,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             SetAttribute(GetConfigFilePath(path2), "MaxIssueCount", "1");
 
             var configProvider = CreateConfigProvider(path);
-            configProvider.Config.IssueKind.Should().Be(IssueKind.Error);
+            configProvider.Config.DependencyIssueSeverity.Should().Be(IssueKind.Error);
             configProvider.Config.MaxIssueCount.Should().Be(1);
 
             Thread.Sleep(10);
@@ -148,7 +148,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             SetAttribute(GetConfigFilePath(path2), "MaxIssueCount", "2");
 
             configProvider.RefreshConfig();
-            configProvider.Config.IssueKind.Should().Be(IssueKind.Info);
+            configProvider.Config.DependencyIssueSeverity.Should().Be(IssueKind.Info);
             configProvider.Config.MaxIssueCount.Should().Be(2);
         }
 

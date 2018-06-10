@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.TestUtil;
 using FluentAssertions;
@@ -25,9 +25,8 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         {
             _loggerMock = new Mock<ILogger>();
 
-            _loggerMock.Setup(i => i.LogIssue(NsDepCopTask.TaskExceptionIssue, It.IsAny<Exception>(), null, null))
-                .Callback<IssueDescriptor<Exception>, Exception, IssueKind?, SourceSegment?>(
-                    (i1, i2, i3, i4) => output.WriteLine($"Exception caught in task: {i2}"));
+            _loggerMock.Setup(i => i.LogError(It.IsAny<string>()))
+                .Callback<string>(i => output.WriteLine($"Exception caught in task: {i}"));
         }
 
         [Fact]
@@ -192,7 +191,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             return new NsDepCopTask(_loggerMock.Object)
             {
                 BaseDirectory = new TestTaskItem(Path.GetDirectoryName(testFileFullPath)),
-                Compile = new ITaskItem[] { new TestTaskItem(testFileFullPath) },
+                Compile = new ITaskItem[] {new TestTaskItem(testFileFullPath)},
                 ReferencePath = GetReferencedAssemblyPaths().Select(i => new TestTaskItem(i)).OfType<ITaskItem>().ToArray()
             };
         }
@@ -211,38 +210,22 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             };
         }
 
-        private void VerifyDependencyIssueLogged(Times times) =>
-            _loggerMock.Verify(
-                i => i.LogIssue(
-                    IssueDefinitions.IllegalDependencyIssue,
-                    It.IsAny<TypeDependency>(),
-                    It.IsAny<IssueKind?>(),
-                    It.IsAny<SourceSegment>()),
-                times);
+        private void VerifyDependencyIssueLogged(Times times, IssueKind? issueKind = null)
+            => _loggerMock.Verify(i => i.LogIssue(It.Is<IllegalDependencyMessage>(m => issueKind == null || m.IssueKind == issueKind)), times);
 
-        private void VerifyDependencyIssueLogged(Times times, IssueKind? issueKind) =>
-            _loggerMock.Verify(
-                i => i.LogIssue(
-                    IssueDefinitions.IllegalDependencyIssue,
-                    It.IsAny<TypeDependency>(),
-                    issueKind,
-                    It.IsAny<SourceSegment>()),
-                times);
+        private void VerifyTaskExceptionLogged(Times times)
+            => _loggerMock.Verify(i => i.LogError(It.IsAny<string>()), times);
 
-        private void VerifyTaskExceptionLogged(Times times) =>
-            _loggerMock.Verify(i => i.LogIssue(NsDepCopTask.TaskExceptionIssue, It.IsAny<Exception>(), null, null), times);
+        private void VerifyConfigExceptionLogged(Times times)
+            => _loggerMock.Verify(i => i.LogIssue(It.IsAny<ConfigErrorMessage>()), times);
 
-        private void VerifyConfigExceptionLogged(Times times) =>
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.ConfigExceptionIssue, It.IsAny<Exception>(), null, null), times);
+        private void VerifyTooManyIssuesLogged(Times times, IssueKind? issueKind = null)
+            => _loggerMock.Verify(i => i.LogIssue(It.Is<TooManyIssuesMessage>(m => m.IssueKind == issueKind)), times);
 
-        private void VerifyTooManyIssuesLogged(Times times, IssueKind? issueKind = null) =>
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.TooManyIssuesIssue, issueKind), times);
+        private void VerifyNoConfigFileLogged(Times times)
+            => _loggerMock.Verify(i => i.LogIssue(It.IsAny<NoConfigFileMessage>()), times);
 
-        private void VerifyNoConfigFileLogged(Times times) =>
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.NoConfigFileIssue, null), times);
-
-        private void VerifyConfigDisabledLogged(Times times) =>
-            _loggerMock.Verify(i => i.LogIssue(IssueDefinitions.ConfigDisabledIssue, null), times);
-
+        private void VerifyConfigDisabledLogged(Times times)
+            => _loggerMock.Verify(i => i.LogIssue(It.IsAny<ConfigDisabledMessage>()), times);
     }
 }

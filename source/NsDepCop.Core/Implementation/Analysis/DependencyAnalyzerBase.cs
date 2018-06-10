@@ -65,19 +65,18 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             var issueCount = 0;
             foreach (var illegalDependency in illegalTypeDependencyEnumerator())
             {
-                issueCount++;
-
-                if (issueCount > maxIssueCount)
+                if (issueCount >= maxIssueCount)
                 {
                     yield return new TooManyIssuesMessage(maxIssueCount, config.MaxIssueCountSeverity);
                     break;
                 }
 
-                yield return new IllegalDependencyMessage(illegalDependency, config.IssueKind);
+                yield return new IllegalDependencyMessage(illegalDependency, config.DependencyIssueSeverity);
+                issueCount++;
             }
 
             var endTime = DateTime.Now;
-            yield return new AnalysisFinishedMessage(endTime - startTime);
+            yield return new AnalysisFinishedMessage(endTime - startTime, issueCount);
 
             if (isProjectScope && config.AutoLowerMaxIssueCount && issueCount < maxIssueCount)
                 ConfigProvider.UpdateMaxIssueCount(issueCount);

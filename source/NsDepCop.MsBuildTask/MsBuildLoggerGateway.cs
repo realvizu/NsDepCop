@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Codartis.NsDepCop.Core.Interface;
-using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Microsoft.Build.Framework;
 
@@ -30,20 +30,17 @@ namespace Codartis.NsDepCop.MsBuildTask
 
         public void LogTraceMessage(string message) => LogBuildEvent(IssueKind.Info, message, MessageImportance.Low);
 
-        public void LogInfo(string message) => LogBuildEvent(IssueKind.Info, message, InfoImportance);
+        public void LogError(string message) => LogBuildEvent(IssueKind.Error, message);
 
-        public void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T issueParameter, IssueKind? issueKindOverride = null, SourceSegment? sourceSegment = null) 
-            => LogIssue(issueDescriptor, issueDescriptor.GetDynamicDescription(issueParameter), issueKindOverride, sourceSegment);
+        public void LogInfo(InfoMessageBase infoMessage) => LogBuildEvent(IssueKind.Info, infoMessage.ToString(), InfoImportance);
 
-        public void LogIssue(IssueDescriptor issueDescriptor, IssueKind? issueKindOverride = null)
-            => LogIssue(issueDescriptor, null, issueKindOverride, null);
-
-        private void LogIssue(IssueDescriptor issueDescriptor, string dynamicMessage, IssueKind? issueKindOverride, SourceSegment? sourceSegment)
+        public void LogIssue(IssueMessageBase issueMessage)
         {
-            var issueKind = issueKindOverride ?? issueDescriptor.DefaultKind;
-            var message = dynamicMessage ?? issueDescriptor.StaticDescription;
+            var issueKind = issueMessage.IssueKind;
+            var message = issueMessage.ToString();
+            var code = issueMessage.Code;
 
-            var code = issueDescriptor.Id;
+            var sourceSegment = issueMessage.SourceSegment;
             var path = sourceSegment?.Path;
             var startLine = sourceSegment?.StartLine ?? 0;
             var startColumn = sourceSegment?.StartColumn ?? 0;
@@ -53,7 +50,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             LogBuildEvent(issueKind, message, InfoImportance, code, path, startLine, startColumn, endLine, endColumn);
         }
 
-        private void LogBuildEvent(IssueKind issueKind, string message, MessageImportance messageImportance, string code = null,
+        private void LogBuildEvent(IssueKind issueKind, string message, MessageImportance messageImportance = MessageImportance.Normal, string code = null,
             string path = null, int startLine = 0, int startColumn = 0, int endLine = 0, int endColumn = 0)
         {
             switch (issueKind)

@@ -63,7 +63,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             configBuilder.SetIsEnabled(ParseValueType<bool>(rootElement, IsEnabledAttributeName, bool.TryParse));
             configBuilder.SetInheritanceDepth(ParseValueType<int>(rootElement, InheritanceDepthAttributeName, int.TryParse));
-            configBuilder.SetIssueKind(ParseValueType<IssueKind>(rootElement, CodeIssueKindAttributeName, Enum.TryParse));
+            configBuilder.SetDependencyIssueSeverity(ParseValueType<IssueKind>(rootElement, CodeIssueKindAttributeName, Enum.TryParse));
             configBuilder.SetInfoImportance(ParseValueType<Importance>(rootElement, InfoImportanceAttributeName, Enum.TryParse));
             configBuilder.SetAnalyzerServiceCallRetryTimeSpans(ParseReferenceType<TimeSpan[]>(rootElement, AnalyzerServiceCallRetryTimeSpansAttributeName,
                 TryParseTimeSpans));

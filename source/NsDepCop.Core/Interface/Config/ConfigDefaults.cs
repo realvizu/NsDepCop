@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.Core.Interface.Config
     {
         public const int InheritanceDepth = 0;
         public const bool IsEnabled = true;
-        public const IssueKind IssueKind = Config.IssueKind.Warning;
+        public const IssueKind DependencyIssueSeverity = IssueKind.Warning;
         public const int MaxIssueCount = 100;
         public const IssueKind MaxIssueCountSeverity = IssueKind.Warning;
         public const bool AutoLowerMaxIssueCount = false;

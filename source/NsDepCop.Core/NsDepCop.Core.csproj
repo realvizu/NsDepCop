@@ -65,16 +65,16 @@
     <Compile Include="Implementation\Analysis\DependencyAnalyzerBase.cs" />
     <Compile Include="Implementation\Analysis\ITypeDependencyValidator.cs" />
     <Compile Include="Implementation\Analysis\Remote\RemoteDependencyAnalyzerServerBase.cs" />
+    <Compile Include="Interface\Analysis\IssueDefinitions.cs" />
+    <Compile Include="Interface\Analysis\IssueDescriptor.cs" />
     <Compile Include="Interface\Analysis\Messages\AnalysisFinishedMessage.cs" />
     <Compile Include="Interface\Analysis\Messages\NoConfigFileMessage.cs" />
     <Compile Include="Interface\Analysis\Messages\InfoMessageBase.cs" />
-    <Compile Include="Interface\Analysis\Messages\InfoMessageType.cs" />
     <Compile Include="Interface\Analysis\Messages\TooManyIssuesMessage.cs" />
     <Compile Include="Interface\Analysis\Messages\AnalysisStartedMessage.cs" />
     <Compile Include="Interface\Analysis\Messages\ConfigErrorMessage.cs" />
     <Compile Include="Interface\Analysis\Messages\ConfigDisabledMessage.cs" />
-    <Compile Include="Interface\Analysis\Messages\IssueType.cs" />
-    <Compile Include="Interface\Analysis\Messages\IssuesMessageBase.cs" />
+    <Compile Include="Interface\Analysis\Messages\IssueMessageBase.cs" />
     <Compile Include="Interface\Analysis\Remote\IRemoteMessage.cs" />
     <Compile Include="Interface\Analysis\Remote\RemoteIllegalDependencyMessage.cs" />
     <Compile Include="Interface\Config\IUpdateableConfigProvider.cs" />
@@ -109,7 +109,6 @@
     <Compile Include="Implementation\Config\FileConfigProviderBase.cs" />
     <Compile Include="Interface\Config\IAnalyzerConfig.cs" />
     <Compile Include="Interface\Config\Importance.cs" />
-    <Compile Include="Interface\Analysis\IssueDefinitions.cs" />
     <Compile Include="Util\ConcurrentDictionaryExtensions.cs" />
     <Compile Include="Util\DictionaryExtensions.cs" />
     <Compile Include="Interface\Config\IDependencyRules.cs" />
@@ -122,7 +121,6 @@
     <Compile Include="Interface\Analysis\TypeDependency.cs" />
     <Compile Include="Interface\Config\Namespace.cs" />
     <Compile Include="Util\MathHelper.cs" />
-    <Compile Include="Interface\Analysis\IssueDescriptor.cs" />
     <Compile Include="Interface\Config\IssueKind.cs" />
     <Compile Include="Interface\ProductConstants.cs" />
     <Compile Include="Interface\Config\NamespaceDependencyRule.cs" />

@@ -1,4 +1,3 @@
-using System;
 using Codartis.NsDepCop.Core.Interface.Config;
 
 namespace Codartis.NsDepCop.Core.Interface.Analysis
@@ -8,12 +7,11 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
     /// </summary>
     public static class IssueDefinitions
     {
-        public static readonly IssueDescriptor<TypeDependency> IllegalDependencyIssue =
-            new IssueDescriptor<TypeDependency>(
+        public static readonly IssueDescriptor IllegalDependencyIssue =
+            new IssueDescriptor(
                 "NSDEPCOP01",
                 IssueKind.Warning,
-                "Illegal namespace reference.",
-                i => $"Illegal namespace reference: {i.FromNamespaceName}->{i.ToNamespaceName} (Type: {i.FromTypeName}->{i.ToTypeName})");
+                "Illegal namespace reference.");
 
         public static readonly IssueDescriptor TooManyIssuesIssue = 
             new IssueDescriptor(
@@ -33,11 +31,10 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
                 IssueKind.Info,
                 "Analysis is disabled in the nsdepcop config file.");
 
-        public static readonly IssueDescriptor<Exception> ConfigExceptionIssue =
-            new IssueDescriptor<Exception>(
+        public static readonly IssueDescriptor ConfigExceptionIssue =
+            new IssueDescriptor(
                 "NSDEPCOP05",
                 IssueKind.Error,
-                "Error loading NsDepCop config.",
-                i => $"{i?.Message}");
+                "Error loading NsDepCop config.");
     }
 }

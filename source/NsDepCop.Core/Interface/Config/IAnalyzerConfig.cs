@@ -14,9 +14,9 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         bool IsEnabled { get; }
 
         /// <summary>
-        /// Gets the severity of the reported issues.
+        /// Gets the severity of the dependency issues.
         /// </summary>
-        IssueKind IssueKind { get; }
+        IssueKind DependencyIssueSeverity { get; }
 
         /// <summary>
         /// Gets the max number of issues reported.

@@ -12,12 +12,12 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         /// </summary>
         private const string HelpLinkFormat = @"https://github.com/realvizu/NsDepCop/blob/master/doc/Diagnostics.md#{0}";
 
-        public static DiagnosticDescriptor ToDiagnosticDescriptor<TIssue>(this IssueDescriptor<TIssue> issueDescriptor)
+        public static DiagnosticDescriptor ToDiagnosticDescriptor(this IssueDescriptor issueDescriptor)
         {
             return new DiagnosticDescriptor(
                 issueDescriptor.Id,
-                issueDescriptor.StaticDescription,
-                issueDescriptor.StaticDescription,
+                issueDescriptor.Title,
+                issueDescriptor.Title,
                 ProductConstants.ToolName,
                 issueDescriptor.DefaultKind.ToDiagnosticSeverity(),
                 true,

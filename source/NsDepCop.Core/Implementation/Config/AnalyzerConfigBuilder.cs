@@ -16,7 +16,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public int? InheritanceDepth { get; private set; }
 
         public bool? IsEnabled { get; private set; }
-        public IssueKind? IssueKind { get; private set; }
+        public IssueKind? DependencyIssueSeverity { get; private set; }
         public Importance? InfoImportance { get; private set; }
         public TimeSpan[] AnalyzerServiceCallRetryTimeSpans { get; private set; }
 
@@ -39,7 +39,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             return new AnalyzerConfig(
                 IsEnabled ?? ConfigDefaults.IsEnabled,
-                IssueKind ?? ConfigDefaults.IssueKind,
+                DependencyIssueSeverity ?? ConfigDefaults.DependencyIssueSeverity,
                 InfoImportance ?? DefaultInfoImportance ?? ConfigDefaults.InfoImportance,
                 AnalyzerServiceCallRetryTimeSpans ?? ConfigDefaults.AnalyzerServiceCallRetryTimeSpans,
                 ChildCanDependOnParentImplicitly ?? ConfigDefaults.ChildCanDependOnParentImplicitly,
@@ -57,7 +57,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             // Note that InhertanceDepth is not combined.
 
             SetIsEnabled(analyzerConfigBuilder.IsEnabled);
-            SetIssueKind(analyzerConfigBuilder.IssueKind);
+            SetDependencyIssueSeverity(analyzerConfigBuilder.DependencyIssueSeverity);
             SetInfoImportance(analyzerConfigBuilder.InfoImportance);
             SetAnalyzerServiceCallRetryTimeSpans(analyzerConfigBuilder.AnalyzerServiceCallRetryTimeSpans);
 
@@ -92,10 +92,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             return this;
         }
 
-        public AnalyzerConfigBuilder SetIssueKind(IssueKind? issueKind)
+        public AnalyzerConfigBuilder SetDependencyIssueSeverity(IssueKind? dependencyIssueSeverity)
         {
-            if (issueKind.HasValue)
-                IssueKind = issueKind;
+            if (dependencyIssueSeverity.HasValue)
+                DependencyIssueSeverity = dependencyIssueSeverity;
             return this;
         }
 
@@ -184,7 +184,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             if (InheritanceDepth.HasValue) yield return $"InheritanceDepth={InheritanceDepth}";
             if (IsEnabled.HasValue) yield return $"IsEnabled={IsEnabled}";
-            if (IssueKind.HasValue) yield return $"IssueKind={IssueKind}";
+            if (DependencyIssueSeverity.HasValue) yield return $"DependencyIssueSeverity={DependencyIssueSeverity}";
             if (InfoImportance.HasValue) yield return $"InfoImportance={InfoImportance}";
             if (AnalyzerServiceCallRetryTimeSpans != null) yield return $"AnalyzerServiceCallRetryTimeSpans={string.Join(",", AnalyzerServiceCallRetryTimeSpans)}";
 

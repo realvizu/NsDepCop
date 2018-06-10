@@ -1,23 +1,29 @@
-﻿using System;
-using Codartis.NsDepCop.Core.Interface.Config;
+﻿using Codartis.NsDepCop.Core.Interface.Config;
 
 namespace Codartis.NsDepCop.Core.Interface.Analysis.Messages
 {
     /// <summary>
     /// A message containing an illegal type dependency.
     /// </summary>
-    [Serializable]
-    public class IllegalDependencyMessage : IssueMessageBase
+    public sealed class IllegalDependencyMessage : IssueMessageBase
     {
+        public override IssueDescriptor IssueDefinition => IssueDefinitions.IllegalDependencyIssue;
+
         public TypeDependency IllegalDependency { get; }
+        public override IssueKind IssueKind { get; }
 
         public IllegalDependencyMessage(TypeDependency illegalDependency, IssueKind issueKind)
-            : base(IssueType.IllegalDependency, issueKind)
         {
             IllegalDependency = illegalDependency;
+            IssueKind = issueKind;
         }
 
+        public override SourceSegment? SourceSegment => IllegalDependency.SourceSegment;
+
         public override string ToString()
-            => IssueDefinitions.IllegalDependencyIssue.DescriptionFormatterDelegate.Invoke(IllegalDependency);
+        {
+            var i = IllegalDependency;
+            return $"Illegal namespace reference: {i.FromNamespaceName}->{i.ToNamespaceName} (Type: {i.FromTypeName}->{i.ToTypeName})";
+        }
     }
 }

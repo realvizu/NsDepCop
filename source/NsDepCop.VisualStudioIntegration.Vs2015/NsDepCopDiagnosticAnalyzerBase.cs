@@ -104,68 +104,54 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
             foreach (var analyzerMessage in analyzerMessages)
             {
-                switch (analyzerMessage)
-                {
-                    case ConfigErrorMessage configErrorMessage:
-                        ReportConfigException(context, configErrorMessage.Exception);
-                        break;
+                var diagnostic = ConvertAnalyzerMessageToDiagnostic(context.Node, analyzerMessage);
 
-                    case IllegalDependencyMessage illegalDependencyMessage:
-                        ReportIllegalDependency(context, illegalDependencyMessage.IllegalDependency, illegalDependencyMessage.IssueKind);
-                        break;
-
-                    case TooManyIssuesMessage _:
-                        ReportTooManyIssues(context);
-                        break;
-                }
+                if (diagnostic != null)
+                    context.ReportDiagnostic(diagnostic);
             }
         }
 
-        private static void ReportIllegalDependency(SyntaxNodeAnalysisContext context, TypeDependency illegalDependency, IssueKind issueKind)
+        private static Diagnostic ConvertAnalyzerMessageToDiagnostic(SyntaxNode node, AnalyzerMessageBase analyzerMessage)
         {
-            var diagnostic = CreateIllegalDependencyDiagnostic(context.Node, illegalDependency, issueKind);
-            context.ReportDiagnostic(diagnostic);
+            switch (analyzerMessage)
+            {
+                case IllegalDependencyMessage illegalDependencyMessage:
+                    return CreateIllegalDependencyDiagnostic(node, illegalDependencyMessage.ToString(), illegalDependencyMessage.IssueKind);
+
+                case TooManyIssuesMessage tooManyIssuesMessage:
+                    return CreateTooManyIssuesDiagnostic(node, tooManyIssuesMessage.ToString(), tooManyIssuesMessage.IssueKind);
+
+                case ConfigErrorMessage configErrorMessage:
+                    return CreateConfigExceptionDiagnostic(node, configErrorMessage.ToString());
+
+                default:
+                    return null;
+            }
         }
 
-        private static void ReportConfigException(SyntaxNodeAnalysisContext context, Exception exception)
-        {
-            var diagnostic = CreateConfigExceptionDiagnostic(context.Node, exception);
-            context.ReportDiagnostic(diagnostic);
-        }
-
-        private static void ReportTooManyIssues(SyntaxNodeAnalysisContext context)
-        {
-            var diagnostic = CreateTooManyIssueDiagnostic(context.Node);
-            context.ReportDiagnostic(diagnostic);
-        }
-
-        private static Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, TypeDependency typeDependency, IssueKind issueKind)
+        private static Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, string message, IssueKind issueKind)
         {
             // TODO: get location from typeDependency.SourceSegment?
             var location = Location.Create(node.SyntaxTree, node.Span);
-            var message = IssueDefinitions.IllegalDependencyIssue.GetDynamicDescription(typeDependency);
             return CreateDiagnostic(IllegalDependencyDescriptor, location, message, issueKind);
         }
 
-        private static Diagnostic CreateTooManyIssueDiagnostic(SyntaxNode node)
+        private static Diagnostic CreateTooManyIssuesDiagnostic(SyntaxNode node, string message, IssueKind issueKind)
         {
             var location = Location.Create(node.SyntaxTree, node.Span);
-            var message = IssueDefinitions.TooManyIssuesIssue.StaticDescription;
-            return CreateDiagnostic(IllegalDependencyDescriptor, location, message);
+            return CreateDiagnostic(IllegalDependencyDescriptor, location, message, issueKind);
         }
 
-        private static Diagnostic CreateConfigExceptionDiagnostic(SyntaxNode node, Exception exception)
+        private static Diagnostic CreateConfigExceptionDiagnostic(SyntaxNode node, string message)
         {
             // The location should be the config.nsdepcop file, but we cannot use that because of a Roslyn limitation: 
             // https://github.com/dotnet/roslyn/issues/6649
             // So we report the current syntax node's location.
             var location = Location.Create(node.SyntaxTree, node.Span);
-            var message = IssueDefinitions.ConfigExceptionIssue.GetDynamicDescription(exception);
             return CreateDiagnostic(ConfigExceptionDescriptor, location, message);
         }
 
-        private static Diagnostic CreateDiagnostic(DiagnosticDescriptor diagnosticDescriptor,
-            Location location, string message, IssueKind? issueKind = null)
+        private static Diagnostic CreateDiagnostic(DiagnosticDescriptor diagnosticDescriptor, Location location, string message, IssueKind? issueKind = null)
         {
             var severity = issueKind?.ToDiagnosticSeverity() ?? diagnosticDescriptor.DefaultSeverity;
 

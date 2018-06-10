@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface;
-using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Config;
@@ -22,9 +21,6 @@ namespace Codartis.NsDepCop.MsBuildTask
     /// </remarks>
     public class NsDepCopTask : Task
     {
-        public static readonly IssueDescriptor<Exception> TaskExceptionIssue =
-            new IssueDescriptor<Exception>("NSDEPCOPEX", IssueKind.Error, null, i => $"Exception during NsDepCopTask execution: {i.ToString()}");
-
         /// <summary>
         /// MsBuild task item list that contains the name and full path 
         /// of the assemblies referenced in the current project.
@@ -112,51 +108,25 @@ namespace Codartis.NsDepCop.MsBuildTask
                 {
                     switch (analyzerMessage)
                     {
-                        case IllegalDependencyMessage illegalDependencyMessage:
-                            _logger.LogIssue(
-                                IssueDefinitions.IllegalDependencyIssue, 
-                                illegalDependencyMessage.IllegalDependency, 
-                                illegalDependencyMessage.IssueKind,
-                                illegalDependencyMessage.IllegalDependency.SourceSegment);
+                        case InfoMessageBase infoMessage:
+                            _logger.LogInfo(infoMessage);
                             break;
 
-                        case ConfigErrorMessage configErrorMessage:
-                            _logger.LogIssue(IssueDefinitions.ConfigExceptionIssue, configErrorMessage.Exception);
-                            break;
-
-                        case TooManyIssuesMessage tooManyIssuesMessage:
-                            _logger.LogIssue(IssueDefinitions.TooManyIssuesIssue, tooManyIssuesMessage.IssueKind);
-                            break;
-
-                        case NoConfigFileMessage _:
-                            _logger.LogIssue(IssueDefinitions.NoConfigFileIssue);
-                            break;
-
-                        case ConfigDisabledMessage _:
-                            _logger.LogIssue(IssueDefinitions.ConfigDisabledIssue);
-                            break;
-
-                        case AnalysisStartedMessage analysisStartedMessage:
-                            _logger.LogInfo(analysisStartedMessage.ToString());
-                            break;
-
-                        case AnalysisFinishedMessage analysisFinishedMessage:
-                            _logger.LogInfo(analysisFinishedMessage.ToString());
+                        case IssueMessageBase issueMessage:
+                            _logger.LogIssue(issueMessage);
+                            runWasSuccessful = runWasSuccessful && issueMessage.IssueKind != IssueKind.Error;
                             break;
 
                         default:
                             throw new Exception($"Unexpected analyzer message type: {analyzerMessage?.GetType().Name}");
                     }
-
-                    if (analyzerMessage is IssueMessageBase issueMessage)
-                        runWasSuccessful = runWasSuccessful && issueMessage.IssueKind != IssueKind.Error;
                 }
 
                 return runWasSuccessful;
             }
             catch (Exception e)
             {
-                _logger.LogIssue(TaskExceptionIssue, e);
+                _logger.LogError($"Exception during NsDepCopTask execution: {e}");
                 return false;
             }
         }

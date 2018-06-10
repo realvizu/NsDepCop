@@ -1,4 +1,5 @@
 ﻿using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Microsoft.Build.Framework;
 using Moq;
@@ -13,7 +14,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [Fact]
         public void LogTraceMessage_Success()
         {
-            CreateLogger().LogTraceMessage(new[] { "aaa", "bbb" });
+            CreateLogger().LogTraceMessage(new[] {"aaa", "bbb"});
 
             VerifyLogMessageEvent("aaa", MessageImportance.Low);
             VerifyLogMessageEvent("bbb", MessageImportance.Low);
@@ -22,7 +23,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [Fact]
         public void LogIssue_Error_Success()
         {
-            var issue = new IssueDescriptor("MyCode", IssueKind.Error, "MyDescription");
+            var issue = new TestIssueMessage("MyCode", IssueKind.Error, "MyDescription");
 
             CreateLogger().LogIssue(issue);
 
@@ -32,7 +33,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [Fact]
         public void LogIssue_Warning_Success()
         {
-            var issue = new IssueDescriptor("MyCode", IssueKind.Warning, "MyDescription");
+            var issue = new TestIssueMessage("MyCode", IssueKind.Warning, "MyDescription");
 
             CreateLogger().LogIssue(issue);
 
@@ -42,7 +43,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [Fact]
         public void LogIssue_Info_Success()
         {
-            var issue = new IssueDescriptor("MyCode", IssueKind.Info, "MyDescription");
+            var issue = new TestIssueMessage("MyCode", IssueKind.Info, "MyDescription");
 
             CreateLogger().LogIssue(issue);
 
@@ -52,7 +53,7 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
         [Fact]
         public void LogIssue_Info_HighImportance_Success()
         {
-            var issue = new IssueDescriptor("MyCode", IssueKind.Info, "MyDescription");
+            var issue = new TestIssueMessage("MyCode", IssueKind.Info, "MyDescription");
 
             var logger = CreateLogger();
             logger.InfoImportance = MessageImportance.High;
@@ -61,16 +62,6 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             VerifyLogMessageEvent("MyDescription", MessageImportance.High);
         }
 
-        [Fact]
-        public void LogIssueT_Success()
-        {
-            var issue = new IssueDescriptor<string>("MyCode", IssueKind.Info, "MyDescription", i => i);
-
-            CreateLogger().LogIssue(issue, "MyParameter");
-
-            VerifyLogMessageEvent("MyParameter", MessageImportance.Normal);
-        }
-        
         private MsBuildLoggerGateway CreateLogger() => new MsBuildLoggerGateway(_buildEngineMock.Object);
 
         private void VerifyLogMessageEvent(string message, MessageImportance messageImportance) =>
@@ -82,5 +73,21 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
 
         private void VerifyLogErrorEvent(string code, string message) =>
             _buildEngineMock.Verify(i => i.LogErrorEvent(It.Is<BuildErrorEventArgs>(e => e.Code == code && e.Message.Contains(message))));
+
+        private class TestIssueMessage : IssueMessageBase
+        {
+            public TestIssueMessage(string code, IssueKind issueKind, string title)
+            {
+                Code = code;
+                IssueKind = issueKind;
+                Title = title;
+            }
+
+            public override string Code { get; }
+            public override IssueKind IssueKind { get; }
+            public override string Title { get; }
+
+            public override IssueDescriptor IssueDefinition => null;
+        }
     }
 }

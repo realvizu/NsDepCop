@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Microsoft.Build.Framework;
 
 namespace Codartis.NsDepCop.MsBuildTask
@@ -16,28 +15,20 @@ namespace Codartis.NsDepCop.MsBuildTask
         MessageImportance InfoImportance { get; set; }
 
         /// <summary>
-        /// Logs the given issue with its static description.
+        /// Logs the given issue.
         /// </summary>
-        /// <param name="issueDescriptor">Describes the issue's properties (severity, description).</param>
-        /// <param name="issueKindOverride">If specified then overrides the issue kind defined in the issue descriptor.</param>
-        void LogIssue(IssueDescriptor issueDescriptor, IssueKind? issueKindOverride = null);
-
-        /// <summary>
-        /// Logs the given issue with a dynamic message using the given issue parameter.
-        /// </summary>
-        /// <typeparam name="T">The type of the issue's parameter.</typeparam>
-        /// <param name="issueDescriptor">Describes the issue's properties (severity, description pattern)</param>
-        /// <param name="issueParameter">The parameter of the issue. Will be formatted into the issue's description.</param>
-        /// <param name="issueKindOverride">The severity of the issue. Optional. If specified then overrides the issue's default severity.</param>
-        /// <param name="sourceSegment">The source segment where the issue was found. Optional.</param>
-        void LogIssue<T>(IssueDescriptor<T> issueDescriptor, T issueParameter = default(T), 
-            IssueKind? issueKindOverride = null, SourceSegment? sourceSegment = null);
+        void LogIssue(IssueMessageBase issueMessage);
 
         /// <summary>
         /// Logs the given info message with the configured InfoImportance.
         /// </summary>
+        void LogInfo(InfoMessageBase infoMessage);
+
+        /// <summary>
+        /// Logs the given message as an error.
+        /// </summary>
         /// <param name="message">The message text.</param>
-        void LogInfo(string message);
+        void LogError(string message);
 
         /// <summary>
         /// Log a collection of trace messages. 

@@ -11,7 +11,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     internal class AnalyzerConfig : IAnalyzerConfig
     {
         public bool IsEnabled { get; }
-        public IssueKind IssueKind { get; }
+        public IssueKind DependencyIssueSeverity { get; }
         public Importance InfoImportance { get; }
         public TimeSpan[] AnalyzerServiceCallRetryTimeSpans { get; }
 
@@ -37,7 +37,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             bool autoLowerMaxIssueCount)
         {
             IsEnabled = isEnabled;
-            IssueKind = issueKind;
+            DependencyIssueSeverity = issueKind;
             InfoImportance = infoImportance;
             AnalyzerServiceCallRetryTimeSpans = analyzerServiceCallRetryTimeSpans;
 
@@ -53,7 +53,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public IEnumerable<string> ToStrings()
         {
             yield return $"IsEnabled={IsEnabled}";
-            yield return $"IssueKind={IssueKind}";
+            yield return $"DependencyIssueSeverity={DependencyIssueSeverity}";
             yield return $"InfoImportance={InfoImportance}";
             yield return $"AnalyzerServiceCallRetryTimeSpans={string.Join(",", AnalyzerServiceCallRetryTimeSpans)}";
 
