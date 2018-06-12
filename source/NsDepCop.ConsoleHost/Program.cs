@@ -114,8 +114,6 @@ namespace Codartis.NsDepCop.ConsoleHost
         {
             foreach (var analyzerMessage in analyzerMessages)
                 Console.WriteLine(analyzerMessage);
-
-            Console.WriteLine($"Illegal dependencies count={analyzerMessages.OfType<IllegalDependencyMessage>().Count()}");
         }
 
         private static void DumpRunTimes(List<TimeSpan> runTimeSpans)
