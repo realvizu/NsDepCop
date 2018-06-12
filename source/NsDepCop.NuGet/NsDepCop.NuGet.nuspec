@@ -18,10 +18,12 @@ See project site for details (https://github.com/realvizu/NsDepCop).
         <iconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <developmentDependency>true</developmentDependency>
-        <copyright>Copyright 2013-2017 Ferenc Vizkeleti</copyright>
+        <copyright>Copyright 2013-2018 Ferenc Vizkeleti</copyright>
         <tags>static code analysis tool C# csharp namespace dependency dependencies enforce rule</tags>
         <releaseNotes>
-Performance enhancement: the analyzer keeps running in its own process to avoid repeated creation cost. Shuts down with parent process.
+- Enhancements in launching the out-of-process service host (configurable retry intervals, allow access for any user).
+- MaxIssueCountSeverity - enables breaking the build when a threshold number of dependency violations has been reached.
+- AutoLowerMaxIssueCount - automatically lower MaxIssueCount to encourage cleaning up dependency problems and prohibit introducing new ones.
         </releaseNotes>
     </metadata>
     <files>
