@@ -19,9 +19,10 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         public static readonly TimeSpan[] AnalyzerServiceCallRetryTimeSpans =
         {
             TimeSpan.FromMilliseconds(100),
-            TimeSpan.FromMilliseconds(500),
+            TimeSpan.FromMilliseconds(300),
             TimeSpan.FromMilliseconds(1000),
-            TimeSpan.FromMilliseconds(5000),
+            TimeSpan.FromMilliseconds(3000),
+            TimeSpan.FromMilliseconds(10000),
         };
     }
 }

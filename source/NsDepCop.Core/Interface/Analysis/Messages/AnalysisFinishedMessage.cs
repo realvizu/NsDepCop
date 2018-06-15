@@ -16,6 +16,6 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis.Messages
             DependencyIssueCount = dependencyIssueCount;
         }
 
-        public override string ToString() => $"Analysis took: {AnalysisDuration:mm\\:ss\\.fff}, dependency issues count: {DependencyIssueCount}.";
+        public override string ToString() => $"Analysis took: {AnalysisDuration:mm\\:ss\\.fff}, dependency issues: {DependencyIssueCount}.";
     }
 }
