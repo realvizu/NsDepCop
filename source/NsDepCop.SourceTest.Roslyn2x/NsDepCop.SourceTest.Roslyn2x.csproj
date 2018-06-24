@@ -201,6 +201,10 @@
     <Content Include="Cs7_2_NonTrailingNamedArguments\Cs7_2_NonTrailingNamedArguments.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Cs7_3_AttributeOnPropertyBackingField\Cs7_3_AttributeOnPropertyBackingField.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Cs7_3_Tests.cs" />
     <Compile Include="Cs7_2_Tests.cs" />
     <Compile Include="Cs7_1_Tests.cs" />
     <Content Include="Cs7_1_DefaultLiteral\Cs7_1_DefaultLiteral.cs">
@@ -384,6 +388,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Cs7_2_NonTrailingNamedArguments\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs7_3_AttributeOnPropertyBackingField\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config">
