@@ -32,9 +32,7 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn2x
             var typeSymbol = semanticModel.GetTypeInfo(node).Type;
 
             // Special case: deconstructing declaration with var outside, e.g.: var (d, e) = Method2();
-            if (typeSymbol != null &&
-                typeSymbol.TypeKind == TypeKind.Error &&
-                typeSymbol.MetadataName == "var" &&
+            if (typeSymbol == null &&
                 node.Parent is DeclarationExpressionSyntax &&
                 node.Parent.ChildNodes().Any(i => i is ParenthesizedVariableDesignationSyntax))
                 return DetermineReferencedType(node.Parent, semanticModel);

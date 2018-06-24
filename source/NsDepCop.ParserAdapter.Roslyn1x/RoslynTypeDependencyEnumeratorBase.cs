@@ -23,6 +23,9 @@ namespace Codartis.NsDepCop.ParserAdapter
             _traceMessageHandler = traceMessageHandler;
         }
 
+        protected virtual CSharpParseOptions ParseOptions => null;
+        protected abstract TypeDependencyEnumeratorSyntaxVisitor CreateSyntaxVisitor(SemanticModel semanticModel, ISyntaxNodeAnalyzer syntaxNodeAnalyzer);
+
         public IEnumerable<TypeDependency> GetTypeDependencies(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {
             var referencedAssemblies = referencedAssemblyPaths.Select(LoadMetadata).Where(i => i != null).ToList();
@@ -32,17 +35,20 @@ namespace Codartis.NsDepCop.ParserAdapter
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, allowUnsafe: true));
 
             foreach (var syntaxTree in syntaxTrees)
-            {
-                var documentRootNode = syntaxTree.GetRoot();
-                if (documentRootNode != null)
-                {
-                    var syntaxVisitor = new TypeDependencyEnumeratorSyntaxVisitor(compilation.GetSemanticModel(syntaxTree), _syntaxNodeAnalyzer);
-                    syntaxVisitor.Visit(documentRootNode);
+            foreach (var typeDependency in GetTypeDependenciesForSyntaxTree(compilation, syntaxTree, _syntaxNodeAnalyzer))
+                yield return typeDependency;
+        }
 
-                    foreach (var typeDependency in syntaxVisitor.TypeDependencies)
-                        yield return typeDependency;
-                }
-            }
+        private IEnumerable<TypeDependency> GetTypeDependenciesForSyntaxTree(CSharpCompilation compilation, SyntaxTree syntaxTree, ISyntaxNodeAnalyzer syntaxNodeAnalyzer)
+        {
+            var documentRootNode = syntaxTree.GetRoot();
+            if (documentRootNode == null)
+                return Enumerable.Empty<TypeDependency>();
+
+            var semanticModel = compilation.GetSemanticModel(syntaxTree);
+            var syntaxVisitor = CreateSyntaxVisitor(semanticModel, syntaxNodeAnalyzer);
+            syntaxVisitor.Visit(documentRootNode);
+            return syntaxVisitor.TypeDependencies;
         }
 
         public IEnumerable<TypeDependency> GetTypeDependencies(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
@@ -58,7 +64,7 @@ namespace Codartis.NsDepCop.ParserAdapter
             if (!(wrappedValue is ObjectWrapper<TUnwrapped>))
                 throw new ArgumentException("Wrapped value should be a subclass of ObjectWrapper<T>).");
 
-            return ((ObjectWrapper<TUnwrapped>)wrappedValue).Value;
+            return ((ObjectWrapper<TUnwrapped>) wrappedValue).Value;
         }
 
         private MetadataReference LoadMetadata(string fileName)
@@ -82,7 +88,7 @@ namespace Codartis.NsDepCop.ParserAdapter
                 using (var streamReader = new StreamReader(stream))
                 {
                     var sourceText = streamReader.ReadToEnd();
-                    return CSharpSyntaxTree.ParseText(sourceText, null, fileName);
+                    return CSharpSyntaxTree.ParseText(sourceText, ParseOptions, fileName);
                 }
             }
             catch (Exception e)

@@ -14,6 +14,8 @@ namespace Codartis.NsDepCop.SourceTest
 {
     internal abstract class SourceTestSpecificationBase : FileBasedTestsBase
     {
+        protected virtual CSharpParseOptions CSharpParseOptions => null;
+
         private readonly string _name;
         private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
         private readonly List<SourceLineSegment> _invalidLineSegments = new List<SourceLineSegment>();
@@ -45,7 +47,7 @@ namespace Codartis.NsDepCop.SourceTest
         {
             var compilation = CSharpCompilation.Create(
                 "NsDepCopProject",
-                sourceFiles.Select(i => CSharpSyntaxTree.ParseText(LoadFile(i))),
+                sourceFiles.Select(i => CSharpSyntaxTree.ParseText(LoadFile(i), CSharpParseOptions)),
                 referencedAssemblies.Select(i => MetadataReference.CreateFromFile(i)),
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, allowUnsafe: true));
 

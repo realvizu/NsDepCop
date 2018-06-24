@@ -41,6 +41,7 @@
     <NoWarn>
     </NoWarn>
     <DeployExtension>False</DeployExtension>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

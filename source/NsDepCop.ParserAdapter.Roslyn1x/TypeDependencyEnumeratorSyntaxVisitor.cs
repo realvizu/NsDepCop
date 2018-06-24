@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.ParserAdapter
     /// <summary>
     /// Implements a syntax visitor that traverses the syntax tree and finds all type dependencies. 
     /// </summary>
-    internal class TypeDependencyEnumeratorSyntaxVisitor : CSharpSyntaxVisitor
+    public class TypeDependencyEnumeratorSyntaxVisitor : CSharpSyntaxVisitor
     {
         /// <summary>
         /// The semantic model of the current document.
@@ -68,7 +68,7 @@ namespace Codartis.NsDepCop.ParserAdapter
         /// Collects type dependencies for a given syntax node.
         /// </summary>
         /// <param name="node">A syntax node.</param>
-        private void AnalyzeNode(SyntaxNode node)
+        protected void AnalyzeNode(SyntaxNode node)
         {
             var typeDependencies = _syntaxNodeAnalyzer.GetTypeDependencies(node, _semanticModel);
             _typeDependencies.AddRange(typeDependencies);
