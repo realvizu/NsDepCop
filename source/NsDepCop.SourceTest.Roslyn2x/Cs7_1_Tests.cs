@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.SourceTest
     /// The name of the source file and its containing folder is the same as the name of the test.
     /// </remarks>
     // ReSharper disable once InconsistentNaming
-    public class Cs7_1Tests
+    public class Cs7_1_Tests
     {
         [Fact]
         public void Cs7_1_DefaultLiteral()

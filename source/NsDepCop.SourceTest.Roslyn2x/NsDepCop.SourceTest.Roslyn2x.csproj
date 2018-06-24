@@ -198,7 +198,11 @@
     <Content Include="AnalyzerFeature_DisallowedDependency\AnalyzerFeature_DisallowedDependency.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Cs7_1Tests.cs" />
+    <Content Include="Cs7_2_NonTrailingNamedArguments\Cs7_2_NonTrailingNamedArguments.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Cs7_2_Tests.cs" />
+    <Compile Include="Cs7_1_Tests.cs" />
     <Content Include="Cs7_1_DefaultLiteral\Cs7_1_DefaultLiteral.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -377,6 +381,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Cs7_1_InferredTupleNames\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs7_2_NonTrailingNamedArguments\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config">
