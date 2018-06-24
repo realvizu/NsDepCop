@@ -35,5 +35,20 @@ namespace Codartis.NsDepCop.SourceTest
 
                 .Execute();
         }
+
+        [Fact]
+        public void Cs7_1_InferredTupleNames()
+        {
+            SourceTestSpecification.Create()
+                
+                // public void M1(Class2 p1)
+                .ExpectInvalidSegment(11, 24, 30)
+
+                // var tuple = (p1.F1, p1.F2);
+                .ExpectInvalidSegment(13, 26, 28)
+                .ExpectInvalidSegment(13, 33, 35)
+
+                .Execute();
+        }
     }
 }

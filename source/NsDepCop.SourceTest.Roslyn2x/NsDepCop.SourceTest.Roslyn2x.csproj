@@ -202,6 +202,9 @@
     <Content Include="Cs7_1_DefaultLiteral\Cs7_1_DefaultLiteral.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Cs7_1_InferredTupleNames\Cs7_1_InferredTupleNames.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="SourceLineSegment.cs" />
     <Compile Include="Cs7Tests.cs" />
     <Compile Include="AnalyzerFeatureTests.cs" />
@@ -371,6 +374,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Cs7_1_DefaultLiteral\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cs7_1_InferredTupleNames\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config">
