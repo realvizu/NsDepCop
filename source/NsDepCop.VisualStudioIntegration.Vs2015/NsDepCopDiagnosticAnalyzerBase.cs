@@ -1,3 +1,7 @@
+// Diagnostic RS 1022 (Do not use types from Workspaces assembly in an analyzer) is disabled
+// because I don't have any other idea how to find the config.nsdepcop file for a syntax node.
+#pragma warning disable RS1022
+
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -192,3 +196,5 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         protected static void LogTraceMessage(string message) => Debug.WriteLine($"[{ProductConstants.ToolName}] {message}");
     }
 }
+
+#pragma warning restore RS1022

@@ -1,3 +1,5 @@
+#pragma warning disable RS1022
+
 using Codartis.NsDepCop.ParserAdapter.Roslyn1x;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -16,3 +18,5 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         }
     }
 }
+
+#pragma warning restore RS1022
