@@ -67,12 +67,11 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNodeAndLogException,
-                SyntaxKind.IdentifierName,
-                SyntaxKind.GenericName);
-
+            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNodeAndLogException, GetSyntaxKindsToRegister());
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         }
+
+        protected abstract SyntaxKind[] GetSyntaxKindsToRegister();
 
         private void AnalyzeSyntaxNodeAndLogException(SyntaxNodeAnalysisContext context)
         {

@@ -2,6 +2,7 @@
 
 using Codartis.NsDepCop.ParserAdapter.Roslyn1x;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
@@ -15,6 +16,15 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         public NsDepCopDiagnosticAnalyzer()
             : base(new Roslyn1TypeDependencyEnumerator(LogTraceMessage))
         {
+        }
+
+        protected override SyntaxKind[] GetSyntaxKindsToRegister()
+        {
+            return new []
+            {
+                SyntaxKind.IdentifierName,
+                SyntaxKind.GenericName
+            };
         }
     }
 }
