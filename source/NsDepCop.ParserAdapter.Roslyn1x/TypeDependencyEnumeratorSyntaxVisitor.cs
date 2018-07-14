@@ -10,6 +10,10 @@ namespace Codartis.NsDepCop.ParserAdapter
     /// <summary>
     /// Implements a syntax visitor that traverses the syntax tree and finds all type dependencies. 
     /// </summary>
+    /// <remarks>
+    /// WARNING: when adding a new SyntaxNode type to the visitor,
+    /// also add it to NsDepCopDiagnosticAnalyzerBase.GetSyntaxKindsToRegister
+    /// </remarks>
     public class TypeDependencyEnumeratorSyntaxVisitor : CSharpSyntaxVisitor
     {
         /// <summary>
