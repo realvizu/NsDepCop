@@ -1,7 +1,7 @@
 # NsDepCop Change Log
 
 ## v1.8.0
-(06/2018)
+(07/2018)
 
 - [x] Enhancements in launching the out-of-process service host (configurable retry intervals, allow access for any user).
 - [x] MaxIssueCountSeverity - enables breaking the build when a threshold number of dependency violations has been reached.

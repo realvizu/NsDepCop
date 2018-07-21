@@ -3,6 +3,7 @@
 * [Supported project types](#supported-project-types)
 * [Dependency rules](#dependency-rules)
 * [Config inheritance](#config-inheritance)
+* [Dealing with a high number of dependency issues](#dealing-with-a-high-number-of-dependency-issues)
 * [Controlling verbosity](#controlling-verbosity)
 * [Config XML schema](#config-xml-schema)
 * [Config XML schema support in Visual Studio](#config-xml-schema-support-in-visual-studio)
@@ -44,7 +45,9 @@ Attribute | Values | Description
 **CodeIssueKind** | Info, **Warning**, Error | Dependency violations are reported at this severity level.
 **ChildCanDependOnParentImplicitly** | true, **false** | If set to true then all child namespaces can depend on any of their parents without an explicit allowing rule. The recommended value is **true**. (False is default for backward compatibility.)
 **InfoImportance** | Low, **Normal**, High | Info messages are reported to MSBuild at this level. This setting and the MSBuild verbosity (/v) swicth together determine whether a message appears on the output or not. See [Controlling verbosity](#controlling-verbosity) for details.
-**MaxIssueCount** | int (>0), default: **100** | Analysis stops when reaching this number of issues.
+**MaxIssueCount** | int (>0), default: **100** | Analysis stops when reaching this number of dependency issues.
+**MaxIssueCountSeverity** | Info, **Warning**, Error | This is the severity of the issue of reaching MaxIssueCount.
+**AutoLowerMaxIssueCount** | true, **false** | If set to true then each successful build yielding fewer issues than MaxIssueCount sets MaxIssueCount to the current number of issues.
 **InheritanceDepth** | int (>=0), default: **0** | Sets the number of parent folder levels to inherit config from. 0 means no inheritance.
 
 ### Whitelisting
@@ -163,6 +166,23 @@ More info:
 Even if all the settings come from a higher-level config, you have to put **at least a minimal config to the project level**, that enables the inheritance in the first place.
 E.g.: `<NsDepCopConfig InheritanceDepth="3"/>`
 * You can turn on diagnostic messages ([Controlling verbosity](#controlling-verbosity)) to see which config files were found and loaded by the tool and what effective config resulted from combining them.
+
+## Dealing with a high number of dependency issues
+If there are so many dependency issues that you cannot fix them all at once but you still want to control them somehow then try the following.
+
+* Prevent the introduction of more dependency issues. Set the current number of issues as the maximum and make it an error to create more.
+
+```xml
+<NsDepCopConfig IssueKind="Warning" MaxIssueCount="<the current number of issues>" MaxIssueCountSeverity="Error">
+```
+
+* Encourage developers to gradually fix the dependency issues by automatically lowering the max issue count whenever possible. Turn on AutoLowerMaxIssueCount.
+
+```xml
+<NsDepCopConfig IssueKind="Warning" MaxIssueCount="100" MaxIssueCountSeverity="Error" AutoLowerMaxIssueCount="true">
+```
+
+> Please note that when NsDepCop modifies the nsdepcop.config files their formatting will be reset (because of the XML deserialization/serialization roundtrip).
 
 ## Controlling verbosity
 * Besides emitting dependency violation issues, the tool can emit diagnostic and info messages too.
