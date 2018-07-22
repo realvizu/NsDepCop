@@ -179,7 +179,7 @@ If there are so many dependency issues that you cannot fix them all at once but 
 * Encourage developers to gradually fix the dependency issues by automatically lowering the max issue count whenever possible. Turn on AutoLowerMaxIssueCount.
 
 ```xml
-<NsDepCopConfig IssueKind="Warning" MaxIssueCount="100" MaxIssueCountSeverity="Error" AutoLowerMaxIssueCount="true">
+<NsDepCopConfig IssueKind="Warning" AutoLowerMaxIssueCount="true" MaxIssueCount="<the current number of issues>" MaxIssueCountSeverity="Error">
 ```
 
 > Please note that when NsDepCop modifies the nsdepcop.config files their formatting will be reset (because of the XML deserialization/serialization roundtrip).
