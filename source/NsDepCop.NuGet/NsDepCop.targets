@@ -1,7 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
     <UsingTask AssemblyFile="..\tools\NsDepCop.MsBuildTask.dll" TaskName="Codartis.NsDepCop.MsBuildTask.NsDepCopTask" />
-    <Target Name="NsDepCop" AfterTargets="AfterBuild">
+    
+    <Target Name="NsDepCop">
         <NsDepCopTask ReferencePath="@(ReferencePath)" Compile="@(Compile)" BaseDirectory="$(MSBuildProjectDirectory)" />
     </Target>
+
+    <PropertyGroup>
+        <TargetsTriggeredByCompilation>
+            $(TargetsTriggeredByCompilation);
+            NsDepCop
+        </TargetsTriggeredByCompilation>
+    </PropertyGroup>
+
 </Project>

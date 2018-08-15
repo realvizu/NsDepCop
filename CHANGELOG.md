@@ -1,5 +1,9 @@
 # NsDepCop Change Log
 
+## v1.8.1
+(??/2018)
+- [x] Changed: supporting MSBuild incremental compilation (that is, analysis skipped when no source file have changed).
+
 ## v1.8.0
 (07/2018)
 
