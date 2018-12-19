@@ -16,6 +16,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
         {
             var serviceProvider = GetGlobalServiceProvider();
 
+            ThreadHelper.ThrowIfNotOnUIThread();
             var activityLog = (IVsActivityLog)serviceProvider.GetService(typeof(SVsActivityLog));
             if (activityLog == null)
                 throw new Exception("Cannot acquire SVsActivityLog.");
@@ -24,6 +25,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public static Workspace GetWorkspace()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var componentModel = GetComponentModelService();
 
             var visualStudioWorkspace = componentModel.GetService<VisualStudioWorkspace>();
@@ -34,6 +36,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static IComponentModel GetComponentModelService()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var serviceProvider = GetGlobalServiceProvider();
 
             var componentModel = (IComponentModel)serviceProvider.GetService(typeof(SComponentModel));
@@ -44,6 +47,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static IServiceProvider GetGlobalServiceProvider()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var serviceProvider = ServiceProvider.GlobalProvider;
             if (serviceProvider == null)
                 throw new Exception("Cannot acquire ServiceProvider.GlobalProvider.");

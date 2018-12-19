@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Codartis.NsDepCop.Core.Util;
+using Microsoft.VisualStudio.Shell;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
 {
@@ -18,6 +19,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public string FindByAssemblyName(string assemblyName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var workspace = VisualStudioServiceGateway.GetWorkspace();
 
             var currentSolution = workspace.CurrentSolution;

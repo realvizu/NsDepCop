@@ -14,6 +14,7 @@ using Codartis.NsDepCop.Core.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Codartis.NsDepCop.VisualStudioIntegration
@@ -81,6 +82,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             }
             catch (Exception e)
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 LogExceptionToActivityLog(e);
             }
         }
@@ -188,6 +190,7 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         private static void LogExceptionToActivityLog(Exception exception)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var vsActivityLog = VisualStudioServiceGateway.GetActivityLogService();
             vsActivityLog.LogEntry((uint) __ACTIVITYLOG_ENTRYTYPE.ALE_ERROR, ProductConstants.ToolName, exception.ToString());
         }
