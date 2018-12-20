@@ -82,8 +82,10 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             }
             catch (Exception e)
             {
-                ThreadHelper.ThrowIfNotOnUIThread();
-                LogExceptionToActivityLog(e);
+                ThreadHelper.JoinableTaskFactory.Run(async delegate {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    LogExceptionToActivityLog(e);
+                });
             }
         }
 

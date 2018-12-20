@@ -19,6 +19,14 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
 
         public string FindByAssemblyName(string assemblyName)
         {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                return FindByAssemblyNameCore(assemblyName);
+            });
+        }
+
+        private string FindByAssemblyNameCore(string assemblyName)
+        {
             ThreadHelper.ThrowIfNotOnUIThread();
             var workspace = VisualStudioServiceGateway.GetWorkspace();
 
