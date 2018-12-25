@@ -14,10 +14,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
     {
         public static void Activate(MessageHandler traceMessageHandler)
         {
-            var codeBase = new Uri(Assembly.GetExecutingAssembly().CodeBase);
-            var workingFolder = Path.GetDirectoryName(codeBase.AbsolutePath);
+            var location = Assembly.GetExecutingAssembly().Location;
+            var workingFolder = Path.GetDirectoryName(location);
             if (workingFolder == null)
-                throw new Exception($"Unable to determine working folder from assembly codebase: {codeBase.AbsolutePath}");
+                throw new Exception($"Unable to determine working folder from assembly location: {location}");
 
             var serviceExePath = Path.Combine(workingFolder, ServiceAddressProvider.ServiceHostProcessName + ".exe");
 
