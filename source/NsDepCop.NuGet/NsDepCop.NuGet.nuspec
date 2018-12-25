@@ -21,10 +21,7 @@ See project site for details (https://github.com/realvizu/NsDepCop).
         <copyright>Copyright 2013-2018 Ferenc Vizkeleti</copyright>
         <tags>static code analysis tool C# csharp namespace dependency dependencies enforce rule</tags>
         <releaseNotes>
-- Enhancements in launching the out-of-process service host (configurable retry intervals, allow access for any user).
-- MaxIssueCountSeverity - enables breaking the build when a threshold number of dependency violations has been reached.
-- AutoLowerMaxIssueCount - automatically lower MaxIssueCount to encourage cleaning up dependency problems and prohibit introducing new ones.
-- Supports C# up to 7.3.
+- Fix: #43 - RemotingException when path contains space.
         </releaseNotes>
     </metadata>
     <files>

@@ -10,9 +10,9 @@
 ## Exception: Unable to communicate with NsDepCop service
 > Applies to version v1.7.1 or later.
 
-This problem is likely caused by the analyzer client not waiting enough time for the analyzer server started in a separate process to spin up.
+This problem is either caused by a bug that was fixed in v1.8.1 or by the analyzer client not waiting enough time for the analyzer server started in a separate process to spin up.
 To fix it:
-* Update to v1.8.0 or later. 
+* Update to v1.8.1 or later. 
 * Try to set longer and/or more wait intervals in your config.nsdepcop file(s) by adding the AnalyzerServiceCallRetryTimeSpans attribute to the root element and fiddling with its value. The value should be a comma separated list of wait times between retries (in milliseconds).
   * E.g. this config waits 100ms, then 1sec, then 10sec:
 
