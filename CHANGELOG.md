@@ -1,8 +1,9 @@
 # NsDepCop Change Log
 
 ## v1.8.1
-(??/2018)
-- [x] Changed: supporting MSBuild incremental compilation (that is, analysis skipped when no source file have changed).
+(12/2018)
+
+- [x] Fix: #43 - RemotingException when path contains space.
 
 ## v1.8.0
 (07/2018)
