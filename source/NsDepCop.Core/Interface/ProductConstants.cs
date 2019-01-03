@@ -9,6 +9,8 @@ namespace Codartis.NsDepCop.Core.Interface
     {
         public const string ToolName = "NsDepCop";
         public const string DefaultConfigFileName = "config.nsdepcop";
+        public const string DisableToolEnvironmentVariableName = "DisableNsDepCop";
+
         public static readonly string Version = $"{Assembly.GetExecutingAssembly().GetName().Version}";
     }
 }

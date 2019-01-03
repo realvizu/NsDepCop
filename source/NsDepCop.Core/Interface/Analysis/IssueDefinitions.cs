@@ -36,5 +36,12 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
                 "NSDEPCOP05",
                 IssueKind.Error,
                 "Error loading NsDepCop config.");
+
+        public static readonly IssueDescriptor ToolDisabledIssue =
+            new IssueDescriptor(
+                "NSDEPCOP06",
+                IssueKind.Info,
+                $"Analysis is disabled with environment variable {ProductConstants.DisableToolEnvironmentVariableName}.");
+
     }
 }

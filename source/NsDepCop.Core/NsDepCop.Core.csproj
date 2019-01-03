@@ -69,6 +69,7 @@
     <Compile Include="Interface\Analysis\IssueDefinitions.cs" />
     <Compile Include="Interface\Analysis\IssueDescriptor.cs" />
     <Compile Include="Interface\Analysis\Messages\AnalysisFinishedMessage.cs" />
+    <Compile Include="Interface\Analysis\Messages\ToolDisabledMessage.cs" />
     <Compile Include="Interface\Analysis\Messages\NoConfigFileMessage.cs" />
     <Compile Include="Interface\Analysis\Messages\InfoMessageBase.cs" />
     <Compile Include="Interface\Analysis\Messages\TooManyIssuesMessage.cs" />

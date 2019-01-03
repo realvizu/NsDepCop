@@ -39,3 +39,11 @@ Title|Error loading NsDepCop config.
 Severity|Error
 Explanation|There was an error while loading the config.nsdepcop file. Some possible reasons: malformed content, file permission or locking problem. The diagnostic contains the actual exception message.
 To Do|Make sure that the file can be read by the user running the build or Visual Studio and make sure that its content is correct.
+
+### NSDEPCOP06
+
+Title|Analysis is disabled with environment variable.
+:-|:-
+Severity|Info
+Explanation|If environment variable DisableNsDepCop is set to True or 1 then analysis is skipped.
+To Do|None, this is just an informational message.
