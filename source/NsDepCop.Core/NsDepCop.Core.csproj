@@ -80,6 +80,7 @@
     <Compile Include="Interface\Analysis\Remote\IRemoteMessage.cs" />
     <Compile Include="Interface\Analysis\Remote\RemoteIllegalDependencyMessage.cs" />
     <Compile Include="Interface\Config\IUpdateableConfigProvider.cs" />
+    <Compile Include="Util\AssemblyHelper.cs" />
     <Compile Include="Util\RetryHelper.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
     <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
