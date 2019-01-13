@@ -26,7 +26,7 @@ namespace Codartis.NsDepCop.MsBuildTask
             var assemblyName = new AssemblyName(args.Name);
             var candidateAssemblyPath = Path.Combine(_directoryPath, assemblyName.Name + ".dll");
 
-            return File.Exists(candidateAssemblyPath)
+            return File.Exists(candidateAssemblyPath) 
                 ? Assembly.LoadFrom(candidateAssemblyPath) 
                 : null;
         }

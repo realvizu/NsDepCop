@@ -14,15 +14,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
     {
         public static void Activate(MessageHandler traceMessageHandler)
         {
-            var codeBaseUri = new Uri(Assembly.GetExecutingAssembly().CodeBase);
-            if (!codeBaseUri.IsFile)
-                throw new Exception($"Unable to determine working folder because CodeBase is not a file Uri: {codeBaseUri}");
-
-            var localPath = codeBaseUri.LocalPath;
-            var workingFolder = Path.GetDirectoryName(localPath);
-            if (workingFolder == null)
-                throw new Exception($"Unable to determine working folder from assembly location: {codeBaseUri}");
-
+            var workingFolder = Assembly.GetExecutingAssembly().GetDirectory();
             var serviceExePath = Path.Combine(workingFolder, ServiceAddressProvider.ServiceHostProcessName + ".exe");
 
             CreateServer(workingFolder, serviceExePath, GetProcessId(), traceMessageHandler);
