@@ -5,6 +5,7 @@ using Codartis.NsDepCop.Core.Implementation.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Config;
+using DotNet.Globbing;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -62,7 +63,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             SetUpEnabledConfig();
 
             _typeDependencyEnumeratorMock
-                .Setup(i => i.GetTypeDependencies(It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>()))
+                .Setup(i => i.GetTypeDependencies(It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<Glob>>()))
                 .Returns(Enumerable.Repeat(new TypeDependency("N1", "T1", "N2", "T2", DummySourceSegment), 2));
 
             AnalyzeProject().OfType<IllegalDependencyMessage>().Should().HaveCount(2);
@@ -74,7 +75,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             SetUpEnabledConfig();
 
             _typeDependencyEnumeratorMock
-                .Setup(i => i.GetTypeDependencies(It.IsAny<ISyntaxNode>(), It.IsAny<ISemanticModel>()))
+                .Setup(i => i.GetTypeDependencies(It.IsAny<ISyntaxNode>(), It.IsAny<ISemanticModel>(), It.IsAny<IEnumerable<Glob>>()))
                 .Returns(Enumerable.Repeat(new TypeDependency("N1", "T1", "N2", "T2", DummySourceSegment), 2));
 
             AnalyzeSyntaxNode().OfType<IllegalDependencyMessage>().Should().HaveCount(2);
@@ -86,7 +87,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             SetUpEnabledConfig(maxIssueCount: 2);
 
             _typeDependencyEnumeratorMock
-                .Setup(i => i.GetTypeDependencies(It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>()))
+                .Setup(i => i.GetTypeDependencies(It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<Glob>>()))
                 .Returns(Enumerable.Repeat(new TypeDependency("N1", "T1", "N2", "T2", DummySourceSegment), 10));
 
             var dependencyAnalyzer = CreateDependencyAnalyzer();
@@ -106,7 +107,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
             SetUpEnabledConfig(maxIssueCount: maxIssueCount, autoLowerMaxIssueCount: true);
 
             _typeDependencyEnumeratorMock
-                .Setup(i => i.GetTypeDependencies(It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>()))
+                .Setup(i => i.GetTypeDependencies(It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<string>>(), It.IsAny<IEnumerable<Glob>>()))
                 .Returns(Enumerable.Repeat(new TypeDependency("N1", "T1", "N2", "T2", DummySourceSegment), actualIssueCount));
 
             var expectedIssueCount = Math.Min(actualIssueCount, maxIssueCount);

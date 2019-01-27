@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
@@ -19,6 +20,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public IssueKind? DependencyIssueSeverity { get; private set; }
         public Importance? InfoImportance { get; private set; }
         public TimeSpan[] AnalyzerServiceCallRetryTimeSpans { get; private set; }
+        public List<string> SourcePathExclusionPatterns { get; }
+        public string RootPath { get; private set; }
 
         public bool? ChildCanDependOnParentImplicitly { get; private set; }
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
@@ -30,6 +33,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public AnalyzerConfigBuilder()
         {
+            SourcePathExclusionPatterns = new List<string>();
             AllowRules = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
             DisallowRules = new HashSet<NamespaceDependencyRule>();
             VisibleTypesByNamespace = new Dictionary<Namespace, TypeNameSet>();
@@ -42,6 +46,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 DependencyIssueSeverity ?? ConfigDefaults.DependencyIssueSeverity,
                 InfoImportance ?? DefaultInfoImportance ?? ConfigDefaults.InfoImportance,
                 AnalyzerServiceCallRetryTimeSpans ?? ConfigDefaults.AnalyzerServiceCallRetryTimeSpans,
+                SourcePathExclusionPatterns.Select(i => ToRootedPath(RootPath, i)).ToArray(),
                 ChildCanDependOnParentImplicitly ?? ConfigDefaults.ChildCanDependOnParentImplicitly,
                 AllowRules,
                 DisallowRules,
@@ -49,17 +54,18 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 MaxIssueCount ?? ConfigDefaults.MaxIssueCount,
                 MaxIssueCountSeverity ?? ConfigDefaults.MaxIssueCountSeverity,
                 AutoLowerMaxIssueCount ?? ConfigDefaults.AutoLowerMaxIssueCount
-                );
+            );
         }
 
         public AnalyzerConfigBuilder Combine(AnalyzerConfigBuilder analyzerConfigBuilder)
         {
-            // Note that InhertanceDepth is not combined.
+            // Note that InheritanceDepth is not combined.
 
             SetIsEnabled(analyzerConfigBuilder.IsEnabled);
             SetDependencyIssueSeverity(analyzerConfigBuilder.DependencyIssueSeverity);
             SetInfoImportance(analyzerConfigBuilder.InfoImportance);
             SetAnalyzerServiceCallRetryTimeSpans(analyzerConfigBuilder.AnalyzerServiceCallRetryTimeSpans);
+            AddSourcePathExclusionPatterns(analyzerConfigBuilder.SourcePathExclusionPatterns);
 
             SetChildCanDependOnParentImplicitly(analyzerConfigBuilder.ChildCanDependOnParentImplicitly);
             AddAllowRules(analyzerConfigBuilder.AllowRules);
@@ -108,8 +114,15 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
 
         public AnalyzerConfigBuilder SetAnalyzerServiceCallRetryTimeSpans(TimeSpan[] analyzerServiceCallRetryTimeSpans)
         {
-            if (analyzerServiceCallRetryTimeSpans!= null)
+            if (analyzerServiceCallRetryTimeSpans != null)
                 AnalyzerServiceCallRetryTimeSpans = analyzerServiceCallRetryTimeSpans;
+            return this;
+        }
+
+        public AnalyzerConfigBuilder AddSourcePathExclusionPatterns(IEnumerable<string> sourcePathExclusionPatterns)
+        {
+            if (sourcePathExclusionPatterns != null)
+                SourcePathExclusionPatterns.AddRange(sourcePathExclusionPatterns);
             return this;
         }
 
@@ -180,20 +193,49 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             return this;
         }
 
+        public AnalyzerConfigBuilder SetRootPath(string rootPath)
+        {
+            if (rootPath != null)
+            {
+                if (!Path.IsPathRooted(rootPath))
+                    throw new Exception($"Rooted path expected: {rootPath}");
+
+                RootPath = rootPath;
+            }
+
+            return this;
+        }
+
         public IEnumerable<string> ToStrings()
         {
             if (InheritanceDepth.HasValue) yield return $"InheritanceDepth={InheritanceDepth}";
             if (IsEnabled.HasValue) yield return $"IsEnabled={IsEnabled}";
             if (DependencyIssueSeverity.HasValue) yield return $"DependencyIssueSeverity={DependencyIssueSeverity}";
             if (InfoImportance.HasValue) yield return $"InfoImportance={InfoImportance}";
-            if (AnalyzerServiceCallRetryTimeSpans != null) yield return $"AnalyzerServiceCallRetryTimeSpans={string.Join(",", AnalyzerServiceCallRetryTimeSpans)}";
+            if (AnalyzerServiceCallRetryTimeSpans != null) yield return $"AnalyzerServiceCallRetryTimeSpans={string.Join(";", AnalyzerServiceCallRetryTimeSpans)}";
+            if (SourcePathExclusionPatterns != null) yield return $"SourcePathExclusionPatterns={string.Join(";", SourcePathExclusionPatterns)}";
+            if (RootPath != null) yield return $"RootPath={RootPath}";
 
             if (ChildCanDependOnParentImplicitly.HasValue) yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
-            if (AllowRules.Any()) foreach (var s in AllowRules.ToStrings()) yield return s;
-            if (DisallowRules.Any()) foreach (var s in DisallowRules.ToStrings()) yield return s;
-            if (VisibleTypesByNamespace.Any()) foreach (var s in VisibleTypesByNamespace.ToStrings()) yield return s;
+            if (AllowRules.Any())
+                foreach (var s in AllowRules.ToStrings())
+                    yield return s;
+            if (DisallowRules.Any())
+                foreach (var s in DisallowRules.ToStrings())
+                    yield return s;
+            if (VisibleTypesByNamespace.Any())
+                foreach (var s in VisibleTypesByNamespace.ToStrings())
+                    yield return s;
             if (MaxIssueCount.HasValue) yield return $"MaxIssueCount={MaxIssueCount}";
             if (MaxIssueCountSeverity.HasValue) yield return $"MaxIssueCountSeverity={MaxIssueCountSeverity}";
+        }
+
+        private static string ToRootedPath(string rootPath, string path)
+        {
+            if (rootPath == null || Path.IsPathRooted(path))
+                return path;
+
+            return Path.Combine(rootPath, path);
         }
     }
 }

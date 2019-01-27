@@ -95,6 +95,13 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="ExcludedFiles" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>
+                        File patterns that define which source files should be excluded from the analysis. Comma separated list of https://github.com/dazinator/DotNet.Glob patterns. Paths are relative to the config file's folder. E.g.: **/*.g.cs,TestFiles/*.cs
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
 

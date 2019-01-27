@@ -5,6 +5,7 @@ using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
+using DotNet.Globbing;
 
 namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 {
@@ -25,9 +26,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 
             var typeDependencyEnumerator = GetTypeDependencyEnumerator(WrapIntoTraceMessage(messageBuffer));
             var typeDependencyValidator = new CachingTypeDependencyValidator(config, WrapIntoTraceMessage(messageBuffer));
+            var sourcePathExclusionGlobs = config.SourcePathExclusionPatterns.Select(Glob.Parse);
 
             var illegalDependencyMessages = typeDependencyEnumerator
-                .GetTypeDependencies(sourcePaths, referencedAssemblyPaths)
+                .GetTypeDependencies(sourcePaths, referencedAssemblyPaths, sourcePathExclusionGlobs)
                 .Where(i => !typeDependencyValidator.IsAllowedDependency(i))
                 .Take(config.MaxIssueCount + 1)
                 .Select(i => new RemoteIllegalDependencyMessage(i));

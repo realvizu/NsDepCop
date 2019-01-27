@@ -15,7 +15,7 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis.Remote
         /// </summary>
         /// <param name="config">The config for the project.</param>
         /// <param name="sourcePaths">Source file names with full path.</param>
-        /// <param name="referencedAssemblyPaths">Referenced assembly filenames with full path.</param>
+        /// <param name="referencedAssemblyPaths">Referenced assembly file names with full path.</param>
         /// <returns>All messages emitted by the analyzer: dependency validations and trace messages.</returns>
         IRemoteMessage[] AnalyzeProject(IAnalyzerConfig config, string[] sourcePaths, string[] referencedAssemblyPaths);
     }

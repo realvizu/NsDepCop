@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DotNet.Globbing;
 
 namespace Codartis.NsDepCop.Core.Interface.Analysis
 {
@@ -12,15 +13,23 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
         /// </summary>
         /// <param name="sourceFilePaths">A collection of the full path of source files.</param>
         /// <param name="referencedAssemblyPaths">A collection of the full path of referenced assemblies.</param>
+        /// <param name="sourcePathExclusionGlobs">A collection of file path patterns (globs) for excluding source files from analysis.</param>
         /// <returns>A collection of type dependencies.</returns>
-        IEnumerable<TypeDependency> GetTypeDependencies(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths);
+        IEnumerable<TypeDependency> GetTypeDependencies(
+            IEnumerable<string> sourceFilePaths, 
+            IEnumerable<string> referencedAssemblyPaths, 
+            IEnumerable<Glob> sourcePathExclusionGlobs);
 
         /// <summary>
         /// Enumerates type dependencies for a syntax node.
         /// </summary>
         /// <param name="syntaxNode">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the project being analyzed.</param>
+        /// <param name="sourcePathExclusionGlobs">A collection of file path patterns (globs) for excluding source files from analysis.</param>
         /// <returns>A collection of type dependencies.</returns>
-        IEnumerable<TypeDependency> GetTypeDependencies(ISyntaxNode syntaxNode, ISemanticModel semanticModel);
+        IEnumerable<TypeDependency> GetTypeDependencies(
+            ISyntaxNode syntaxNode, 
+            ISemanticModel semanticModel, 
+            IEnumerable<Glob> sourcePathExclusionGlobs);
     }
 }

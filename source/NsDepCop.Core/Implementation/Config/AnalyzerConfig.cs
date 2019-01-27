@@ -14,6 +14,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public IssueKind DependencyIssueSeverity { get; }
         public Importance InfoImportance { get; }
         public TimeSpan[] AnalyzerServiceCallRetryTimeSpans { get; }
+        public string[] SourcePathExclusionPatterns { get; }
 
         public bool ChildCanDependOnParentImplicitly { get; }
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
@@ -28,7 +29,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             IssueKind issueKind, 
             Importance infoImportance,
             TimeSpan[] analyzerServiceCallRetryTimeSpans,
-            bool childCanDependOnParentImplicitly, 
+            string[] sourcePathExclusionPatterns,
+
+            bool childCanDependOnParentImplicitly,
             Dictionary<NamespaceDependencyRule, TypeNameSet> allowRules, 
             HashSet<NamespaceDependencyRule> disallowRules, 
             Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace, 
@@ -40,6 +43,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             DependencyIssueSeverity = issueKind;
             InfoImportance = infoImportance;
             AnalyzerServiceCallRetryTimeSpans = analyzerServiceCallRetryTimeSpans;
+            SourcePathExclusionPatterns = sourcePathExclusionPatterns;
 
             ChildCanDependOnParentImplicitly = childCanDependOnParentImplicitly;
             AllowRules = allowRules;
@@ -56,6 +60,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             yield return $"DependencyIssueSeverity={DependencyIssueSeverity}";
             yield return $"InfoImportance={InfoImportance}";
             yield return $"AnalyzerServiceCallRetryTimeSpans={string.Join(",", AnalyzerServiceCallRetryTimeSpans)}";
+            yield return $"SourcePathExclusionPatterns={string.Join(",", SourcePathExclusionPatterns)}";
 
             yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
             foreach (var s in AllowRules.ToStrings()) yield return s;

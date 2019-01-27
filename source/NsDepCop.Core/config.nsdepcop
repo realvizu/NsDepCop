@@ -11,4 +11,6 @@
 
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Interface.*"/>
     <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.*"/>
+
+    <Allowed From="Codartis.NsDepCop.Core.*" To="DotNet.Globbing" />
 </NsDepCopConfig>

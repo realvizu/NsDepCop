@@ -5,6 +5,7 @@ using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
+using DotNet.Globbing;
 
 namespace Codartis.NsDepCop.Core.Implementation.Analysis
 {
@@ -18,6 +19,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
 
         private CachingTypeDependencyValidator _typeDependencyValidator;
         private IAnalyzerConfig _config;
+        private Glob[] _sourcePathExclusionGlobs;
 
         public InProcessDependencyAnalyzer(
             IUpdateableConfigProvider configProvider,
@@ -29,7 +31,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             UpdateConfig();
         }
 
-        public override IEnumerable<AnalyzerMessageBase> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
+        public override IEnumerable<AnalyzerMessageBase> AnalyzeProject(
+            IEnumerable<string> sourceFilePaths, 
+            IEnumerable<string> referencedAssemblyPaths)
         {
             if (sourceFilePaths == null) throw new ArgumentNullException(nameof(sourceFilePaths));
             if (referencedAssemblyPaths == null) throw new ArgumentNullException(nameof(referencedAssemblyPaths));
@@ -38,7 +42,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             {
                 return AnalyzeCore(
                     () => GetIllegalTypeDependencies(
-                        () => _typeDependencyEnumerator.GetTypeDependencies(sourceFilePaths, referencedAssemblyPaths)),
+                        () => _typeDependencyEnumerator.GetTypeDependencies(
+                            sourceFilePaths, 
+                            referencedAssemblyPaths, 
+                            _sourcePathExclusionGlobs)),
                     isProjectScope: true);
             }
         }
@@ -52,7 +59,10 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             {
                 return AnalyzeCore(
                     () => GetIllegalTypeDependencies(
-                        () => _typeDependencyEnumerator.GetTypeDependencies(syntaxNode, semanticModel)),
+                        () => _typeDependencyEnumerator.GetTypeDependencies(
+                            syntaxNode, 
+                            semanticModel, 
+                            _sourcePathExclusionGlobs)),
                     isProjectScope: false);
             }
         }
@@ -75,6 +85,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
                 return;
 
             _typeDependencyValidator = CreateTypeDependencyValidator();
+            _sourcePathExclusionGlobs = _config.SourcePathExclusionPatterns.Select(Glob.Parse).ToArray();
         }
 
         private CachingTypeDependencyValidator CreateTypeDependencyValidator()

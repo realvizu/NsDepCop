@@ -44,5 +44,13 @@ namespace Codartis.NsDepCop.Core.Interface.Config
         /// The analyzer client will retry a failed call by using the next time span from this array until it runs out of array items.
         /// </summary>
         TimeSpan[] AnalyzerServiceCallRetryTimeSpans { get; }
+
+        /// <summary>
+        /// Gets an array of file path exclusions patterns. Source files that match any of these patterns won't be analyzed.
+        /// </summary>
+        /// <remarks>
+        /// Uses https://github.com/dazinator/DotNet.Glob patterns.
+        /// </remarks>
+        string[] SourcePathExclusionPatterns { get; }
     }
 }

@@ -7,5 +7,6 @@
     InfoImportance="Normal"
     MaxIssueCountSeverity="Error"
     AutoLowerMaxIssueCount="true" 
-    AnalyzerServiceCallRetryTimeSpans="100, 1000">
+    AnalyzerServiceCallRetryTimeSpans="100, 1000"
+    ExcludedFiles="**/*.g.cs ,  TestData\**\*.cs">
 </NsDepCopConfig>
