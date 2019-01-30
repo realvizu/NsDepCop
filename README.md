@@ -35,7 +35,7 @@ See the [**Help**](doc/Help.md) for details.
 
 ## Feedback
 * Please use the [**Issue Tracker**](https://github.com/realvizu/NsDepCop/issues) to record bugs and feature requests.
-* Or tweet me [![Follow on Titter](https://img.shields.io/twitter/url/http/realvizu.svg?style=social&label=@realvizu)](https://twitter.com/realvizu)
+* Or find me on twitter [![Follow on Titter](https://img.shields.io/twitter/url/http/realvizu.svg?style=social&label=@realvizu)](https://twitter.com/realvizu)
 
 ## More Info
 * [Diagnostics Reference](doc/Diagnostics.md)

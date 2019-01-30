@@ -1,5 +1,10 @@
 # NsDepCop Change Log
 
+## v1.8.2
+(01/2019)
+
+- [x] Fix: #43 (for real this time) - RemotingException when path contains space.
+
 ## v1.8.1
 (12/2018)
 
