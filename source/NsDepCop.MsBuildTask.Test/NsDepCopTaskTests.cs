@@ -139,13 +139,31 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
             var nsDepCopTask = CreateNsDepCopTask();
             nsDepCopTask.Compile = new ITaskItem[]
             {
-                new TestTaskItem(Path.Combine(nsDepCopTask.BaseDirectory.ItemSpec, "SourceFile1.cs")),
-                new TestTaskItem(Path.Combine(nsDepCopTask.BaseDirectory.ItemSpec, "SourceFile2.cs"))
+                CreateCompiledTaskItem(nsDepCopTask, "SourceFile1.cs"),
+                CreateCompiledTaskItem(nsDepCopTask, "SourceFile2.cs")
             };
             nsDepCopTask.Execute().Should().BeTrue();
 
             VerifyTaskExceptionLogged(Times.Never());
             VerifyDependencyIssueLogged(Times.Exactly(2));
+        }
+
+        [Fact]
+        public void ExcludedFiles()
+        {
+            var nsDepCopTask = CreateNsDepCopTask();
+            nsDepCopTask.Compile = new ITaskItem[]
+            {
+                CreateCompiledTaskItem(nsDepCopTask, "IncludedFile.cs"),
+                CreateCompiledTaskItem(nsDepCopTask, "ExcludedByName.cs"),
+                CreateCompiledTaskItem(nsDepCopTask, "ExcludedByExtensions1.g.cs"),
+                CreateCompiledTaskItem(nsDepCopTask, @"Subfolder1\ExcludedByExtensions2.g.cs"),
+                CreateCompiledTaskItem(nsDepCopTask, @"Subfolder1\Sub folder 2\ExcludedByExtensions3.g.cs"),
+            };
+            nsDepCopTask.Execute().Should().BeTrue();
+
+            VerifyTaskExceptionLogged(Times.Never());
+            VerifyDependencyIssueLogged(Times.Exactly(1));
         }
 
         [Fact]
@@ -194,6 +212,11 @@ namespace Codartis.NsDepCop.MsBuildTask.Test
                 Compile = new ITaskItem[] {new TestTaskItem(testFileFullPath)},
                 ReferencePath = GetReferencedAssemblyPaths().Select(i => new TestTaskItem(i)).OfType<ITaskItem>().ToArray()
             };
+        }
+
+        private static TestTaskItem CreateCompiledTaskItem(NsDepCopTask nsDepCopTask, string filename)
+        {
+            return new TestTaskItem(Path.Combine(nsDepCopTask.BaseDirectory.ItemSpec, filename));
         }
 
         private static string GetTestFileFullPath(string testName)

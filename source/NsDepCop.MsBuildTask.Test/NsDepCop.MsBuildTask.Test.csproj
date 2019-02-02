@@ -184,7 +184,22 @@
     <Content Include="Serialization\Serialization.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="ExcludedFiles\Subfolder1\ExcludedByExtensions2.g.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ExcludedFiles\Subfolder1\Sub folder 2\ExcludedByExtensions3.g.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ExcludedFiles\ExcludedByExtensions1.g.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="MsBuildLoggerGatewayTests.cs" />
+    <Content Include="ExcludedFiles\ExcludedByName.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ExcludedFiles\IncludedFile.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="NsDepCopTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="DependencyViolation_ReportWarning\DependencyViolation_ReportWarning.cs">
@@ -291,6 +306,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TaskInfoImportanceIsLow\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ExcludedFiles\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config">

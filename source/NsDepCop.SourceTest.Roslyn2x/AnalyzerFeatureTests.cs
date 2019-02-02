@@ -27,6 +27,18 @@ namespace Codartis.NsDepCop.SourceTest
         }
 
         [Fact]
+        public void AnalyzerFeature_ExcludedFiles()
+        {
+            SourceTestSpecification.Create().Execute();
+        }
+
+        [Fact]
+        public void AnalyzerFeature_ExcludedFiles_WithWildcard()
+        {
+            SourceTestSpecification.Create().Execute();
+        }
+
+        [Fact]
         public void AnalyzerFeature_SameNamespaceAlwaysAllowed()
         {
             SourceTestSpecification.Create().Execute();

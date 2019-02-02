@@ -207,6 +207,12 @@
     <Content Include="Cs7_3_AttributeOnPropertyBackingField\Cs7_3_AttributeOnPropertyBackingField.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="AnalyzerFeature_ExcludedFiles\AnalyzerFeature_ExcludedFiles.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AnalyzerFeature_ExcludedFiles_WithWildcard\AnalyzerFeature_ExcludedFiles_WithWildcard.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="Cs7_3_Tests.cs" />
     <Compile Include="Cs7_2_Tests.cs" />
     <Compile Include="Cs7_1_Tests.cs" />
@@ -301,6 +307,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="AnalyzerFeature_DisallowedDependency\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AnalyzerFeature_ExcludedFiles\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AnalyzerFeature_ExcludedFiles_WithWildcard\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="app.config">
