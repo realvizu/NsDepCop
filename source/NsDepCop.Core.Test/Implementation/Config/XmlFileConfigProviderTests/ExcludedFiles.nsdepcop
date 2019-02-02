@@ -1,0 +1,2 @@
+﻿<NsDepCopConfig IsEnabled="true" ExcludedFiles="ExcludedFile1.cs, Excluded File 2.cs">
+</NsDepCopConfig>

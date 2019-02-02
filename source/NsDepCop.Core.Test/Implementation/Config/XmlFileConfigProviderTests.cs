@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface.Config;
@@ -27,6 +29,23 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             configProvider.ConfigException.Should().BeNull();
             configProvider.Config.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Properties_ExcludedFiles_AreRooted()
+        {
+            var path = GetFilePathInTestClassFolder("ExcludedFiles.nsdepcop");
+            var configProvider = CreateConfigProvider(path);
+            
+            var expectedExcludedFiles = new[]
+            {
+                GetFilePathInTestClassFolder("ExcludedFile1.cs"),
+                GetFilePathInTestClassFolder("Excluded File 2.cs")
+            };
+
+            var exclusionPatterns = configProvider.Config.SourcePathExclusionPatterns;
+            exclusionPatterns.Should().BeEquivalentTo(expectedExcludedFiles);
+            exclusionPatterns.All(File.Exists).Should().BeTrue();
         }
 
         [Fact]

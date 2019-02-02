@@ -62,7 +62,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 _configLastLoadUtc = DateTime.UtcNow;
 
                 var configBuilder = CreateConfigBuilderFromFile(ConfigFilePath)
-                     .SetDefaultInfoImportance(DefaultInfoImportance);
+                     .SetDefaultInfoImportance(DefaultInfoImportance)
+                     .MakePathsRooted(Path.GetDirectoryName(ConfigFilePath));
 
                 return ConfigLoadResult.CreateWithConfig(configBuilder);
             }

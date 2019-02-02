@@ -32,7 +32,7 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
                     @"\\a folder\b.cs",
                     @"\*.cs"
                 })
-                .SetRootPath(@"C:\folder with space");
+                .MakePathsRooted(@"C:\folder with space");
 
             var config = configBuilder.ToAnalyzerConfig();
 

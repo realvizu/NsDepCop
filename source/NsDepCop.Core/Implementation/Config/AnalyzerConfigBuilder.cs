@@ -20,8 +20,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         public IssueKind? DependencyIssueSeverity { get; private set; }
         public Importance? InfoImportance { get; private set; }
         public TimeSpan[] AnalyzerServiceCallRetryTimeSpans { get; private set; }
-        public List<string> SourcePathExclusionPatterns { get; }
-        public string RootPath { get; private set; }
+        public List<string> SourcePathExclusionPatterns { get; private set; }
 
         public bool? ChildCanDependOnParentImplicitly { get; private set; }
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
@@ -46,7 +45,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
                 DependencyIssueSeverity ?? ConfigDefaults.DependencyIssueSeverity,
                 InfoImportance ?? DefaultInfoImportance ?? ConfigDefaults.InfoImportance,
                 AnalyzerServiceCallRetryTimeSpans ?? ConfigDefaults.AnalyzerServiceCallRetryTimeSpans,
-                SourcePathExclusionPatterns.Select(i => ToRootedPath(RootPath, i)).ToArray(),
+                SourcePathExclusionPatterns.ToArray(),
                 ChildCanDependOnParentImplicitly ?? ConfigDefaults.ChildCanDependOnParentImplicitly,
                 AllowRules,
                 DisallowRules,
@@ -123,6 +122,17 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
         {
             if (sourcePathExclusionPatterns != null)
                 SourcePathExclusionPatterns.AddRange(sourcePathExclusionPatterns);
+
+            return this;
+        }
+
+        public AnalyzerConfigBuilder MakePathsRooted(string rootPath)
+        {
+            if (!Path.IsPathRooted(rootPath))
+                throw new ArgumentException($"Rooted path expected: {rootPath}");
+
+            SourcePathExclusionPatterns = SourcePathExclusionPatterns.Select(i => ToRootedPath(rootPath, i)).ToList();
+
             return this;
         }
 
@@ -193,19 +203,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             return this;
         }
 
-        public AnalyzerConfigBuilder SetRootPath(string rootPath)
-        {
-            if (rootPath != null)
-            {
-                if (!Path.IsPathRooted(rootPath))
-                    throw new Exception($"Rooted path expected: {rootPath}");
-
-                RootPath = rootPath;
-            }
-
-            return this;
-        }
-
         public IEnumerable<string> ToStrings()
         {
             if (InheritanceDepth.HasValue) yield return $"InheritanceDepth={InheritanceDepth}";
@@ -214,7 +211,6 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
             if (InfoImportance.HasValue) yield return $"InfoImportance={InfoImportance}";
             if (AnalyzerServiceCallRetryTimeSpans != null) yield return $"AnalyzerServiceCallRetryTimeSpans={string.Join(";", AnalyzerServiceCallRetryTimeSpans)}";
             if (SourcePathExclusionPatterns != null) yield return $"SourcePathExclusionPatterns={string.Join(";", SourcePathExclusionPatterns)}";
-            if (RootPath != null) yield return $"RootPath={RootPath}";
 
             if (ChildCanDependOnParentImplicitly.HasValue) yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
             if (AllowRules.Any())

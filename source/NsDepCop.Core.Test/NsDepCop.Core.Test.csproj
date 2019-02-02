@@ -89,6 +89,12 @@
     <Compile Include="Factory\DependencyAnalyzerFactoryTests.cs" />
     <Compile Include="Implementation\Analysis\CachingTypeDependencyValidatorTests.cs" />
     <Compile Include="Implementation\Analysis\InProcessDependencyAnalyzerTests.cs" />
+    <None Include="Implementation\Config\XmlFileConfigProviderTests\ExcludedFile1.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\XmlFileConfigProviderTests\Excluded File 2.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Compile Include="Util\RetryHelperTests.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilderTests.cs" />
     <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests.cs" />
@@ -254,6 +260,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\XmlFileConfigProviderTests\Disabled.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\XmlFileConfigProviderTests\ExcludedFiles.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\XmlFileConfigProviderTests\RefreshConfig_EnabledToConfigError.nsdepcop">
