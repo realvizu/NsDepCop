@@ -1,0 +1,2 @@
+﻿<NsDepCopConfig InheritanceDepth="2" ExcludedFiles="ExcludedFile1.cs, Excluded File 2.cs">
+</NsDepCopConfig>

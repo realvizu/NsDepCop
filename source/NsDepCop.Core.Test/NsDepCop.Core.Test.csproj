@@ -89,10 +89,28 @@
     <Compile Include="Factory\DependencyAnalyzerFactoryTests.cs" />
     <Compile Include="Implementation\Analysis\CachingTypeDependencyValidatorTests.cs" />
     <Compile Include="Implementation\Analysis\InProcessDependencyAnalyzerTests.cs" />
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ExcludedFiles_AllCorrectlyRooted\Level2\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ExcludedFiles_AllCorrectlyRooted\Level2\Level1\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Implementation\Config\XmlFileConfigProviderTests\ExcludedFile1.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\XmlFileConfigProviderTests\Excluded File 2.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ExcludedFiles_AllCorrectlyRooted\Level2\Level1\Excluded File 2.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ExcludedFiles_AllCorrectlyRooted\Level2\Level1\ExcludedFile1.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ExcludedFiles_AllCorrectlyRooted\Level2\Excluded File 4.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ExcludedFiles_AllCorrectlyRooted\Level2\ExcludedFile3.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Compile Include="Util\RetryHelperTests.cs" />

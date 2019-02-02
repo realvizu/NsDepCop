@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Threading;
 using Codartis.NsDepCop.Core.Implementation.Config;
 using Codartis.NsDepCop.Core.Interface;
@@ -39,6 +40,24 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Config
             var folder = GetFilePathInTestClassFolder(@"Attributes_MissingDoesNotOverwrite\Level2\Level1");
             var configProvider = CreateConfigProvider(folder);
             configProvider.Config.DependencyIssueSeverity.Should().Be(IssueKind.Error);
+        }
+
+        [Fact]
+        public void ExcludedFiles_AllCorrectlyRooted()
+        {
+            var folder = GetFilePathInTestClassFolder(@"ExcludedFiles_AllCorrectlyRooted\Level2\Level1");
+
+            var expectedExcludedFiles = new[]
+            {
+                GetFilePathInTestClassFolder(@"ExcludedFiles_AllCorrectlyRooted\Level2\Level1\ExcludedFile1.cs"),
+                GetFilePathInTestClassFolder(@"ExcludedFiles_AllCorrectlyRooted\Level2\Level1\Excluded File 2.cs"),
+                GetFilePathInTestClassFolder(@"ExcludedFiles_AllCorrectlyRooted\Level2\ExcludedFile3.cs"),
+                GetFilePathInTestClassFolder(@"ExcludedFiles_AllCorrectlyRooted\Level2\Excluded File 4.cs"),
+            };
+
+            var configProvider = CreateConfigProvider(folder);
+            configProvider.Config.SourcePathExclusionPatterns.Should().BeEquivalentTo(expectedExcludedFiles);
+            configProvider.Config.SourcePathExclusionPatterns.All(File.Exists).Should().BeTrue();
         }
 
         [Fact]
