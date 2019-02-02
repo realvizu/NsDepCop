@@ -30,7 +30,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 
         public override IEnumerable<AnalyzerMessageBase> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {
-            return AnalyzeCore(() => GetIllegalTypeDependencies(sourceFilePaths, referencedAssemblyPaths), isProjectScope: true);
+            return GlobalSettings.IsToolDisabled() 
+                ? new[] { new ToolDisabledMessage() } 
+                : AnalyzeCore(() => GetIllegalTypeDependencies(sourceFilePaths, referencedAssemblyPaths), isProjectScope: true);
         }
 
         public override IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel)

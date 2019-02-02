@@ -69,6 +69,7 @@
     <Compile Include="Implementation\Analysis\DependencyAnalyzerBase.cs" />
     <Compile Include="Implementation\Analysis\ITypeDependencyValidator.cs" />
     <Compile Include="Implementation\Analysis\Remote\RemoteDependencyAnalyzerServerBase.cs" />
+    <Compile Include="Implementation\GlobalSettings.cs" />
     <Compile Include="Interface\Analysis\IssueDefinitions.cs" />
     <Compile Include="Interface\Analysis\IssueDescriptor.cs" />
     <Compile Include="Interface\Analysis\Messages\AnalysisFinishedMessage.cs" />

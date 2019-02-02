@@ -94,12 +94,6 @@ namespace Codartis.NsDepCop.MsBuildTask
 
             try
             {
-                if (IsToolDisabled())
-                {
-                    _logger.LogIssue(new ToolDisabledMessage());
-                    return true;
-                }
-
                 var runWasSuccessful = true;
 
                 _logger.LogTraceMessage(GetInputParameterDiagnosticMessages());
@@ -136,14 +130,6 @@ namespace Codartis.NsDepCop.MsBuildTask
                 _logger.LogError($"Exception during NsDepCopTask execution: {e}");
                 return false;
             }
-        }
-
-        private static bool IsToolDisabled()
-        {
-            var environmentVariableValue = Environment.GetEnvironmentVariable(ProductConstants.DisableToolEnvironmentVariableName);
-
-            return environmentVariableValue == "1" ||
-                   string.Equals(environmentVariableValue, "true", StringComparison.OrdinalIgnoreCase);
         }
 
         private IEnumerable<string> GetInputParameterDiagnosticMessages()

@@ -32,19 +32,22 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
         }
 
         public override IEnumerable<AnalyzerMessageBase> AnalyzeProject(
-            IEnumerable<string> sourceFilePaths, 
+            IEnumerable<string> sourceFilePaths,
             IEnumerable<string> referencedAssemblyPaths)
         {
             if (sourceFilePaths == null) throw new ArgumentNullException(nameof(sourceFilePaths));
             if (referencedAssemblyPaths == null) throw new ArgumentNullException(nameof(referencedAssemblyPaths));
+
+            if (GlobalSettings.IsToolDisabled())
+                return new[] { new ToolDisabledMessage() };
 
             lock (_configRefreshLock)
             {
                 return AnalyzeCore(
                     () => GetIllegalTypeDependencies(
                         () => _typeDependencyEnumerator.GetTypeDependencies(
-                            sourceFilePaths, 
-                            referencedAssemblyPaths, 
+                            sourceFilePaths,
+                            referencedAssemblyPaths,
                             _sourcePathExclusionGlobs)),
                     isProjectScope: true);
             }
@@ -55,13 +58,16 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             if (syntaxNode == null) throw new ArgumentNullException(nameof(syntaxNode));
             if (semanticModel == null) throw new ArgumentNullException(nameof(semanticModel));
 
+            if (GlobalSettings.IsToolDisabled())
+                return new[] { new ToolDisabledMessage() };
+
             lock (_configRefreshLock)
             {
                 return AnalyzeCore(
                     () => GetIllegalTypeDependencies(
                         () => _typeDependencyEnumerator.GetTypeDependencies(
-                            syntaxNode, 
-                            semanticModel, 
+                            syntaxNode,
+                            semanticModel,
                             _sourcePathExclusionGlobs)),
                     isProjectScope: false);
             }

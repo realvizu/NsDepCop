@@ -40,7 +40,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>
     </NoWarn>
-    <DeployExtension>False</DeployExtension>
+    <DeployExtension>True</DeployExtension>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
