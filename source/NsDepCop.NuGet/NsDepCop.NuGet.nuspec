@@ -21,7 +21,9 @@ See project site for details (https://github.com/realvizu/NsDepCop).
         <copyright>Copyright 2013-2018 Ferenc Vizkeleti</copyright>
         <tags>static code analysis tool C# csharp namespace dependency dependencies enforce rule</tags>
         <releaseNotes>
-- Changed: supporting MSBuild incremental compilation (that is, analysis skipped when no source file have changed).
+- New: Support incremental build - don't run the tool if there was no change in the source/config files.
+- New: Global turn off switch - DisableNsDepCop environment variable.
+- New: Excluding files from analysis - ExcludedFiles attribute in config.nsdepcop.
         </releaseNotes>
     </metadata>
     <files>

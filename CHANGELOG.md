@@ -1,5 +1,12 @@
 # NsDepCop Change Log
 
+## v1.9.0 (beta)
+(02/2019 ?)
+
+- [x] New: Support incremental build - don't run the tool if there was no change in the source/config files.
+- [x] New: Global turn off switch - DisableNsDepCop environment variable.
+- [x] New: Excluding files from analysis - ExcludedFiles attribute in config.nsdepcop.
+
 ## v1.8.2
 (01/2019)
 
