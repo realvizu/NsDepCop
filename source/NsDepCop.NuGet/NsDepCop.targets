@@ -2,20 +2,27 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
     <UsingTask AssemblyFile="..\tools\NsDepCop.MsBuildTask.dll" TaskName="Codartis.NsDepCop.MsBuildTask.NsDepCopTask" />
-    
-    <ItemGroup>  
-        <NsDepCopConfigFile Include="$(MSBuildProjectDirectory)\config.nsdepcop"/>  
-    </ItemGroup> 
-	
-    <PropertyGroup>
-        <NsDepCopOutputFile>$(BaseIntermediateOutputPath)nsdepcop-result.txt</NsDepCopOutputFile>
-    </PropertyGroup>
-	
-    <Target Name="NsDepCop" AfterTargets="CoreCompile"
-            Inputs="@(Compile);@(ReferencePath);@(NsDepCopConfigFile)" 
+
+    <Target Name="NsDepCop_Init" BeforeTargets="NsDepCop_Clean;NsDepCop_Execute">
+        <ItemGroup>
+            <NsDepCopConfigFile Include="$(MSBuildProjectDirectory)\config.nsdepcop" />
+        </ItemGroup>
+
+        <PropertyGroup>
+            <NsDepCopOutputFile>$(BaseIntermediateOutputPath)nsdepcop-result.txt</NsDepCopOutputFile>
+        </PropertyGroup>
+    </Target>
+
+    <Target Name="NsDepCop_Clean" AfterTargets="CoreClean">
+        <Delete Files="$(NsDepCopOutputFile)" />
+    </Target>
+
+    <Target Name="NsDepCop_Execute" AfterTargets="CoreCompile"
+            Inputs="@(Compile);@(ReferencePath);@(NsDepCopConfigFile)"
             Outputs="$(NsDepCopOutputFile)">
-		
+
         <NsDepCopTask ReferencePath="@(ReferencePath)" Compile="@(Compile)" BaseDirectory="$(MSBuildProjectDirectory)" />
+
         <Touch AlwaysCreate="true" Files="$(NsDepCopOutputFile)" />
     </Target>
 
