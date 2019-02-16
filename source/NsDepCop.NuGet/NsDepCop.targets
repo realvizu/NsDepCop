@@ -1,29 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <ItemGroup>
+        <!-- This element is required by the project system's FastUpdateCheck feature. -->
+        <!-- Without this the project system thinks that everything is up to date and does not even call MSBuild. -->
+        <!-- It seems that properties like $(NsDepCopConfigFile) cannot be used when FastBuildCheck is running. -->
+        <UpToDateCheckBuilt Include="$(BaseIntermediateOutputPath)NsDepCop.UpToDateMarker"
+                            Original="$(MSBuildProjectDirectory)\config.nsdepcop"
+                            Condition="Exists('$(MSBuildProjectDirectory)\config.nsdepcop')" />
+    </ItemGroup>
 
     <UsingTask AssemblyFile="..\tools\NsDepCop.MsBuildTask.dll" TaskName="Codartis.NsDepCop.MsBuildTask.NsDepCopTask" />
 
-    <Target Name="NsDepCop_Init" BeforeTargets="NsDepCop_Clean;NsDepCop_Execute">
-        <ItemGroup>
-            <NsDepCopConfigFile Include="$(MSBuildProjectDirectory)\config.nsdepcop" />
-        </ItemGroup>
-
-        <PropertyGroup>
-            <NsDepCopOutputFile>$(BaseIntermediateOutputPath)nsdepcop-result.txt</NsDepCopOutputFile>
-        </PropertyGroup>
-    </Target>
+    <PropertyGroup>
+        <NsDepCopConfigFile>$(MSBuildProjectDirectory)\config.nsdepcop</NsDepCopConfigFile>
+        <NsDepCopUpToDateMarker>$(BaseIntermediateOutputPath)NsDepCop.UpToDateMarker</NsDepCopUpToDateMarker>
+    </PropertyGroup>
 
     <Target Name="NsDepCop_Clean" AfterTargets="CoreClean">
-        <Delete Files="$(NsDepCopOutputFile)" />
+        <Delete Files="$(NsDepCopUpToDateMarker)" />
     </Target>
 
-    <Target Name="NsDepCop_Execute" AfterTargets="CoreCompile"
-            Inputs="@(Compile);@(ReferencePath);@(NsDepCopConfigFile)"
-            Outputs="$(NsDepCopOutputFile)">
+    <Target Name="NsDepCop_Analyze" AfterTargets="CoreCompile"
+            Inputs="@(Compile);@(ReferencePath);$(NsDepCopConfigFile)"
+            Outputs="$(NsDepCopUpToDateMarker)">
 
         <NsDepCopTask ReferencePath="@(ReferencePath)" Compile="@(Compile)" BaseDirectory="$(MSBuildProjectDirectory)" />
 
-        <Touch AlwaysCreate="true" Files="$(NsDepCopOutputFile)" />
+        <Touch AlwaysCreate="true" Files="$(NsDepCopUpToDateMarker)" />
     </Target>
 
 </Project>
