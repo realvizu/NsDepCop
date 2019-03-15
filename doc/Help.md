@@ -5,6 +5,7 @@
 * [Config inheritance](#config-inheritance)
 * [Dealing with a high number of dependency issues](#dealing-with-a-high-number-of-dependency-issues)
 * [Controlling verbosity](#controlling-verbosity)
+* [Disabling the tool](#disabling-the-tool)
 * [Config XML schema](#config-xml-schema)
 * [Config XML schema support in Visual Studio](#config-xml-schema-support-in-visual-studio)
 * [NsDepCop ServiceHost](#nsdepcop-servicehost)
@@ -14,6 +15,7 @@
 
 * Projects with a **csproj** project file are supported.
 * Projects with an **xproj** project file are not supported.
+* .Net Core is not supported ([yet](https://github.com/realvizu/NsDepCop/issues/34))
 
 ## Dependency rules
 
@@ -49,6 +51,7 @@ Attribute | Values | Description
 **MaxIssueCountSeverity** | Info, **Warning**, Error | This is the severity of the issue of reaching MaxIssueCount.
 **AutoLowerMaxIssueCount** | true, **false** | If set to true then each successful build yielding fewer issues than MaxIssueCount sets MaxIssueCount to the current number of issues.
 **InheritanceDepth** | int (>=0), default: **0** | Sets the number of parent folder levels to inherit config from. 0 means no inheritance.
+**ExcludedFiles** | Comma separated list of [file patterns](https://github.com/dazinator/DotNet.Glob) | Defines which source files should be excluded from the analysis. Paths are relative to the config file's folder. E.g.: `**/*.g.cs,TestFiles/*.cs`
 
 ### Whitelisting
 * The **`<Allowed From="N1" To="N2"/>`** config element defines that **N1** namespace can depend on **N2** namespace.
@@ -207,6 +210,11 @@ Advanced settings:
 | diag[nostic] | yes | yes | yes |
 
 E.g.: if you want NsDepCop info messages to show up at minimal MSBuild verbosity then set `InfoImportance` to High.
+
+## Disabling the tool
+You can disable NsDepCop by setting the DisableNsDepCop environment variable to 'true' or '1'.
+
+E.g.: `set DisableNsDepCop=1`
 
 ## Config XML schema
 See the XSD schema of config.nsdepcop [here](../source/NsDepCop.ConfigSchema/NsDepCopConfig.xsd).

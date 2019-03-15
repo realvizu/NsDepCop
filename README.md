@@ -45,6 +45,7 @@ See the [**Help**](doc/Help.md) for details.
 ## Thanks to 
 * [Roslyn](https://github.com/dotnet/roslyn) for the best parser API.
 * [ReSharper](https://www.jetbrains.com/resharper/) for the free licence of this amazing tool.
+* [DotNet.Glob](https://github.com/dazinator/DotNet.Glob) for the globbing library.
 
 ## License
 * [GPL-2.0](LICENSE)
