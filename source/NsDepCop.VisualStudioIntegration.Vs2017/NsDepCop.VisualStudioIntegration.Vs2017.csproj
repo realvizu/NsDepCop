@@ -20,7 +20,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Codartis.NsDepCop.VisualStudioIntegration</RootNamespace>
-    <AssemblyName>NsDepCop_VS2017</AssemblyName>
+    <AssemblyName>NsDepCop_VS2017-VS2019</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
