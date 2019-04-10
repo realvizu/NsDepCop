@@ -1,5 +1,10 @@
 # NsDepCop Change Log
 
+## v1.10.0
+(04/2019)
+
+- [x] New: Support Visual Studio 2019
+
 ## v1.9.0
 (03/2019)
 

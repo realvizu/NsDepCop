@@ -24,10 +24,9 @@ To fix it:
 ## NsDepCop NuGet package is not adding config.nsdepcop file to the project
 If the project uses the **PackageReference** package manager format then content files are not added to the project. 
 Workaround:
-* Use the **packages.config** package manager format.
-* Or **add** config.nsdepcop to the project **manually**.
+* **Add** a file called **config.nsdepcop** and fill it in using the examples in [Help](Help.md).
+* Install the NsDepCop Visual Studio Extension [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop%20VS2017-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCopVS2017-CodedependencycheckerforC) and then:
   * Right-click on project >> Add >> New Item... >> NsDepCop Config File
-  * Or simply add a file called config.nsdepcop and fill it in using the examples in [Help](Help.md).
 
 <a name="item3"></a>
 ## Anonymous types raise false alarms

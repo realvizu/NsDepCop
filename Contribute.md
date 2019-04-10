@@ -6,7 +6,7 @@
 
 ## How to build the source
 1. Prerequisites
-   * Visual Studio 2017 (any edition)
+   * Visual Studio 2017/2019 (any edition)
      * With workload: **Visual Studio extension development**
 1. [Download or clone the source](https://github.com/realvizu/NsDepCop)
 1. Open "source\NsDepCop.sln"
