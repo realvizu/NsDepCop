@@ -20,7 +20,7 @@ See the [**Help**](doc/Help.md) for details.
 ## Optional Stuff
 
 * Install the **VSIX** (Visual Studio Extension) to get **instant** dependency check while editing the code.
-  * For Visual Studio 2017/2019: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop%20VS2017-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCopVS2017-CodedependencycheckerforC)
+  * For Visual Studio 2017/2019: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCopVS2017-CodedependencycheckerforC)
   * For Visual Studio 2015: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop%20VS2015-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCop-NamespacedependencycheckertoolforC)
 
 * Install the **NsDepCop Config XML Schema Support** for Visual Studio to get validation and IntelliSense while editing the config.nsdepcop files.
