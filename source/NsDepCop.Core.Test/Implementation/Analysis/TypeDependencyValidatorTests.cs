@@ -130,6 +130,17 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         }
 
         [Fact]
+        public void DisallowRule_IsStrongerThanChildCanDependOnParentImplicitly()
+        {
+            var ruleConfig = new DependencyRulesBuilder()
+                .AddDisallowed("a.*", "a.b.*")
+                .SetChildCanDependOnParentImplicitly(true);
+
+            var dependencyValidator = CreateTypeDependencyValidator(ruleConfig);
+            dependencyValidator.IsAllowedDependency("a.b.c", "C1", "a.b", "C2").Should().BeFalse();
+        }
+
+        [Fact]
         public void ChildCanDependOnParentImplicitly()
         {
             var ruleConfig = new DependencyRulesBuilder()
