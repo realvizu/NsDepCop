@@ -120,6 +120,16 @@ namespace Codartis.NsDepCop.Core.Test.Implementation.Analysis
         }
 
         [Fact]
+        public void DisallowRule_ButSameNamespaceShouldBeAllowed()
+        {
+            var ruleConfig = new DependencyRulesBuilder()
+                .AddDisallowed("a.*", "a.b.*");
+
+            var dependencyValidator = CreateTypeDependencyValidator(ruleConfig);
+            dependencyValidator.IsAllowedDependency("a.b.c", "C1", "a.b.c", "C2").Should().BeTrue();
+        }
+
+        [Fact]
         public void ChildCanDependOnParentImplicitly()
         {
             var ruleConfig = new DependencyRulesBuilder()
