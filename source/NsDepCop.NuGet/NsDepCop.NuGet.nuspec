@@ -18,12 +18,10 @@ See project site for details (https://github.com/realvizu/NsDepCop).
         <iconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <developmentDependency>true</developmentDependency>
-        <copyright>Copyright 2013-2018 Ferenc Vizkeleti</copyright>
+        <copyright>Copyright 2013-2020 Ferenc Vizkeleti</copyright>
         <tags>static code analysis tool C# csharp namespace dependency dependencies enforce rule</tags>
         <releaseNotes>
-- New: Support incremental build - don't run the tool if there was no change in the source/config files.
-- New: Global turn off switch - DisableNsDepCop environment variable.
-- New: Excluding files from analysis - ExcludedFiles attribute in config.nsdepcop.
+- Fix: RemotingException when using different NsDepCop NuGet and VSIX version.
         </releaseNotes>
     </metadata>
     <files>

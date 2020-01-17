@@ -1,5 +1,10 @@
 # NsDepCop Change Log
 
+## v1.10.1
+(01/2020)
+
+- [x] Fix: #51 - RemotingException when using different NsDepCop NuGet and VSIX version.
+
 ## v1.10.0
 (04/2019)
 
