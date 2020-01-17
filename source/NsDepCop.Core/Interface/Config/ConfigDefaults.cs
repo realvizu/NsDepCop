@@ -5,7 +5,7 @@ namespace Codartis.NsDepCop.Core.Interface.Config
     /// <summary>
     /// Defines the default values of the config properties.
     /// </summary>
-    internal static class ConfigDefaults
+    public static class ConfigDefaults
     {
         public const int InheritanceDepth = 0;
         public const bool IsEnabled = true;

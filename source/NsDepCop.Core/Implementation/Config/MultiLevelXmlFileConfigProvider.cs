@@ -15,7 +15,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <remarks>
     /// Base class ensures that all operations are executed in an atomic way so no extra locking needed.
     /// </remarks>
-    internal sealed class MultiLevelXmlFileConfigProvider : ConfigProviderBase
+    public sealed class MultiLevelXmlFileConfigProvider : ConfigProviderBase
     {
         private ConfigLoadResult _lastConfigLoadResult;
         private int _lastInheritanceDepth;

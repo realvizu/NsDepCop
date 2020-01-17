@@ -8,7 +8,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <summary>
     /// Describes the result of a config load operation.
     /// </summary>
-    internal struct ConfigLoadResult : IDiagnosticSupport
+    public struct ConfigLoadResult : IDiagnosticSupport
     {
         public AnalyzerConfigState ConfigState { get; }
         public AnalyzerConfigBuilder ConfigBuilder { get; }

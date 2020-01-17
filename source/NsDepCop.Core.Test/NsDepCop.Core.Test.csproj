@@ -56,7 +56,8 @@
       <HintPath>..\packages\Moq.4.7.49\lib\net45\Moq.dll</HintPath>
     </Reference>
     <Reference Include="OneOf, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OneOf.2.1.123\lib\net451\OneOf.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\OneOf_Signed\OneOf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

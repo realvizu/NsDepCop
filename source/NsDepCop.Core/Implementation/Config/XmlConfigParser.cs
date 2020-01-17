@@ -12,7 +12,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <summary>
     /// Parses a config provided in XML format.
     /// </summary>
-    internal static class XmlConfigParser
+    public static class XmlConfigParser
     {
         private const string RootElementName = "NsDepCopConfig";
         private const string InheritanceDepthAttributeName = "InheritanceDepth";

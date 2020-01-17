@@ -8,7 +8,7 @@ namespace Codartis.NsDepCop.Core.Util
     /// <summary>
     /// Finds files in the file system.
     /// </summary>
-    internal static class FileHelper
+    public static class FileHelper
     {
         /// <summary>
         /// Traverses the file system upwards from a given folder and returns the full path whenever a given filename is found.

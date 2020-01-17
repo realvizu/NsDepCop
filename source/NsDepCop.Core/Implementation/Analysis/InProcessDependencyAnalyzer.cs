@@ -12,7 +12,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// <summary>
     /// Performs in-process dependency analysis.
     /// </summary>
-    internal class InProcessDependencyAnalyzer : DependencyAnalyzerBase
+    public class InProcessDependencyAnalyzer : DependencyAnalyzerBase
     {
         private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
         private readonly object _configRefreshLock = new object();

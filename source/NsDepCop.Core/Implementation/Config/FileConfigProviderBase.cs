@@ -12,7 +12,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <remarks>
     /// Base class ensures that all operations are executed in an atomic way so no extra locking needed.
     /// </remarks>
-    internal abstract class FileConfigProviderBase : ConfigProviderBase
+    public abstract class FileConfigProviderBase : ConfigProviderBase
     {
         private bool _configFileExists;
         private DateTime _configLastLoadUtc;

@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Config
     /// <remarks>
     /// Base class handles config load errors so no need to catch exceptions here.
     /// </remarks>
-    internal sealed class XmlFileConfigProvider : FileConfigProviderBase
+    public sealed class XmlFileConfigProvider : FileConfigProviderBase
     {
         private XDocument _configXDocument;
 

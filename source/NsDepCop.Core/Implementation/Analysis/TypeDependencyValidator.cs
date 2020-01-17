@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
     /// <summary>
     /// Determines whether a given type-to-type dependency is allowed.
     /// </summary>
-    internal class TypeDependencyValidator : ITypeDependencyValidator
+    public class TypeDependencyValidator : ITypeDependencyValidator
     {
         private readonly Dictionary<NamespaceDependencyRule, TypeNameSet> _allowRules;
         private readonly HashSet<NamespaceDependencyRule> _disallowRules;
