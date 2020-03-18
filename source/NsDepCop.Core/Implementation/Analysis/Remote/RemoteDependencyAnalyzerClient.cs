@@ -10,6 +10,8 @@ using Codartis.NsDepCop.Core.Util;
 
 namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 {
+    using Codartis.NsDepCop.Core.Interface.Analysis.Remote.Commands;
+
     /// <summary>
     /// Client that performs dependency analysis by calling a service via remoting.
     /// </summary>
@@ -21,6 +23,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
         private const string CommunicationErrorMessage = "Unable to communicate with NsDepCop service.";
 
         private readonly string _serviceAddress;
+        private RemoteCommandCaller remoteCommandCaller;
 
         public RemoteDependencyAnalyzerClient(IUpdateableConfigProvider configProvider, string serviceAddress, MessageHandler traceMessageHandler)
             : base(configProvider, traceMessageHandler)
@@ -30,8 +33,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
 
         public override IEnumerable<AnalyzerMessageBase> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths)
         {
-            return GlobalSettings.IsToolDisabled() 
-                ? new[] { new ToolDisabledMessage() } 
+            return GlobalSettings.IsToolDisabled()
+                ? new[] { new ToolDisabledMessage() }
                 : AnalyzeCore(() => GetIllegalTypeDependencies(sourceFilePaths, referencedAssemblyPaths), isProjectScope: true);
         }
 
@@ -64,8 +67,20 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
         {
             TraceMessageHandler?.Invoke("Calling analyzer service.");
 
-            var proxy = (IRemoteDependencyAnalyzer) Activator.GetObject(typeof(IRemoteDependencyAnalyzer), _serviceAddress);
-            var result = proxy.AnalyzeProject(ConfigProvider.Config, sourceFilePaths.ToArray(), referencedAssemblyPaths.ToArray());
+            if (remoteCommandCaller == null || !remoteCommandCaller.Connected)
+            {
+                throw new InvalidOperationException("The remote analyzer service is not yet started");
+            }
+
+            var command = new AnalyzeProjectCommand(new AnalyzeProjectCommand.ParameterType()
+            {
+                Config = ConfigProvider.Config,
+                ReferencedAssemblyPaths = referencedAssemblyPaths.ToArray(),
+                SourcePaths = sourceFilePaths.ToArray()
+
+            });
+
+            var result = remoteCommandCaller.Call(command).Result;
 
             TraceMessageHandler?.Invoke("Calling analyzer service succeeded.");
 
@@ -77,11 +92,16 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
             TraceMessageHandler?.Invoke($"{CommunicationErrorMessage} Exception: {e.Message}");
 
             TraceMessageHandler?.Invoke($"Trying to activate analyzer service (attempt #{retryCount + 1}).");
-            AnalyzerServiceActivator.Activate(TraceMessageHandler);
+            if (remoteCommandCaller == null || !remoteCommandCaller.Connected)
+            {
+                remoteCommandCaller?.Dispose();
+                var serverStreams = AnalyzerServiceActivator.Activate(TraceMessageHandler);
+                remoteCommandCaller = new RemoteCommandCaller(serverStreams, TraceMessageHandler);
 
-            var sleepTimeSpan = retryTimeSpans[retryCount];
-            TraceMessageHandler?.Invoke($"Retrying service call after: {sleepTimeSpan}.");
-            Thread.Sleep(sleepTimeSpan);
+                var sleepTimeSpan = retryTimeSpans[retryCount];
+                TraceMessageHandler?.Invoke($"Retrying service call after: {sleepTimeSpan}.");
+                Thread.Sleep(sleepTimeSpan);
+            }
         }
 
         private IEnumerable<TypeDependency> UnwrapTraceMessages(IRemoteMessage[] remoteMessages)

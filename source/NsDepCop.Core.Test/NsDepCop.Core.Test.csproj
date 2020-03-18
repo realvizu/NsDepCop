@@ -114,6 +114,7 @@
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ExcludedFiles_AllCorrectlyRooted\Level2\ExcludedFile3.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Compile Include="Interface\Remote\CommandTests.cs" />
     <Compile Include="Util\RetryHelperTests.cs" />
     <Compile Include="Implementation\Config\AnalyzerConfigBuilderTests.cs" />
     <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests.cs" />

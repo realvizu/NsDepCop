@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting;
-using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Ipc;
-using System.Security.Principal;
 using Codartis.NsDepCop.Core.Interface;
-using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 
 namespace Codartis.NsDepCop.ServiceHost
 {
+    using Codartis.NsDepCop.Core.Interface.Analysis.Remote.Commands;
+    using System.IO.Pipes;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using System.Threading.Tasks;
+    using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
+
     /// <summary>
     /// Host process for the dependency analyzer remoting service.
     /// </summary>
@@ -20,6 +20,8 @@ namespace Codartis.NsDepCop.ServiceHost
     /// </remarks>
     public class Program
     {
+        private static bool stop = false;
+
         /// <summary>
         /// Entry point of the application.
         /// </summary>
@@ -27,15 +29,22 @@ namespace Codartis.NsDepCop.ServiceHost
         /// <returns>Zero: normal exit. Negative value: error.</returns>
         public static int Main(string[] args)
         {
-            if (args.Length < 1 || !int.TryParse(args[0], out var parentProcessId))
+            if (args.Length < 3 || !int.TryParse(args[0], out var parentProcessId))
             {
                 Usage();
                 return -1;
             }
 
+            var outputStreamHandle = args[1];
+            var inputStreamHandle = args[2];
+
+
             try
             {
-                RegisterRemotingService();
+                var input = new AnonymousPipeClientStream(PipeDirection.In, inputStreamHandle);
+                var output = new AnonymousPipeClientStream(PipeDirection.Out, outputStreamHandle);
+
+                Task.Factory.StartNew(() => ServeWhileNotStopped(input, output));
 
                 WaitForParentProcessExit(parentProcessId);
                 return 0;
@@ -48,45 +57,64 @@ namespace Codartis.NsDepCop.ServiceHost
             }
         }
 
-        private static void RegisterRemotingService()
+        private static void ServeWhileNotStopped(AnonymousPipeClientStream input, AnonymousPipeClientStream output)
         {
-            ChannelServices.RegisterChannel(CreateIpcChannel(ServiceAddressProvider.PipeName), false);
-
-            RemotingConfiguration.RegisterWellKnownServiceType(
-                typeof(RemoteDependencyAnalyzerServer),
-                ServiceAddressProvider.ServiceName, 
-                WellKnownObjectMode.SingleCall);
-        }
-
-        private static IpcChannel CreateIpcChannel(string portName)
-        {
-            var everyoneAccountName = GetAccountNameForSid(WellKnownSidType.WorldSid);
-
-            var properties = new Hashtable
+            var serializer = new BinaryFormatter();
+            while (!stop)
             {
-                ["portName"] = portName,
-                ["authorizedGroup"] = everyoneAccountName
-            };
-
-            return new IpcChannel(properties, null, null);
+                var inputObject = serializer.Deserialize(input);
+                if (inputObject is AnalyzeProjectCommand analyzeCommand)
+                {
+                    var result = TryToRun(analyzeCommand, RunAnalyzeProject);
+                    analyzeCommand.Parameters = null;
+                    analyzeCommand.Response = result;
+                    serializer.Serialize(output, analyzeCommand);
+                }
+                else if (inputObject is ICommand command)
+                {
+                    command.Exception = new InvalidOperationException($"This command is unknown {command.Name}");
+                    serializer.Serialize(output, command);
+                }
+            }
         }
 
-        private static string GetAccountNameForSid(WellKnownSidType wellKnownSidType)
+        private static TResult TryToRun<T, TResult>(T command, Func<T, TResult> func)
+            where TResult : class
+            where T : ICommand<TResult>
         {
-            var sid = new SecurityIdentifier(wellKnownSidType, null);
-            var account = (NTAccount) sid.Translate(typeof(NTAccount));
-            return account.ToString();
+            try
+            {
+                var result = func(command);
+                command.Exception = null;
+                return result;
+            }
+            catch (Exception e)
+            {
+                command.Exception = e;
+            }
+            return null;
+        }
+
+        private static IRemoteMessage[] RunAnalyzeProject(AnalyzeProjectCommand analyzeCommand)
+        {
+            var server = new RemoteDependencyAnalyzerServer();
+            var result = server.AnalyzeProject(
+                analyzeCommand.Parameters.Config,
+                analyzeCommand.Parameters.SourcePaths,
+                analyzeCommand.Parameters.ReferencedAssemblyPaths);
+            return result;
         }
 
         private static void WaitForParentProcessExit(int parentProcessId)
         {
             var parentProcess = Process.GetProcesses().FirstOrDefault(i => i.Id == parentProcessId);
             parentProcess?.WaitForExit();
+            stop = true;
         }
 
         private static void Usage()
         {
-            Console.WriteLine($"Usage: {Assembly.GetExecutingAssembly().GetName().Name} <parentprocessid>");
+            Console.WriteLine($"Usage: {Assembly.GetExecutingAssembly().GetName().Name} <parentprocessid> <outputHandle> <inputHandle>");
         }
     }
 }

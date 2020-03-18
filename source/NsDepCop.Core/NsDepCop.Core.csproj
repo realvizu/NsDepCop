@@ -74,6 +74,7 @@
     <Compile Include="Implementation\Analysis\InProcessDependencyAnalyzer.cs" />
     <Compile Include="Implementation\Analysis\DependencyAnalyzerBase.cs" />
     <Compile Include="Implementation\Analysis\ITypeDependencyValidator.cs" />
+    <Compile Include="Implementation\Analysis\Remote\RemoteCommandCaller.cs" />
     <Compile Include="Implementation\Analysis\Remote\RemoteDependencyAnalyzerServerBase.cs" />
     <Compile Include="Implementation\GlobalSettings.cs" />
     <Compile Include="Interface\Analysis\IssueDefinitions.cs" />
@@ -87,6 +88,8 @@
     <Compile Include="Interface\Analysis\Messages\ConfigErrorMessage.cs" />
     <Compile Include="Interface\Analysis\Messages\ConfigDisabledMessage.cs" />
     <Compile Include="Interface\Analysis\Messages\IssueMessageBase.cs" />
+    <Compile Include="Interface\Analysis\Remote\Commands\AnalyzeProjectCommand.cs" />
+    <Compile Include="Interface\Analysis\Remote\Commands\Command.cs" />
     <Compile Include="Interface\Analysis\Remote\IRemoteMessage.cs" />
     <Compile Include="Interface\Analysis\Remote\RemoteIllegalDependencyMessage.cs" />
     <Compile Include="Interface\Config\IUpdateableConfigProvider.cs" />
@@ -154,7 +157,6 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NsDepCop.1.10.1\build\NsDepCop.targets" Condition="Exists('..\packages\NsDepCop.1.10.1\build\NsDepCop.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
