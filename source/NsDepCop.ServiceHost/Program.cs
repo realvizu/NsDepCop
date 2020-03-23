@@ -9,6 +9,7 @@ namespace Codartis.NsDepCop.ServiceHost
     using Codartis.NsDepCop.Core.Interface.Analysis.Remote.Commands;
     using System.IO.Pipes;
     using System.Runtime.Serialization.Formatters.Binary;
+    using System.Threading;
     using System.Threading.Tasks;
     using Codartis.NsDepCop.Core.Interface.Analysis.Remote;
 
@@ -44,7 +45,7 @@ namespace Codartis.NsDepCop.ServiceHost
                 var input = new AnonymousPipeClientStream(PipeDirection.In, inputStreamHandle);
                 var output = new AnonymousPipeClientStream(PipeDirection.Out, outputStreamHandle);
 
-                Task.Factory.StartNew(() => ServeWhileNotStopped(input, output));
+                Task.Run(() => ServeWhileNotStopped(input, output));
 
                 WaitForParentProcessExit(parentProcessId);
                 return 0;
@@ -59,22 +60,36 @@ namespace Codartis.NsDepCop.ServiceHost
 
         private static void ServeWhileNotStopped(AnonymousPipeClientStream input, AnonymousPipeClientStream output)
         {
-            var serializer = new BinaryFormatter();
+            BinaryFormatter serializer = new BinaryFormatter();
             while (!stop)
             {
-                var inputObject = serializer.Deserialize(input);
-                if (inputObject is AnalyzeProjectCommand analyzeCommand)
-                {
-                    var result = TryToRun(analyzeCommand, RunAnalyzeProject);
-                    analyzeCommand.Parameters = null;
-                    analyzeCommand.Response = result;
-                    serializer.Serialize(output, analyzeCommand);
-                }
-                else if (inputObject is ICommand command)
-                {
-                    command.Exception = new InvalidOperationException($"This command is unknown {command.Name}");
-                    serializer.Serialize(output, command);
-                }
+                object inputObject = serializer.Deserialize(input);
+                Task.Run(() => ServeOne(inputObject, output));
+            }
+        }
+
+        private static void ServeOne(object inputObject, AnonymousPipeClientStream output)
+        {
+            if (inputObject is AnalyzeProjectCommand analyzeCommand)
+            {
+                var result = TryToRun(analyzeCommand, RunAnalyzeProject);
+                analyzeCommand.Parameters = null;
+                analyzeCommand.Response = result;
+                SendResult(output, analyzeCommand);
+            }
+            else if (inputObject is ICommand command)
+            {
+                command.Exception = new InvalidOperationException($"This command is unknown {command.Name}");
+                SendResult(output, command);
+            }
+        }
+
+        private static void SendResult(AnonymousPipeClientStream output, object command)
+        {
+            lock (output)
+            {
+                BinaryFormatter serializer = new BinaryFormatter();
+                serializer.Serialize(output, command);
             }
         }
 
