@@ -67,7 +67,7 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
         {
             TraceMessageHandler?.Invoke("Calling analyzer service.");
 
-            if (remoteCommandCaller == null || !remoteCommandCaller.Connected)
+            if (remoteCommandCaller == null)
             {
                 throw new InvalidOperationException("The remote analyzer service is not yet started");
             }
@@ -92,11 +92,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis.Remote
             TraceMessageHandler?.Invoke($"{CommunicationErrorMessage} Exception: {e.Message}");
 
             TraceMessageHandler?.Invoke($"Trying to activate analyzer service (attempt #{retryCount + 1}).");
-            if (remoteCommandCaller == null || !remoteCommandCaller.Connected)
+            if (remoteCommandCaller == null)
             {
-                remoteCommandCaller?.Dispose();
-                var serverStreams = AnalyzerServiceActivator.Activate(TraceMessageHandler);
-                remoteCommandCaller = new RemoteCommandCaller(serverStreams, TraceMessageHandler);
+                remoteCommandCaller = AnalyzerServiceActivator.Activate(TraceMessageHandler);
 
                 var sleepTimeSpan = retryTimeSpans[retryCount];
                 TraceMessageHandler?.Invoke($"Retrying service call after: {sleepTimeSpan}.");

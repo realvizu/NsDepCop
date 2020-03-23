@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
+    using System.IO.Pipes;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Serialization.Formatters.Binary;
@@ -14,20 +16,20 @@
     public class RemoteCommandCaller : IDisposable
     {
         private const int Timeout = 30;
-        private readonly ServerStreams RemoteServer;
+        private readonly Stream inputStream;
+        private readonly Stream outputStream;
         private readonly MessageHandler TraceMessageHandler;
         private readonly Dictionary<Guid, Tuple<DateTime, object>> openTasks = new Dictionary<Guid, Tuple<DateTime, object>>();
         private bool disposed = false;
 
-        public RemoteCommandCaller(ServerStreams remoteServer, MessageHandler traceMessageHandler)
+        public RemoteCommandCaller(Stream inputStream, Stream outputStream, MessageHandler traceMessageHandler)
         {
-            this.RemoteServer = remoteServer;
+            this.inputStream = inputStream;
+            this.outputStream = outputStream;
             TraceMessageHandler = traceMessageHandler;
             Task.Factory.StartNew(CleanupTask);
             Task.Factory.StartNew(ReceiveTask);
         }
-
-        public bool Connected => RemoteServer.Input != null && RemoteServer.Output != null;
 
         public Task<TResult> Call<TParameter, TResult>(Command<TParameter, TResult> command)
             where TParameter : class
@@ -38,7 +40,7 @@
             lock (openTasks)
             {
                 openTasks.Add(command.CommandId, Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(Timeout), (object)task));
-                serializer.Serialize(RemoteServer.Input, command);
+                serializer.Serialize(inputStream, command);
             }
 
             return task.Task;
@@ -85,7 +87,7 @@
         private void ReadNextResponse()
         {
             var serializer = new BinaryFormatter();
-            var response = serializer.Deserialize(RemoteServer.Output);
+            var response = serializer.Deserialize(outputStream);
             if (response is ICommand<object> command)
             {
                 Tuple<DateTime, object> value;
@@ -152,8 +154,8 @@
         public void Dispose()
         {
             disposed = true;
-            RemoteServer.Input?.Dispose();
-            RemoteServer.Output?.Dispose();
+            inputStream?.Dispose();
+            outputStream?.Dispose();
         }
     }
 }
