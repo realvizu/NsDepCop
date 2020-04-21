@@ -212,9 +212,45 @@ Advanced settings:
 E.g.: if you want NsDepCop info messages to show up at minimal MSBuild verbosity then set `InfoImportance` to High.
 
 ## Disabling the tool
-You can disable NsDepCop by setting the DisableNsDepCop environment variable to 'true' or '1'.
+### Disabling to tool using an environment variable
+To disable the tool **globally**, set the **DisableNsDepCop** environment variable to **true** or **1**.
 
-E.g.: `set DisableNsDepCop=1`
+`setx DisableNsDepCop 1`
+
+It will affect both MSBuild integration (NuGet package) and Visual Studio integration (VSIX package).
+
+Note that it won't affect processes that are already running, only the newly started ones.
+
+### Disabling to tool with MSBuild property
+To disable the tool in MSBuild, set the **DisableNsDepCop** property to **true**.
+
+```xml
+<PropertyGroup>
+  <DisableNsDepCop>true</DisableNsDepCop>
+</PropertyGroup>
+```
+
+### Overriding the disabled state with MSBuild property
+To force executing the tool in MSBuild, set the **ForceNsDepCop** property to **true**.
+
+`msbuild MySolution.sln -t:NsDepCop_Analyze -p:ForceNsDepCop=true`
+
+### Running NsDepCop only as an explicit command
+If NsDepCop slows down the build too much then you can disable it as part of the build and run it explicitly before checking in.
+
+* Disable NsDepCop in every build by creating a file called [Directory.Build.Props](https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build) in your source root directory with the following content:
+ ```xml
+<Project>
+  <PropertyGroup>
+    <DisableNsDepCop>true</DisableNsDepCop>
+  </PropertyGroup>
+</Project>
+```
+
+* Create a cmd file that runs only NsDepCop. Run it before every check-in.
+
+`msbuild MySolution.sln -t:NsDepCop_Analyze -p:ForceNsDepCop=true`
+
 
 ## Config XML schema
 See the XSD schema of config.nsdepcop [here](../source/NsDepCop.ConfigSchema/NsDepCopConfig.xsd).

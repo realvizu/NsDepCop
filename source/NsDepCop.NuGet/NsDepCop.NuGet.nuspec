@@ -21,7 +21,7 @@ See project site for details (https://github.com/realvizu/NsDepCop).
         <copyright>Copyright 2013-2020 Ferenc Vizkeleti</copyright>
         <tags>static code analysis tool C# csharp namespace dependency dependencies enforce rule</tags>
         <releaseNotes>
-- Fix: RemotingException when using different NsDepCop NuGet and VSIX version.
+- New: Disable/force NsDepCop with MSBuild property.
         </releaseNotes>
     </metadata>
     <files>
