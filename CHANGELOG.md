@@ -1,6 +1,6 @@
 # NsDepCop Change Log
 
-## v1.10.2
+## v1.11.0
 (04/2020)
 
 - [x] New: Disable/force NsDepCop with MSBuild property. 
