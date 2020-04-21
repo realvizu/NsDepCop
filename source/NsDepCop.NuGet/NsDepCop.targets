@@ -18,13 +18,17 @@
         <NsDepCopUpToDateMarker>$(BaseIntermediateOutputPath)NsDepCop.UpToDateMarker</NsDepCopUpToDateMarker>
     </PropertyGroup>
 
-    <Target Name="NsDepCop_Clean" AfterTargets="AfterClean"
-            Condition="'$(DesignTimeBuild)' != 'true' AND '$(BuildingProject)' == 'true'">
+    <Target Name="NsDepCop_Clean" AfterTargets="AfterClean">
+        <Delete Files="$(NsDepCopUpToDateMarker)" />
+    </Target>
+
+    <Target Name="NsDepCop_Analyze_ForceClean" BeforeTargets="NsDepCop_Analyze"
+            Condition="'$(ForceNsDepCop)' == 'true'">
         <Delete Files="$(NsDepCopUpToDateMarker)" />
     </Target>
 
     <Target Name="NsDepCop_Analyze" AfterTargets="AfterCompile"
-            Condition="'$(DesignTimeBuild)' != 'true' AND '$(BuildingProject)' == 'true'"
+            Condition="('$(DesignTimeBuild)' != 'true' And '$(DisableNsDepCop)' != 'true') Or '$(ForceNsDepCop)' == 'true'"
             Inputs="@(Compile);@(ReferencePath);$(NsDepCopConfigFile)"
             Outputs="$(NsDepCopUpToDateMarker)">
 
