@@ -8,7 +8,7 @@
         <!-- It seems that properties like $(NsDepCopConfigFile) cannot be used when FastBuildCheck is running. -->
         <UpToDateCheckBuilt Include="$(BaseIntermediateOutputPath)NsDepCop.UpToDateMarker"
                             Original="$(MSBuildProjectDirectory)\config.nsdepcop"
-                            Condition="Exists('$(MSBuildProjectDirectory)\config.nsdepcop')" />
+                            Condition="Exists('$(MSBuildProjectDirectory)\config.nsdepcop') And ('$(DisableNsDepCop)' != 'true' Or '$(ForceNsDepCop)' == 'true')" />
     </ItemGroup>
 
     <UsingTask AssemblyFile="..\tools\NsDepCop.MsBuildTask.dll" TaskName="Codartis.NsDepCop.MsBuildTask.NsDepCopTask" />
