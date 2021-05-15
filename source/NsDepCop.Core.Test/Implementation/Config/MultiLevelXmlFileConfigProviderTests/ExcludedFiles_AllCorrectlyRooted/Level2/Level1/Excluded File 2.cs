@@ -1,3 +1,3 @@
-﻿class ExcludedFile2
+﻿class ExcludedFile2a
 {
 }

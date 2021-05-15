@@ -18,7 +18,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
             var configFilePath = GetFilePathInTestClassFolder("");
 
             var dependencyAnalyzer = CreateFactory()
-                .CreateInProcess(configFilePath, _typeDependencyEnumeratorMock.Object);
+                .Create(configFilePath, _typeDependencyEnumeratorMock.Object);
 
             dependencyAnalyzer.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
         }
@@ -30,7 +30,7 @@ namespace Codartis.NsDepCop.Core.Test.Factory
 
             var dependencyAnalyzer = CreateFactory()
                 .SetDefaultInfoImportance(Importance.High)
-                .CreateInProcess(configFilePath, _typeDependencyEnumeratorMock.Object);
+                .Create(configFilePath, _typeDependencyEnumeratorMock.Object);
 
             dependencyAnalyzer.InfoImportance.Should().Be(Importance.High);
         }
