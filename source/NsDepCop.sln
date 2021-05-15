@@ -28,11 +28,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{EFA91D33-558
 		..\doc\Versions.md = ..\doc\Versions.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Core", "NsDepCop.Core\NsDepCop.Core.csproj", "{BC26589E-79B0-4F55-B64D-DB11534D3476}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.Core", "NsDepCop.Core\NsDepCop.Core.csproj", "{BC26589E-79B0-4F55-B64D-DB11534D3476}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.MsBuildTask.Test", "NsDepCop.MsBuildTask.Test\NsDepCop.MsBuildTask.Test.csproj", "{D85464CB-59FA-4565-999C-F6603A063E84}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Core.Test", "NsDepCop.Core.Test\NsDepCop.Core.Test.csproj", "{96044EE5-D220-4CED-A687-35AED0115A35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.Core.Test", "NsDepCop.Core.Test\NsDepCop.Core.Test.csproj", "{96044EE5-D220-4CED-A687-35AED0115A35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.VisualStudioIntegration.Vs2015", "NsDepCop.VisualStudioIntegration.Vs2015\NsDepCop.VisualStudioIntegration.Vs2015.csproj", "{9E294E04-7B01-4AAE-810F-56C00B45A939}"
 EndProject
@@ -42,7 +40,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.NuGet", "NsDepCop.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.VisualStudioIntegration.Test", "NsDepCop.VisualStudioIntegration.Test\NsDepCop.VisualStudioIntegration.Test.csproj", "{7BF36CB7-19D8-42B9-B319-F5567116B320}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.TestUtil", "NsDepCop.TestUtil\NsDepCop.TestUtil.csproj", "{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.TestUtil", "NsDepCop.TestUtil\NsDepCop.TestUtil.csproj", "{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.VisualStudioIntegration.Vs2017", "NsDepCop.VisualStudioIntegration.Vs2017\NsDepCop.VisualStudioIntegration.Vs2017.csproj", "{7FCDB56A-4419-4F9B-8BBB-95D60C0C9784}"
 EndProject
@@ -76,16 +74,6 @@ Global
 		{BC26589E-79B0-4F55-B64D-DB11534D3476}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{BC26589E-79B0-4F55-B64D-DB11534D3476}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BC26589E-79B0-4F55-B64D-DB11534D3476}.Release|x86.ActiveCfg = Release|Any CPU
-		{D85464CB-59FA-4565-999C-F6603A063E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D85464CB-59FA-4565-999C-F6603A063E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D85464CB-59FA-4565-999C-F6603A063E84}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D85464CB-59FA-4565-999C-F6603A063E84}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D85464CB-59FA-4565-999C-F6603A063E84}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D85464CB-59FA-4565-999C-F6603A063E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D85464CB-59FA-4565-999C-F6603A063E84}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D85464CB-59FA-4565-999C-F6603A063E84}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{D85464CB-59FA-4565-999C-F6603A063E84}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{D85464CB-59FA-4565-999C-F6603A063E84}.Release|x86.ActiveCfg = Release|Any CPU
 		{96044EE5-D220-4CED-A687-35AED0115A35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{96044EE5-D220-4CED-A687-35AED0115A35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96044EE5-D220-4CED-A687-35AED0115A35}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
