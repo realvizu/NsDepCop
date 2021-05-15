@@ -1,5 +1,4 @@
 ﻿using Codartis.NsDepCop.Core.Implementation.Analysis;
-using Codartis.NsDepCop.Core.Implementation.Analysis.Remote;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.Core.Util;
@@ -26,16 +25,10 @@ namespace Codartis.NsDepCop.Core.Factory
             return this;
         }
 
-        public IDependencyAnalyzer CreateInProcess(string folderPath, ITypeDependencyEnumerator typeDependencyEnumerator)
+        public IDependencyAnalyzer Create(string folderPath, ITypeDependencyEnumerator typeDependencyEnumerator)
         {
             var configProvider = _configProviderFactory.CreateFromMultiLevelXmlConfigFile(folderPath);
             return new InProcessDependencyAnalyzer(configProvider, typeDependencyEnumerator, _traceMessageHandler);
-        }
-
-        public IDependencyAnalyzer CreateOutOfProcess(string folderPath, string serviceAddress)
-        {
-            var configProvider = _configProviderFactory.CreateFromMultiLevelXmlConfigFile(folderPath);
-            return new RemoteDependencyAnalyzerClient(configProvider, serviceAddress, _traceMessageHandler);
         }
     }
 }

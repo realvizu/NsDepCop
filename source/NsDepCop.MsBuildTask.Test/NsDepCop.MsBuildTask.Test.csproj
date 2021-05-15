@@ -224,14 +224,6 @@
       <Project>{bc26589e-79b0-4f55-b64d-db11534d3476}</Project>
       <Name>NsDepCop.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NsDepCop.MsBuildTask\NsDepCop.MsBuildTask.csproj">
-      <Project>{2acfcacc-fc7d-4192-9b9f-c916784d93b3}</Project>
-      <Name>NsDepCop.MsBuildTask</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NsDepCop.ServiceHost\NsDepCop.ServiceHost.csproj">
-      <Project>{bcbdf14e-53ec-4e8f-a977-8f485b8f2b5d}</Project>
-      <Name>NsDepCop.ServiceHost</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NsDepCop.TestUtil\NsDepCop.TestUtil.csproj">
       <Project>{c60a83ed-3d03-4179-a2d6-e9ab6263b99e}</Project>
       <Name>NsDepCop.TestUtil</Name>

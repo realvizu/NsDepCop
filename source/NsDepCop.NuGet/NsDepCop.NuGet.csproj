@@ -133,16 +133,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NsDepCop.MsBuildTask\NsDepCop.MsBuildTask.csproj">
-      <Project>{2acfcacc-fc7d-4192-9b9f-c916784d93b3}</Project>
-      <Name>NsDepCop.MsBuildTask</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NsDepCop.ServiceHost\NsDepCop.ServiceHost.csproj">
-      <Project>{bcbdf14e-53ec-4e8f-a977-8f485b8f2b5d}</Project>
-      <Name>NsDepCop.ServiceHost</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="..\NsDepCop.ItemTemplate\config.nsdepcop">
       <Link>config.nsdepcop</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

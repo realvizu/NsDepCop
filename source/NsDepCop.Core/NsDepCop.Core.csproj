@@ -1,173 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BC26589E-79B0-4F55-B64D-DB11534D3476}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Codartis.NsDepCop.Core</RootNamespace>
-    <AssemblyName>NsDepCop.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\NsDepCop.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="DotNet.Glob, Version=2.1.1.0, Culture=neutral, PublicKeyToken=b68cc888b4f632d1, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet.Glob.2.1.1\lib\net46\DotNet.Glob.dll</HintPath>
-    </Reference>
-    <Reference Include="OneOf">
-      <HintPath>..\..\lib\OneOf_Signed\OneOf.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Compile Include="..\Include\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    <Compile Include="..\Include\VersionInfo.cs" Link="Properties\VersionInfo.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="..\include\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\include\VersionInfo.cs">
-      <Link>Properties\VersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="Factory\ConfigProviderFactory.cs" />
-    <Compile Include="Factory\DependencyAnalyzerFactory.cs" />
-    <Compile Include="Factory\IConfigProviderFactory.cs" />
-    <Compile Include="Factory\IDependencyAnalyzerFactory.cs" />
-    <Compile Include="Implementation\Analysis\InProcessDependencyAnalyzer.cs" />
-    <Compile Include="Implementation\Analysis\DependencyAnalyzerBase.cs" />
-    <Compile Include="Implementation\Analysis\ITypeDependencyValidator.cs" />
-    <Compile Include="Implementation\Analysis\Remote\RemoteDependencyAnalyzerServerBase.cs" />
-    <Compile Include="Implementation\GlobalSettings.cs" />
-    <Compile Include="Interface\Analysis\IssueDefinitions.cs" />
-    <Compile Include="Interface\Analysis\IssueDescriptor.cs" />
-    <Compile Include="Interface\Analysis\Messages\AnalysisFinishedMessage.cs" />
-    <Compile Include="Interface\Analysis\Messages\ToolDisabledMessage.cs" />
-    <Compile Include="Interface\Analysis\Messages\NoConfigFileMessage.cs" />
-    <Compile Include="Interface\Analysis\Messages\InfoMessageBase.cs" />
-    <Compile Include="Interface\Analysis\Messages\TooManyIssuesMessage.cs" />
-    <Compile Include="Interface\Analysis\Messages\AnalysisStartedMessage.cs" />
-    <Compile Include="Interface\Analysis\Messages\ConfigErrorMessage.cs" />
-    <Compile Include="Interface\Analysis\Messages\ConfigDisabledMessage.cs" />
-    <Compile Include="Interface\Analysis\Messages\IssueMessageBase.cs" />
-    <Compile Include="Interface\Analysis\Remote\IRemoteMessage.cs" />
-    <Compile Include="Interface\Analysis\Remote\RemoteIllegalDependencyMessage.cs" />
-    <Compile Include="Interface\Config\IUpdateableConfigProvider.cs" />
-    <Compile Include="Util\AssemblyHelper.cs" />
-    <Compile Include="Util\RetryHelper.cs" />
-    <Compile Include="Implementation\Config\AnalyzerConfigBuilder.cs" />
-    <Compile Include="Implementation\Config\ConfigLoadResult.cs" />
-    <Compile Include="Implementation\Config\RuleConfigToStringsFormatter.cs" />
-    <Compile Include="Implementation\Analysis\Remote\AnalyzerServiceActivator.cs" />
-    <Compile Include="Implementation\Analysis\Remote\RemoteDependencyAnalyzerClient.cs" />
-    <Compile Include="Interface\Analysis\Messages\AnalyzerMessageBase.cs" />
-    <Compile Include="Interface\Analysis\Messages\IllegalDependencyMessage.cs" />
-    <Compile Include="Interface\Analysis\Remote\IRemoteDependencyAnalyzer.cs" />
-    <Compile Include="Interface\Analysis\Remote\ServiceAddressProvider.cs" />
-    <Compile Include="Interface\Analysis\Remote\RemoteTraceMessage.cs" />
-    <Compile Include="Interface\Config\IConfigInitializer.cs" />
-    <Compile Include="Util\DateTimeProvider.cs" />
-    <Compile Include="Util\IndentHelper.cs" />
-    <Compile Include="Util\FileHelper.cs" />
-    <Compile Include="Implementation\Config\ConfigProviderBase.cs" />
-    <Compile Include="Implementation\Config\MultiLevelXmlFileConfigProvider.cs" />
-    <Compile Include="Implementation\Config\XmlConfigParser.cs" />
-    <Compile Include="Interface\Analysis\IDependencyAnalyzer.cs" />
-    <Compile Include="Interface\Analysis\ISemanticModel.cs" />
-    <Compile Include="Interface\Analysis\ISyntaxNode.cs" />
-    <Compile Include="Util\IDateTimeProvider.cs" />
-    <Compile Include="Util\IDiagnosticSupport.cs" />
-    <Compile Include="Util\MessageHandler.cs" />
-    <Compile Include="Util\ObjectWrapper.cs" />
-    <Compile Include="Interface\Config\IConfigProvider.cs" />
-    <Compile Include="Interface\Config\ConfigDefaults.cs" />
-    <Compile Include="Implementation\Config\AnalyzerConfig.cs" />
-    <Compile Include="Implementation\Config\FileConfigProviderBase.cs" />
-    <Compile Include="Interface\Config\IAnalyzerConfig.cs" />
-    <Compile Include="Interface\Config\Importance.cs" />
-    <Compile Include="Util\ConcurrentDictionaryExtensions.cs" />
-    <Compile Include="Util\DictionaryExtensions.cs" />
-    <Compile Include="Interface\Config\IDependencyRules.cs" />
-    <Compile Include="Interface\Config\NamespaceSpecificationParser.cs" />
-    <Compile Include="Interface\Config\NamespaceTree.cs" />
-    <Compile Include="Implementation\Analysis\CachingTypeDependencyValidator.cs" />
-    <Compile Include="Util\ICacheStatistics.cs" />
-    <Compile Include="Interface\Config\TypeNameSet.cs" />
-    <Compile Include="Interface\Config\AnalyzerConfigState.cs" />
-    <Compile Include="Interface\Analysis\TypeDependency.cs" />
-    <Compile Include="Interface\Config\Namespace.cs" />
-    <Compile Include="Util\MathHelper.cs" />
-    <Compile Include="Interface\Config\IssueKind.cs" />
-    <Compile Include="Interface\ProductConstants.cs" />
-    <Compile Include="Interface\Config\NamespaceDependencyRule.cs" />
-    <Compile Include="Implementation\Analysis\TypeDependencyValidator.cs" />
-    <Compile Include="Util\EnumerableExtensions.cs" />
-    <Compile Include="Interface\Analysis\ITypeDependencyEnumerator.cs" />
-    <Compile Include="Interface\Config\NamespaceSpecification.cs" />
-    <Compile Include="Util\LinqExtensions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Implementation\Config\XmlFileConfigProvider.cs" />
-    <Compile Include="Interface\Analysis\SourceSegment.cs" />
+    <PackageReference Include="DotNet.Glob" Version="2.1.1" />
+    <PackageReference Include="OneOf" Version="3.0.178" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="config.nsdepcop">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\NsDepCop.1.10.1\build\NsDepCop.targets" Condition="Exists('..\packages\NsDepCop.1.10.1\build\NsDepCop.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NsDepCop.1.10.1\build\NsDepCop.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NsDepCop.1.10.1\build\NsDepCop.targets'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

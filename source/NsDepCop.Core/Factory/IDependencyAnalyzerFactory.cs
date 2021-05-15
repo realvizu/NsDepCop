@@ -7,8 +7,6 @@ namespace Codartis.NsDepCop.Core.Factory
     /// </summary>
     public interface IDependencyAnalyzerFactory
     {
-        IDependencyAnalyzer CreateInProcess(string folderPath, ITypeDependencyEnumerator typeDependencyEnumerator);
-
-        IDependencyAnalyzer CreateOutOfProcess(string folderPath, string serviceAddress);
+        IDependencyAnalyzer Create(string folderPath, ITypeDependencyEnumerator typeDependencyEnumerator);
     }
 }

@@ -76,13 +76,6 @@
       <Project>{bc26589e-79b0-4f55-b64d-db11534d3476}</Project>
       <Name>NsDepCop.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NsDepCop.ItemTemplate\NsDepCop.ItemTemplate.csproj">
-      <Project>{1629e4c3-4294-4836-824b-d9305768c7e9}</Project>
-      <Name>NsDepCop.ItemTemplate</Name>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <VSIXSubPath>ItemTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\NsDepCop.ParserAdapter.Roslyn2x\NsDepCop.ParserAdapter.Roslyn2x.csproj">
       <Project>{49913f01-47e6-4860-b0bc-359e2255bb5c}</Project>
       <Name>NsDepCop.ParserAdapter.Roslyn2x</Name>
