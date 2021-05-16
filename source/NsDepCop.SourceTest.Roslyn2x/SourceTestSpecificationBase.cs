@@ -69,7 +69,7 @@ namespace Codartis.NsDepCop.SourceTest
             IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
         {
             var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(DebugMessageHandler); 
-            var dependencyAnalyzer = dependencyAnalyzerFactory.CreateInProcess(baseFolder, _typeDependencyEnumerator);
+            var dependencyAnalyzer = dependencyAnalyzerFactory.Create(baseFolder, _typeDependencyEnumerator);
             return dependencyAnalyzer.AnalyzeProject(sourceFiles, referencedAssemblies).OfType<IllegalDependencyMessage>().Select(i => i.IllegalDependency);
         }
 
