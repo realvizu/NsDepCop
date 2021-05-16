@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.ConfigSchema", "Ns
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.RoslynAnalyzer", "NsDepCop.RoslynAnalyzer\NsDepCop.RoslynAnalyzer.csproj", "{948A39BC-A295-4439-9342-0BCAB7DADC2E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.Vsix", "NsDepCop.Vsix\NsDepCop.Vsix.csproj", "{17A44684-B673-42F8-982F-01ABEA3D5BBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -203,6 +205,18 @@ Global
 		{948A39BC-A295-4439-9342-0BCAB7DADC2E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{948A39BC-A295-4439-9342-0BCAB7DADC2E}.Release|x86.ActiveCfg = Release|Any CPU
 		{948A39BC-A295-4439-9342-0BCAB7DADC2E}.Release|x86.Build.0 = Release|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Debug|x86.Build.0 = Debug|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Release|x86.ActiveCfg = Release|Any CPU
+		{17A44684-B673-42F8-982F-01ABEA3D5BBE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

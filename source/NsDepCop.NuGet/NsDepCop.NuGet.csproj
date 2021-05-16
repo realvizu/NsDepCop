@@ -11,7 +11,7 @@
     <PackageId>NsDepCop</PackageId>
     <PackageVersion>2.0.0-local</PackageVersion>
     <Title>NsDepCop - Namespace Dependency Checker Tool for C#</Title>
-    <Description>Static code analysis tool to enforce namespace-based type dependency rules in C# projects.</Description>
+    <Description>Static code analysis tool for enforcing namespace-based type dependency rules in C# projects.</Description>
     <PackageTags>static code analysis analyzer tool C# csharp namespace type dependency dependencies</PackageTags>
     <Copyright>Copyright 2013-2021 Ferenc Vizkeleti</Copyright>
     <Authors>Ferenc Vizkeleti</Authors>

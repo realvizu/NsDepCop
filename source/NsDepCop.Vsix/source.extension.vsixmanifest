@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="NsDepCop.A2AB1A0B-EEF2-45BB-BEED-C54689C769CA" Version="2.0" Language="en-US" Publisher="Codartis"/>
+    <DisplayName>NsDepCop - Code dependency checker tool for C#</DisplayName>
+    <Description xml:space="preserve">Static code analysis tool for enforcing namespace-based type dependency rules in C# projects.</Description>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[15.0,)" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,)" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[15.0,)" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.7.2,)" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="NsDepCop.RoslynAnalyzer" Path="|NsDepCop.RoslynAnalyzer|"/>
+    <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="NsDepCop.RoslynAnalyzer" Path="|NsDepCop.RoslynAnalyzer|"/>
+  </Assets>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
+    <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[15.0,)" DisplayName="Roslyn Language Services" />
+  </Prerequisites>
+</PackageManifest>
