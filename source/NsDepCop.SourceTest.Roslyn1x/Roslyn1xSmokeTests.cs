@@ -20,11 +20,11 @@ namespace Codartis.NsDepCop.SourceTest
         public void Cs6_EveryUserDefinedTypeKind()
         {
             SourceTestSpecification.Create()
-                .ExpectInvalidSegment(7, 17, 24)
-                .ExpectInvalidSegment(8, 17, 29)
-                .ExpectInvalidSegment(9, 17, 25)
-                .ExpectInvalidSegment(10, 17, 23)
-                .ExpectInvalidSegment(11, 17, 27)
+                .ExpectInvalidSegment(7, 16, 24)
+                .ExpectInvalidSegment(8, 16, 29)
+                .ExpectInvalidSegment(9, 16, 25)
+                .ExpectInvalidSegment(10, 16, 23)
+                .ExpectInvalidSegment(11, 16, 27)
                 .Execute();
         }
     }

@@ -14,8 +14,7 @@ namespace Codartis.NsDepCop.TestUtil
 
         protected static string GetAssemblyPath(Assembly assembly)
         {
-            var codeBaseUri = new Uri(assembly.CodeBase);
-            return Uri.UnescapeDataString(codeBaseUri.AbsolutePath);
+            return assembly.Location;
         }
 
         protected static string GetAssemblyDirectory(Assembly assembly)

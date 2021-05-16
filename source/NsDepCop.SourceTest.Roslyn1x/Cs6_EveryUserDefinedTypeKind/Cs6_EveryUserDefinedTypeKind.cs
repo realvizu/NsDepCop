@@ -2,21 +2,21 @@
 {
     using B;
 
-    class Foo
+    public class Foo
     {
-        private MyClass x1;
-        private IMyInterface x2;
-        private MyStruct x3;
-        private MyEnum x4;
-        private MyDelegate x5;
+        public MyClass1 X1;
+        public IMyInterface1 X2;
+        public MyStruct1 X3;
+        public MyEnum1 X4;
+        public MyDelegate1 X5;
     }
 }
 
 namespace B
 {
-    class MyClass { }
-    interface IMyInterface { }
-    struct MyStruct { }
-    enum MyEnum { }
-    delegate void MyDelegate();
+    public class MyClass1 { }
+    public interface IMyInterface1 { }
+    public struct MyStruct1 { }
+    public enum MyEnum1 { }
+    public delegate void MyDelegate1();
 }

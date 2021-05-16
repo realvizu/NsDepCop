@@ -46,9 +46,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.VisualStudioIntegr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.SourceTest.Roslyn2x", "NsDepCop.SourceTest.Roslyn2x\NsDepCop.SourceTest.Roslyn2x.csproj", "{F6554236-1D67-4343-816A-F145F7750526}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.ParserAdapter.Roslyn1x", "NsDepCop.ParserAdapter.Roslyn1x\NsDepCop.ParserAdapter.Roslyn1x.csproj", "{80771E79-4D7C-44E4-8813-2511254BDBAD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.ParserAdapter.Roslyn2x", "NsDepCop.ParserAdapter.Roslyn2x\NsDepCop.ParserAdapter.Roslyn2x.csproj", "{49913F01-47E6-4860-B0BC-359E2255BB5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.ParserAdapter.Roslyn", "NsDepCop.ParserAdapter.Roslyn\NsDepCop.ParserAdapter.Roslyn.csproj", "{80771E79-4D7C-44E4-8813-2511254BDBAD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.SourceTest.Roslyn1x", "NsDepCop.SourceTest.Roslyn1x\NsDepCop.SourceTest.Roslyn1x.csproj", "{8F13F23A-CE64-49B0-851C-26E9CE7F4167}"
 EndProject
@@ -180,18 +178,6 @@ Global
 		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|x86.ActiveCfg = Release|Any CPU
 		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|x86.Build.0 = Release|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Debug|x86.Build.0 = Debug|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|x86.ActiveCfg = Release|Any CPU
-		{49913F01-47E6-4860-B0BC-359E2255BB5C}.Release|x86.Build.0 = Release|Any CPU
 		{8F13F23A-CE64-49B0-851C-26E9CE7F4167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F13F23A-CE64-49B0-851C-26E9CE7F4167}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F13F23A-CE64-49B0-851C-26E9CE7F4167}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

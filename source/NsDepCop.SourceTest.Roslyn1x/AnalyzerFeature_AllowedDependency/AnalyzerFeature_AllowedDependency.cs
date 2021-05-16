@@ -2,9 +2,9 @@
 {
     public class NoIssue
     {
-        private B.MyEnum field1;
-        private MyGlobalEnum field2;
-        private System.IO.FileInfo field3;
+        public B.MyEnum Field1;
+        public MyGlobalEnum Field2;
+        public System.Type Field3;
     }
 }
 
