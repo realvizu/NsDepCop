@@ -12,7 +12,8 @@ namespace A
         {
             var tuple = (p1.F1, p1.F2);
 
-            Console.WriteLine($"{tuple.F1} {tuple.F2}");
+            var f1 = tuple.F1;
+            var f2 = tuple.F2;
         }
     }
 }

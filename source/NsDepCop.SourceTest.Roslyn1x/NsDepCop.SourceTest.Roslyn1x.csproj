@@ -9,34 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="AnalyzerFeature_AllowedDependency\AnalyzerFeature_AllowedDependency.cs" />
-    <Compile Remove="Cs6_EveryUserDefinedTypeKind\Cs6_EveryUserDefinedTypeKind.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="AnalyzerFeature_AllowedDependency\config.nsdepcop" />
-    <None Remove="Cs6_EveryUserDefinedTypeKind\config.nsdepcop" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="..\Include\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
     <Compile Include="..\Include\VersionInfo.cs" Link="Properties\VersionInfo.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="AnalyzerFeature_AllowedDependency\AnalyzerFeature_AllowedDependency.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="AnalyzerFeature_AllowedDependency\config.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Cs6_EveryUserDefinedTypeKind\config.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Cs6_EveryUserDefinedTypeKind\Cs6_EveryUserDefinedTypeKind.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="4.19.2" />
@@ -49,5 +25,28 @@
     <ProjectReference Include="..\NsDepCop.TestUtil\NsDepCop.TestUtil.csproj" />
     <ProjectReference Include="..\NsDepCop.ParserAdapter.Roslyn\NsDepCop.ParserAdapter.Roslyn.csproj" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <Compile Remove="AnalyzerFeature_AllowedDependency\AnalyzerFeature_AllowedDependency.cs" />
+    <Compile Remove="Cs6_EveryUserDefinedTypeKind\Cs6_EveryUserDefinedTypeKind.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="AnalyzerFeature_AllowedDependency\AnalyzerFeature_AllowedDependency.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_EveryUserDefinedTypeKind\Cs6_EveryUserDefinedTypeKind.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="AnalyzerFeature_AllowedDependency\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_EveryUserDefinedTypeKind\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

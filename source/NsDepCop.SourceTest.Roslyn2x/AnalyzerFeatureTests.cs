@@ -22,7 +22,7 @@ namespace Codartis.NsDepCop.SourceTest
             SourceTestSpecification.Create()
                 .ExpectInvalidSegment(5, 19, 25)
                 .ExpectInvalidSegment(6, 17, 29)
-                .ExpectInvalidSegment(7, 27, 35)
+                .ExpectInvalidSegment(7, 24, 28)
                 .Execute();
         }
 

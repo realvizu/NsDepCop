@@ -11,22 +11,6 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn2x
     /// </summary>
     public class Roslyn2SyntaxNodeAnalyzer : SyntaxNodeAnalyzer
     {
-        protected override IEnumerable<ITypeSymbol> GetConstituentTypes(ITypeSymbol typeSymbol, SyntaxNode syntaxNode)
-        {
-            if (typeSymbol != null &&
-                typeSymbol.TypeKind == TypeKind.Struct &&
-                typeSymbol is INamedTypeSymbol namedTypeSymbol &&
-                namedTypeSymbol.IsTupleType)
-            {
-                foreach (var tupleElementType in namedTypeSymbol.TupleElements.Select(i => i.Type))
-                    foreach (var type in GetConstituentTypes(tupleElementType, syntaxNode))
-                        yield return type;
-            }
-
-            foreach (var constituentType in base.GetConstituentTypes(typeSymbol, syntaxNode))
-                yield return constituentType;
-        }
-
         protected override ITypeSymbol DetermineReferencedType(SyntaxNode node, SemanticModel semanticModel)
         {
             var typeSymbol = semanticModel.GetTypeInfo(node).Type;

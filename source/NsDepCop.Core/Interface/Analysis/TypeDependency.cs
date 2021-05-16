@@ -3,7 +3,8 @@
 namespace Codartis.NsDepCop.Core.Interface.Analysis
 {
     /// <summary>
-    /// Describes a dependency between two types. Immutable.
+    /// Describes a dependency between two types at a source segment.
+    /// Immutable.
     /// </summary>
     [Serializable]
     public struct TypeDependency
@@ -47,8 +48,10 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
             SourceSegment = sourceSegment;
         }
 
+        // TODO: should print source segment too
         public override string ToString() => $"{FromNamespaceName}.{FromTypeName}->{ToNamespaceName}.{ToTypeName}";
 
+        // TODO: should consider source segment too
         public bool Equals(TypeDependency other)
         {
             return string.Equals(FromNamespaceName, other.FromNamespaceName) 
@@ -63,6 +66,7 @@ namespace Codartis.NsDepCop.Core.Interface.Analysis
             return obj is TypeDependency && Equals((TypeDependency) obj);
         }
 
+        // TODO: should consider source segment too
         public override int GetHashCode()
         {
             unchecked

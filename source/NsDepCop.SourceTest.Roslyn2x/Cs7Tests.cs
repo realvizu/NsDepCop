@@ -45,7 +45,6 @@ namespace Codartis.NsDepCop.SourceTest
                 // a.class4 = null; | a -> Class2 | class4 -> Class2
                 .ExpectInvalidSegment(30, 13, 14)
                 .ExpectInvalidSegment(30, 15, 21)
-
                 .Execute();
         }
 
@@ -56,7 +55,7 @@ namespace Codartis.NsDepCop.SourceTest
 
                 // (var a, var b) = Method2();
                 .ExpectInvalidSegment(13, 21, 24)
-                
+
                 // (_, var c) = Method2();
                 .ExpectInvalidSegment(16, 17, 20)
 
@@ -67,7 +66,6 @@ namespace Codartis.NsDepCop.SourceTest
                 .ExpectInvalidSegment(23, 13, 19)
                 // (f, g) = Method2();
                 .ExpectInvalidSegment(24, 17, 18)
-
                 .Execute();
         }
 
@@ -82,11 +80,6 @@ namespace Codartis.NsDepCop.SourceTest
                 // o is Class3 class3 (type pattern)
                 .ExpectInvalidSegment(9, 17, 18)
                 .ExpectInvalidSegment(9, 22, 28)
-
-                // o is var class2 (var pattern)
-                .ExpectInvalidSegment(11, 17, 18)
-                .ExpectInvalidSegment(11, 22, 25)
-                
                 .Execute();
         }
 
@@ -98,7 +91,6 @@ namespace Codartis.NsDepCop.SourceTest
                 // case Class2 class2 when class2 != null:
                 .ExpectInvalidSegment(11, 22, 28)
                 .ExpectInvalidSegment(11, 41, 47)
-
                 .Execute();
         }
 
@@ -110,7 +102,6 @@ namespace Codartis.NsDepCop.SourceTest
                 // Class2 LocalFunction(Class2 class2)
                 .ExpectInvalidSegment(9, 13, 19)
                 .ExpectInvalidSegment(9, 34, 40)
-
                 .Execute();
         }
 
@@ -121,7 +112,6 @@ namespace Codartis.NsDepCop.SourceTest
 
                 // throw new MyException();
                 .ExpectInvalidSegment(9, 43, 54)
-
                 .Execute();
         }
     }

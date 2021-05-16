@@ -28,7 +28,7 @@ namespace Codartis.NsDepCop.ParserAdapter
         protected abstract TypeDependencyEnumeratorSyntaxVisitor CreateSyntaxVisitor(SemanticModel semanticModel, ISyntaxNodeAnalyzer syntaxNodeAnalyzer);
 
         public IEnumerable<TypeDependency> GetTypeDependencies(
-            IEnumerable<string> sourceFilePaths, 
+            IEnumerable<string> sourceFilePaths,
             IEnumerable<string> referencedAssemblyPaths,
             IEnumerable<Glob> sourcePathExclusionGlobs)
         {
@@ -38,9 +38,8 @@ namespace Codartis.NsDepCop.ParserAdapter
             var compilation = CSharpCompilation.Create("NsDepCopProject", syntaxTrees, referencedAssemblies,
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, allowUnsafe: true));
 
-            foreach (var syntaxTree in syntaxTrees.Where(i => !IsExcludedFilePath(i.FilePath, sourcePathExclusionGlobs)))
-            foreach (var typeDependency in GetTypeDependenciesForSyntaxTree(compilation, syntaxTree, _syntaxNodeAnalyzer))
-                yield return typeDependency;
+            return syntaxTrees.Where(i => !IsExcludedFilePath(i.FilePath, sourcePathExclusionGlobs))
+                .SelectMany(i => GetTypeDependenciesForSyntaxTree(compilation, i, _syntaxNodeAnalyzer));
         }
 
         private static bool IsExcludedFilePath(string filePath, IEnumerable<Glob> sourcePathExclusionGlobs)
@@ -48,7 +47,10 @@ namespace Codartis.NsDepCop.ParserAdapter
             return sourcePathExclusionGlobs.Any(i => i.IsMatch(filePath));
         }
 
-        private IEnumerable<TypeDependency> GetTypeDependenciesForSyntaxTree(CSharpCompilation compilation, SyntaxTree syntaxTree, ISyntaxNodeAnalyzer syntaxNodeAnalyzer)
+        private IEnumerable<TypeDependency> GetTypeDependenciesForSyntaxTree(
+            CSharpCompilation compilation,
+            SyntaxTree syntaxTree,
+            ISyntaxNodeAnalyzer syntaxNodeAnalyzer)
         {
             var documentRootNode = syntaxTree.GetRoot();
             if (documentRootNode == null)
@@ -61,14 +63,14 @@ namespace Codartis.NsDepCop.ParserAdapter
         }
 
         public IEnumerable<TypeDependency> GetTypeDependencies(
-            ISyntaxNode syntaxNode, 
+            ISyntaxNode syntaxNode,
             ISemanticModel semanticModel,
             IEnumerable<Glob> sourcePathExclusionGlobs)
         {
             var roslynSyntaxNode = Unwrap<SyntaxNode>(syntaxNode);
 
-            return IsExcludedFilePath(roslynSyntaxNode?.SyntaxTree?.FilePath, sourcePathExclusionGlobs) 
-                ? Enumerable.Empty<TypeDependency>() 
+            return IsExcludedFilePath(roslynSyntaxNode?.SyntaxTree?.FilePath, sourcePathExclusionGlobs)
+                ? Enumerable.Empty<TypeDependency>()
                 : _syntaxNodeAnalyzer.GetTypeDependencies(roslynSyntaxNode, Unwrap<SemanticModel>(semanticModel));
         }
 
