@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props" />
 
   <PropertyGroup>
@@ -23,7 +23,9 @@
   <PropertyGroup>
     <StartAction>Program</StartAction>
     <StartProgram>$(DevEnvDir)devenv.exe</StartProgram>
-    <StartArguments>c:\temp\simpleapp\simpleapp.sln /rootsuffix $(VSSDKTargetPlatformRegRootSuffix)</StartArguments>
+    <StartArguments>
+      c:\temp\simpleapp\simpleapp.sln /rootsuffix $(VSSDKTargetPlatformRegRootSuffix) /log c:\temp\activitylog.xml
+    </StartArguments>
   </PropertyGroup>
 
   <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" />
@@ -41,5 +43,13 @@
     <!-- https://github.com/Microsoft/extendvs/issues/57 -->
     <ProjectReference Update="@(ProjectReference)" Name="%(Filename)" />
   </ItemGroup>
+
+  <!-- Workaround to include NuGet DLLs into the VSIX. Needs more tweaking because it includes too many. -->
+  <Target Name="IncludeNuGetPackageReferences" AfterTargets="GetVsixSourceItems">
+    <ItemGroup>
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'DotNet.Glob'" />
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'OneOf'" />
+    </ItemGroup>
+  </Target>
 
 </Project>

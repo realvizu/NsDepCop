@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Config;
@@ -59,7 +60,9 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
             var config = ConfigProvider.Config;
             var maxIssueCount = config.MaxIssueCount;
 
-            var startTime = DateTime.Now;
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             yield return new AnalysisStartedMessage(ConfigProvider.ConfigLocation);
 
             var issueCount = 0;
@@ -75,8 +78,8 @@ namespace Codartis.NsDepCop.Core.Implementation.Analysis
                 issueCount++;
             }
 
-            var endTime = DateTime.Now;
-            yield return new AnalysisFinishedMessage(endTime - startTime, issueCount);
+            stopwatch.Stop();
+            yield return new AnalysisFinishedMessage(stopwatch.Elapsed, issueCount);
 
             if (isProjectScope && config.AutoLowerMaxIssueCount && issueCount < maxIssueCount)
                 ConfigProvider.UpdateMaxIssueCount(issueCount);
