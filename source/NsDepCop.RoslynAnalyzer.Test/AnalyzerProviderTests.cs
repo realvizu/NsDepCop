@@ -50,14 +50,14 @@ namespace Codartis.NsDepCop.VisualStudioIntegration.Test
         private void SetUpFactoryCall(IDependencyAnalyzer analyzer)
         {
             _dependencyAnalyzerFactoryMock
-                .Setup(i => i.CreateInProcess(It.IsAny<string>(), _typeDependencyEnumeratorMock.Object))
+                .Setup(i => i.Create(It.IsAny<string>(), _typeDependencyEnumeratorMock.Object))
                 .Returns(analyzer);
         }
 
         private void VerifyFactoryCall(Times times)
         {
             _dependencyAnalyzerFactoryMock
-                .Verify(i => i.CreateInProcess(It.IsAny<string>(), _typeDependencyEnumeratorMock.Object), times);
+                .Verify(i => i.Create(It.IsAny<string>(), _typeDependencyEnumeratorMock.Object), times);
         }
 
         private IAnalyzerProvider CreateAnalyzerProvider()

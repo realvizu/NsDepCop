@@ -1,4 +1,4 @@
 ﻿using System.Reflection;
 
 [assembly: AssemblyTitle("NsDepCop.RoslynAnalyzer")]
-[assembly: AssemblyDescription("Implements a Roslyn-defined DiagnosticAnalyzer.")]
+[assembly: AssemblyDescription("Wraps the dependency analyzer into a Roslyn DiagnosticAnalyzer.")]

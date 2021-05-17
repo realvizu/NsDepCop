@@ -28,13 +28,6 @@ namespace Codartis.NsDepCop.VisualStudioIntegration
             _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IDependencyAnalyzer>();
         }
 
-        public void Dispose()
-        {
-            foreach (var dependencyAnalyzer in _projectFileToDependencyAnalyzerMap.Values)
-                if (dependencyAnalyzer is IDisposable disposable)
-                    disposable.Dispose();
-        }
-
         public IDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath)
         {
             if (string.IsNullOrWhiteSpace(csprojFilePath))
