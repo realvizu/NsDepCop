@@ -41,8 +41,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.SourceTest.Roslyn"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.ParserAdapter.Roslyn", "NsDepCop.ParserAdapter.Roslyn\NsDepCop.ParserAdapter.Roslyn.csproj", "{80771E79-4D7C-44E4-8813-2511254BDBAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NsDepCop.ConfigSchema", "NsDepCop.ConfigSchema\NsDepCop.ConfigSchema.csproj", "{262ED80E-4965-4EA0-8608-64022FBF85C5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.RoslynAnalyzer", "NsDepCop.RoslynAnalyzer\NsDepCop.RoslynAnalyzer.csproj", "{948A39BC-A295-4439-9342-0BCAB7DADC2E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.Vsix", "NsDepCop.Vsix\NsDepCop.Vsix.csproj", "{17A44684-B673-42F8-982F-01ABEA3D5BBE}"
@@ -127,18 +125,6 @@ Global
 		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|x86.ActiveCfg = Release|Any CPU
 		{80771E79-4D7C-44E4-8813-2511254BDBAD}.Release|x86.Build.0 = Release|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Debug|x86.Build.0 = Debug|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Release|x86.ActiveCfg = Release|Any CPU
-		{262ED80E-4965-4EA0-8608-64022FBF85C5}.Release|x86.Build.0 = Release|Any CPU
 		{948A39BC-A295-4439-9342-0BCAB7DADC2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{948A39BC-A295-4439-9342-0BCAB7DADC2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{948A39BC-A295-4439-9342-0BCAB7DADC2E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
