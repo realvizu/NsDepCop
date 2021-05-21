@@ -3,7 +3,6 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <RootNamespace>Codartis.NsDepCop.Vsix</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
