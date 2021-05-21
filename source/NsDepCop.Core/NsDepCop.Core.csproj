@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <PackageReference Include="DotNet.Glob" Version="2.1.1" />
-    <PackageReference Include="OneOf" Version="3.0.178" />
   </ItemGroup>
 
 </Project>

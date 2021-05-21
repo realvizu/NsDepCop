@@ -221,12 +221,6 @@
     <Content Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\RefreshConfig_NoConfigToEnabled\Level2\Level1\placeholder.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Util\FileHelperTests\Level3\Level2\Level1\Test.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Util\FileHelperTests\Level3\Test.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>
