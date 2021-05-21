@@ -58,8 +58,6 @@ namespace Codartis.NsDepCop.Implementation.Analysis
             if (syntaxNode == null) throw new ArgumentNullException(nameof(syntaxNode));
             if (semanticModel == null) throw new ArgumentNullException(nameof(semanticModel));
 
-            if (GlobalSettings.IsToolDisabled())
-                return new[] { new ToolDisabledMessage() };
 
             lock (_configRefreshLock)
             {

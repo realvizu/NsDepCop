@@ -22,11 +22,13 @@ namespace Codartis.NsDepCop.Implementation.Analysis
             TraceMessageHandler = traceMessageHandler;
         }
 
-        public Importance InfoImportance => ConfigProvider.InfoImportance;
-
         public abstract IEnumerable<AnalyzerMessageBase> AnalyzeProject(IEnumerable<string> sourceFilePaths, IEnumerable<string> referencedAssemblyPaths);
         public abstract IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel);
         public abstract void RefreshConfig();
+
+        public bool HasConfigError => ConfigProvider.ConfigState == AnalyzerConfigState.ConfigError;
+
+        public Exception GetConfigException() => ConfigProvider.ConfigException;
 
         protected IEnumerable<AnalyzerMessageBase> AnalyzeCore(Func<IEnumerable<TypeDependency>> illegalTypeDependencyEnumerator, bool isProjectScope)
         {

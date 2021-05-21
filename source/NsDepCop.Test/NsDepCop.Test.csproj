@@ -50,10 +50,6 @@
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\ExcludedFiles_AllCorrectlyRooted\Level2\ExcludedFile3.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Factory\DependencyAnalyzerFactoryTests\config.nsdepcop">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Attributes_MissingDoesNotOverwrite\Level2\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

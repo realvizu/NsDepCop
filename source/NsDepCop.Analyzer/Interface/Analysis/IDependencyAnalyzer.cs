@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Codartis.NsDepCop.Interface.Analysis.Messages;
-using Codartis.NsDepCop.Interface.Config;
 
 namespace Codartis.NsDepCop.Interface.Analysis
 {
@@ -26,13 +26,18 @@ namespace Codartis.NsDepCop.Interface.Analysis
         IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel);
 
         /// <summary>
-        /// Gets the importance of the info messages.
-        /// </summary>
-        Importance InfoImportance { get; }
-
-        /// <summary>
         /// Re-reads the config.
         /// </summary>
         void RefreshConfig();
+
+        /// <summary>
+        /// Returns true if the config reading produced an error.
+        /// </summary>
+        bool HasConfigError { get; }
+
+        /// <summary>
+        /// Gets the config exception or null if there was no exception.
+        /// </summary>
+        Exception GetConfigException();
     }
 }

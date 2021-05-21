@@ -8,11 +8,6 @@ namespace Codartis.NsDepCop.Interface.Config
     public interface IConfigProvider
     {
         /// <summary>
-        /// Gets the importance of the info messages.
-        /// </summary>
-        Importance InfoImportance { get; }
-
-        /// <summary>
         /// Gets the config used by the analyzers.
         /// </summary>
         IAnalyzerConfig Config { get; }

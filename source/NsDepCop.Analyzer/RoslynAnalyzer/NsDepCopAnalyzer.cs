@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Factory;
+using Codartis.NsDepCop.Implementation;
 using Codartis.NsDepCop.Interface;
 using Codartis.NsDepCop.Interface.Analysis;
 using Codartis.NsDepCop.Interface.Analysis.Messages;
-using Codartis.NsDepCop.Interface.Config;
 using Codartis.NsDepCop.ParserAdapter.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -23,15 +23,16 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
     public sealed class NsDepCopAnalyzer : DiagnosticAnalyzer
     {
         private static readonly DiagnosticDescriptor IllegalDependencyDescriptor = IssueDefinitions.IllegalDependencyIssue.ToDiagnosticDescriptor();
-        private static readonly DiagnosticDescriptor TooManyIssuesDescriptor = IssueDefinitions.TooManyIssuesIssue.ToDiagnosticDescriptor();
         private static readonly DiagnosticDescriptor NoConfigFileDescriptor = IssueDefinitions.NoConfigFileIssue.ToDiagnosticDescriptor();
         private static readonly DiagnosticDescriptor ConfigExceptionDescriptor = IssueDefinitions.ConfigExceptionIssue.ToDiagnosticDescriptor();
+        private static readonly DiagnosticDescriptor ToolDisabledDescriptor = IssueDefinitions.ToolDisabledIssue.ToDiagnosticDescriptor();
 
         private static readonly ImmutableArray<DiagnosticDescriptor> DiagnosticDescriptors =
             ImmutableArray.Create(
                 IllegalDependencyDescriptor,
                 NoConfigFileDescriptor,
-                ConfigExceptionDescriptor
+                ConfigExceptionDescriptor,
+                ToolDisabledDescriptor
             );
 
         private static readonly ImmutableArray<SyntaxKind> SyntaxKindsToRegister =
@@ -62,10 +63,16 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
 
         private void StartAnalysisForCompilation(CompilationStartAnalysisContext compilationStartContext)
         {
+            if (GlobalSettings.IsToolDisabled())
+            {
+                compilationStartContext.RegisterSyntaxTreeAction(i => ReportForSyntaxTree(i, ToolDisabledDescriptor));
+                return;
+            }
+
             var configFilePath = compilationStartContext.Options.AdditionalFiles.FirstOrDefault(IsConfigFile)?.Path;
             if (configFilePath == null)
             {
-                compilationStartContext.RegisterSyntaxTreeAction(ReportNoConfig);
+                compilationStartContext.RegisterSyntaxTreeAction(i => ReportForSyntaxTree(i, NoConfigFileDescriptor));
                 return;
             }
 
@@ -73,86 +80,67 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
             if (dependencyAnalyzer == null)
                 throw new Exception($"Could not acquire DependencyAnalyzer for path: '{configFilePath}'");
 
+            if (dependencyAnalyzer.HasConfigError)
+            {
+                var message = dependencyAnalyzer.GetConfigException().ToString();
+                compilationStartContext.RegisterSyntaxTreeAction(i => ReportForSyntaxTree(i, ConfigExceptionDescriptor, message));
+                return;
+            }
+
             compilationStartContext.RegisterSyntaxNodeAction(
-                syntaxNodeAnalysisContext => { AnalyzeSyntaxNodeAndReportDiagnostics(dependencyAnalyzer, syntaxNodeAnalysisContext); },
+                i => AnalyzeSyntaxNodeAndReportDiagnostics(i, dependencyAnalyzer),
                 SyntaxKindsToRegister);
         }
 
+        private static void ReportForSyntaxTree(
+            SyntaxTreeAnalysisContext syntaxTreeAnalysisContext,
+            DiagnosticDescriptor diagnosticDescriptor,
+            string message = null)
+        {
+            var location = Location.Create(syntaxTreeAnalysisContext.Tree, TextSpan.FromBounds(0, 0));
+            var diagnostic = CreateDiagnostic(diagnosticDescriptor, location, message);
+            syntaxTreeAnalysisContext.ReportDiagnostic(diagnostic);
+        }
 
-        private static void AnalyzeSyntaxNodeAndReportDiagnostics(IDependencyAnalyzer dependencyAnalyzer, SyntaxNodeAnalysisContext syntaxNodeAnalysisContext)
+        private static void AnalyzeSyntaxNodeAndReportDiagnostics(
+            SyntaxNodeAnalysisContext syntaxNodeAnalysisContext,
+            IDependencyAnalyzer dependencyAnalyzer)
         {
             var analyzerMessages = dependencyAnalyzer.AnalyzeSyntaxNode(
                 new RoslynSyntaxNode(syntaxNodeAnalysisContext.Node),
                 new RoslynSemanticModel(syntaxNodeAnalysisContext.SemanticModel)
             );
 
-            foreach (var analyzerMessage in analyzerMessages)
-            {
-                var diagnostic = ConvertAnalyzerMessageToDiagnostic(syntaxNodeAnalysisContext.Node, analyzerMessage);
-                if (diagnostic != null)
-                    syntaxNodeAnalysisContext.ReportDiagnostic(diagnostic);
-            }
+            var diagnostics = analyzerMessages.OfType<IllegalDependencyMessage>()
+                .Select(i => CreateIllegalDependencyDiagnostic(syntaxNodeAnalysisContext.Node, i.ToString()));
+
+            foreach (var diagnostic in diagnostics)
+                syntaxNodeAnalysisContext.ReportDiagnostic(diagnostic);
         }
 
-        private static void ReportNoConfig(SyntaxTreeAnalysisContext syntaxTreeAnalysisContext)
-        {
-            var diagnostic = Diagnostic.Create(NoConfigFileDescriptor, Location.Create(syntaxTreeAnalysisContext.Tree, TextSpan.FromBounds(0, 0)));
-            syntaxTreeAnalysisContext.ReportDiagnostic(diagnostic);
-        }
-
-        private static Diagnostic ConvertAnalyzerMessageToDiagnostic(SyntaxNode node, AnalyzerMessageBase analyzerMessage)
-        {
-            return analyzerMessage switch
-            {
-                IllegalDependencyMessage illegalDependencyMessage =>
-                    CreateIllegalDependencyDiagnostic(node, illegalDependencyMessage.ToString(), illegalDependencyMessage.IssueKind),
-
-                TooManyIssuesMessage tooManyIssuesMessage =>
-                    CreateTooManyIssuesDiagnostic(node, tooManyIssuesMessage.ToString(), tooManyIssuesMessage.IssueKind),
-
-                ConfigErrorMessage configErrorMessage =>
-                    CreateConfigExceptionDiagnostic(node, configErrorMessage.ToString()),
-
-                _ => null
-            };
-        }
-
-        private static Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, string message, IssueKind issueKind)
+        private static Diagnostic CreateIllegalDependencyDiagnostic(SyntaxNode node, string message)
         {
             var location = Location.Create(node.SyntaxTree, node.Span);
-            return CreateDiagnostic(IllegalDependencyDescriptor, location, message, issueKind);
+            return CreateDiagnostic(IllegalDependencyDescriptor, location, message);
         }
 
-        private static Diagnostic CreateTooManyIssuesDiagnostic(SyntaxNode node, string message, IssueKind issueKind)
+        private static Diagnostic CreateDiagnostic(DiagnosticDescriptor diagnosticDescriptor, Location location, string message)
         {
-            var location = Location.Create(node.SyntaxTree, node.Span);
-            return CreateDiagnostic(TooManyIssuesDescriptor, location, message, issueKind);
-        }
-
-        private static Diagnostic CreateConfigExceptionDiagnostic(SyntaxNode node, string message)
-        {
-            // The location should be the config.nsdepcop file, but we cannot use that because of a Roslyn limitation: 
-            // https://github.com/dotnet/roslyn/issues/6649
-            // So we report the current syntax node's location.
-            var location = Location.Create(node.SyntaxTree, node.Span);
-            return CreateDiagnostic(ConfigExceptionDescriptor, location, message);
-        }
-
-        private static Diagnostic CreateDiagnostic(DiagnosticDescriptor diagnosticDescriptor, Location location, string message, IssueKind? issueKind = null)
-        {
-            var severity = issueKind?.ToDiagnosticSeverity() ?? diagnosticDescriptor.DefaultSeverity;
+            var severity = diagnosticDescriptor.DefaultSeverity;
 
             return Diagnostic.Create(
                 diagnosticDescriptor.Id,
                 diagnosticDescriptor.Category,
-                message,
+                message: message ?? diagnosticDescriptor.Title,
                 severity: severity,
                 defaultSeverity: diagnosticDescriptor.DefaultSeverity,
                 isEnabledByDefault: true,
                 warningLevel: GetWarningLevel(severity),
                 location: location,
                 helpLink: diagnosticDescriptor.HelpLinkUri,
-                title: diagnosticDescriptor.Title);
+                title: diagnosticDescriptor.Title
+                // Cannot use description param, because command line output does not show. Otherwise it would be nice because VS shows it behind and accordion.
+            );
         }
 
         private static bool IsConfigFile(AdditionalText additionalText)

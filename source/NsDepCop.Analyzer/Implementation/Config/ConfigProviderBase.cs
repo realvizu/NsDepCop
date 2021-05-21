@@ -36,8 +36,6 @@ namespace Codartis.NsDepCop.Implementation.Config
             return this;
         }
 
-        public Importance InfoImportance => Config?.InfoImportance ?? DefaultInfoImportance ?? Importance.Normal;
-
         public IAnalyzerConfig Config
         {
             get
