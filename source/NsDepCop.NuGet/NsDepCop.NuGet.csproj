@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj" />
+    <ProjectReference Include="..\NsDepCop.Analyzer\NsDepCop.Analyzer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,7 +50,7 @@
 
   <Target Name="_AddAnalyzersToOutput">
     <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)\NsDepCop.Core.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(OutputPath)\NsDepCop.Analyzer.dll" PackagePath="analyzers/dotnet/cs" />
       <TfmSpecificPackageFile Include="$(OutputPath)\DotNet.Glob.dll" PackagePath="analyzers/dotnet/cs" />
     </ItemGroup>
   </Target>

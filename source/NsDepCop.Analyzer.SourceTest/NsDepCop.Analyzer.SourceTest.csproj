@@ -1,0 +1,396 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Codartis.NsDepCop.SourceTest</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Include\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+    <Compile Include="..\Include\VersionInfo.cs" Link="Properties\VersionInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="4.19.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NsDepCop.Analyzer\NsDepCop.Analyzer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="AnalyzerFeature_AllowedDependency\AnalyzerFeature_AllowedDependency.cs">
+
+    </Compile>
+    <Compile Remove="AnalyzerFeature_SameNamespaceAlwaysAllowed\AnalyzerFeature_SameNamespaceAlwaysAllowed.cs">
+
+    </Compile>
+    <Compile Remove="AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined\AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs">
+
+    </Compile>
+    <Compile Remove="AnalyzerFeature_ChildCanDependOnParentImplicitly\AnalyzerFeature_ChildCanDependOnParentImplicitly.cs">
+
+    </Compile>
+    <Compile Remove="AnalyzerFeature_VisibleMembersOfNamespace\AnalyzerFeature_VisibleMembersOfNamespace.cs">
+
+    </Compile>
+    <Compile Remove="Cs7_IsExpressionWithPattern\Cs7_IsExpressionWithPattern.cs">
+
+    </Compile>
+    <Compile Remove="Cs7_SwitchWithPattern\Cs7_SwitchWithPattern.cs">
+
+    </Compile>
+    <Compile Remove="Cs7_LocalFunction\Cs7_LocalFunction.cs">
+
+    </Compile>
+    <Compile Remove="Cs7_ThrowExpression\Cs7_ThrowExpression.cs">
+
+    </Compile>
+    <Compile Remove="Cs7_Deconstruction\Cs7_Deconstruction.cs">
+
+    </Compile>
+    <Compile Remove="AnalyzerFeature_VisibleMembersOfAllowedRule\AnalyzerFeature_VisibleMembersOfAllowedRule.cs">
+
+    </Compile>
+    <Compile Remove="AnalyzerFeature_DisallowedDependency\AnalyzerFeature_DisallowedDependency.cs">
+
+    </Compile>
+    <Compile Remove="Cs7_2_NonTrailingNamedArguments\Cs7_2_NonTrailingNamedArguments.cs">
+
+    </Compile>
+    <Compile Remove="Cs7_3_AttributeOnPropertyBackingField\Cs7_3_AttributeOnPropertyBackingField.cs">
+
+    </Compile>
+    <Compile Remove="AnalyzerFeature_ExcludedFiles\AnalyzerFeature_ExcludedFiles.cs">
+
+    </Compile>
+    <Compile Remove="AnalyzerFeature_ExcludedFiles_WithWildcard\AnalyzerFeature_ExcludedFiles_WithWildcard.cs">
+
+    </Compile>
+    <Compile Remove="Cs7_1_DefaultLiteral\Cs7_1_DefaultLiteral.cs">
+
+    </Compile>
+    <Compile Remove="Cs7_1_InferredTupleNames\Cs7_1_InferredTupleNames.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_ObjectCreationExpression\Cs6_ObjectCreationExpression.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_VeryComplexType\Cs6_VeryComplexType.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_VarWithConstructedGenericType\Cs6_VarWithConstructedGenericType.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_Var\Cs6_Var.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_QualifiedName\Cs6_QualifiedName.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_PointerType\Cs6_PointerType.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_NullableType\Cs6_NullableType.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_NestedType\Cs6_NestedType.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_MemberAccessExpression\Cs6_MemberAccessExpression.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_InvocationWithTypeArg\Cs6_InvocationWithTypeArg.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_InvocationExpression\Cs6_InvocationExpression.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_GenericTypeArgument\Cs6_GenericTypeArgument.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_GenericName\Cs6_GenericName.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_ExtensionMethodInvocation\Cs6_ExtensionMethodInvocation.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_EveryUserDefinedTypeKind\Cs6_EveryUserDefinedTypeKind.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_ElementAccess\Cs6_ElementAccess.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_Delegates\Cs6_Delegates.cs">
+
+    </Compile>
+    <Compile Remove="Cs7_Tuples\Cs7_Tuples.cs">
+
+    </Compile>
+    <Compile Remove="Cs7_Out\Cs7_Out.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_Attributes\Cs6_Attributes.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_ArrayType\Cs6_ArrayType.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_AliasQualifiedName\Cs6_AliasQualifiedName.cs">
+
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="AnalyzerFeature_AllowedDependency\AnalyzerFeature_AllowedDependency.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AnalyzerFeature_SameNamespaceAlwaysAllowed\AnalyzerFeature_SameNamespaceAlwaysAllowed.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined\AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AnalyzerFeature_ChildCanDependOnParentImplicitly\AnalyzerFeature_ChildCanDependOnParentImplicitly.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AnalyzerFeature_VisibleMembersOfNamespace\AnalyzerFeature_VisibleMembersOfNamespace.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs7_IsExpressionWithPattern\Cs7_IsExpressionWithPattern.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs7_SwitchWithPattern\Cs7_SwitchWithPattern.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs7_LocalFunction\Cs7_LocalFunction.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs7_ThrowExpression\Cs7_ThrowExpression.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs7_Deconstruction\Cs7_Deconstruction.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AnalyzerFeature_VisibleMembersOfAllowedRule\AnalyzerFeature_VisibleMembersOfAllowedRule.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AnalyzerFeature_DisallowedDependency\AnalyzerFeature_DisallowedDependency.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs7_2_NonTrailingNamedArguments\Cs7_2_NonTrailingNamedArguments.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs7_3_AttributeOnPropertyBackingField\Cs7_3_AttributeOnPropertyBackingField.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AnalyzerFeature_ExcludedFiles\AnalyzerFeature_ExcludedFiles.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AnalyzerFeature_ExcludedFiles_WithWildcard\AnalyzerFeature_ExcludedFiles_WithWildcard.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs7_1_DefaultLiteral\Cs7_1_DefaultLiteral.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs7_1_InferredTupleNames\Cs7_1_InferredTupleNames.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_ObjectCreationExpression\Cs6_ObjectCreationExpression.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_VeryComplexType\Cs6_VeryComplexType.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_VarWithConstructedGenericType\Cs6_VarWithConstructedGenericType.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_Var\Cs6_Var.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_QualifiedName\Cs6_QualifiedName.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_PointerType\Cs6_PointerType.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_NullableType\Cs6_NullableType.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_NestedType\Cs6_NestedType.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_MemberAccessExpression\Cs6_MemberAccessExpression.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_InvocationWithTypeArg\Cs6_InvocationWithTypeArg.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_InvocationExpression\Cs6_InvocationExpression.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_GenericTypeArgument\Cs6_GenericTypeArgument.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_GenericName\Cs6_GenericName.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_ExtensionMethodInvocation\Cs6_ExtensionMethodInvocation.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_EveryUserDefinedTypeKind\Cs6_EveryUserDefinedTypeKind.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_ElementAccess\Cs6_ElementAccess.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_Delegates\Cs6_Delegates.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs7_Tuples\Cs7_Tuples.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs7_Out\Cs7_Out.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_Attributes\Cs6_Attributes.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_ArrayType\Cs6_ArrayType.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_AliasQualifiedName\Cs6_AliasQualifiedName.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="AnalyzerFeature_AllowedDependency\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AnalyzerFeature_ChildCanDependOnParentImplicitly\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AnalyzerFeature_DisallowedDependency\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AnalyzerFeature_ExcludedFiles\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AnalyzerFeature_ExcludedFiles_WithWildcard\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AnalyzerFeature_SameNamespaceAlwaysAllowed\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AnalyzerFeature_VisibleMembersOfAllowedRule\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AnalyzerFeature_VisibleMembersOfNamespace\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_AliasQualifiedName\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_ArrayType\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_Attributes\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_Delegates\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_ElementAccess\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_EveryUserDefinedTypeKind\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_ExtensionMethodInvocation\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_GenericName\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_GenericTypeArgument\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_InvocationExpression\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_InvocationWithTypeArg\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_MemberAccessExpression\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_NestedType\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_NullableType\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_ObjectCreationExpression\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_PointerType\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_QualifiedName\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_VarWithConstructedGenericType\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_Var\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_VeryComplexType\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs7_1_DefaultLiteral\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs7_1_InferredTupleNames\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs7_2_NonTrailingNamedArguments\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs7_3_AttributeOnPropertyBackingField\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs7_Deconstruction\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs7_IsExpressionWithPattern\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs7_LocalFunction\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs7_Out\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs7_SwitchWithPattern\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs7_ThrowExpression\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs7_Tuples\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

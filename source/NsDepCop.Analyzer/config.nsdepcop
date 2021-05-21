@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig InheritanceDepth="1">
+    <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis.*" To="Codartis.NsDepCop.Core.Interface.Config" />
+    <Allowed From="Codartis.NsDepCop.Core.Interface.Analysis.*" To="Codartis.NsDepCop.Core.Interface.Analysis.Messages" />
+
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.*" To="Codartis.NsDepCop.Core.Interface" />
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.Config" To="Codartis.NsDepCop.Core.Interface.Config" />
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.*" To="Codartis.NsDepCop.Core.Interface.*" />
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.*" To="Codartis.NsDepCop.Core.Factory" />
+    <Allowed From="Codartis.NsDepCop.Core.Implementation.Analysis.*" To="Codartis.NsDepCop.Core.Implementation.Analysis.Messages" />
+
+    <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Interface.*"/>
+    <Allowed From="Codartis.NsDepCop.Core.Factory" To="Codartis.NsDepCop.Core.Implementation.*"/>
+
+    <Allowed From="Codartis.NsDepCop.Core.*" To="DotNet.Globbing" />
+</NsDepCopConfig>

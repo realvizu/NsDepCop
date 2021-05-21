@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj" />
+    <ProjectReference Include="..\NsDepCop.Analyzer\NsDepCop.Analyzer.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

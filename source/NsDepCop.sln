@@ -29,15 +29,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{EFA91D33-558
 		..\doc\Versions.md = ..\doc\Versions.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.Core", "NsDepCop.Core\NsDepCop.Core.csproj", "{BC26589E-79B0-4F55-B64D-DB11534D3476}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.Analyzer", "NsDepCop.Analyzer\NsDepCop.Analyzer.csproj", "{BC26589E-79B0-4F55-B64D-DB11534D3476}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.Core.Test", "NsDepCop.Core.Test\NsDepCop.Core.Test.csproj", "{96044EE5-D220-4CED-A687-35AED0115A35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.Analyzer.Test", "NsDepCop.Analyzer.Test\NsDepCop.Analyzer.Test.csproj", "{96044EE5-D220-4CED-A687-35AED0115A35}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.NuGet", "NsDepCop.NuGet\NsDepCop.NuGet.csproj", "{0FB37BF6-7E56-4974-829D-917AB6207257}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.TestUtil", "NsDepCop.TestUtil\NsDepCop.TestUtil.csproj", "{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.SourceTest", "NsDepCop.SourceTest\NsDepCop.SourceTest.csproj", "{F6554236-1D67-4343-816A-F145F7750526}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.Analyzer.SourceTest", "NsDepCop.Analyzer.SourceTest\NsDepCop.Analyzer.SourceTest.csproj", "{F6554236-1D67-4343-816A-F145F7750526}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.Vsix", "NsDepCop.Vsix\NsDepCop.Vsix.csproj", "{17A44684-B673-42F8-982F-01ABEA3D5BBE}"
 EndProject
@@ -83,18 +81,6 @@ Global
 		{0FB37BF6-7E56-4974-829D-917AB6207257}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0FB37BF6-7E56-4974-829D-917AB6207257}.Release|x86.ActiveCfg = Release|Any CPU
 		{0FB37BF6-7E56-4974-829D-917AB6207257}.Release|x86.Build.0 = Release|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Debug|x86.Build.0 = Debug|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|x86.ActiveCfg = Release|Any CPU
-		{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}.Release|x86.Build.0 = Release|Any CPU
 		{F6554236-1D67-4343-816A-F145F7750526}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F6554236-1D67-4343-816A-F145F7750526}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6554236-1D67-4343-816A-F145F7750526}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
