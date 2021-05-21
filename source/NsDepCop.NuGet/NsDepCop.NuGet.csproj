@@ -40,10 +40,6 @@
     <ProjectReference Include="..\NsDepCop.Analyzer\NsDepCop.Analyzer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="DotNet.Glob" Version="2.1.1" PrivateAssets="All" IncludeInPackage="true" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
