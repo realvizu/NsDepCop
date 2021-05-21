@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig InheritanceDepth="1">
-    <Allowed From="Codartis.NsDepCop.ParserAdapter.*" To="Codartis.NsDepCop.Core.Interface.*" />
-    <Allowed From="Codartis.NsDepCop.ParserAdapter.*" To="DotNet.Globbing" />
-    <Allowed From="Codartis.NsDepCop.ParserAdapter.Roslyn.*" To="Microsoft.CodeAnalysis.*" />
-</NsDepCopConfig>

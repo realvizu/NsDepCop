@@ -23,7 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj" />
     <ProjectReference Include="..\NsDepCop.TestUtil\NsDepCop.TestUtil.csproj" />
-    <ProjectReference Include="..\NsDepCop.ParserAdapter.Roslyn\NsDepCop.ParserAdapter.Roslyn.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,12 +32,10 @@
     <Compile Remove="AnalyzerFeature_SameNamespaceAlwaysAllowed\AnalyzerFeature_SameNamespaceAlwaysAllowed.cs">
 
     </Compile>
-    <Compile
-      Remove="AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined\AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs">
+    <Compile Remove="AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined\AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs">
 
     </Compile>
-    <Compile
-      Remove="AnalyzerFeature_ChildCanDependOnParentImplicitly\AnalyzerFeature_ChildCanDependOnParentImplicitly.cs">
+    <Compile Remove="AnalyzerFeature_ChildCanDependOnParentImplicitly\AnalyzerFeature_ChildCanDependOnParentImplicitly.cs">
 
     </Compile>
     <Compile Remove="AnalyzerFeature_VisibleMembersOfNamespace\AnalyzerFeature_VisibleMembersOfNamespace.cs">
@@ -158,12 +155,10 @@
     <None Include="AnalyzerFeature_SameNamespaceAlwaysAllowed\AnalyzerFeature_SameNamespaceAlwaysAllowed.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None
-      Include="AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined\AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs">
+    <None Include="AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined\AnalyzerFeature_SameNamespaceAllowedEvenWhenVisibleMembersDefined.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None
-      Include="AnalyzerFeature_ChildCanDependOnParentImplicitly\AnalyzerFeature_ChildCanDependOnParentImplicitly.cs">
+    <None Include="AnalyzerFeature_ChildCanDependOnParentImplicitly\AnalyzerFeature_ChildCanDependOnParentImplicitly.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="AnalyzerFeature_VisibleMembersOfNamespace\AnalyzerFeature_VisibleMembersOfNamespace.cs">

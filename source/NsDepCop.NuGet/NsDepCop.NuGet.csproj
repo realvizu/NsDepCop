@@ -3,8 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <!-- Copies referenced nuget dlls to output too. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -22,25 +24,34 @@
     <PackageIconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</PackageIconUrl>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageReleaseNotes>
-- The tool is provided as a Roslyn analyzer NuGet package instead of the former MsBuild task and Visual Studio extension.
-- Works both at build time and inside the code editor.
-- Supports .NET Core/.Net 5/etc. project too.
+      - Works both at build time and inside Visual Studio editor.
+      - Supports .NET Core/.NET 5/etc. projects too.
+      - No need to install a Visual Studio extension any more.
+      - Supports Visual Studio 2019 (16.9.3 or above).
+      - Dropped support for VS 2015/2017.
     </PackageReleaseNotes>
-
-    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\NsDepCop.RoslynAnalyzer\NsDepCop.RoslynAnalyzer.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NsDepCop.Core\NsDepCop.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNet.Glob" Version="2.1.1" PrivateAssets="All" IncludeInPackage="true" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
   <Target Name="_AddAnalyzersToOutput">
     <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)\NsDepCop.RoslynAnalyzer.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(OutputPath)\NsDepCop.Core.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(OutputPath)\DotNet.Glob.dll" PackagePath="analyzers/dotnet/cs" />
     </ItemGroup>
   </Target>
 
