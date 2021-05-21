@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Codartis.NsDepCop.ParserAdapter
+namespace Codartis.NsDepCop.ParserAdapter.Roslyn
 {
     /// <summary>
     /// Implements a syntax visitor that traverses the syntax tree and finds all type dependencies. 
@@ -68,11 +68,17 @@ namespace Codartis.NsDepCop.ParserAdapter
             DefaultVisit(node);
         }
 
+        public override void VisitLiteralExpression(LiteralExpressionSyntax node)
+        {
+            if (node.Kind() == SyntaxKind.DefaultLiteralExpression)
+                AnalyzeNode(node);
+        }
+
         /// <summary>
         /// Collects type dependencies for a given syntax node.
         /// </summary>
         /// <param name="node">A syntax node.</param>
-        protected void AnalyzeNode(SyntaxNode node)
+        private void AnalyzeNode(SyntaxNode node)
         {
             var typeDependencies = _syntaxNodeAnalyzer.GetTypeDependencies(node, _semanticModel);
             _typeDependencies.AddRange(typeDependencies);

@@ -8,24 +8,30 @@ using DotNet.Globbing;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Codartis.NsDepCop.ParserAdapter
+namespace Codartis.NsDepCop.ParserAdapter.Roslyn
 {
     /// <summary>
-    /// Abstract base class for type dependency enumerators that use Roslyn as the parser.
+    /// Implements a type dependency enumerators that use Roslyn as the parser.
     /// </summary>
-    public abstract class RoslynTypeDependencyEnumeratorBase : ITypeDependencyEnumerator
+    public class TypeDependencyEnumerator : ITypeDependencyEnumerator
     {
+        private static readonly CSharpParseOptions ParseOptions = new(LanguageVersion.Latest);
+
         private readonly ISyntaxNodeAnalyzer _syntaxNodeAnalyzer;
         private readonly MessageHandler _traceMessageHandler;
 
-        protected RoslynTypeDependencyEnumeratorBase(ISyntaxNodeAnalyzer syntaxNodeAnalyzer, MessageHandler traceMessageHandler)
+        public TypeDependencyEnumerator(ISyntaxNodeAnalyzer syntaxNodeAnalyzer, MessageHandler traceMessageHandler)
         {
             _syntaxNodeAnalyzer = syntaxNodeAnalyzer ?? throw new ArgumentNullException(nameof(syntaxNodeAnalyzer));
             _traceMessageHandler = traceMessageHandler;
         }
 
-        protected virtual CSharpParseOptions ParseOptions => null;
-        protected abstract TypeDependencyEnumeratorSyntaxVisitor CreateSyntaxVisitor(SemanticModel semanticModel, ISyntaxNodeAnalyzer syntaxNodeAnalyzer);
+        private static TypeDependencyEnumeratorSyntaxVisitor CreateSyntaxVisitor(
+            SemanticModel semanticModel,
+            ISyntaxNodeAnalyzer syntaxNodeAnalyzer)
+        {
+            return new(semanticModel, syntaxNodeAnalyzer);
+        }
 
         public IEnumerable<TypeDependency> GetTypeDependencies(
             IEnumerable<string> sourceFilePaths,
@@ -47,15 +53,12 @@ namespace Codartis.NsDepCop.ParserAdapter
             return sourcePathExclusionGlobs.Any(i => i.IsMatch(filePath));
         }
 
-        private IEnumerable<TypeDependency> GetTypeDependenciesForSyntaxTree(
-            CSharpCompilation compilation,
+        private static IEnumerable<TypeDependency> GetTypeDependenciesForSyntaxTree(
+            Compilation compilation,
             SyntaxTree syntaxTree,
             ISyntaxNodeAnalyzer syntaxNodeAnalyzer)
         {
             var documentRootNode = syntaxTree.GetRoot();
-            if (documentRootNode == null)
-                return Enumerable.Empty<TypeDependency>();
-
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var syntaxVisitor = CreateSyntaxVisitor(semanticModel, syntaxNodeAnalyzer);
             syntaxVisitor.Visit(documentRootNode);
@@ -69,7 +72,7 @@ namespace Codartis.NsDepCop.ParserAdapter
         {
             var roslynSyntaxNode = Unwrap<SyntaxNode>(syntaxNode);
 
-            return IsExcludedFilePath(roslynSyntaxNode?.SyntaxTree?.FilePath, sourcePathExclusionGlobs)
+            return IsExcludedFilePath(roslynSyntaxNode?.SyntaxTree.FilePath, sourcePathExclusionGlobs)
                 ? Enumerable.Empty<TypeDependency>()
                 : _syntaxNodeAnalyzer.GetTypeDependencies(roslynSyntaxNode, Unwrap<SemanticModel>(semanticModel));
         }

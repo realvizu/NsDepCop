@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Microsoft.CodeAnalysis;
 
-namespace Codartis.NsDepCop.ParserAdapter
+namespace Codartis.NsDepCop.ParserAdapter.Roslyn
 {
     /// <summary>
     /// Analyzer logic for a single syntax node.

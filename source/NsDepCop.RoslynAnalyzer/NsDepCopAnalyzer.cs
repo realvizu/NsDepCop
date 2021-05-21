@@ -8,7 +8,7 @@ using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.ParserAdapter.Roslyn2x;
+using Codartis.NsDepCop.ParserAdapter.Roslyn;
 using Codartis.NsDepCop.VisualStudioIntegration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -48,7 +48,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         {
             _analyzerProvider = new AnalyzerProvider(
                 new DependencyAnalyzerFactory(LogTraceMessage),
-                new Roslyn2TypeDependencyEnumerator(LogTraceMessage)
+                new TypeDependencyEnumerator(new SyntaxNodeAnalyzer(), LogTraceMessage)
             );
         }
 

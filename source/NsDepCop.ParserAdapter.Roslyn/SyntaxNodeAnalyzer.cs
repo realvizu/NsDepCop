@@ -5,7 +5,7 @@ using Codartis.NsDepCop.Core.Interface.Analysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Codartis.NsDepCop.ParserAdapter
+namespace Codartis.NsDepCop.ParserAdapter.Roslyn
 {
     /// <summary>
     /// Enumerates type dependencies for a syntax node using Roslyn 1.x.
@@ -15,7 +15,7 @@ namespace Codartis.NsDepCop.ParserAdapter
         /// <summary>
         /// The list of those type kinds that can occur as a declaration.
         /// </summary>
-        private static readonly List<TypeKind> DeclarationTypeKinds = new List<TypeKind>
+        private static readonly List<TypeKind> DeclarationTypeKinds = new()
         {
             TypeKind.Class,
             TypeKind.Delegate,
@@ -51,9 +51,9 @@ namespace Codartis.NsDepCop.ParserAdapter
         private static bool IsAnalyzableDeclarationType(ITypeSymbol typeSymbol)
         {
             return typeSymbol?.ContainingNamespace != null
-                && !typeSymbol.IsAnonymousType
-                && DeclarationTypeKinds.Contains(typeSymbol.TypeKind)
-                && !string.IsNullOrWhiteSpace(typeSymbol.MetadataName);
+                   && !typeSymbol.IsAnonymousType
+                   && DeclarationTypeKinds.Contains(typeSymbol.TypeKind)
+                   && !string.IsNullOrWhiteSpace(typeSymbol.MetadataName);
         }
 
         protected virtual IEnumerable<ITypeSymbol> GetConstituentTypes(ITypeSymbol typeSymbol, SyntaxNode syntaxNode)
@@ -66,13 +66,13 @@ namespace Codartis.NsDepCop.ParserAdapter
             switch (typeKind)
             {
                 case TypeKind.Array:
-                    var arrayTypeSymbol = (IArrayTypeSymbol)typeSymbol;
+                    var arrayTypeSymbol = (IArrayTypeSymbol) typeSymbol;
                     foreach (var type in GetConstituentTypes(arrayTypeSymbol.ElementType, syntaxNode))
                         yield return type;
                     break;
 
                 case TypeKind.Pointer:
-                    var pointerTypeSymbol = (IPointerTypeSymbol)typeSymbol;
+                    var pointerTypeSymbol = (IPointerTypeSymbol) typeSymbol;
                     foreach (var type in GetConstituentTypes(pointerTypeSymbol.PointedAtType, syntaxNode))
                         yield return type;
                     break;
@@ -96,13 +96,14 @@ namespace Codartis.NsDepCop.ParserAdapter
                             yield break;
 
                         foreach (var typeArgument in namedTypeSymbol.TypeArguments)
-                            foreach (var type in GetConstituentTypes(typeArgument, syntaxNode))
-                                yield return type;
+                        foreach (var type in GetConstituentTypes(typeArgument, syntaxNode))
+                            yield return type;
                     }
                     else
                     {
                         yield return namedTypeSymbol;
                     }
+
                     break;
 
                 case TypeKind.Dynamic:
@@ -159,6 +160,11 @@ namespace Codartis.NsDepCop.ParserAdapter
             var typeSymbol = semanticModel.GetTypeInfo(node).Type;
             if (typeSymbol != null && typeSymbol.TypeKind != TypeKind.Error)
                 return typeSymbol;
+
+            // Special case: deconstructing declaration with var outside, e.g.: var (d, e) = Method2();
+            if (node.Parent is DeclarationExpressionSyntax &&
+                node.Parent.ChildNodes().Any(i => i is ParenthesizedVariableDesignationSyntax))
+                return DetermineReferencedType(node.Parent, semanticModel);
 
             // In same cases GetTypeInfo(node).Type does not return the desired type symbol but GetSymbolInfo(node).Symbol does.
             // E.g.: IdentifierNameSyntax inside an ObjectCreationExpression
