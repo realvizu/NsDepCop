@@ -1,7 +1,6 @@
-using System;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 
-namespace Codartis.NsDepCop.VisualStudioIntegration
+namespace Codartis.NsDepCop.RoslynAnalyzer
 {
     /// <summary>
     /// Provides configured dependency analyzer instances.

@@ -3,7 +3,7 @@ using Codartis.NsDepCop.Core.Interface;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Microsoft.CodeAnalysis;
 
-namespace Codartis.NsDepCop.VisualStudioIntegration
+namespace Codartis.NsDepCop.RoslynAnalyzer
 {
     internal static class IssueDescriptorExtensions
     {

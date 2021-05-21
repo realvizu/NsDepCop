@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.NuGet", "NsDepCop.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.TestUtil", "NsDepCop.TestUtil\NsDepCop.TestUtil.csproj", "{C60A83ED-3D03-4179-A2D6-E9AB6263B99E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.SourceTest.Roslyn", "NsDepCop.SourceTest.Roslyn\NsDepCop.SourceTest.Roslyn.csproj", "{F6554236-1D67-4343-816A-F145F7750526}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.SourceTest", "NsDepCop.SourceTest\NsDepCop.SourceTest.csproj", "{F6554236-1D67-4343-816A-F145F7750526}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.ParserAdapter.Roslyn", "NsDepCop.ParserAdapter.Roslyn\NsDepCop.ParserAdapter.Roslyn.csproj", "{80771E79-4D7C-44E4-8813-2511254BDBAD}"
 EndProject

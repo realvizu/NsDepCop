@@ -9,7 +9,6 @@ using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Core.Interface.Config;
 using Codartis.NsDepCop.ParserAdapter.Roslyn;
-using Codartis.NsDepCop.VisualStudioIntegration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;

@@ -3,7 +3,7 @@ using Codartis.NsDepCop.Core.Interface.Analysis;
 using Moq;
 using Xunit;
 
-namespace Codartis.NsDepCop.VisualStudioIntegration.Test
+namespace Codartis.NsDepCop.RoslynAnalyzer.Test
 {
     public class AnalyzerProviderTests
     {

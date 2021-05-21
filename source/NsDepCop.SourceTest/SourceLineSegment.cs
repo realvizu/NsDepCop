@@ -2,7 +2,7 @@
 
 namespace Codartis.NsDepCop.SourceTest
 {
-    public struct SourceLineSegment
+    public readonly struct SourceLineSegment
     {
         public int Line { get; }
         public int StartColumn { get; }

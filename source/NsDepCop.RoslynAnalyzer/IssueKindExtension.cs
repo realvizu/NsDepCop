@@ -1,7 +1,7 @@
 ﻿using Codartis.NsDepCop.Core.Interface.Config;
 using Microsoft.CodeAnalysis;
 
-namespace Codartis.NsDepCop.VisualStudioIntegration
+namespace Codartis.NsDepCop.RoslynAnalyzer
 {
     public static class IssueKindExtension
     {

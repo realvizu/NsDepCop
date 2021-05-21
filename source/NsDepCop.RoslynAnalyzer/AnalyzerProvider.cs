@@ -5,7 +5,7 @@ using Codartis.NsDepCop.Core.Factory;
 using Codartis.NsDepCop.Core.Interface.Analysis;
 using Codartis.NsDepCop.Core.Util;
 
-namespace Codartis.NsDepCop.VisualStudioIntegration
+namespace Codartis.NsDepCop.RoslynAnalyzer
 {
     /// <summary>
     /// Creates and stores dependency analyzers for C# projects.
