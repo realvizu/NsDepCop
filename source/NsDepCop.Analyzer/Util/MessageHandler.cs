@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Util
+﻿namespace Codartis.NsDepCop.Util
 {
     /// <summary>
     /// A delegate that receives a string message.

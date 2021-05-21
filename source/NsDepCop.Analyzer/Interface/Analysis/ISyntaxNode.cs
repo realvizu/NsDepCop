@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Interface.Analysis
+﻿namespace Codartis.NsDepCop.Interface.Analysis
 {
     /// <summary>
     /// Represents a node of a syntax tree.

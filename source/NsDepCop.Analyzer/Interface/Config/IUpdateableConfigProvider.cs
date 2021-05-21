@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Interface.Config
+﻿namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// Provides config info and config state. Some config data can also be updated.

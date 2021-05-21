@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Codartis.NsDepCop.Core.Interface.Config
+namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// Represents a namespace, eg. 'A.B'. Immutable.

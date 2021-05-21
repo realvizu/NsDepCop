@@ -1,4 +1,4 @@
-﻿using Codartis.NsDepCop.Core.Interface.Analysis;
+﻿using Codartis.NsDepCop.Interface.Analysis;
 
 namespace Codartis.NsDepCop.SourceTest
 {

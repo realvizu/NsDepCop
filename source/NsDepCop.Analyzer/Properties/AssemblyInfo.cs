@@ -1,4 +1,4 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("NsDepCop.Core")]
-[assembly: AssemblyDescription("The core library of the NsDepCop tool. Contains config and dependency rule handling. No dependency on Roslyn, the compiler is abstracted away.")]
+[assembly: AssemblyTitle("NsDepCop.Analyzer")]
+[assembly: AssemblyDescription("Static code analysis tool for enforcing namespace-based type dependency rules in C# projects.")]

@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Interface.Analysis.Messages
+﻿namespace Codartis.NsDepCop.Interface.Analysis.Messages
 {
     /// <summary>
     /// Abstract base class for informational messages.

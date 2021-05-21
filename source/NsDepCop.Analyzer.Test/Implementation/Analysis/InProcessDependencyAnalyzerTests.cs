@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.NsDepCop.Core.Implementation.Analysis;
-using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
-using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Implementation.Analysis;
+using Codartis.NsDepCop.Interface.Analysis;
+using Codartis.NsDepCop.Interface.Analysis.Messages;
+using Codartis.NsDepCop.Interface.Config;
 using DotNet.Globbing;
 using FluentAssertions;
 using Moq;

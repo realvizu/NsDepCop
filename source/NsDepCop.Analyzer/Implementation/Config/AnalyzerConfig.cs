@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Interface.Config;
 
-namespace Codartis.NsDepCop.Core.Implementation.Config
+namespace Codartis.NsDepCop.Implementation.Config
 {
     /// <summary>
     /// Describes the config for a dependency analyzer. Immutable.

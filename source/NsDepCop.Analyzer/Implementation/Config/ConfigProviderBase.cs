@@ -1,8 +1,8 @@
 ﻿using System;
-using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.Interface.Config;
+using Codartis.NsDepCop.Util;
 
-namespace Codartis.NsDepCop.Core.Implementation.Config
+namespace Codartis.NsDepCop.Implementation.Config
 {
     /// <summary>
     /// Abstract base class for config provider implementations.

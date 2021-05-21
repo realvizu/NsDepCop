@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.Interface.Config;
+using Codartis.NsDepCop.Util;
 
-namespace Codartis.NsDepCop.Core.Implementation.Config
+namespace Codartis.NsDepCop.Implementation.Config
 {
     /// <summary>
     /// Parses a config provided in XML format.

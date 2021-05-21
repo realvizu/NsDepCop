@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Interface.Config
+﻿namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// Enumerates the possible values of importance (eg. message importance).

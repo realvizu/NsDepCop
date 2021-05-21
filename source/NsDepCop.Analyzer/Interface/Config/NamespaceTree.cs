@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.NsDepCop.Core.Interface.Config
+namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// Represents a namespace tree, eg. 'System.IO.*'. Immutable.

@@ -1,7 +1,7 @@
 using System;
-using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.Util;
 
-namespace Codartis.NsDepCop.Core.Interface.Config
+namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// The configuration for an analyzer.

@@ -1,6 +1,6 @@
-﻿using Codartis.NsDepCop.Core.Interface.Config;
+﻿using Codartis.NsDepCop.Interface.Config;
 
-namespace Codartis.NsDepCop.Core.Interface.Analysis
+namespace Codartis.NsDepCop.Interface.Analysis
 {
     /// <summary>
     /// Defines the properties of an issue that can be reported by the tool.

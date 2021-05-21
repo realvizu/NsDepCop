@@ -1,8 +1,8 @@
-﻿using Codartis.NsDepCop.Core.Implementation.Config;
-using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
+﻿using Codartis.NsDepCop.Implementation.Config;
+using Codartis.NsDepCop.Interface.Config;
+using Codartis.NsDepCop.Util;
 
-namespace Codartis.NsDepCop.Core.Factory
+namespace Codartis.NsDepCop.Factory
 {
     /// <summary>
     /// Creates config provider objects.

@@ -1,5 +1,5 @@
 ﻿using System;
-using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Interface.Config;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.RoslynAnalyzer

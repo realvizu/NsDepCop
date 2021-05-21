@@ -1,4 +1,4 @@
-﻿using Codartis.NsDepCop.Core.Interface.Config;
+﻿using Codartis.NsDepCop.Interface.Config;
 using FluentAssertions;
 using Xunit;
 

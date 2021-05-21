@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Codartis.NsDepCop.Core.Interface.Config
+namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// A set of type names represented as strings (without namespace part).

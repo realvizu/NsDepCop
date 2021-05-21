@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.NsDepCop.Core.Interface.Config
+namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// Provides config info and config state from some kind of repository.

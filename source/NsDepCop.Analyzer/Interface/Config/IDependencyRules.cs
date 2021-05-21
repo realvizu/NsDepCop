@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Codartis.NsDepCop.Core.Interface.Config
+namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// Describes dependency rules.

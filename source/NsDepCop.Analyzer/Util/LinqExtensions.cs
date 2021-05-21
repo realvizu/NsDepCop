@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Codartis.NsDepCop.Core.Util
+namespace Codartis.NsDepCop.Util
 {
     public static class LinqExtensions
     {

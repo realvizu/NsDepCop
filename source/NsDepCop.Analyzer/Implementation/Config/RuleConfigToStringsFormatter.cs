@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Interface.Config;
 
-namespace Codartis.NsDepCop.Core.Implementation.Config
+namespace Codartis.NsDepCop.Implementation.Config
 {
     /// <summary>
     /// Static helper class for formatting rule config data into strings.

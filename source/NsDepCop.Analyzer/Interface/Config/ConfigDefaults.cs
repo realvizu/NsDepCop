@@ -1,6 +1,6 @@
 using System;
 
-namespace Codartis.NsDepCop.Core.Interface.Config
+namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// Defines the default values of the config properties.

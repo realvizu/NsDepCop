@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Codartis.NsDepCop.Core.Interface;
-using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.Interface;
+using Codartis.NsDepCop.Interface.Config;
+using Codartis.NsDepCop.Util;
 
-namespace Codartis.NsDepCop.Core.Implementation.Config
+namespace Codartis.NsDepCop.Implementation.Config
 {
     /// <summary>
     /// Traverses the source tree and reads one or multiple config files to create a composite config.

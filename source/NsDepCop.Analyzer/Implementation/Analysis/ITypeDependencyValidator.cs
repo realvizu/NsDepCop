@@ -1,6 +1,6 @@
-﻿using Codartis.NsDepCop.Core.Interface.Analysis;
+﻿using Codartis.NsDepCop.Interface.Analysis;
 
-namespace Codartis.NsDepCop.Core.Implementation.Analysis
+namespace Codartis.NsDepCop.Implementation.Analysis
 {
     /// <summary>
     /// Determines whether a type-to-type dependency is allowed or not.

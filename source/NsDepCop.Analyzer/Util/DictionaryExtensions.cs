@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Codartis.NsDepCop.Core.Util
+namespace Codartis.NsDepCop.Util
 {
     /// <summary>
     /// Static helper class that implements extension methods for a dictionary whose value is a collection type.

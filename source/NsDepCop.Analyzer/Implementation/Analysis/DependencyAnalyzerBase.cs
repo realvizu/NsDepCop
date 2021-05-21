@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
-using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.Interface.Analysis;
+using Codartis.NsDepCop.Interface.Analysis.Messages;
+using Codartis.NsDepCop.Interface.Config;
+using Codartis.NsDepCop.Util;
 
-namespace Codartis.NsDepCop.Core.Implementation.Analysis
+namespace Codartis.NsDepCop.Implementation.Analysis
 {
     /// <summary>
     /// Abstract base class for dependency analyzers.

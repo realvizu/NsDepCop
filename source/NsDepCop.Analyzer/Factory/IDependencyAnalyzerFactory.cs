@@ -1,6 +1,6 @@
-﻿using Codartis.NsDepCop.Core.Interface.Analysis;
+﻿using Codartis.NsDepCop.Interface.Analysis;
 
-namespace Codartis.NsDepCop.Core.Factory
+namespace Codartis.NsDepCop.Factory
 {
     /// <summary>
     /// Creates dependency analyzer objects.

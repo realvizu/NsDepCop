@@ -1,5 +1,5 @@
-﻿using Codartis.NsDepCop.Core.Implementation.Analysis;
-using Codartis.NsDepCop.Core.Interface.Analysis;
+﻿using Codartis.NsDepCop.Implementation.Analysis;
+using Codartis.NsDepCop.Interface.Analysis;
 
 namespace Codartis.NsDepCop.Analyzer.Test.Implementation.Analysis
 {

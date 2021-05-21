@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.NsDepCop.Core.Interface.Analysis
+namespace Codartis.NsDepCop.Interface.Analysis
 {
     /// <summary>
     /// Describes a dependency between two types at a source segment.

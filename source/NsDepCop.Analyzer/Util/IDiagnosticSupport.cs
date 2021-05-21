@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Codartis.NsDepCop.Core.Util
+namespace Codartis.NsDepCop.Util
 {
     /// <summary>
     /// Provides diagnostic support operations.

@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Interface.Analysis.Messages
+﻿namespace Codartis.NsDepCop.Interface.Analysis.Messages
 {
     /// <summary>
     /// A message indicating that an analysis has started.

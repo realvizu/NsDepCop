@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Interface.Config
+﻿namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// Enumerates the different kinds of issues that the tool can report.

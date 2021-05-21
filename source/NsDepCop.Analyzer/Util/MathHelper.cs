@@ -1,4 +1,4 @@
-namespace Codartis.NsDepCop.Core.Util
+namespace Codartis.NsDepCop.Util
 {
     /// <summary>
     /// Static helper class for simple math operations.

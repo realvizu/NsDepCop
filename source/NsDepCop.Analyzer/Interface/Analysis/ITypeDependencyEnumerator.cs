@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using DotNet.Globbing;
 
-namespace Codartis.NsDepCop.Core.Interface.Analysis
+namespace Codartis.NsDepCop.Interface.Analysis
 {
     /// <summary>
     /// Enumerates type dependencies for a project or a syntax node.

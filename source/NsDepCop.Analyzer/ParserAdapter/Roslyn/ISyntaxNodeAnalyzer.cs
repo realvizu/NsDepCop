@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Interface.Analysis;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.ParserAdapter.Roslyn

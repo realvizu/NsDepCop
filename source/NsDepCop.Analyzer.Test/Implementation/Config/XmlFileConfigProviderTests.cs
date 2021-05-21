@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Codartis.NsDepCop.Core.Implementation.Config;
-using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Implementation.Config;
+using Codartis.NsDepCop.Interface.Config;
 using FluentAssertions;
 using Xunit;
 

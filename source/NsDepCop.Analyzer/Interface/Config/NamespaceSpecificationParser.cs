@@ -1,4 +1,4 @@
-namespace Codartis.NsDepCop.Core.Interface.Config
+namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// Converts a string to a namespace specification.

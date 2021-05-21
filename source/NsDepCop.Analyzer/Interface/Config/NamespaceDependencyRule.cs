@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Codartis.NsDepCop.Core.Interface.Config
+namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// Represents a dependency rule between 2 namespace specifications. Immutable.

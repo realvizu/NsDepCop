@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
-using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.Util;
 
-namespace Codartis.NsDepCop.Core.Implementation.Config
+namespace Codartis.NsDepCop.Implementation.Config
 {
     /// <summary>
     /// Extracts config information from an xml config file.

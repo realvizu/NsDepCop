@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Codartis.NsDepCop.Core.Interface.Analysis.Messages;
-using Codartis.NsDepCop.Core.Interface.Config;
+using Codartis.NsDepCop.Interface.Analysis.Messages;
+using Codartis.NsDepCop.Interface.Config;
 
-namespace Codartis.NsDepCop.Core.Interface.Analysis
+namespace Codartis.NsDepCop.Interface.Analysis
 {
     /// <summary>
     /// Performs dependency analysis on a project or a syntax node.

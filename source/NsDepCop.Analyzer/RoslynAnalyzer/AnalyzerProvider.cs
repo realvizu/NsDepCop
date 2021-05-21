@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using Codartis.NsDepCop.Core.Factory;
-using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.Factory;
+using Codartis.NsDepCop.Interface.Analysis;
+using Codartis.NsDepCop.Util;
 
 namespace Codartis.NsDepCop.RoslynAnalyzer
 {

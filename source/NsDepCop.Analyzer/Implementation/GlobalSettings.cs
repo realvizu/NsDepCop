@@ -1,7 +1,7 @@
 ﻿using System;
-using Codartis.NsDepCop.Core.Interface;
+using Codartis.NsDepCop.Interface;
 
-namespace Codartis.NsDepCop.Core.Implementation
+namespace Codartis.NsDepCop.Implementation
 {
     public static class GlobalSettings
     {

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.Interface.Analysis;
+using Codartis.NsDepCop.Util;
 using DotNet.Globbing;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

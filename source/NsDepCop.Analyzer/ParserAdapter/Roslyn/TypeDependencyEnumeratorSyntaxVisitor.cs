@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Interface.Analysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

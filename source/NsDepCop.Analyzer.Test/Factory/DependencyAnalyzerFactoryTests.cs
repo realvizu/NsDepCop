@@ -1,6 +1,6 @@
-﻿using Codartis.NsDepCop.Core.Factory;
-using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Config;
+﻿using Codartis.NsDepCop.Factory;
+using Codartis.NsDepCop.Interface.Analysis;
+using Codartis.NsDepCop.Interface.Config;
 using FluentAssertions;
 using Moq;
 using Xunit;

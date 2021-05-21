@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.NsDepCop.Core.Interface.Analysis
+namespace Codartis.NsDepCop.Interface.Analysis
 {
     /// <summary>
     /// Describes a certain segment of a source file. Immutable.

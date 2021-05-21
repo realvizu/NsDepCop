@@ -1,5 +1,5 @@
-﻿using Codartis.NsDepCop.Core.Implementation.Analysis;
-using Codartis.NsDepCop.Core.Interface.Config;
+﻿using Codartis.NsDepCop.Implementation.Analysis;
+using Codartis.NsDepCop.Interface.Config;
 using FluentAssertions;
 using Xunit;
 

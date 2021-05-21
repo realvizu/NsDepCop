@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
-using Codartis.NsDepCop.Core.Interface;
-using Codartis.NsDepCop.Core.Interface.Analysis;
+using Codartis.NsDepCop.Interface;
+using Codartis.NsDepCop.Interface.Analysis;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.RoslynAnalyzer

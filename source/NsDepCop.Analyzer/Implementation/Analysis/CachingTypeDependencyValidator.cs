@@ -1,9 +1,9 @@
 ﻿using System.Collections.Concurrent;
-using Codartis.NsDepCop.Core.Interface.Analysis;
-using Codartis.NsDepCop.Core.Interface.Config;
-using Codartis.NsDepCop.Core.Util;
+using Codartis.NsDepCop.Interface.Analysis;
+using Codartis.NsDepCop.Interface.Config;
+using Codartis.NsDepCop.Util;
 
-namespace Codartis.NsDepCop.Core.Implementation.Analysis
+namespace Codartis.NsDepCop.Implementation.Analysis
 {
     /// <summary>
     /// Validates type dependencies to a set of allowed/disallowed rules and caches the results.

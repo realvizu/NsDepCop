@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Codartis.NsDepCop.Core.Interface
+namespace Codartis.NsDepCop.Interface
 {
     /// <summary>
     /// Product-wide constant values.

@@ -1,4 +1,4 @@
-﻿namespace Codartis.NsDepCop.Core.Interface.Config
+﻿namespace Codartis.NsDepCop.Interface.Config
 {
     /// <summary>
     /// Provides operations to initialize an analyzer config.
