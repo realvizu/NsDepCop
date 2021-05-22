@@ -66,28 +66,16 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
         }
 
         public IEnumerable<TypeDependency> GetTypeDependencies(
-            ISyntaxNode syntaxNode,
-            ISemanticModel semanticModel,
+            SyntaxNode syntaxNode,
+            SemanticModel semanticModel,
             IEnumerable<Glob> sourcePathExclusionGlobs)
         {
-            var roslynSyntaxNode = Unwrap<SyntaxNode>(syntaxNode);
-
-            return IsExcludedFilePath(roslynSyntaxNode?.SyntaxTree.FilePath, sourcePathExclusionGlobs)
+            return IsExcludedFilePath(syntaxNode?.SyntaxTree.FilePath, sourcePathExclusionGlobs)
                 ? Enumerable.Empty<TypeDependency>()
-                : _syntaxNodeAnalyzer.GetTypeDependencies(roslynSyntaxNode, Unwrap<SemanticModel>(semanticModel));
+                : _syntaxNodeAnalyzer.GetTypeDependencies(syntaxNode, semanticModel);
         }
 
-        private static TUnwrapped Unwrap<TUnwrapped>(object wrappedValue)
-        {
-            if (wrappedValue == null)
-                throw new ArgumentNullException(nameof(wrappedValue));
-
-            if (!(wrappedValue is ObjectWrapper<TUnwrapped>))
-                throw new ArgumentException("Wrapped value should be a subclass of ObjectWrapper<T>).");
-
-            return ((ObjectWrapper<TUnwrapped>) wrappedValue).Value;
-        }
-
+  
         private MetadataReference LoadMetadata(string fileName)
         {
             try

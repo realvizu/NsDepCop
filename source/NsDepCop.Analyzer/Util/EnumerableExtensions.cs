@@ -40,7 +40,7 @@ namespace Codartis.NsDepCop.Util
         /// <param name="separator">A string that will be put between every to item. Null means no separator.</param>
         /// <param name="leftWrapper">A string that will precede every item. Null means no left wrapper.</param>
         /// <param name="rightWrapper">A string that will follow every item. Null means no right wrapper.</param>
-        /// <returns>The string represenation of the collection.</returns>
+        /// <returns>The string representation of the collection.</returns>
         public static string ToSingleString<T>(this IEnumerable<T> collection, string separator, string leftWrapper, string rightWrapper)
         {
             var stringBuilder = new StringBuilder();
@@ -67,6 +67,12 @@ namespace Codartis.NsDepCop.Util
             }
 
             return stringBuilder.ToString();
+        }
+
+        public static IEnumerable<T> ToEnumerable<T>(this T item)
+        {
+            if (item != null)
+                yield return item;
         }
     }
 }

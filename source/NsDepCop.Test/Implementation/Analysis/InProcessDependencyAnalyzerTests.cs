@@ -7,6 +7,8 @@ using Codartis.NsDepCop.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Interface.Config;
 using DotNet.Globbing;
 using FluentAssertions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Moq;
 using Xunit;
 
@@ -75,7 +77,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             SetUpEnabledConfig();
 
             _typeDependencyEnumeratorMock
-                .Setup(i => i.GetTypeDependencies(It.IsAny<ISyntaxNode>(), It.IsAny<ISemanticModel>(), It.IsAny<IEnumerable<Glob>>()))
+                .Setup(i => i.GetTypeDependencies(It.IsAny<SyntaxNode>(), It.IsAny<SemanticModel>(), It.IsAny<IEnumerable<Glob>>()))
                 .Returns(Enumerable.Repeat(new TypeDependency("N1", "T1", "N2", "T2", DummySourceSegment), 2));
 
             AnalyzeSyntaxNode().OfType<IllegalDependencyMessage>().Should().HaveCount(2);
@@ -140,20 +142,17 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
 
         private IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode()
         {
-            return CreateDependencyAnalyzer().AnalyzeSyntaxNode(new DummySyntaxNode(), new DummySemanticModel());
+            var syntaxTree = SyntaxFactory.CompilationUnit().SyntaxTree;
+            var dummyCompilation = CSharpCompilation.Create(assemblyName: "MyAssembly", syntaxTrees: new[] {syntaxTree});
+            var semanticModel = dummyCompilation.GetSemanticModel(syntaxTree);
+
+            var dummyCounter = 0;
+            return CreateDependencyAnalyzer().AnalyzeSyntaxNode(SyntaxFactory.IdentifierName("dummy"), semanticModel, ref dummyCounter);
         }
 
         private IDependencyAnalyzer CreateDependencyAnalyzer()
         {
             return new InProcessDependencyAnalyzer(_configProviderMock.Object, _typeDependencyEnumeratorMock.Object, traceMessageHandler: null);
-        }
-
-        private class DummySyntaxNode : ISyntaxNode
-        {
-        }
-
-        private class DummySemanticModel : ISemanticModel
-        {
         }
     }
 }

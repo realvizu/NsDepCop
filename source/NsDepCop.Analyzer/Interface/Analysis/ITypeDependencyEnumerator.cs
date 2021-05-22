@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DotNet.Globbing;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.Interface.Analysis
 {
@@ -28,8 +29,8 @@ namespace Codartis.NsDepCop.Interface.Analysis
         /// <param name="sourcePathExclusionGlobs">A collection of file path patterns (globs) for excluding source files from analysis.</param>
         /// <returns>A collection of type dependencies.</returns>
         IEnumerable<TypeDependency> GetTypeDependencies(
-            ISyntaxNode syntaxNode, 
-            ISemanticModel semanticModel, 
+            SyntaxNode syntaxNode, 
+            SemanticModel semanticModel, 
             IEnumerable<Glob> sourcePathExclusionGlobs);
     }
 }

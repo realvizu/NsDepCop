@@ -6,6 +6,7 @@ using Codartis.NsDepCop.Interface.Analysis.Messages;
 using Codartis.NsDepCop.Interface.Config;
 using Codartis.NsDepCop.Util;
 using DotNet.Globbing;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.Implementation.Analysis
 {
@@ -15,7 +16,7 @@ namespace Codartis.NsDepCop.Implementation.Analysis
     public class InProcessDependencyAnalyzer : DependencyAnalyzerBase
     {
         private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
-        private readonly object _configRefreshLock = new object();
+        private readonly object _configRefreshLock = new();
 
         private CachingTypeDependencyValidator _typeDependencyValidator;
         private IAnalyzerConfig _config;
@@ -39,35 +40,30 @@ namespace Codartis.NsDepCop.Implementation.Analysis
             if (referencedAssemblyPaths == null) throw new ArgumentNullException(nameof(referencedAssemblyPaths));
 
             if (GlobalSettings.IsToolDisabled())
-                return new[] { new ToolDisabledMessage() };
+                return new[] {new ToolDisabledMessage()};
+
+            var issueCount = 0;
 
             lock (_configRefreshLock)
             {
                 return AnalyzeCore(
                     () => GetIllegalTypeDependencies(
-                        () => _typeDependencyEnumerator.GetTypeDependencies(
-                            sourceFilePaths,
-                            referencedAssemblyPaths,
-                            _sourcePathExclusionGlobs)),
-                    isProjectScope: true);
+                        () => _typeDependencyEnumerator.GetTypeDependencies(sourceFilePaths, referencedAssemblyPaths, _sourcePathExclusionGlobs)),
+                    ref issueCount);
             }
         }
 
-        public override IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel)
+        public override IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(SyntaxNode syntaxNode, SemanticModel semanticModel, ref int issueCount)
         {
             if (syntaxNode == null) throw new ArgumentNullException(nameof(syntaxNode));
             if (semanticModel == null) throw new ArgumentNullException(nameof(semanticModel));
 
-
             lock (_configRefreshLock)
             {
                 return AnalyzeCore(
                     () => GetIllegalTypeDependencies(
-                        () => _typeDependencyEnumerator.GetTypeDependencies(
-                            syntaxNode,
-                            semanticModel,
-                            _sourcePathExclusionGlobs)),
-                    isProjectScope: false);
+                        () => _typeDependencyEnumerator.GetTypeDependencies(syntaxNode, semanticModel, _sourcePathExclusionGlobs)),
+                    ref issueCount);
             }
         }
 

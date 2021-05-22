@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Codartis.NsDepCop.Interface.Analysis.Messages;
+using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.Interface.Analysis
 {
@@ -22,8 +23,9 @@ namespace Codartis.NsDepCop.Interface.Analysis
         /// </summary>
         /// <param name="syntaxNode">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the project being analyzed.</param>
+        /// <param name="issueCount">Reference to the issue counter of the current compilation.</param>
         /// <returns>Issue and info messages, including illegal dependency issues.</returns>
-        IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(ISyntaxNode syntaxNode, ISemanticModel semanticModel);
+        IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(SyntaxNode syntaxNode, SemanticModel semanticModel, ref int issueCount);
 
         /// <summary>
         /// Re-reads the config.
@@ -34,6 +36,11 @@ namespace Codartis.NsDepCop.Interface.Analysis
         /// Returns true if the config reading produced an error.
         /// </summary>
         bool HasConfigError { get; }
+
+        /// <summary>
+        /// Returns true if the tool is disabled in config.
+        /// </summary>
+        bool IsDisabledInConfig { get; }
 
         /// <summary>
         /// Gets the config exception or null if there was no exception.
