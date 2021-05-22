@@ -10,6 +10,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- https://github.com/NuGet/Home/issues/6754#issuecomment-592283619 -->
+    <AvoidCycleErrorOnSelfReference>true</AvoidCycleErrorOnSelfReference>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>NsDepCop</PackageId>
     <PackageVersion>2.0.0-local</PackageVersion>
     <Title>NsDepCop - Namespace Dependency Checker Tool for C#</Title>
