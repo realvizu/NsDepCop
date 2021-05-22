@@ -100,7 +100,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             dependencyAnalyzer.AnalyzeProject(new List<string>(), new List<string>()).OfType<IllegalDependencyMessage>().Should().HaveCount(4);
         }
 
-        [Theory]
+        [Theory(Skip = "This feature is temporarily commented out.")]
         [InlineData(3, 2, true)]
         [InlineData(3, 3, false)]
         [InlineData(3, 4, false)]
