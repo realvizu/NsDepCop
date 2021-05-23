@@ -1,8 +1,8 @@
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 environment:
-  shortversion: '1.11.0'
-  informationalversion: '1.11.0-beta2'
+  shortversion: '2.0.0'
+  informationalversion: '2.0.0-beta1'
 
 version: '$(shortversion).{build}'
 
@@ -18,12 +18,14 @@ assembly_info:
   assembly_file_version: '{version}'
   assembly_informational_version: '$(informationalversion)'
 
+dotnet_csproj:
+  patch: true
+  file: source\NsDepCop.NuGet\NsDepCop.NuGet.csproj
+  package_version: '$(informationalversion)'
+
 before_build:
 # vsixmanifest file must be specified with full path.
-- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.VisualStudioIntegration.Vs2015\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
-- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.VisualStudioIntegration.Vs2017\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
 - ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.ConfigSchema\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
-- ps: Set-NuspecVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.NuGet\NsDepCop.NuGet.nuspec $env:informationalversion -ErrorAction Stop
 - cmd: nuget restore -Verbosity quiet source\NsDepCop.sln
 
 build:
@@ -34,7 +36,5 @@ test:
   assemblies: '**\*Test*.dll'
 
 artifacts:
-- path: 'source\NsDepCop.VisualStudioIntegration.Vs2015\bin\$(configuration)\NsDepCop*.vsix'
-- path: 'source\NsDepCop.VisualStudioIntegration.Vs2017\bin\$(configuration)\NsDepCop*.vsix'
 - path: 'source\NsDepCop.ConfigSchema\bin\$(configuration)\NsDepCop*.vsix'
 - path: 'source\NsDepCop.NuGet\bin\$(configuration)\NsDepCop*.nupkg'
