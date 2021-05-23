@@ -23,9 +23,8 @@ namespace Codartis.NsDepCop.Interface.Analysis
         /// </summary>
         /// <param name="syntaxNode">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the project being analyzed.</param>
-        /// <param name="issueCount">Reference to the issue counter of the current compilation.</param>
         /// <returns>Issue and info messages, including illegal dependency issues.</returns>
-        IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(SyntaxNode syntaxNode, SemanticModel semanticModel, ref int issueCount);
+        IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(SyntaxNode syntaxNode, SemanticModel semanticModel);
 
         /// <summary>
         /// Re-reads the config.
@@ -46,5 +45,7 @@ namespace Codartis.NsDepCop.Interface.Analysis
         /// Gets the config exception or null if there was no exception.
         /// </summary>
         Exception GetConfigException();
+
+        int MaxIssueCount { get; }
     }
 }

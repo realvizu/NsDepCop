@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Codartis.NsDepCop.Factory;
 using Codartis.NsDepCop.Implementation;
 using Codartis.NsDepCop.Interface;
@@ -121,35 +122,34 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
             IDependencyAnalyzer dependencyAnalyzer,
             ref int issueCount)
         {
-            var analyzerMessages = dependencyAnalyzer.AnalyzeSyntaxNode(
-                syntaxNodeAnalysisContext.Node,
-                syntaxNodeAnalysisContext.SemanticModel,
-                ref issueCount
-            );
+            var maxIssueCount = dependencyAnalyzer.MaxIssueCount;
 
-            foreach (var analyzerMessage in analyzerMessages)
+            // Not sure whether whether this method will be called concurrently so to be on the safe side let's access issueCount with interlocked.
+            if (GetInterlocked(ref issueCount) > maxIssueCount)
+                return;
+
+            var analyzerMessages = dependencyAnalyzer.AnalyzeSyntaxNode(syntaxNodeAnalysisContext.Node, syntaxNodeAnalysisContext.SemanticModel);
+
+            foreach (var analyzerMessage in analyzerMessages.OfType<IllegalDependencyMessage>())
             {
-                var diagnostic = ConvertAnalyzerMessageToDiagnostic(syntaxNodeAnalysisContext, analyzerMessage);
-                syntaxNodeAnalysisContext.ReportDiagnostic(diagnostic);
+                var currentIssueCount = Interlocked.Increment(ref issueCount);
+
+                if (currentIssueCount > maxIssueCount)
+                {
+                    var tooManyIssuesDiagnostic = CreateDiagnosticForSyntaxNode(syntaxNodeAnalysisContext.Node, TooManyIssuesDescriptor, analyzerMessage.ToString());
+                    syntaxNodeAnalysisContext.ReportDiagnostic(tooManyIssuesDiagnostic);
+                    break;
+                }
+
+                var illegalDependencyDiagnostic = CreateDiagnosticForSyntaxNode(syntaxNodeAnalysisContext.Node, IllegalDependencyDescriptor, analyzerMessage.ToString());
+                syntaxNodeAnalysisContext.ReportDiagnostic(illegalDependencyDiagnostic);
             }
         }
 
-        private static Diagnostic ConvertAnalyzerMessageToDiagnostic(SyntaxNodeAnalysisContext syntaxNodeAnalysisContext, AnalyzerMessageBase analyzerMessage)
-        {
-            return analyzerMessage switch
-            {
-                IllegalDependencyMessage _ =>
-                    CreateDiagnosticForSyntaxNode(syntaxNodeAnalysisContext.Node, IllegalDependencyDescriptor, analyzerMessage.ToString()),
-
-                TooManyIssuesMessage _ =>
-                    CreateDiagnosticForSyntaxNode(syntaxNodeAnalysisContext.Node, TooManyIssuesDescriptor, analyzerMessage.ToString()),
-
-                // All other possibilities were ruled out in StartAnalysisForCompilation (no config, tool disabled, etc.)
-
-                _ => throw new Exception($"Unexpected analyzer message type: {analyzerMessage?.GetType().Name}")
-            };
-        }
-
+        /// <remarks>
+        /// Reading an int that's updated by Interlocked on other threads: https://stackoverflow.com/a/24893231/38186
+        /// </remarks>
+        private static int GetInterlocked(ref int issueCount) => Interlocked.CompareExchange(ref issueCount, 0, 0);
 
         private static Diagnostic CreateDiagnosticForSyntaxTree(SyntaxTree syntaxTree, DiagnosticDescriptor diagnosticDescriptor, string message)
         {

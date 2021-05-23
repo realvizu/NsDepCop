@@ -1,6 +1,4 @@
-﻿using Codartis.NsDepCop.Interface.Config;
-
-namespace Codartis.NsDepCop.Interface.Analysis.Messages
+﻿namespace Codartis.NsDepCop.Interface.Analysis.Messages
 {
     /// <summary>
     /// A message describing that too many issues were found.
@@ -10,12 +8,10 @@ namespace Codartis.NsDepCop.Interface.Analysis.Messages
         public override IssueDescriptor IssueDefinition => IssueDefinitions.TooManyIssuesIssue;
 
         public int MaxIssueCount { get; }
-        public override IssueKind IssueKind { get; }
 
-        public TooManyIssuesMessage(int maxIssueCount, IssueKind issueKind)
+        public TooManyIssuesMessage(int maxIssueCount)
         {
             MaxIssueCount = maxIssueCount;
-            IssueKind = issueKind;
         }
 
         public override string ToString() => $"Max issue count ({MaxIssueCount}) reached, analysis was stopped.";

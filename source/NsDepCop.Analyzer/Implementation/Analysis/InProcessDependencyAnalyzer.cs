@@ -42,18 +42,16 @@ namespace Codartis.NsDepCop.Implementation.Analysis
             if (GlobalSettings.IsToolDisabled())
                 return new[] {new ToolDisabledMessage()};
 
-            var issueCount = 0;
-
             lock (_configRefreshLock)
             {
                 return AnalyzeCore(
                     () => GetIllegalTypeDependencies(
-                        () => _typeDependencyEnumerator.GetTypeDependencies(sourceFilePaths, referencedAssemblyPaths, _sourcePathExclusionGlobs)),
-                    ref issueCount);
+                        () => _typeDependencyEnumerator.GetTypeDependencies(sourceFilePaths, referencedAssemblyPaths, _sourcePathExclusionGlobs))
+                );
             }
         }
 
-        public override IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(SyntaxNode syntaxNode, SemanticModel semanticModel, ref int issueCount)
+        public override IEnumerable<AnalyzerMessageBase> AnalyzeSyntaxNode(SyntaxNode syntaxNode, SemanticModel semanticModel)
         {
             if (syntaxNode == null) throw new ArgumentNullException(nameof(syntaxNode));
             if (semanticModel == null) throw new ArgumentNullException(nameof(semanticModel));
@@ -62,8 +60,8 @@ namespace Codartis.NsDepCop.Implementation.Analysis
             {
                 return AnalyzeCore(
                     () => GetIllegalTypeDependencies(
-                        () => _typeDependencyEnumerator.GetTypeDependencies(syntaxNode, semanticModel, _sourcePathExclusionGlobs)),
-                    ref issueCount);
+                        () => _typeDependencyEnumerator.GetTypeDependencies(syntaxNode, semanticModel, _sourcePathExclusionGlobs))
+                );
             }
         }
 
