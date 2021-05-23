@@ -40,6 +40,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="build\**" Pack="True" PackagePath="build" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
   </ItemGroup>
 
