@@ -52,12 +52,6 @@
     <ProjectReference Include="..\NsDepCop.Analyzer\NsDepCop.Analyzer.csproj" />
   </ItemGroup>
 
-  <!--<ItemGroup>
-    <None Update="build\NsDepCop.targets">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>-->
-
   <PropertyGroup>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
