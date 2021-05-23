@@ -11,13 +11,6 @@ configuration: Release
 install:
 - ps: (New-Object Net.WebClient).DownloadString("https://raw.githubusercontent.com/realvizu/Tools/master/Build/buildtools.ps1") | Invoke-Expression
 
-assembly_info:
-  patch: true
-  file: source\include\VersionInfo.cs
-  assembly_version: '{version}'
-  assembly_file_version: '{version}'
-  assembly_informational_version: '$(informationalversion)'
-
 
 
 before_build:
