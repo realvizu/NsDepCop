@@ -32,6 +32,7 @@
 - Implementation changed from MSBuild task to standard Roslyn analyzer.
 - Works both at build time and inside Visual Studio editor.
 - No need for an additional Visual Studio extension any more.
+- No need for the out-of-process service host any more.
 - Supports .NET Core / .NET 5 / etc. projects too.
 - Dropped support for VS 2015/2017.
 - AutoLowerMaxIssueCount feature is temporarily not supported.
