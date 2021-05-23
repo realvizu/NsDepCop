@@ -18,10 +18,7 @@ assembly_info:
   assembly_file_version: '{version}'
   assembly_informational_version: '$(informationalversion)'
 
-dotnet_csproj:
-  patch: true
-  file: source\NsDepCop.NuGet\NsDepCop.NuGet.csproj
-  package_version: '$(informationalversion)'
+
 
 before_build:
 # vsixmanifest file must be specified with full path.
