@@ -29,14 +29,12 @@
     <PackageIconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</PackageIconUrl>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageReleaseNotes>
-      - Implementation changed from MsBuild task to standard Roslyn analyzer.
-      - Works both at build time and inside Visual Studio editor.
-      - Supports .NET Core/.NET5/etc. projects too.
-      - No need to install a Visual Studio extension any more.
-      - Supports Visual Studio 2019 (16.9.3 or above).
-      - Dropped support for VS 2015/2017.
-      - As a standard Roslyn analyzer it is not project scoped any more (but syntax node scoped) so these features are no longer supported: MaxIssueCount, AutoLowerMaxIssueCount, ExcludedFiles.
-      - Use the standard Roslyn tools (Visual Studio, .editorconfig) to configure: enable/disable, set severity, exclude files by filename/path pattern.
+- Implementation changed from MSBuild task to standard Roslyn analyzer.
+- Works both at build time and inside Visual Studio editor.
+- No need for an additional Visual Studio extension any more.
+- Supports .NET Core / .NET 5 / etc. projects too.
+- Dropped support for VS 2015/2017.
+- AutoLowerMaxIssueCount feature is temporarily not supported.
     </PackageReleaseNotes>
   </PropertyGroup>
 
