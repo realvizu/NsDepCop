@@ -74,7 +74,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
             }
 
             var configFilePath = GetConfigFilePath(compilationStartContext.Options.AdditionalFiles);
-            if (configFilePath == null)
+            if (configFilePath == null || !File.Exists(configFilePath))
             {
                 compilationStartContext.RegisterSyntaxTreeAction(i => ReportForSyntaxTree(i, NoConfigFileDescriptor));
                 return;
