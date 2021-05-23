@@ -41,16 +41,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="build\**" Pack="True" PackagePath="build" />
+    <None Update="build\**" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
+    <None Update="tools\*.ps1" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\NsDepCop.Analyzer\NsDepCop.Analyzer.csproj" />
   </ItemGroup>
+
+  <!--<ItemGroup>
+    <None Update="build\NsDepCop.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>-->
 
   <PropertyGroup>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
