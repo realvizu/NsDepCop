@@ -2,7 +2,7 @@ image: Visual Studio 2019
 
 environment:
   shortversion: '2.0.0'
-  informationalversion: '2.0.0-beta5'
+  informationalversion: '2.0.0-beta6'
 
 version: '$(shortversion).{build}'
 

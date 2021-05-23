@@ -136,7 +136,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
 
                 if (currentIssueCount > maxIssueCount)
                 {
-                    var tooManyIssuesDiagnostic = CreateDiagnosticForSyntaxNode(syntaxNodeAnalysisContext.Node, TooManyIssuesDescriptor, analyzerMessage.ToString());
+                    var tooManyIssuesDiagnostic = CreateDiagnosticForSyntaxNode(syntaxNodeAnalysisContext.Node, TooManyIssuesDescriptor);
                     syntaxNodeAnalysisContext.ReportDiagnostic(tooManyIssuesDiagnostic);
                     break;
                 }
@@ -151,13 +151,13 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         /// </remarks>
         private static int GetInterlocked(ref int issueCount) => Interlocked.CompareExchange(ref issueCount, 0, 0);
 
-        private static Diagnostic CreateDiagnosticForSyntaxTree(SyntaxTree syntaxTree, DiagnosticDescriptor diagnosticDescriptor, string message)
+        private static Diagnostic CreateDiagnosticForSyntaxTree(SyntaxTree syntaxTree, DiagnosticDescriptor diagnosticDescriptor, string message = null)
         {
             var location = Location.Create(syntaxTree, TextSpan.FromBounds(0, 0));
             return CreateDiagnostic(diagnosticDescriptor, location, message);
         }
 
-        private static Diagnostic CreateDiagnosticForSyntaxNode(SyntaxNode node, DiagnosticDescriptor diagnosticDescriptor, string message)
+        private static Diagnostic CreateDiagnosticForSyntaxNode(SyntaxNode node, DiagnosticDescriptor diagnosticDescriptor, string message = null)
         {
             var location = Location.Create(node.SyntaxTree, node.Span);
             return CreateDiagnostic(diagnosticDescriptor, location, message);
