@@ -1,7 +1,9 @@
-﻿[*.cs]
+﻿root = true
+
+[*.cs]
 
 # Default severity for analyzer diagnostics with category 'MicrosoftCodeAnalysisReleaseTracking'
 dotnet_analyzer_diagnostic.category-MicrosoftCodeAnalysisReleaseTracking.severity = none
 
 # NSDEPCOP01: Illegal namespace reference.
-dotnet_diagnostic.NSDEPCOP01.severity = none
+dotnet_diagnostic.NSDEPCOP01.severity = error

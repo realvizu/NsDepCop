@@ -1,5 +1,5 @@
-﻿using Codartis.NsDepCop.Factory;
-using Codartis.NsDepCop.Interface.Analysis;
+﻿using Codartis.NsDepCop.Analysis;
+using Codartis.NsDepCop.Factory;
 using Codartis.NsDepCop.RoslynAnalyzer;
 using Moq;
 using Xunit;

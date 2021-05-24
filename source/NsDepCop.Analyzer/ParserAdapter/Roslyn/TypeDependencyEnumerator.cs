@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Codartis.NsDepCop.Interface.Analysis;
+using Codartis.NsDepCop.Analysis;
 using Codartis.NsDepCop.Util;
 using DotNet.Globbing;
 using Microsoft.CodeAnalysis;

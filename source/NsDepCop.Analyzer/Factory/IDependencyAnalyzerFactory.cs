@@ -1,4 +1,4 @@
-﻿using Codartis.NsDepCop.Interface.Analysis;
+﻿using Codartis.NsDepCop.Analysis;
 
 namespace Codartis.NsDepCop.Factory
 {

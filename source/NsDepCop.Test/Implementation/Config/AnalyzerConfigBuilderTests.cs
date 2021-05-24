@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Codartis.NsDepCop.Implementation.Config;
-using Codartis.NsDepCop.Interface.Config;
+using Codartis.NsDepCop.Config;
+using Codartis.NsDepCop.Config.Implementation;
 using FluentAssertions;
 using Xunit;
 

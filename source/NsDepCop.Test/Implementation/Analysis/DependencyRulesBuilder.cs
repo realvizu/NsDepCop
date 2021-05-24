@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Codartis.NsDepCop.Interface.Config;
+using Codartis.NsDepCop.Config;
 
 namespace Codartis.NsDepCop.Test.Implementation.Analysis
 {

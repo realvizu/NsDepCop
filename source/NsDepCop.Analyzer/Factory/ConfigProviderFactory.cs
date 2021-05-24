@@ -1,5 +1,5 @@
-﻿using Codartis.NsDepCop.Implementation.Config;
-using Codartis.NsDepCop.Interface.Config;
+﻿using Codartis.NsDepCop.Config;
+using Codartis.NsDepCop.Config.Implementation;
 using Codartis.NsDepCop.Util;
 
 namespace Codartis.NsDepCop.Factory

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Codartis.NsDepCop.Implementation.Analysis;
-using Codartis.NsDepCop.Interface.Analysis;
-using Codartis.NsDepCop.Interface.Analysis.Messages;
-using Codartis.NsDepCop.Interface.Config;
+using Codartis.NsDepCop.Analysis;
+using Codartis.NsDepCop.Analysis.Implementation;
+using Codartis.NsDepCop.Analysis.Messages;
+using Codartis.NsDepCop.Config;
 using DotNet.Globbing;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
@@ -151,7 +151,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
 
         private IDependencyAnalyzer CreateDependencyAnalyzer()
         {
-            return new InProcessDependencyAnalyzer(_configProviderMock.Object, _typeDependencyEnumeratorMock.Object, traceMessageHandler: null);
+            return new DependencyAnalyzer(_configProviderMock.Object, _typeDependencyEnumeratorMock.Object, traceMessageHandler: null);
         }
     }
 }

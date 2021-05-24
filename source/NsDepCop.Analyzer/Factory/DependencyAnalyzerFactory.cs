@@ -1,6 +1,6 @@
-﻿using Codartis.NsDepCop.Implementation.Analysis;
-using Codartis.NsDepCop.Interface.Analysis;
-using Codartis.NsDepCop.Interface.Config;
+﻿using Codartis.NsDepCop.Analysis;
+using Codartis.NsDepCop.Analysis.Implementation;
+using Codartis.NsDepCop.Config;
 using Codartis.NsDepCop.Util;
 
 namespace Codartis.NsDepCop.Factory
@@ -28,7 +28,7 @@ namespace Codartis.NsDepCop.Factory
         public IDependencyAnalyzer Create(string folderPath, ITypeDependencyEnumerator typeDependencyEnumerator)
         {
             var configProvider = _configProviderFactory.CreateFromMultiLevelXmlConfigFile(folderPath);
-            return new InProcessDependencyAnalyzer(configProvider, typeDependencyEnumerator, _traceMessageHandler);
+            return new DependencyAnalyzer(configProvider, typeDependencyEnumerator, _traceMessageHandler);
         }
     }
 }
