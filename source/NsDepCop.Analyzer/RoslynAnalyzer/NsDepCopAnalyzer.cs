@@ -125,7 +125,14 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
                     break;
                 }
 
-                ReportForSyntaxNode(syntaxNodeAnalysisContext, DiagnosticDefinitions.IllegalDependency, analyzerMessage.ToString());
+                ReportForSyntaxNode(
+                    syntaxNodeAnalysisContext,
+                    DiagnosticDefinitions.IllegalDependency,
+                    analyzerMessage.IllegalDependency.FromNamespaceName,
+                    analyzerMessage.IllegalDependency.ToNamespaceName,
+                    analyzerMessage.IllegalDependency.FromTypeName,
+                    analyzerMessage.IllegalDependency.ToTypeName
+                );
             }
         }
 

@@ -18,7 +18,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
             "Illegal namespace reference.",
             "Illegal namespace reference: {0}->{1} (Type: {2}->{3})",
             DiagnosticSeverity.Warning,
-            "This type cannot reference that other type because their namespaces cannot depend on each other according to the current rules." +
+            "This type cannot reference the other type because their namespaces cannot depend on each other according to the current rules." +
             " Change the dependency rules in the 'config.nsdepcop' file or change your design to avoid this namespace dependency."
         );
 
@@ -42,16 +42,16 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
 
         public static readonly DiagnosticDescriptor ConfigDisabled = CreateDiagnosticDescriptor(
             "NSDEPCOP04",
-            "Analysis is disabled in the 'config.nsdepcop' file.",
-            "Analysis is disabled in the 'config.nsdepcop' file.",
+            "Analysis is disabled in the config file.",
+            "Analysis is disabled in the file 'config.nsdepcop'.",
             DiagnosticSeverity.Info,
             "The IsEnabled attribute was set to false in this project's 'config.nsdepcop' file, so the analyzer skips this project."
         );
 
         public static readonly DiagnosticDescriptor ConfigException = CreateDiagnosticDescriptor(
             "NSDEPCOP05",
-            "Error loading NsDepCop config.",
-            "Error when loading the 'config.nsdepcop' file: {0}",
+            "Error loading config.",
+            "Error when loading the file 'config.nsdepcop': {0}",
             DiagnosticSeverity.Error,
             "There was an error while loading the 'config.nsdepcop' file, see the message for details." +
             " Some common reasons: malformed content, file permission or file locking problem."
@@ -60,7 +60,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         public static readonly DiagnosticDescriptor ToolDisabled = CreateDiagnosticDescriptor(
             "NSDEPCOP06",
             "Analysis is disabled with environment variable.",
-            $"Analysis is disabled with environment variable: '{ProductConstants.DisableToolEnvironmentVariableName}'.",
+            $"NsDepCop is disabled with environment variable: '{ProductConstants.DisableToolEnvironmentVariableName}'.",
             DiagnosticSeverity.Info,
             $"If the '{ProductConstants.DisableToolEnvironmentVariableName}' environment variable is set to 'True' or '1' then all analysis is skipped."
         );
