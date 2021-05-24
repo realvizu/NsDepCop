@@ -1,5 +1,5 @@
 ﻿<NsDepCopConfig InheritanceDepth="1">
-  <!--<Allowed From="Codartis.NsDepCop.*" To="DotNet.Globbing" />-->
+  <Allowed From="Codartis.NsDepCop.*" To="DotNet.Globbing" />
   <Allowed From="Codartis.NsDepCop.*" To="Microsoft.CodeAnalysis.*"/>
   <Allowed From="Codartis.NsDepCop.*" To="Codartis.NsDepCop.Util.*"/>
   
