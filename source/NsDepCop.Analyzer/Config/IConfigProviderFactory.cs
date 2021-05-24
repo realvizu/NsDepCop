@@ -1,11 +1,9 @@
-﻿using Codartis.NsDepCop.Config;
-
-namespace Codartis.NsDepCop.Factory
+﻿namespace Codartis.NsDepCop.Config
 {
     /// <summary>
     /// Creates config provider objects.
     /// </summary>
-    public interface IConfigProviderFactory : IConfigInitializer<ConfigProviderFactory>
+    public interface IConfigProviderFactory
     {
         /// <summary>
         /// Creates a config provider for an xml config file.

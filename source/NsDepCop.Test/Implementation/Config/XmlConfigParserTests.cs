@@ -16,13 +16,9 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var configBuilder = XmlConfigParser.Parse(xDocument);
             configBuilder.IsEnabled.Should().BeNull();
             configBuilder.InheritanceDepth.Should().BeNull();
-            configBuilder.DependencyIssueSeverity.Should().BeNull();
             configBuilder.MaxIssueCount.Should().BeNull();
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeNull();
-            configBuilder.InfoImportance.Should().BeNull();
-            configBuilder.MaxIssueCountSeverity.Should().BeNull();
             configBuilder.AutoLowerMaxIssueCount.Should().BeNull();
-            configBuilder.AnalyzerServiceCallRetryTimeSpans.Should().BeNull();
             configBuilder.SourcePathExclusionPatterns.Should().BeEmpty();
         }
 
@@ -33,15 +29,9 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var configBuilder = XmlConfigParser.Parse(xDocument);
             configBuilder.IsEnabled.Should().BeTrue();
             configBuilder.InheritanceDepth.Should().Be(9);
-            configBuilder.DependencyIssueSeverity.ShouldBeEquivalentTo(IssueKind.Error);
             configBuilder.MaxIssueCount.ShouldBeEquivalentTo(42);
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeTrue();
-            configBuilder.InfoImportance.ShouldBeEquivalentTo(Importance.Normal);
-            configBuilder.MaxIssueCountSeverity.ShouldBeEquivalentTo(IssueKind.Error);
             configBuilder.AutoLowerMaxIssueCount.Should().BeTrue();
-            configBuilder.AnalyzerServiceCallRetryTimeSpans.ShouldBeEquivalentTo(
-                new[] {TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1)}
-            );
             configBuilder.SourcePathExclusionPatterns.Should().BeEquivalentTo(@"**/*.g.cs", @"TestData\**\*.cs");
         }
 

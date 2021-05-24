@@ -1,2 +1,2 @@
-﻿<NsDepCopConfig CodeIssueKind="Error">
+﻿<NsDepCopConfig MaxIssueCount="1">
 </NsDepCopConfig>

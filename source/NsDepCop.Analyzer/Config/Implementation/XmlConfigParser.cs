@@ -16,13 +16,9 @@ namespace Codartis.NsDepCop.Config.Implementation
         private const string RootElementName = "NsDepCopConfig";
         private const string InheritanceDepthAttributeName = "InheritanceDepth";
         private const string IsEnabledAttributeName = "IsEnabled";
-        private const string CodeIssueKindAttributeName = "CodeIssueKind";
         private const string MaxIssueCountAttributeName = "MaxIssueCount";
-        private const string MaxIssueCountSeverityAttributeName = "MaxIssueCountSeverity";
         private const string AutoLowerMaxIssueCountAttributeName = "AutoLowerMaxIssueCount";
         private const string ImplicitParentDependencyAttributeName = "ChildCanDependOnParentImplicitly";
-        private const string InfoImportanceAttributeName = "InfoImportance";
-        private const string AnalyzerServiceCallRetryTimeSpansAttributeName = "AnalyzerServiceCallRetryTimeSpans";
         private const string SourcePathExclusionPatternsAttributeName = "ExcludedFiles";
         private const string AllowedElementName = "Allowed";
         private const string DisallowedElementName = "Disallowed";
@@ -63,14 +59,9 @@ namespace Codartis.NsDepCop.Config.Implementation
         {
             configBuilder.SetIsEnabled(ParseValueType<bool>(rootElement, IsEnabledAttributeName, bool.TryParse));
             configBuilder.SetInheritanceDepth(ParseValueType<int>(rootElement, InheritanceDepthAttributeName, int.TryParse));
-            configBuilder.SetDependencyIssueSeverity(ParseValueType<IssueKind>(rootElement, CodeIssueKindAttributeName, Enum.TryParse));
-            configBuilder.SetInfoImportance(ParseValueType<Importance>(rootElement, InfoImportanceAttributeName, Enum.TryParse));
-            configBuilder.SetAnalyzerServiceCallRetryTimeSpans(ParseReferenceType<TimeSpan[]>(rootElement, AnalyzerServiceCallRetryTimeSpansAttributeName,
-                TryParseTimeSpans));
             configBuilder.AddSourcePathExclusionPatterns(ParseStringList(rootElement, SourcePathExclusionPatternsAttributeName, ','));
             configBuilder.SetChildCanDependOnParentImplicitly(ParseValueType<bool>(rootElement, ImplicitParentDependencyAttributeName, bool.TryParse));
             configBuilder.SetMaxIssueCount(ParseValueType<int>(rootElement, MaxIssueCountAttributeName, int.TryParse));
-            configBuilder.SetMaxIssueCountSeverity(ParseValueType<IssueKind>(rootElement, MaxIssueCountSeverityAttributeName, Enum.TryParse));
             configBuilder.SetAutoLowerMaxIssueCount(ParseValueType<bool>(rootElement, AutoLowerMaxIssueCountAttributeName, bool.TryParse));
         }
 
@@ -84,27 +75,6 @@ namespace Codartis.NsDepCop.Config.Implementation
         private static IEnumerable<string> Split(string s, char separatorChar)
         {
             return s?.Split(new[] {separatorChar}, StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim());
-        }
-
-        private static bool TryParseTimeSpans(string s, out TimeSpan[] t)
-        {
-            t = new TimeSpan[0];
-
-            if (string.IsNullOrWhiteSpace(s))
-                return true;
-
-            var timeSpans = new List<TimeSpan>();
-
-            foreach (var stringPart in Split(s, ','))
-            {
-                if (!int.TryParse(stringPart, out var value))
-                    return false;
-
-                timeSpans.Add(TimeSpan.FromMilliseconds(value));
-            }
-
-            t = timeSpans.ToArray();
-            return true;
         }
 
         private static void ParseChildElements(XElement rootElement, AnalyzerConfigBuilder configBuilder)
@@ -157,7 +127,8 @@ namespace Codartis.NsDepCop.Config.Implementation
                 throw new Exception($"{GetLineInfo(element)}The target namespace '{allowedRule.To}' must be a single namespace.");
 
             if (visibleMembersChild.Attribute(OfNamespaceAttributeName) != null)
-                throw new Exception($"{GetLineInfo(element)}If {VisibleMembersElementName} is embedded in a dependency specification then '{OfNamespaceAttributeName}' attribute must not be defined.");
+                throw new Exception(
+                    $"{GetLineInfo(element)}If {VisibleMembersElementName} is embedded in a dependency specification then '{OfNamespaceAttributeName}' attribute must not be defined.");
 
             return ParseTypeNameSet(visibleMembersChild, TypeElementName);
         }
@@ -254,19 +225,6 @@ namespace Codartis.NsDepCop.Config.Implementation
 
         private static T? ParseValueType<T>(XElement element, string attributeName, TryParseMethod<T> tryParseMethod)
             where T : struct
-        {
-            var attribute = element.Attribute(attributeName);
-            if (attribute == null)
-                return null;
-
-            if (tryParseMethod(attribute.Value, out var parseResult))
-                return parseResult;
-
-            throw new FormatException($"{GetLineInfo(element)}Error parsing '{attribute.Name}' value '{attribute.Value}'.");
-        }
-
-        private static T ParseReferenceType<T>(XElement element, string attributeName, TryParseMethod<T> tryParseMethod)
-            where T : class
         {
             var attribute = element.Attribute(attributeName);
             if (attribute == null)

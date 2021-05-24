@@ -1,5 +1,5 @@
 ﻿using Codartis.NsDepCop.Analysis;
-using Codartis.NsDepCop.Factory;
+using Codartis.NsDepCop.Config;
 using Codartis.NsDepCop.RoslynAnalyzer;
 using Moq;
 using Xunit;
@@ -9,11 +9,13 @@ namespace Codartis.NsDepCop.Test.RoslynAnalyzer
     public class AnalyzerProviderTests
     {
         private readonly Mock<IDependencyAnalyzerFactory> _dependencyAnalyzerFactoryMock;
+        private readonly Mock<IConfigProviderFactory> _configProviderFactoryMock;
         private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock;
 
         public AnalyzerProviderTests()
         {
             _dependencyAnalyzerFactoryMock = new Mock<IDependencyAnalyzerFactory>();
+            _configProviderFactoryMock = new Mock<IConfigProviderFactory>();
             _typeDependencyEnumeratorMock = new Mock<ITypeDependencyEnumerator>();
         }
 
@@ -51,19 +53,23 @@ namespace Codartis.NsDepCop.Test.RoslynAnalyzer
         private void SetUpFactoryCall(IDependencyAnalyzer analyzer)
         {
             _dependencyAnalyzerFactoryMock
-                .Setup(i => i.Create(It.IsAny<string>(), _typeDependencyEnumeratorMock.Object))
+                .Setup(i => i.Create(It.IsAny<IUpdateableConfigProvider>(), _typeDependencyEnumeratorMock.Object))
                 .Returns(analyzer);
         }
 
         private void VerifyFactoryCall(Times times)
         {
             _dependencyAnalyzerFactoryMock
-                .Verify(i => i.Create(It.IsAny<string>(), _typeDependencyEnumeratorMock.Object), times);
+                .Verify(i => i.Create(It.IsAny<IUpdateableConfigProvider>(), _typeDependencyEnumeratorMock.Object), times);
         }
 
         private IAnalyzerProvider CreateAnalyzerProvider()
         {
-            return new AnalyzerProvider(_dependencyAnalyzerFactoryMock.Object, _typeDependencyEnumeratorMock.Object);
+            return new AnalyzerProvider(
+                _dependencyAnalyzerFactoryMock.Object,
+                _configProviderFactoryMock.Object,
+                _typeDependencyEnumeratorMock.Object
+            );
         }
     }
 }

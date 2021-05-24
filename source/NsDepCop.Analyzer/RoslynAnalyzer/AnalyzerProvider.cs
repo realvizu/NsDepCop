@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using Codartis.NsDepCop.Analysis;
-using Codartis.NsDepCop.Factory;
+using Codartis.NsDepCop.Config;
 using Codartis.NsDepCop.Util;
 
 namespace Codartis.NsDepCop.RoslynAnalyzer
@@ -14,6 +14,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
     public sealed class AnalyzerProvider : IAnalyzerProvider
     {
         private readonly IDependencyAnalyzerFactory _dependencyAnalyzerFactory;
+        private readonly IConfigProviderFactory _configProviderFactory;
         private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
 
         /// <summary>
@@ -21,9 +22,13 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         /// </summary>
         private readonly ConcurrentDictionary<string, IDependencyAnalyzer> _projectFileToDependencyAnalyzerMap;
 
-        public AnalyzerProvider(IDependencyAnalyzerFactory dependencyAnalyzerFactory, ITypeDependencyEnumerator typeDependencyEnumerator)
+        public AnalyzerProvider(
+            IDependencyAnalyzerFactory dependencyAnalyzerFactory, 
+            IConfigProviderFactory configProviderFactory,
+            ITypeDependencyEnumerator typeDependencyEnumerator)
         {
             _dependencyAnalyzerFactory = dependencyAnalyzerFactory ?? throw new ArgumentNullException(nameof(dependencyAnalyzerFactory));
+            _configProviderFactory = configProviderFactory ?? throw new ArgumentNullException(nameof(configProviderFactory));
             _typeDependencyEnumerator = typeDependencyEnumerator ?? throw new ArgumentNullException(nameof(typeDependencyEnumerator));
             _projectFileToDependencyAnalyzerMap = new ConcurrentDictionary<string, IDependencyAnalyzer>();
         }
@@ -44,7 +49,8 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         private IDependencyAnalyzer CreateDependencyAnalyzer(string projectFilePath)
         {
             var projectFileDirectory = Path.GetDirectoryName(projectFilePath);
-            return _dependencyAnalyzerFactory.Create(projectFileDirectory, _typeDependencyEnumerator);
+            var configProvider = _configProviderFactory.CreateFromMultiLevelXmlConfigFile(projectFileDirectory);
+            return _dependencyAnalyzerFactory.Create(configProvider, _typeDependencyEnumerator);
         }
     }
 }

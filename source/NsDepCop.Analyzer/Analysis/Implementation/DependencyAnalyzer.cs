@@ -14,8 +14,8 @@ namespace Codartis.NsDepCop.Analysis.Implementation
     /// </summary>
     public sealed class DependencyAnalyzer : IDependencyAnalyzer
     {
-        private readonly IUpdateableConfigProvider ConfigProvider;
-        private readonly MessageHandler TraceMessageHandler;
+        private readonly IUpdateableConfigProvider _configProvider;
+        private readonly MessageHandler _traceMessageHandler;
         private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
         private readonly object _configRefreshLock = new();
 
@@ -28,47 +28,44 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             ITypeDependencyEnumerator typeDependencyEnumerator,
             MessageHandler traceMessageHandler)
         {
-            ConfigProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
-            TraceMessageHandler = traceMessageHandler;
+            _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
+            _traceMessageHandler = traceMessageHandler;
             _typeDependencyEnumerator = typeDependencyEnumerator ?? throw new ArgumentNullException(nameof(typeDependencyEnumerator));
             UpdateConfig();
         }
 
 
-        public bool HasConfigError => ConfigProvider.ConfigState == AnalyzerConfigState.ConfigError;
-        public bool IsDisabledInConfig => ConfigProvider.ConfigState == AnalyzerConfigState.Disabled;
-
-        public Exception GetConfigException() => ConfigProvider.ConfigException;
-
-        public int MaxIssueCount => ConfigProvider.Config.MaxIssueCount;
-
-
-        private IEnumerable<AnalyzerMessageBase> AnalyzeCore(Func<IEnumerable<TypeDependency>> illegalTypeDependencyEnumerator)
+        public AnalyzerConfigState ConfigState
         {
-            return ConfigProvider.ConfigState switch
+            get
             {
-                AnalyzerConfigState.NoConfig => new NoConfigFileMessage().ToEnumerable<AnalyzerMessageBase>(),
-                AnalyzerConfigState.Disabled => new ConfigDisabledMessage().ToEnumerable<AnalyzerMessageBase>(),
-                AnalyzerConfigState.ConfigError => new ConfigErrorMessage(ConfigProvider.ConfigException).ToEnumerable<AnalyzerMessageBase>(),
-                AnalyzerConfigState.Enabled => PerformAnalysis(illegalTypeDependencyEnumerator),
-                _ => throw new Exception($"Unexpected ConfigState: {ConfigProvider.ConfigState}")
-            };
+                lock (_configRefreshLock)
+                {
+                    return _configProvider.ConfigState;
+                }
+            }
         }
 
-        private IEnumerable<AnalyzerMessageBase> PerformAnalysis(Func<IEnumerable<TypeDependency>> illegalTypeDependencyEnumerator)
+        public Exception ConfigException
         {
-            var config = ConfigProvider.Config;
-
-            foreach (var illegalDependency in illegalTypeDependencyEnumerator())
+            get
             {
-                yield return new IllegalDependencyMessage(illegalDependency, config.DependencyIssueSeverity);
+                lock (_configRefreshLock)
+                {
+                    return _configProvider.ConfigException;
+                }
             }
+        }
 
-            // TODO: AutoLowerMaxIssueCount logic should be moved to NsDepCopAnalyzer to act at the end of a compilation.
-            // This method is called multiple times during a compilation so we don't know the final issue count here
-            //var finalIssueCount = GetInterlocked(ref issueCount);
-            //if (config.AutoLowerMaxIssueCount && finalIssueCount < maxIssueCount)
-            //    ConfigProvider.UpdateMaxIssueCount(finalIssueCount);
+        public IAnalyzerConfig Config
+        {
+            get
+            {
+                lock (_configRefreshLock)
+                {
+                    return _configProvider.Config;
+                }
+            }
         }
 
         public IEnumerable<AnalyzerMessageBase> AnalyzeProject(
@@ -108,7 +105,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
         {
             lock (_configRefreshLock)
             {
-                ConfigProvider.RefreshConfig();
+                _configProvider.RefreshConfig();
                 UpdateConfig();
             }
         }
@@ -116,7 +113,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
         private void UpdateConfig()
         {
             var oldConfig = _config;
-            _config = ConfigProvider.Config;
+            _config = _configProvider.Config;
 
             if (oldConfig == _config)
                 return;
@@ -127,9 +124,32 @@ namespace Codartis.NsDepCop.Analysis.Implementation
 
         private CachingTypeDependencyValidator CreateTypeDependencyValidator()
         {
-            return ConfigProvider.ConfigState == AnalyzerConfigState.Enabled
-                ? new CachingTypeDependencyValidator(ConfigProvider.Config, TraceMessageHandler)
+            return _configProvider.ConfigState == AnalyzerConfigState.Enabled
+                ? new CachingTypeDependencyValidator(_configProvider.Config, _traceMessageHandler)
                 : null;
+        }
+
+        private IEnumerable<AnalyzerMessageBase> AnalyzeCore(Func<IEnumerable<TypeDependency>> illegalTypeDependencyEnumerator)
+        {
+            return _configProvider.ConfigState switch
+            {
+                AnalyzerConfigState.NoConfig => new NoConfigFileMessage().ToEnumerable<AnalyzerMessageBase>(),
+                AnalyzerConfigState.Disabled => new ConfigDisabledMessage().ToEnumerable<AnalyzerMessageBase>(),
+                AnalyzerConfigState.ConfigError => new ConfigErrorMessage(_configProvider.ConfigException).ToEnumerable<AnalyzerMessageBase>(),
+                AnalyzerConfigState.Enabled => PerformAnalysis(illegalTypeDependencyEnumerator),
+                _ => throw new Exception($"Unexpected ConfigState: {_configProvider.ConfigState}")
+            };
+        }
+
+        private static IEnumerable<AnalyzerMessageBase> PerformAnalysis(Func<IEnumerable<TypeDependency>> illegalTypeDependencyEnumerator)
+        {
+            return illegalTypeDependencyEnumerator().Select(i => new IllegalDependencyMessage(i));
+
+            // TODO: AutoLowerMaxIssueCount logic should be moved to NsDepCopAnalyzer to act at the end of a compilation.
+            // This method is called multiple times during a compilation so we don't know the final issue count here
+            //var finalIssueCount = GetInterlocked(ref issueCount);
+            //if (config.AutoLowerMaxIssueCount && finalIssueCount < maxIssueCount)
+            //    ConfigProvider.UpdateMaxIssueCount(finalIssueCount);
         }
 
         private IEnumerable<TypeDependency> GetIllegalTypeDependencies(Func<IEnumerable<TypeDependency>> typeDependencyEnumerator)
@@ -141,7 +161,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             foreach (var illegalDependency in illegalDependencies)
                 yield return illegalDependency;
 
-            TraceMessageHandler?.Invoke(GetCacheStatisticsMessage(_typeDependencyValidator));
+            _traceMessageHandler?.Invoke(GetCacheStatisticsMessage(_typeDependencyValidator));
         }
 
         private static string GetCacheStatisticsMessage(ICacheStatisticsProvider i) =>

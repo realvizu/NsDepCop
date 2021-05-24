@@ -14,13 +14,13 @@ using Xunit;
 
 namespace Codartis.NsDepCop.Test.Implementation.Analysis
 {
-    public class InProcessDependencyAnalyzerTests
+    public class DependencyAnalyzerTests
     {
-        private static readonly SourceSegment DummySourceSegment = new SourceSegment(1, 1, 1, 1, null, null);
+        private static readonly SourceSegment DummySourceSegment = new(1, 1, 1, 1, null, null);
 
-        private readonly Mock<IUpdateableConfigProvider> _configProviderMock = new Mock<IUpdateableConfigProvider>();
-        private readonly Mock<IAnalyzerConfig> _configMock = new Mock<IAnalyzerConfig>();
-        private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock = new Mock<ITypeDependencyEnumerator>();
+        private readonly Mock<IUpdateableConfigProvider> _configProviderMock = new();
+        private readonly Mock<IAnalyzerConfig> _configMock = new();
+        private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock = new();
 
         [Fact]
         public void NoConfig_ReturnsNoConfigMessage()

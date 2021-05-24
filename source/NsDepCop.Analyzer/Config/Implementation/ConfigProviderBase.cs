@@ -9,7 +9,7 @@ namespace Codartis.NsDepCop.Config.Implementation
     /// <remarks>
     /// Uses locking to ensure that no property can be read while refreshing the config.
     /// </remarks>
-    public abstract class ConfigProviderBase : IUpdateableConfigProvider, IConfigInitializer<ConfigProviderBase>
+    public abstract class ConfigProviderBase : IUpdateableConfigProvider
     {
         private bool _isInitialized;
         private ConfigLoadResult _configLoadResult;
@@ -17,10 +17,9 @@ namespace Codartis.NsDepCop.Config.Implementation
         /// <summary>
         /// This lock ensures that no property can be read while loading or saving the config.
         /// </summary>
-        protected readonly object SaveLoadLockObject = new object();
+        protected readonly object SaveLoadLockObject = new();
 
         protected MessageHandler TraceMessageHandler { get; }
-        protected Importance? DefaultInfoImportance { get; private set; }
 
         protected ConfigProviderBase(MessageHandler traceMessageHandler)
         {
@@ -28,12 +27,6 @@ namespace Codartis.NsDepCop.Config.Implementation
         }
 
         public abstract string ConfigLocation { get; }
-
-        public ConfigProviderBase SetDefaultInfoImportance(Importance? defaultInfoImportance)
-        {
-            DefaultInfoImportance = defaultInfoImportance;
-            return this;
-        }
 
         public IAnalyzerConfig Config
         {

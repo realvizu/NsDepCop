@@ -9,24 +9,16 @@ namespace Codartis.NsDepCop.Config.Implementation
     /// <summary>
     /// Builds analyzer config objects.
     /// </summary>
-    public class AnalyzerConfigBuilder : IConfigInitializer<AnalyzerConfigBuilder>, IDiagnosticSupport
+    public class AnalyzerConfigBuilder
     {
-        public Importance? DefaultInfoImportance { get; private set; }
-
         public int? InheritanceDepth { get; private set; }
-
         public bool? IsEnabled { get; private set; }
-        public IssueKind? DependencyIssueSeverity { get; private set; }
-        public Importance? InfoImportance { get; private set; }
-        public TimeSpan[] AnalyzerServiceCallRetryTimeSpans { get; private set; }
         public List<string> SourcePathExclusionPatterns { get; private set; }
-
         public bool? ChildCanDependOnParentImplicitly { get; private set; }
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
         public HashSet<NamespaceDependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
         public int? MaxIssueCount { get; private set; }
-        public IssueKind? MaxIssueCountSeverity { get; private set; }
         public bool? AutoLowerMaxIssueCount { get; private set; }
 
         public AnalyzerConfigBuilder()
@@ -41,16 +33,12 @@ namespace Codartis.NsDepCop.Config.Implementation
         {
             return new AnalyzerConfig(
                 IsEnabled ?? ConfigDefaults.IsEnabled,
-                DependencyIssueSeverity ?? ConfigDefaults.DependencyIssueSeverity,
-                InfoImportance ?? DefaultInfoImportance ?? ConfigDefaults.InfoImportance,
-                AnalyzerServiceCallRetryTimeSpans ?? ConfigDefaults.AnalyzerServiceCallRetryTimeSpans,
                 SourcePathExclusionPatterns.ToArray(),
                 ChildCanDependOnParentImplicitly ?? ConfigDefaults.ChildCanDependOnParentImplicitly,
                 AllowRules,
                 DisallowRules,
                 VisibleTypesByNamespace,
                 MaxIssueCount ?? ConfigDefaults.MaxIssueCount,
-                MaxIssueCountSeverity ?? ConfigDefaults.MaxIssueCountSeverity,
                 AutoLowerMaxIssueCount ?? ConfigDefaults.AutoLowerMaxIssueCount
             );
         }
@@ -60,9 +48,6 @@ namespace Codartis.NsDepCop.Config.Implementation
             // Note that InheritanceDepth is not combined.
 
             SetIsEnabled(analyzerConfigBuilder.IsEnabled);
-            SetDependencyIssueSeverity(analyzerConfigBuilder.DependencyIssueSeverity);
-            SetInfoImportance(analyzerConfigBuilder.InfoImportance);
-            SetAnalyzerServiceCallRetryTimeSpans(analyzerConfigBuilder.AnalyzerServiceCallRetryTimeSpans);
             AddSourcePathExclusionPatterns(analyzerConfigBuilder.SourcePathExclusionPatterns);
 
             SetChildCanDependOnParentImplicitly(analyzerConfigBuilder.ChildCanDependOnParentImplicitly);
@@ -70,15 +55,8 @@ namespace Codartis.NsDepCop.Config.Implementation
             AddDisallowRules(analyzerConfigBuilder.DisallowRules);
             AddVisibleTypesByNamespace(analyzerConfigBuilder.VisibleTypesByNamespace);
             SetMaxIssueCount(analyzerConfigBuilder.MaxIssueCount);
-            SetMaxIssueCountSeverity(analyzerConfigBuilder.MaxIssueCountSeverity);
             SetAutoLowerMaxIssueCount(analyzerConfigBuilder.AutoLowerMaxIssueCount);
 
-            return this;
-        }
-
-        public AnalyzerConfigBuilder SetDefaultInfoImportance(Importance? defaultInfoImportance)
-        {
-            DefaultInfoImportance = defaultInfoImportance;
             return this;
         }
 
@@ -93,27 +71,6 @@ namespace Codartis.NsDepCop.Config.Implementation
         {
             if (isEnabled.HasValue)
                 IsEnabled = isEnabled;
-            return this;
-        }
-
-        public AnalyzerConfigBuilder SetDependencyIssueSeverity(IssueKind? dependencyIssueSeverity)
-        {
-            if (dependencyIssueSeverity.HasValue)
-                DependencyIssueSeverity = dependencyIssueSeverity;
-            return this;
-        }
-
-        public AnalyzerConfigBuilder SetInfoImportance(Importance? infoImportance)
-        {
-            if (infoImportance.HasValue)
-                InfoImportance = infoImportance;
-            return this;
-        }
-
-        public AnalyzerConfigBuilder SetAnalyzerServiceCallRetryTimeSpans(TimeSpan[] analyzerServiceCallRetryTimeSpans)
-        {
-            if (analyzerServiceCallRetryTimeSpans != null)
-                AnalyzerServiceCallRetryTimeSpans = analyzerServiceCallRetryTimeSpans;
             return this;
         }
 
@@ -188,13 +145,6 @@ namespace Codartis.NsDepCop.Config.Implementation
             return this;
         }
 
-        public AnalyzerConfigBuilder SetMaxIssueCountSeverity(IssueKind? maxIssueCountSeverity)
-        {
-            if (maxIssueCountSeverity.HasValue)
-                MaxIssueCountSeverity = maxIssueCountSeverity;
-            return this;
-        }
-
         public AnalyzerConfigBuilder SetAutoLowerMaxIssueCount(bool? autoLowerMaxIssueCount)
         {
             if (autoLowerMaxIssueCount.HasValue)
@@ -206,11 +156,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         {
             if (InheritanceDepth.HasValue) yield return $"InheritanceDepth={InheritanceDepth}";
             if (IsEnabled.HasValue) yield return $"IsEnabled={IsEnabled}";
-            if (DependencyIssueSeverity.HasValue) yield return $"DependencyIssueSeverity={DependencyIssueSeverity}";
-            if (InfoImportance.HasValue) yield return $"InfoImportance={InfoImportance}";
-            if (AnalyzerServiceCallRetryTimeSpans != null) yield return $"AnalyzerServiceCallRetryTimeSpans={string.Join(";", AnalyzerServiceCallRetryTimeSpans)}";
             if (SourcePathExclusionPatterns != null) yield return $"SourcePathExclusionPatterns={string.Join(";", SourcePathExclusionPatterns)}";
-
             if (ChildCanDependOnParentImplicitly.HasValue) yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
             if (AllowRules.Any())
                 foreach (var s in AllowRules.ToStrings())
@@ -222,7 +168,6 @@ namespace Codartis.NsDepCop.Config.Implementation
                 foreach (var s in VisibleTypesByNamespace.ToStrings())
                     yield return s;
             if (MaxIssueCount.HasValue) yield return $"MaxIssueCount={MaxIssueCount}";
-            if (MaxIssueCountSeverity.HasValue) yield return $"MaxIssueCountSeverity={MaxIssueCountSeverity}";
         }
 
         private static string ToRootedPath(string rootPath, string path)

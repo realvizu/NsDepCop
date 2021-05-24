@@ -17,7 +17,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         private DateTime _configLastLoadUtc;
         private ConfigLoadResult _lastConfigLoadResult;
 
-        public string ConfigFilePath { get; }
+        protected string ConfigFilePath { get; }
 
         protected FileConfigProviderBase(string configFilePath, MessageHandler traceMessageHandler)
             : base(traceMessageHandler)
@@ -61,7 +61,6 @@ namespace Codartis.NsDepCop.Config.Implementation
                 _configLastLoadUtc = DateTime.UtcNow;
 
                 var configBuilder = CreateConfigBuilderFromFile(ConfigFilePath)
-                     .SetDefaultInfoImportance(DefaultInfoImportance)
                      .MakePathsRooted(Path.GetDirectoryName(ConfigFilePath));
 
                 return ConfigLoadResult.CreateWithConfig(configBuilder);

@@ -27,7 +27,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         /// </remarks>
         private List<XmlFileConfigProvider> _fileConfigProviders;
 
-        public string ProjectFolder { get; }
+        private string ProjectFolder { get; }
 
         public MultiLevelXmlFileConfigProvider(string projectFolder, MessageHandler traceMessageHandler)
             : base(traceMessageHandler)
@@ -144,13 +144,7 @@ namespace Codartis.NsDepCop.Config.Implementation
                 : ConfigLoadResult.CreateWithNoConfig();
         }
 
-        private AnalyzerConfigBuilder CreateAnalyzerConfigBuilder()
-        {
-            if (DefaultInfoImportance.HasValue)
-                LogTraceMessage(IndentHelper.Indent($"DefaultInfoImportance={DefaultInfoImportance}", 1));
-
-            return new AnalyzerConfigBuilder().SetDefaultInfoImportance(DefaultInfoImportance);
-        }
+        private static AnalyzerConfigBuilder CreateAnalyzerConfigBuilder() => new();
 
         private bool AnyChildConfigChanged() => _fileConfigProviders.Any(i => i.HasConfigFileChanged());
 

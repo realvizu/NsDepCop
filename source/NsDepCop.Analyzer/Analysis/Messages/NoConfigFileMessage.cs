@@ -3,8 +3,7 @@
     /// <summary>
     /// A message indicating that no config file was found for a project or location.
     /// </summary>
-    public sealed class NoConfigFileMessage : IssueMessageBase
+    public sealed class NoConfigFileMessage : AnalyzerMessageBase
     {
-        public override IssueDescriptor IssueDefinition => IssueDefinitions.NoConfigFileIssue;
     }
 }

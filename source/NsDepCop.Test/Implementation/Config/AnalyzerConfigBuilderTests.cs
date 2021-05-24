@@ -14,8 +14,6 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var config = new AnalyzerConfigBuilder().ToAnalyzerConfig();
 
             config.IsEnabled.Should().Be(ConfigDefaults.IsEnabled);
-            config.DependencyIssueSeverity.Should().Be(ConfigDefaults.DependencyIssueSeverity);
-            config.InfoImportance.Should().Be(ConfigDefaults.InfoImportance);
             config.ChildCanDependOnParentImplicitly.Should().Be(ConfigDefaults.ChildCanDependOnParentImplicitly);
             config.MaxIssueCount.Should().Be(ConfigDefaults.MaxIssueCount);
         }
@@ -51,15 +49,11 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var configBuilder = new AnalyzerConfigBuilder()
                 .SetInheritanceDepth(9)
                 .SetIsEnabled(true)
-                .SetDependencyIssueSeverity(IssueKind.Error)
-                .SetInfoImportance(Importance.High)
                 .SetChildCanDependOnParentImplicitly(true)
                 .SetMaxIssueCount(42);
 
             configBuilder.InheritanceDepth.Should().Be(9);
             configBuilder.IsEnabled.Should().Be(true);
-            configBuilder.DependencyIssueSeverity.Should().Be(IssueKind.Error);
-            configBuilder.InfoImportance.Should().Be(Importance.High);
             configBuilder.ChildCanDependOnParentImplicitly.Should().Be(true);
             configBuilder.MaxIssueCount.Should().Be(42);
         }
@@ -70,23 +64,17 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var configBuilder = new AnalyzerConfigBuilder()
                 .SetInheritanceDepth(9)
                 .SetIsEnabled(true)
-                .SetDependencyIssueSeverity(IssueKind.Error)
-                .SetInfoImportance(Importance.High)
                 .SetChildCanDependOnParentImplicitly(true)
                 .SetMaxIssueCount(42);
 
             configBuilder
                 .SetInheritanceDepth(null)
                 .SetIsEnabled(null)
-                .SetDependencyIssueSeverity(null)
-                .SetInfoImportance(null)
                 .SetChildCanDependOnParentImplicitly(null)
                 .SetMaxIssueCount(null);
 
             configBuilder.InheritanceDepth.Should().Be(9);
             configBuilder.IsEnabled.Should().Be(true);
-            configBuilder.DependencyIssueSeverity.Should().Be(IssueKind.Error);
-            configBuilder.InfoImportance.Should().Be(Importance.High);
             configBuilder.ChildCanDependOnParentImplicitly.Should().Be(true);
             configBuilder.MaxIssueCount.Should().Be(42);
         }
@@ -160,8 +148,6 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder1.Combine(configBuilder2);
 
             configBuilder1.IsEnabled.Should().BeNull();
-            configBuilder1.DependencyIssueSeverity.Should().BeNull();
-            configBuilder1.InfoImportance.Should().BeNull();
             configBuilder1.ChildCanDependOnParentImplicitly.Should().BeNull();
             configBuilder1.AllowRules.Should().HaveCount(0);
             configBuilder1.DisallowRules.Should().HaveCount(0);
@@ -174,8 +160,6 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var configBuilder1 = new AnalyzerConfigBuilder()
                 .SetIsEnabled(true)
-                .SetDependencyIssueSeverity(IssueKind.Error)
-                .SetInfoImportance(Importance.High)
                 .SetChildCanDependOnParentImplicitly(true)
                 .AddAllowRule(new NamespaceDependencyRule("N1", "N2"), new TypeNameSet {"T1"})
                 .AddDisallowRule(new NamespaceDependencyRule("N3", "N4"))
@@ -187,8 +171,6 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder1.Combine(configBuilder2);
 
             configBuilder1.IsEnabled.Should().Be(true);
-            configBuilder1.DependencyIssueSeverity.Should().Be(IssueKind.Error);
-            configBuilder1.InfoImportance.Should().Be(Importance.High);
             configBuilder1.ChildCanDependOnParentImplicitly.Should().Be(true);
             configBuilder1.AllowRules.Should().HaveCount(1);
             configBuilder1.DisallowRules.Should().HaveCount(1);
@@ -203,8 +185,6 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
 
             var configBuilder2 = new AnalyzerConfigBuilder()
                 .SetIsEnabled(true)
-                .SetDependencyIssueSeverity(IssueKind.Error)
-                .SetInfoImportance(Importance.High)
                 .SetChildCanDependOnParentImplicitly(true)
                 .AddAllowRule(new NamespaceDependencyRule("N1", "N2"), new TypeNameSet {"T1"})
                 .AddDisallowRule(new NamespaceDependencyRule("N3", "N4"))
@@ -214,8 +194,6 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder1.Combine(configBuilder2);
 
             configBuilder1.IsEnabled.Should().Be(true);
-            configBuilder1.DependencyIssueSeverity.Should().Be(IssueKind.Error);
-            configBuilder1.InfoImportance.Should().Be(Importance.High);
             configBuilder1.ChildCanDependOnParentImplicitly.Should().Be(true);
             configBuilder1.AllowRules.Should().HaveCount(1);
             configBuilder1.DisallowRules.Should().HaveCount(1);
@@ -228,8 +206,6 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var configBuilder1 = new AnalyzerConfigBuilder()
                 .SetIsEnabled(false)
-                .SetDependencyIssueSeverity(IssueKind.Info)
-                .SetInfoImportance(Importance.Low)
                 .SetChildCanDependOnParentImplicitly(false)
                 .AddAllowRule(new NamespaceDependencyRule("N1", "N2"), new TypeNameSet {"T1"})
                 .AddDisallowRule(new NamespaceDependencyRule("N3", "N4"))
@@ -238,8 +214,6 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
 
             var configBuilder2 = new AnalyzerConfigBuilder()
                 .SetIsEnabled(true)
-                .SetDependencyIssueSeverity(IssueKind.Error)
-                .SetInfoImportance(Importance.High)
                 .SetChildCanDependOnParentImplicitly(true)
                 .AddAllowRule(new NamespaceDependencyRule("N6", "N7"), new TypeNameSet {"T3"})
                 .AddDisallowRule(new NamespaceDependencyRule("N8", "N9"))
@@ -249,8 +223,6 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder1.Combine(configBuilder2);
 
             configBuilder1.IsEnabled.Should().Be(true);
-            configBuilder1.DependencyIssueSeverity.Should().Be(IssueKind.Error);
-            configBuilder1.InfoImportance.Should().Be(Importance.High);
             configBuilder1.ChildCanDependOnParentImplicitly.Should().Be(true);
             configBuilder1.AllowRules.Should().HaveCount(2);
             configBuilder1.DisallowRules.Should().HaveCount(2);

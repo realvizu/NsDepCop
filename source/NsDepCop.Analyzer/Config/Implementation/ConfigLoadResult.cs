@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Codartis.NsDepCop.Util;
 
 namespace Codartis.NsDepCop.Config.Implementation
 {
     /// <summary>
     /// Describes the result of a config load operation.
     /// </summary>
-    public struct ConfigLoadResult : IDiagnosticSupport
+    public readonly struct ConfigLoadResult 
     {
         public AnalyzerConfigState ConfigState { get; }
         public AnalyzerConfigBuilder ConfigBuilder { get; }

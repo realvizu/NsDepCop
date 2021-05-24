@@ -3,8 +3,7 @@
     /// <summary>
     /// A message indicating that analysis was disabled in the config file.
     /// </summary>
-    public sealed class ConfigDisabledMessage : IssueMessageBase
+    public sealed class ConfigDisabledMessage : AnalyzerMessageBase
     {
-        public override IssueDescriptor IssueDefinition => IssueDefinitions.ConfigDisabledIssue;
     }
 }

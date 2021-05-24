@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Codartis.NsDepCop.Analysis.Messages;
+using Codartis.NsDepCop.Config;
 using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.Analysis
@@ -32,20 +33,18 @@ namespace Codartis.NsDepCop.Analysis
         void RefreshConfig();
 
         /// <summary>
-        /// Returns true if the config reading produced an error.
+        /// Gets the current config state.
         /// </summary>
-        bool HasConfigError { get; }
-
-        /// <summary>
-        /// Returns true if the tool is disabled in config.
-        /// </summary>
-        bool IsDisabledInConfig { get; }
+        AnalyzerConfigState ConfigState { get; }
 
         /// <summary>
         /// Gets the config exception or null if there was no exception.
         /// </summary>
-        Exception GetConfigException();
+        Exception ConfigException { get; }
 
-        int MaxIssueCount { get; }
+        /// <summary>
+        /// Gets the current analyzer config or null if there was an error.
+        /// </summary>
+        IAnalyzerConfig Config { get; }
     }
 }

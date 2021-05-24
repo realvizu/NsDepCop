@@ -30,7 +30,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var folder = GetFilePathInTestClassFolder(@"Attributes_LowerLevelWins\Level2\Level1");
             var configProvider = CreateConfigProvider(folder);
-            configProvider.Config.DependencyIssueSeverity.Should().Be(IssueKind.Info);
+            configProvider.Config.MaxIssueCount.Should().Be(2);
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var folder = GetFilePathInTestClassFolder(@"Attributes_MissingDoesNotOverwrite\Level2\Level1");
             var configProvider = CreateConfigProvider(folder);
-            configProvider.Config.DependencyIssueSeverity.Should().Be(IssueKind.Error);
+            configProvider.Config.MaxIssueCount.Should().Be(1);
         }
 
         [Fact]
@@ -116,22 +116,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var configProvider = CreateConfigProvider(path);
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Enabled);
             configProvider.ConfigException.Should().BeNull();
-            configProvider.Config.DependencyIssueSeverity.Should().Be(ConfigDefaults.DependencyIssueSeverity);
-        }
-
-        [Fact]
-        public void DefaultInfoImportance()
-        {
-            {
-                var path = GetFilePathInTestClassFolder("HighInfoImportance");
-                var configProvider = CreateConfigProvider(path).SetDefaultInfoImportance(Importance.Low);
-                configProvider.Config.InfoImportance.Should().Be(Importance.High);
-            }
-            {
-                var path = GetFilePathInTestClassFolder("NoAttributes");
-                var configProvider = CreateConfigProvider(path).SetDefaultInfoImportance(Importance.Low); 
-                configProvider.Config.InfoImportance.Should().Be(Importance.Low);
-            }
+            configProvider.Config.MaxIssueCount.Should().Be(ConfigDefaults.MaxIssueCount);
         }
 
         [Fact]
@@ -154,19 +139,19 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var path = GetFilePathInTestClassFolder(@"RefreshConfig_EnabledToEnabledButChanged\Level2\Level1");
             var path2 = GetFilePathInTestClassFolder(@"RefreshConfig_EnabledToEnabledButChanged");
 
-            SetAttribute(GetConfigFilePath(path), "CodeIssueKind", "Error");
+            SetAttribute(GetConfigFilePath(path), "AutoLowerMaxIssueCount", "true");
             SetAttribute(GetConfigFilePath(path2), "MaxIssueCount", "1");
 
             var configProvider = CreateConfigProvider(path);
-            configProvider.Config.DependencyIssueSeverity.Should().Be(IssueKind.Error);
+            configProvider.Config.AutoLowerMaxIssueCount.Should().Be(true);
             configProvider.Config.MaxIssueCount.Should().Be(1);
 
             Thread.Sleep(10);
-            SetAttribute(GetConfigFilePath(path), "CodeIssueKind", "Info");
+            SetAttribute(GetConfigFilePath(path), "AutoLowerMaxIssueCount", "false");
             SetAttribute(GetConfigFilePath(path2), "MaxIssueCount", "2");
 
             configProvider.RefreshConfig();
-            configProvider.Config.DependencyIssueSeverity.Should().Be(IssueKind.Info);
+            configProvider.Config.AutoLowerMaxIssueCount.Should().Be(false);
             configProvider.Config.MaxIssueCount.Should().Be(2);
         }
 

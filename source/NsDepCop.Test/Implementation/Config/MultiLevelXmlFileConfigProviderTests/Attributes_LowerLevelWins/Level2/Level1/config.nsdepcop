@@ -1,2 +1,2 @@
-﻿<NsDepCopConfig InheritanceDepth="2" CodeIssueKind="Info">
+﻿<NsDepCopConfig InheritanceDepth="2" MaxIssueCount="2">
 </NsDepCopConfig>

@@ -4,8 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Codartis.NsDepCop.Analysis;
+using Codartis.NsDepCop.Analysis.Factory;
 using Codartis.NsDepCop.Analysis.Messages;
-using Codartis.NsDepCop.Factory;
+using Codartis.NsDepCop.Config.Factory;
 using Codartis.NsDepCop.ParserAdapter.Roslyn;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
@@ -73,7 +74,8 @@ namespace Codartis.NsDepCop.SourceTest
             IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
         {
             var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(DebugMessageHandler);
-            var dependencyAnalyzer = dependencyAnalyzerFactory.Create(baseFolder, _typeDependencyEnumerator);
+            var configProvider = new ConfigProviderFactory(DebugMessageHandler).CreateFromMultiLevelXmlConfigFile(baseFolder);
+            var dependencyAnalyzer = dependencyAnalyzerFactory.Create(configProvider, _typeDependencyEnumerator);
             return dependencyAnalyzer.AnalyzeProject(sourceFiles, referencedAssemblies).OfType<IllegalDependencyMessage>().Select(i => i.IllegalDependency);
         }
 
