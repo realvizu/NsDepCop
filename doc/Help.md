@@ -4,39 +4,37 @@
 * [Dependency rules](#dependency-rules)
 * [Config inheritance](#config-inheritance)
 * [Dealing with a high number of dependency issues](#dealing-with-a-high-number-of-dependency-issues)
-* [Controlling verbosity](#controlling-verbosity)
-* [Disabling the tool](#disabling-the-tool)
+* [Disabling with an environment variable](#disabling-with-an-environment-variable)
 * [Config XML schema](#config-xml-schema)
 * [Config XML schema support in Visual Studio](#config-xml-schema-support-in-visual-studio)
-* [NsDepCop ServiceHost](#nsdepcop-servicehost)
-* [Machine-wide MSBuild integration (Deprecated)](#machine-wide-msbuild-integration)
+* [v1.x only topics](#v1.x-only-topics)
 
 ## Supported project types
 
 * Projects with a **csproj** project file are supported.
+* .Net Core and .Net 5+ projects are supported in v2.0 or above.
 * Projects with an **xproj** project file are not supported.
-* .Net Core is not supported ([yet](https://github.com/realvizu/NsDepCop/issues/34))
 
 ## Dependency rules
 
 * Allowed and disallowed dependencies are described with dependency rules in config files. 
-* The rule config file must be named **config.nsdepcop** and must be placed next to the C# project file.
-* The default (and recommended) approach is [**whitelisting**](#whitelisting), that is, if a dependency is not explicitly allowed then it is disallowed. (See also: [blacklisting](#blacklisting)).
+* The rule config file must be named **config.nsdepcop** and its build action must be set to **C# analyzer additional file** (the NsDepCop NuGet package set it automatically).
+* The default (and recommended) approach is [**allowlisting**](#allowlisting), that is, if a dependency is not explicitly allowed then it is disallowed. (See also: [denylisting](#denylisting)).
 * The config file can inherit other config files from parent folders, see [**config inheritance**](#config-inheritance)
 
 ### Example
 ```xml
-<NsDepCopConfig IsEnabled="true" CodeIssueKind="Warning" ChildCanDependOnParentImplicitly="true">
+<NsDepCopConfig IsEnabled="true" ChildCanDependOnParentImplicitly="true">
     <Allowed From="*" To="System.*" />
-    <Allowed From="NsDepCop.MsBuildTask" To="NsDepCop.Core" />
-    <Allowed From="NsDepCop.MsBuildTask" To="Microsoft.Build.*" />
+    <Allowed From="NsDepCop.*" To="Microsoft.CodeAnalysis.*" />
+    <Allowed From="NsDepCop.ParserAdapter.Roslyn" To="NsDepCop.Analysis" />
 </NsDepCopConfig>
 ```
 
 Meaning:
 * **Any** namespace can reference the **System** namespace and any of its sub-namespaces.
-* The **NsDepCop.MsBuildTask** namespace can reference the **NsDepCop.Core** namespace (but not its sub-namespaces).
-* The **NsDepCop.MsBuildTask** namespace can reference the **Microsoft.Build** namespace and its sub-namespaces.
+* The **NsDepCop** namespace and all of its sub-namespaces can reference the **Microsoft.CodeAnalysis** namespace and any of its sub-namespaces.
+* The **NsDepCop.ParserAdapter.Roslyn** namespace can reference the **NsDepCop.Analysis** namespace (but not its sub-namespaces).
 
 ### Config attributes
 You can set the following attributes on the root element. (Bold marks the the **default** value.)
@@ -44,16 +42,13 @@ You can set the following attributes on the root element. (Bold marks the the **
 Attribute | Values | Description
 --- | --- | ---
 **IsEnabled** | **true**, false | If set to false then analysis is not performed for the project.
-**CodeIssueKind** | Info, **Warning**, Error | Dependency violations are reported at this severity level.
 **ChildCanDependOnParentImplicitly** | true, **false** | If set to true then all child namespaces can depend on any of their parents without an explicit allowing rule. The recommended value is **true**. (False is default for backward compatibility.)
-**InfoImportance** | Low, **Normal**, High | Info messages are reported to MSBuild at this level. This setting and the MSBuild verbosity (/v) swicth together determine whether a message appears on the output or not. See [Controlling verbosity](#controlling-verbosity) for details.
 **MaxIssueCount** | int (>0), default: **100** | Analysis stops when reaching this number of dependency issues.
-**MaxIssueCountSeverity** | Info, **Warning**, Error | This is the severity of the issue of reaching MaxIssueCount.
 **AutoLowerMaxIssueCount** | true, **false** | If set to true then each successful build yielding fewer issues than MaxIssueCount sets MaxIssueCount to the current number of issues.
 **InheritanceDepth** | int (>=0), default: **0** | Sets the number of parent folder levels to inherit config from. 0 means no inheritance.
 **ExcludedFiles** | Comma separated list of [file patterns](https://github.com/dazinator/DotNet.Glob) | Defines which source files should be excluded from the analysis. Paths are relative to the config file's folder. E.g.: `**/*.g.cs,TestFiles/*.cs`
 
-### Whitelisting
+### Allowlisting
 * The **`<Allowed From="N1" To="N2"/>`** config element defines that **N1** namespace can depend on **N2** namespace.
 * If a dependency does not match any of the allowed rules then it's considered disallowed.
 
@@ -74,9 +69,9 @@ Example | Meaning
 `<Allowed From="MyNamespace" To="*" />` | **MyNamespace** can depend on **any namespace**
 `<Allowed From="MyNamespace" To="." />` | **MyNamespace** can depend on the **global namespace**
 
-### Blacklisting
+### Denylisting
 * The **`<Disallowed From="N1" To="N2"/>`** config element defines that **N1** namespace **must not** depend on **N2** namespace.
-* To implement the blacklisting behavior, you also have to define an "allow all" rule, otherwise no dependency will be allowed.
+* To implement the denylisting behavior, you also have to define an "allow all" rule, otherwise no dependency will be allowed.
 * Only those dependencies are allowed that has a matching "Allowed" rule and no match with any of the "Disallowed" rules.
 * You can specify any number of "Allowed" and "Disallowed" rules in any order.
 * If both an "Allowed" and a "Disallowed" rule are matched then "Disallowed" is the "stronger".
@@ -144,7 +139,7 @@ Example:
 ```xml
 config.nsdepcop file in "C:\MySolution":
 
-<NsDepCopConfig CodeIssueKind="Error" ChildCanDependOnParentImplicitly="true" InfoImportance="High">
+<NsDepCopConfig ChildCanDependOnParentImplicitly="true">
     <Allowed From="*" To="System.*" />
     <Allowed From="*" To="MoreLinq" />
     <Allowed From="*" To="NsDepCop.Core.Util" />
@@ -160,7 +155,7 @@ config.nsdepcop file in "C:\MySolution\MyProject":
 ``` 
 
 More info:
-* If there is a conflict between the project-level and the inherited settings then the project-level settings "win".
+* If there is a conflict between the project-level and the inherited settings then the project-level settings "wins".
 * The `IsEnabled` attribute has different meaning in the project-level config and in inherited configs.
   * If `IsEnabled="false"` in a project-level config then the project don't get analyzed.
   * If `IsEnabled="false"` in an inherited config then its content doesn't get inherited.
@@ -168,7 +163,6 @@ More info:
 * There must always be a config.nsdepcop file in the project folder if you want to analyze that project. 
 Even if all the settings come from a higher-level config, you have to put **at least a minimal config to the project level**, that enables the inheritance in the first place.
 E.g.: `<NsDepCopConfig InheritanceDepth="3"/>`
-* You can turn on diagnostic messages ([Controlling verbosity](#controlling-verbosity)) to see which config files were found and loaded by the tool and what effective config resulted from combining them.
 
 ## Dealing with a high number of dependency issues
 If there are so many dependency issues that you cannot fix them all at once but you still want to control them somehow then try the following.
@@ -176,18 +170,52 @@ If there are so many dependency issues that you cannot fix them all at once but 
 * Prevent the introduction of more dependency issues. Set the current number of issues as the maximum and make it an error to create more.
 
 ```xml
-<NsDepCopConfig IssueKind="Warning" MaxIssueCount="<the current number of issues>" MaxIssueCountSeverity="Error">
+<NsDepCopConfig MaxIssueCount="<the current number of issues>">
 ```
 
 * Encourage developers to gradually fix the dependency issues by automatically lowering the max issue count whenever possible. Turn on AutoLowerMaxIssueCount.
 
 ```xml
-<NsDepCopConfig IssueKind="Warning" AutoLowerMaxIssueCount="true" MaxIssueCount="<the current number of issues>" MaxIssueCountSeverity="Error">
+<NsDepCopConfig AutoLowerMaxIssueCount="true" MaxIssueCount="<the current number of issues>">
 ```
 
 > Please note that when NsDepCop modifies the nsdepcop.config files their formatting will be reset (because of the XML deserialization/serialization roundtrip).
 
-## Controlling verbosity
+## Disabling with an environment variable
+To disable the tool **globally**, set the **DisableNsDepCop** environment variable to **true** or **1**.
+
+`setx DisableNsDepCop 1`
+
+It will affect both MSBuild integration (NuGet package) and Visual Studio integration (VSIX package).
+
+Note that it won't affect processes that are already running, only the newly started ones.
+
+## Config XML schema
+See the XSD schema of config.nsdepcop [here](../source/NsDepCop.ConfigSchema/NsDepCopConfig.xsd).
+
+## Config XML schema support in Visual Studio
+Add NsDepCop config XML schema to the Visual Studio schema cache to get validation and IntelliSense when editing NsDepCop config files.
+
+* For Visual Studio 2017/2019 install this extension: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop%20Config%20XML%20Schema%20Support-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCopConfigXMLSchemaSupport)
+* For Visual Studio 2015:
+  * Copy the following files into the VS2015 schema cache folder (vs2015installdir/Xml/Schemas):
+    * [NsDepCopCatalog.xml](../source/NsDepCop.ConfigSchema/NsDepCopCatalog.xml)
+    * [NsDepCopConfig.xsd](../source/NsDepCop.ConfigSchema/NsDepCopConfig.xsd)
+
+## v1.x only topics
+The following topics apply only to v1.x versions.
+
+### Config attributes deprecated in v2.0
+
+Attribute | Values | Description
+--- | --- | ---
+**CodeIssueKind** | Info, **Warning**, Error | Dependency violations are reported at this severity level.
+**InfoImportance** | Low, **Normal**, High | Info messages are reported to MSBuild at this level. This setting and the MSBuild verbosity (/v) swicth together determine whether a message appears on the output or not. See [Controlling verbosity](#controlling-verbosity) for details.
+**MaxIssueCountSeverity** | Info, **Warning**, Error | This is the severity of the issue of reaching MaxIssueCount.
+**AnalyzerServiceCallRetryTimeSpans** | Comma separated list of wait times in milliseconds, default: **100, 300, 1000, 3000, 10000** | These wait times are used between retries when the NsDepCop MsBuild Task cannot communicate with the out-of-process analyzer service.
+
+### Controlling verbosity
+
 * Besides emitting dependency violation issues, the tool can emit diagnostic and info messages too.
   * **Info messages** tell you when was the tool started and finished.
   * **Diagnostic messages** help you debug config problems by dumping config contents and dependency validation result cache change events.
@@ -210,16 +238,6 @@ Advanced settings:
 | diag[nostic] | yes | yes | yes |
 
 E.g.: if you want NsDepCop info messages to show up at minimal MSBuild verbosity then set `InfoImportance` to High.
-
-## Disabling the tool
-### Disabling to tool using an environment variable
-To disable the tool **globally**, set the **DisableNsDepCop** environment variable to **true** or **1**.
-
-`setx DisableNsDepCop 1`
-
-It will affect both MSBuild integration (NuGet package) and Visual Studio integration (VSIX package).
-
-Note that it won't affect processes that are already running, only the newly started ones.
 
 ### Disabling to tool with MSBuild property
 To disable the tool in MSBuild, set the **DisableNsDepCop** property to **true**.
@@ -251,20 +269,7 @@ If NsDepCop slows down the build too much then you can disable it as part of the
 
 `msbuild MySolution.sln -t:NsDepCop_Analyze -p:ForceNsDepCop=true`
 
-
-## Config XML schema
-See the XSD schema of config.nsdepcop [here](../source/NsDepCop.ConfigSchema/NsDepCopConfig.xsd).
-
-## Config XML schema support in Visual Studio
-Add NsDepCop config XML schema to the Visual Studio schema cache to get validation and IntelliSense when editing NsDepCop config files.
-
-* For Visual Studio 2017/2019 install this extension: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop%20Config%20XML%20Schema%20Support-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCopConfigXMLSchemaSupport)
-* For Visual Studio 2015:
-  * Copy the following files into the VS2015 schema cache folder (vs2015installdir/Xml/Schemas):
-    * [NsDepCopCatalog.xml](../source/NsDepCop.ConfigSchema/NsDepCopCatalog.xml)
-    * [NsDepCopConfig.xsd](../source/NsDepCop.ConfigSchema/NsDepCopConfig.xsd)
-
-## NsDepCop ServiceHost
+### NsDepCop ServiceHost
 NsDepCop NuGet package **v1.7.1** have introduced the NsDepCop ServiceHost to improve build performance.
 * It runs in the background as a standalone process, communicates via named pipes and serves requests coming from NsDepCopTask instances running inside MSBuild processes.
 * It is started automatically when needed by an NsDepCopTask and quits automatically when the MSBuild process that started it exits.
@@ -273,13 +278,3 @@ NsDepCop NuGet package **v1.7.1** have introduced the NsDepCop ServiceHost to im
 You can control the lifetime of NsDepCop ServiceHost by controlling the lifetime of the MSBuild processes by modifying the **MSBUILDDISABLENODEREUSE** environment variable.
 * If you set it to 1 then new MSBuild processes are started for each build and they exit when the build finishes. So do NsDepCop ServiceHost.
 * If you set it to **0** then MSBuild processes are kept alive until the Visual Studio instance that started them exits. **This option gives the best build (and NsDepCop) performance.**
-
-<a name="machine-wide-msbuild-integration"></a>
-## Machine-wide MSBuild integration (Deprecated)
-* This is a legacy option in the MSI installer and requires admin privilege.
-* Hooks into the MSBuild C# build process by modifying the "Custom.After.Microsoft.CSharp.targets" file. It does not modify any C# project files.
-* Runs NsDepCop when building any C# project that has a config.nsdepcop file.
-  
-* The drawback of this method is that you have to install the tool on every environment where you want to use it.
-* The NuGet (per-project MSBuild integration) approach is much better because that works in every environment with zero install: the tool gets pulled down by the nuget package restore.
-

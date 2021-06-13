@@ -12,25 +12,33 @@ What is this [**dependency control**](doc/DependencyControl.md) anyway?
 
 1. Add the **NsDepCop NuGet package** to your C# projects: [![NuGet Package](https://img.shields.io/nuget/v/NsDepCop.svg)](https://nuget.org/packages/NsDepCop)
 1. Add a file called **config.nsdepcop**. Edit it and describe [**dependency rules**](doc/Help.md#dependency-rules). 
-   * For projects that use the old packages.config nuget format the file is automatically added.
-1. When you **build** the project, dependency violations will be reported in the build output just like compiler errors/warnings.
+1. Dependency violations will be underlined in the code editor and also reported at build time just like compiler errors/warnings.
 
 See the [**Help**](doc/Help.md) for details.
 
 ## Optional Stuff
 
-* Install the **VSIX** (Visual Studio Extension) to get **instant** dependency check while editing the code.
-  * For Visual Studio 2017/2019: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCopVS2017-CodedependencycheckerforC)
-  * For Visual Studio 2015: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop%20VS2015-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCop-NamespacedependencycheckertoolforC)
-
 * Install the **NsDepCop Config XML Schema Support** for Visual Studio to get validation and IntelliSense while editing the config.nsdepcop files.
   * For Visual Studio 2017/2019: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop%20Config%20XML%20Schema%20Support-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCopConfigXMLSchemaSupport)
   * For Visual Studio 2015: see the instructions in [Help](doc/Help.md#config-xml-schema-support-in-visual-studio).
 
+## Changes in v2.0
+
+The big change in v2.0 is that the implementation changed from MSBuild task + Visual Studio Extension to a standard Roslyn analyzer.
+- **Supports .NET Core / .NET 5** projects too.
+- **No need for the NsDepCop Visual Studio Extension** any more.
+  - The NuGet package works both at build time and inside Visual Studio editor.
+  - If the NuGet package is added to a project then it appears in Solution Explorer: project / Dependencies / Analyzers / NsDepCop.Analyzer
+  - [Issue severities can be configured using Visual Studio light bulb menu or .editorconfig files](https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers?view=vs-2019).
+- **Requires Visual Studio 2019 (16.10.0 or later).**
+  - Dropped support for VS 2015/2017. For those, use NsDepCop v1.11.0.
+- No need for the out-of-process service host any more.
+  - No more "Unable to communicate with NsDepCop service".
+
+Please note that the AutoLowerMaxIssueCount feature is temporarily not supported. Do not yet upgrade to v2.0 if you're using that.
+
 ## Versions
 * See the [**Change Log**](CHANGELOG.md) for version history.
-* See the [**Upgrade instructions**](CHANGELOG.md#upgrading) if upgrading from versions prior to v1.6.0.
-* See the [**Milestones**](https://github.com/realvizu/NsDepCop/milestones) for planned releases.
 
 ## Feedback
 * Please use the [**Issue Tracker**](https://github.com/realvizu/NsDepCop/issues) to record bugs and feature requests.

@@ -27,7 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{EFA91D33-558
 		..\doc\Diagnostics.md = ..\doc\Diagnostics.md
 		..\doc\Help.md = ..\doc\Help.md
 		..\doc\Troubleshooting.md = ..\doc\Troubleshooting.md
-		..\doc\Versions.md = ..\doc\Versions.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NsDepCop.Analyzer", "NsDepCop.Analyzer\NsDepCop.Analyzer.csproj", "{BC26589E-79B0-4F55-B64D-DB11534D3476}"

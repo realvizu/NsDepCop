@@ -1,5 +1,27 @@
 # NsDepCop Change Log
 
+## v2.0.0
+(06/2021)
+
+The big change in this version is that the implementation changed from MSBuild task + Visual Studio Extension to a standard Roslyn analyzer.
+
+  - [x] NsDepCop must be added to a project as a NuGet package.
+  - [x] Appears in Solution Explorer: project / Dependencies / Analyzers / NsDepCop.Analyzer
+  - [x] Issue severities can be configured that same way as other analyzers (use Visual Studio or .editorconfig files).
+  - [x] Works both at build time and inside Visual Studio editor.
+  - [x] Requires Visual Studio 2019 (16.10.0 or later).
+  - [x] Supports .NET Core / .NET 5 / etc. projects too.
+  - [x] Uses Roslyn 3.9.0.
+
+Stuff that was removed:
+  - [x] No need for the NsDepCop Visual Studio Extension any more.
+  - [x] No need for the out-of-process service host any more.
+  - [x] Dropped support for VS 2015/2017. For those, use NsDepCop v1.11.0.
+  - [x] Config attributes no longer supported (ignored): CodeIssueKind, MaxIssueCountSeverity, InfoImportance, AnalyzerServiceCallRetryTimeSpans. 
+
+Other info:
+  - [x] AutoLowerMaxIssueCount feature is temporarily not supported.
+
 ## v1.11.0
 (04/2020)
 

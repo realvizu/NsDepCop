@@ -4,46 +4,46 @@
 
 Title|Illegal namespace reference.
 :-|:-
-Severity|Set by CodeIssueKind attribute in the config file. (Default: Warning)
-Explanation|The designated symbol in the source code implies a namespace reference which is not allowed by the current namespace dependency configuration. That is, the symbol is used in a type in namespace A and references a type in namespace B but A->B dependency is not allowed.
-To Do|Change the namespace dependency configuration in the config.nsdepcop file or change your code/design to avoid this namespace reference.
+Default Severity|Warning
+Explanation|The designated type cannot reference the other type because their namespaces cannot depend on each other according to the current rules.
+To Do|Change the dependency rules in the 'config.nsdepcop' file or change your design to avoid this namespace dependency.
 
 ### NSDEPCOP02
 
-Title|Too many issues, analysis was stopped.
+Title|Too many dependency issues, analysis was stopped.
 :-|:-
-Severity|Warning
-Explanation|The analysis stops after reporting a certain number of issues (default: 100) to avoid flooding your build log.
-To Do|Correct the reported issues and run the build again. Or set the MaxIssueCount attribute in your config.nsdepcop to a higher number.
+Default Severity|Warning
+Explanation|The number of dependency issues in this compilation has exceeded the configured maximum value.
+To Do|Correct the reported issues and run the build again or set the MaxIssueCount attribute in your 'config.nsdepcop' file to a higher number.
 
 ### NSDEPCOP03
 
 Title|No config file found, analysis skipped.
 :-|:-
-Severity|Info
-Explanation|If there's no config.nsdepcop file next to the C# project file then NsDepCop does not perform analysis.
+Default Severity|Info
+Explanation|This analyzer requires that you add a file called 'config.nsdepcop' to your project with build action 'C# analyzer additional file'.
 To Do|None, this is just an informational message.
 
 ### NSDEPCOP04
 
-Title|Analysis is disabled in the nsdepcop config file.
+Title|Analysis is disabled in the config file.
 :-|:-
-Severity|Info
-Explanation|There is a config.nsdepcop file next to the C# project file, but it contains IsEnabled="False".
+Default Severity|Info
+Explanation|The IsEnabled attribute was set to false in this project's 'config.nsdepcop' file, so the analyzer skips this project.
 To Do|None, this is just an informational message.
 
 ### NSDEPCOP05
 
-Title|Error loading NsDepCop config.
+Title|Error loading config.
 :-|:-
-Severity|Error
-Explanation|There was an error while loading the config.nsdepcop file. Some possible reasons: malformed content, file permission or locking problem. The diagnostic contains the actual exception message.
+Default Severity|Error
+Explanation|There was an error while loading the 'config.nsdepcop' file, see the message for details. Some common reasons: malformed content, file permission or file locking problem.
 To Do|Make sure that the file can be read by the user running the build or Visual Studio and make sure that its content is correct.
 
 ### NSDEPCOP06
 
 Title|Analysis is disabled with environment variable.
 :-|:-
-Severity|Info
-Explanation|If environment variable DisableNsDepCop is set to True or 1 then analysis is skipped.
+Default Severity|Info
+Explanation|If the 'DisableNsDepCop' environment variable is set to 'True' or '1' then all analysis is skipped.
 To Do|None, this is just an informational message.
