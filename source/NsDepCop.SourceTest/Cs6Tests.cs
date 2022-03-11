@@ -292,5 +292,15 @@ namespace Codartis.NsDepCop.SourceTest
 
                 .Execute();
         }
+
+        [Fact]
+        public void Cs6_StaticImport()
+        {
+            SourceTestSpecification.Create()
+                .ExpectInvalidSegment(9, 13, 32)
+                .ExpectInvalidSegment(10, 13, 34) // because of the return value
+                .ExpectInvalidSegment(10, 13, 34) // because of the declaring type
+                .Execute();
+        }
     }
 }

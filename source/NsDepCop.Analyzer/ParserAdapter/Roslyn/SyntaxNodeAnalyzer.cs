@@ -43,7 +43,7 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
                 yield return CreateTypeDependency(enclosingType, type, node);
 
             // If this is an extension method invocation then determine the type declaring the extension method.
-            var declaringType = DetermineExtensionMethodDeclaringType(node, semanticModel);
+            var declaringType = DetermineExtensionOrStaticMethodDeclaringType(node, semanticModel);
             if (IsAnalyzableDeclarationType(declaringType))
                 yield return CreateTypeDependency(enclosingType, declaringType, node);
         }
@@ -135,18 +135,26 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
         }
 
         /// <summary>
-        /// Determines the type declaring the given extension method syntax node.
+        /// Determines the type declaring the given extension method syntax node or
+        /// the declaring type of a static method when the type is statically imported.
+        /// e.g. <code>
+        /// using static A.ClassA;
+        /// StaticMethodOfClassA(); // in contrast to A.ClassA.StaticMethodOfClassA();
+        /// </code>
         /// </summary>
-        /// <param name="node">A syntax node representing an extension method.</param>
+        /// <param name="node">A syntax node representing a static or extension method.</param>
         /// <param name="semanticModel">The semantic model of the project.</param>
-        /// <returns>The type declaring the given extension method syntax node, or null if not found.</returns>
-        private static ITypeSymbol DetermineExtensionMethodDeclaringType(SyntaxNode node, SemanticModel semanticModel)
+        /// <returns>The type declaring the given static or extension method syntax node, or null if not found.</returns>
+        private static ITypeSymbol DetermineExtensionOrStaticMethodDeclaringType(SyntaxNode node, SemanticModel semanticModel)
         {
             var methodSymbol = semanticModel.GetSymbolInfo(node).Symbol as IMethodSymbol;
 
-            return methodSymbol == null || !methodSymbol.IsExtensionMethod
-                ? null
-                : methodSymbol.ContainingType;
+            bool isExtensionMethodOrCallOnStaticImport =
+                methodSymbol != null
+                && (methodSymbol.IsExtensionMethod
+                    || (methodSymbol.IsStatic && node.Parent is not MemberAccessExpressionSyntax));
+
+            return isExtensionMethodOrCallOnStaticImport ? methodSymbol.ContainingType : null;
         }
 
         /// <summary>
