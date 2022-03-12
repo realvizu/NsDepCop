@@ -1,5 +1,10 @@
 # NsDepCop Change Log
 
+## v2.0.1
+(03/2022)
+
+- [x] Fix: #60 - Statically imported type dependency not detected.
+
 ## v2.0.0
 (06/2021)
 
