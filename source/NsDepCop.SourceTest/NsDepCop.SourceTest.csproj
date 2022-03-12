@@ -98,6 +98,9 @@
     <Compile Remove="Cs6_QualifiedName\Cs6_QualifiedName.cs">
 
     </Compile>
+    <Compile Remove="Cs6_StaticImport\Cs6_StaticImport.cs">
+
+    </Compile>
     <Compile Remove="Cs6_PointerType\Cs6_PointerType.cs">
 
     </Compile>
@@ -219,6 +222,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Cs6_QualifiedName\Cs6_QualifiedName.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_StaticImport\Cs6_StaticImport.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Cs6_PointerType\Cs6_PointerType.cs">
@@ -351,6 +357,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Cs6_QualifiedName\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_StaticImport\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Cs6_VarWithConstructedGenericType\config.nsdepcop">
