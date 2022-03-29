@@ -18,9 +18,9 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         [Theory]
         [InlineData("*")]
         [InlineData("A.*")]
-        public void Parse_NamespaceTree(string namespaceTreeString)
+        public void Parse_WildcardNamespace(string wildcardNamespaceString)
         {
-            NamespaceSpecificationParser.Parse(namespaceTreeString).Should().Be(new NamespaceTree(namespaceTreeString));
+            NamespaceSpecificationParser.Parse(wildcardNamespaceString).Should().Be(new WildcardNamespace(wildcardNamespaceString));
         }
 
         [Theory]

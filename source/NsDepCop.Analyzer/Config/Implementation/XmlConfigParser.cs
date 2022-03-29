@@ -125,7 +125,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (visibleMembersChild == null)
                 return null;
 
-            if (allowedRule.To is NamespaceTree)
+            if (allowedRule.To is not Namespace)
                 throw new Exception($"{GetLineInfo(element)}The target namespace '{allowedRule.To}' must be a single namespace.");
 
             if (visibleMembersChild.Attribute(OfNamespaceAttributeName) != null)

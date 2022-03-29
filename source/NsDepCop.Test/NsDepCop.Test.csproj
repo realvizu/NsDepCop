@@ -169,7 +169,7 @@
     <None Include="Implementation\Config\XmlConfigParserTests\VisibleMembersOfNamespaceMissing.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Implementation\Config\XmlConfigParserTests\AllowedRuleForNamespaceTreeWithVisibleMembers.nsdepcop">
+    <None Include="Implementation\Config\XmlConfigParserTests\AllowedRuleForWildcardNamespaceWithVisibleMembers.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\XmlConfigParserTests\VisibleMembers.nsdepcop">

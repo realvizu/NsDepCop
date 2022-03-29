@@ -94,9 +94,9 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         }
 
         [Fact]
-        public void Parse_AllowedRuleForNamespaceTreeWithVisibleMembers_Throws()
+        public void Parse_AllowedRuleForWildcardNamespaceWithVisibleMembers_Throws()
         {
-            var xDocument = LoadXml("AllowedRuleForNamespaceTreeWithVisibleMembers.nsdepcop");
+            var xDocument = LoadXml("AllowedRuleForWildcardNamespaceWithVisibleMembers.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
             a.ShouldThrow<Exception>().WithMessage("*must be a single namespace*");
         }

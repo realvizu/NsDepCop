@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>NsDepCop</PackageId>
+    <PackageId>NsDepCop.Wildcard</PackageId>
     <PackageVersion>2.0.0-local</PackageVersion>
     <Title>NsDepCop - Namespace Dependency Checker Tool for C#</Title>
     <Description>Static code analysis tool for enforcing namespace-based type dependency rules in C# projects.</Description>
