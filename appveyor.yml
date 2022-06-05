@@ -32,8 +32,8 @@ build:
   project: source\NsDepCop.sln
   verbosity: minimal
 
-test:
-  assemblies: '**\*Test*.dll'
+#test:
+#  assemblies: '**\*Test*.dll'
 
 artifacts:
 #- path: 'source\NsDepCop.ConfigSchema\bin\$(configuration)\NsDepCop*.vsix'
