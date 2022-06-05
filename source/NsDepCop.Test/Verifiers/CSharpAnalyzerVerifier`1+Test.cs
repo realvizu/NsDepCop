@@ -15,16 +15,21 @@ namespace Codartis.NsDepCop.Test.Verifiers
                 SolutionTransforms.Add((solution, projectId) =>
                 {
                     var project = solution.GetProject(projectId);
-           
+
                     var compilationOptions = project.CompilationOptions;
                     compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
                         compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
 
-                    var fileName = Path.GetFileName(configFilePath);
-                    var text = File.ReadAllText(configFilePath);
-                    var textDocument = project.AddAdditionalDocument(fileName, text, filePath: configFilePath);
 
-                    return textDocument.Project.Solution.WithProjectCompilationOptions(projectId, compilationOptions);
+                    if (File.Exists(configFilePath))
+                    {
+                        var fileName = Path.GetFileName(configFilePath);
+                        var text = File.ReadAllText(configFilePath);
+                        var textDocument = project.AddAdditionalDocument(fileName, text, filePath: configFilePath);
+                        solution = textDocument.Project.Solution;
+                    }
+
+                    return solution.WithProjectCompilationOptions(projectId, compilationOptions);
                 });
             }
         }

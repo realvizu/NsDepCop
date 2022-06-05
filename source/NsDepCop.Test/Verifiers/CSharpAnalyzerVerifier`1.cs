@@ -30,6 +30,7 @@ namespace Codartis.NsDepCop.Test.Verifiers
         /// <inheritdoc cref="AnalyzerVerifier{TAnalyzer, TTest, TVerifier}.VerifyAnalyzerAsync(string, DiagnosticResult[])"/>
         public static async Task VerifyAnalyzerAsync(string source,
             IEnumerable<DiagnosticResult> expected = null,
+            bool skipSuppressionCheck = true,
             [CallerMemberName] string callerMethodName = null)
         {
             var configFilePath = Path.Combine(
@@ -41,6 +42,7 @@ namespace Codartis.NsDepCop.Test.Verifiers
             var test = new Test(configFilePath)
             {
                 TestCode = source,
+                TestBehaviors = skipSuppressionCheck ? TestBehaviors.SkipSuppressionCheck : TestBehaviors.None
             };
 
             if (expected != null)

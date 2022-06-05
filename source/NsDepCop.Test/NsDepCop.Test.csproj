@@ -218,6 +218,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="RoslynAnalyzer\ConfigDisabled_ReturnsIssue\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="RoslynAnalyzer\ConfigException_ReturnsIssue\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="RoslynAnalyzer\EmptySource_NoIssues\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
