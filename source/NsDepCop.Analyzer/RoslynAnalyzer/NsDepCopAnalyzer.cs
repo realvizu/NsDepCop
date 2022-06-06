@@ -119,20 +119,27 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
             {
                 var currentIssueCount = Interlocked.Increment(ref issueCount);
 
-                if (currentIssueCount > maxIssueCount)
+                if (currentIssueCount <= maxIssueCount)
                 {
-                    ReportForSyntaxNode(syntaxNodeAnalysisContext, DiagnosticDefinitions.TooManyDependencyIssues, maxIssueCount);
-                    break;
+                    ReportForSyntaxNode(
+                        syntaxNodeAnalysisContext,
+                        DiagnosticDefinitions.IllegalDependency,
+                        analyzerMessage.IllegalDependency.FromNamespaceName,
+                        analyzerMessage.IllegalDependency.ToNamespaceName,
+                        analyzerMessage.IllegalDependency.FromTypeName,
+                        analyzerMessage.IllegalDependency.ToTypeName
+                    );
                 }
 
-                ReportForSyntaxNode(
-                    syntaxNodeAnalysisContext,
-                    DiagnosticDefinitions.IllegalDependency,
-                    analyzerMessage.IllegalDependency.FromNamespaceName,
-                    analyzerMessage.IllegalDependency.ToNamespaceName,
-                    analyzerMessage.IllegalDependency.FromTypeName,
-                    analyzerMessage.IllegalDependency.ToTypeName
-                );
+                if (currentIssueCount == maxIssueCount + 1)
+                {
+                    ReportForSyntaxNode(syntaxNodeAnalysisContext, DiagnosticDefinitions.TooManyDependencyIssues, maxIssueCount);
+                }
+
+                if (currentIssueCount > maxIssueCount)
+                {
+                    break;
+                }
             }
         }
 
