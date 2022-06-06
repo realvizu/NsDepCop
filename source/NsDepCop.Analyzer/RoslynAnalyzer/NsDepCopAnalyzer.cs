@@ -31,7 +31,8 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
                 DiagnosticDefinitions.NoConfigFile,
                 DiagnosticDefinitions.ConfigDisabled,
                 DiagnosticDefinitions.ConfigException,
-                DiagnosticDefinitions.ToolDisabled
+                DiagnosticDefinitions.ToolDisabled,
+                DiagnosticDefinitions.UnusedRule
             );
 
         private static readonly ImmutableArray<SyntaxKind> SyntaxKindsToRegister =
@@ -93,14 +94,35 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
                 return;
             }
 
+            dependencyAnalyzer.ResetRuleUsageTracking();
+
             // Per-compilation dependency issue counter.
             var issueCount = 0;
 
             compilationStartContext.RegisterSyntaxNodeAction(
                 i => AnalyzeSyntaxNodeAndReportDiagnostics(i, dependencyAnalyzer, ref issueCount),
                 SyntaxKindsToRegister);
+
+            compilationStartContext.RegisterCompilationEndAction(
+                i => ReportUnusedAllowRules(i, dependencyAnalyzer)
+            );
         }
 
+        private static void ReportUnusedAllowRules(CompilationAnalysisContext compilationAnalysisContext, IDependencyAnalyzer dependencyAnalyzer)
+        {
+            // Report unused allow rules only if there were no parsing errors.
+            var parseDiagnostics = compilationAnalysisContext.Compilation.GetParseDiagnostics();
+            if (parseDiagnostics.Any(i => i.Severity == DiagnosticSeverity.Error))
+                return;
+
+            var unusedAllowRules = dependencyAnalyzer.GetUnusedAllowRules();
+
+            foreach (var namespaceDependencyRule in unusedAllowRules)
+            {
+                var diagnostic = CreateDiagnostic(DiagnosticDefinitions.UnusedRule, Location.None, namespaceDependencyRule);
+                compilationAnalysisContext.ReportDiagnostic(diagnostic);
+            }
+        }
 
         private static void AnalyzeSyntaxNodeAndReportDiagnostics(
             SyntaxNodeAnalysisContext syntaxNodeAnalysisContext,

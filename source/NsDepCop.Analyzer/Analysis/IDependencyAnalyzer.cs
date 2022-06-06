@@ -46,5 +46,15 @@ namespace Codartis.NsDepCop.Analysis
         /// Gets the current analyzer config or null if there was an error.
         /// </summary>
         IAnalyzerConfig Config { get; }
+
+        /// <summary>
+        /// Resets the state used for tracking which rules were actually used during the analysis of a compilation.
+        /// </summary>
+        void ResetRuleUsageTracking();
+
+        /// <summary>
+        /// Return those allow rules that were not used since the last call to <see cref="ResetRuleUsageTracking"/>.
+        /// </summary>
+        IReadOnlyCollection<NamespaceDependencyRule> GetUnusedAllowRules();
     }
 }

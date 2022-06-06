@@ -65,6 +65,14 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
             $"If the '{ProductConstants.DisableToolEnvironmentVariableName}' environment variable is set to 'True' or '1' then all analysis is skipped."
         );
 
+        public static readonly DiagnosticDescriptor UnusedRule = CreateDiagnosticDescriptor(
+            "NSDEPCOP07",
+            "Unused rule in dependency config.",
+            "Unused rule in 'config.nsdepcop': {0}",
+            DiagnosticSeverity.Warning,
+            "A rule in the 'config.nsdepcop' file was not used during analysis. You should remove it to keep the config clean."
+        );
+
         private static DiagnosticDescriptor CreateDiagnosticDescriptor(
             string id,
             string title,

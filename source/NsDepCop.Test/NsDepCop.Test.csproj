@@ -230,7 +230,13 @@
     <None Update="RoslynAnalyzer\SourceWithDependencyProblems_ReturnsIssues\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="RoslynAnalyzer\SourceWithoutDependencyProblems_ReturnsNoIssues\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="RoslynAnalyzer\TooManyDependencyIssues_StopsAnalysisWithWarning\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="RoslynAnalyzer\UnusedAllowRules_ReturnsIssues\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="xunit.runner.json">

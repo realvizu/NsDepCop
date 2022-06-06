@@ -66,6 +66,27 @@ namespace Codartis.NsDepCop.Test.RoslynAnalyzer
         }
 
         [Fact]
+        public async Task SourceWithoutDependencyProblems_ReturnsNoIssues()
+        {
+            const string source = @"
+namespace A
+{
+    class C1 
+    {
+        B.C2 _f1;
+    }
+}
+
+namespace B
+{
+    class C2 {}
+}
+";
+
+            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(source);
+        }
+
+        [Fact]
         public async Task SourceWithDependencyProblems_ReturnsIssues()
         {
             const string source = @"
@@ -94,6 +115,31 @@ namespace B
                 new DiagnosticResult(DiagnosticDefinitions.IllegalDependency)
                     .WithArguments("B", "A", "C2", "C1")
                     .WithLocation(14, 11),
+            };
+            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(source, expectation);
+        }
+
+        [Fact]
+        public async Task UnusedAllowRules_ReturnsIssues()
+        {
+            const string source = @"
+namespace A
+{
+    class C1 
+    {
+        B.C2 _f1;
+    }
+}
+
+namespace B
+{
+    class C2 {}
+}
+";
+            var expectation = new[]
+            {
+                new DiagnosticResult(DiagnosticDefinitions.UnusedRule).WithArguments("A->C"),
+                new DiagnosticResult(DiagnosticDefinitions.UnusedRule).WithArguments("A->D"),
             };
             await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(source, expectation);
         }
