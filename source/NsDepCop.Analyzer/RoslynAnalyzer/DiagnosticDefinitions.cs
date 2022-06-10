@@ -68,9 +68,9 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         public static readonly DiagnosticDescriptor UnusedRule = CreateDiagnosticDescriptor(
             "NSDEPCOP07",
             "Unused rule in dependency config.",
-            "Unused rule in 'config.nsdepcop': {0}",
+            "Unused rule: {0}",
             DiagnosticSeverity.Warning,
-            "A rule in the 'config.nsdepcop' file was not used during analysis. You should remove it to keep the config clean."
+            "A rule in the dependency config file was not used during analysis. You should remove it to keep the config clean."
         );
 
         private static DiagnosticDescriptor CreateDiagnosticDescriptor(

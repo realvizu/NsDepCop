@@ -55,7 +55,8 @@ namespace Codartis.NsDepCop.Config.Implementation
         {
             LogTraceMessage($"Loading config {this}");
 
-            var projectLevelConfigProvider = new XmlFileConfigProvider(GetConfigFilePath(ProjectFolder), TraceMessageHandler);
+            var projectLevelConfigProvider =
+                new XmlFileConfigProvider(GetConfigFilePath(ProjectFolder), ConfigFileScope.SingleCompilation, TraceMessageHandler);
 
             _fileConfigProviders = CreateFileConfigProviderList(projectLevelConfigProvider, ProjectFolder);
 
@@ -161,7 +162,8 @@ namespace Codartis.NsDepCop.Config.Implementation
                 if (string.IsNullOrWhiteSpace(currentFolder))
                     break;
 
-                var higherLevelConfigProvider = new XmlFileConfigProvider(GetConfigFilePath(currentFolder), TraceMessageHandler);
+                var higherLevelConfigProvider =
+                    new XmlFileConfigProvider(GetConfigFilePath(currentFolder), ConfigFileScope.MultipleCompilations, TraceMessageHandler);
                 fileConfigProviders.Add(higherLevelConfigProvider);
             }
 

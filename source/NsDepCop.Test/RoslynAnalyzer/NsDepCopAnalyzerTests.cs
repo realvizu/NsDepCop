@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Codartis.NsDepCop.RoslynAnalyzer;
 using Codartis.NsDepCop.Test.Verifiers;
@@ -17,7 +20,7 @@ namespace Codartis.NsDepCop.Test.RoslynAnalyzer
         [Fact]
         public async Task EmptySource_NoIssues()
         {
-            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(string.Empty);
+            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(string.Empty, GetConfigFilePath());
         }
 
         [Fact]
@@ -25,12 +28,11 @@ namespace Codartis.NsDepCop.Test.RoslynAnalyzer
         {
             Environment.SetEnvironmentVariable(ProductConstants.DisableToolEnvironmentVariableName, "1");
 
-
             var expectation = new[]
             {
                 new DiagnosticResult(DiagnosticDefinitions.ToolDisabled).WithLocation(1, 1)
             };
-            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(string.Empty, expectation);
+            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(string.Empty, expected: expectation);
         }
 
         [Fact]
@@ -40,7 +42,7 @@ namespace Codartis.NsDepCop.Test.RoslynAnalyzer
             {
                 new DiagnosticResult(DiagnosticDefinitions.NoConfigFile).WithLocation(1, 1)
             };
-            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(string.Empty, expectation);
+            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(string.Empty, expected: expectation);
         }
 
         [Fact]
@@ -52,7 +54,7 @@ namespace Codartis.NsDepCop.Test.RoslynAnalyzer
                     .WithArguments("Unexpected end of file has occurred. The following elements are not closed: NsDepCopConfig. Line 1, position 17.")
                     .WithLocation(1, 1)
             };
-            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(string.Empty, expectation);
+            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(string.Empty, GetConfigFilePath(), expectation);
         }
 
         [Fact]
@@ -62,7 +64,7 @@ namespace Codartis.NsDepCop.Test.RoslynAnalyzer
             {
                 new DiagnosticResult(DiagnosticDefinitions.ConfigDisabled).WithLocation(1, 1)
             };
-            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(string.Empty, expectation);
+            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(string.Empty, GetConfigFilePath(), expectation);
         }
 
         [Fact]
@@ -82,8 +84,7 @@ namespace B
     class C2 {}
 }
 ";
-
-            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(source);
+            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(source, GetConfigFilePath());
         }
 
         [Fact]
@@ -106,7 +107,6 @@ namespace B
     }
 }
 ";
-
             var expectation = new[]
             {
                 new DiagnosticResult(DiagnosticDefinitions.IllegalDependency)
@@ -116,7 +116,7 @@ namespace B
                     .WithArguments("B", "A", "C2", "C1")
                     .WithLocation(14, 11),
             };
-            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(source, expectation);
+            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(source, GetConfigFilePath(), expectation);
         }
 
         [Fact]
@@ -136,12 +136,17 @@ namespace B
     class C2 {}
 }
 ";
+            var configFilePath = GetConfigFilePath();
             var expectation = new[]
             {
-                new DiagnosticResult(DiagnosticDefinitions.UnusedRule).WithArguments("A->C"),
-                new DiagnosticResult(DiagnosticDefinitions.UnusedRule).WithArguments("A->D"),
+                new DiagnosticResult(DiagnosticDefinitions.UnusedRule)
+                    .WithArguments("A->C")
+                    .WithLocation(configFilePath, 3, 3),
+                new DiagnosticResult(DiagnosticDefinitions.UnusedRule)
+                    .WithArguments("A->D")
+                    .WithLocation(configFilePath, 4, 3),
             };
-            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(source, expectation);
+            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(source, configFilePath, expectation);
         }
 
         [Fact(Skip = "The analyzer works on multiple threads concurrently and it's not deterministic" +
@@ -180,7 +185,16 @@ namespace B
                     .WithArguments("2")
                     .WithLocation(8, 11),
             };
-            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(source, expectation);
+            await CSharpAnalyzerVerifier<NsDepCopAnalyzer>.VerifyAnalyzerAsync(source, GetConfigFilePath(), expectation);
+        }
+
+        private static string GetConfigFilePath([CallerMemberName] string callerMethodName = null)
+        {
+            return Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
+                "RoslynAnalyzer",
+                callerMethodName!,
+                "config.nsdepcop");
         }
     }
 }

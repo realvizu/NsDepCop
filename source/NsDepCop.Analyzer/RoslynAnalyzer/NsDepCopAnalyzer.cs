@@ -83,7 +83,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
 
             if (dependencyAnalyzer.ConfigState == AnalyzerConfigState.ConfigError)
             {
-                var exceptionMessage = dependencyAnalyzer.ConfigException.Message;
+                var exceptionMessage = dependencyAnalyzer.ConfigException!.Message;
                 compilationStartContext.RegisterSyntaxTreeAction(i => ReportForSyntaxTree(i, DiagnosticDefinitions.ConfigException, exceptionMessage));
                 return;
             }
@@ -119,9 +119,27 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
 
             foreach (var namespaceDependencyRule in unusedAllowRules)
             {
-                var diagnostic = CreateDiagnostic(DiagnosticDefinitions.UnusedRule, Location.None, namespaceDependencyRule);
+                var ruleLocation = dependencyAnalyzer.GetRuleLocation(namespaceDependencyRule);
+                var diagnostic = CreateDiagnostic(DiagnosticDefinitions.UnusedRule, ToLocation(ruleLocation), namespaceDependencyRule);
                 compilationAnalysisContext.ReportDiagnostic(diagnostic);
             }
+        }
+
+        private static Location ToLocation(RuleLocation ruleLocation)
+        {
+            if (ruleLocation == null)
+                return Location.None;
+
+            // The XML parser reports 1-based line/char numbers but Roslyn uses 0-based numbers.
+            var startLinePosition = new LinePosition(ruleLocation.LineNumber - 1, ruleLocation.LinePosition - 1);
+
+            return Location.Create(
+                ruleLocation.ConfigFilePath,
+                // TextSpan info cannot be acquired from XML parser so we report (0,0).
+                new TextSpan(0, 0),
+                // Line position ending info cannot be acquired from XML parser so we report the start line/char for end too.
+                new LinePositionSpan(startLinePosition, startLinePosition)
+            );
         }
 
         private static void AnalyzeSyntaxNodeAndReportDiagnostics(

@@ -17,7 +17,7 @@ namespace Codartis.NsDepCop.Config.Factory
 
         public IUpdateableConfigProvider CreateFromXmlConfigFile(string configFilePath)
         {
-            return new XmlFileConfigProvider(configFilePath, _traceMessageHandler);
+            return new XmlFileConfigProvider(configFilePath, ConfigFileScope.SingleCompilation, _traceMessageHandler);
         }
 
         public IUpdateableConfigProvider CreateFromMultiLevelXmlConfigFile(string folderPath)

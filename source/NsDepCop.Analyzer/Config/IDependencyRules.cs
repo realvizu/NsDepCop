@@ -31,5 +31,10 @@ namespace Codartis.NsDepCop.Config
         /// the value is a set of type names defined in the namespace and visible outside of the namespace.
         /// </summary>
         Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+
+        /// <summary>
+        /// Returns the location of a rule. Used for error reporting.
+        /// </summary>
+        RuleLocation GetRuleLocation(NamespaceDependencyRule namespaceDependencyRule);
     }
 }

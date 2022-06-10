@@ -35,7 +35,7 @@ namespace Codartis.NsDepCop.Config
         }
 
         /// <summary>
-        /// Initilaizes a new instance by converting the string parameters to NamespaceSpecification objects.
+        /// Initializes a new instance by converting the string parameters to NamespaceSpecification objects.
         /// </summary>
         /// <param name="from">A namespace specification in string format. The source of the dependency.</param>
         /// <param name="to">A namespace specification in string format. The target of the dependency.</param>
@@ -44,9 +44,9 @@ namespace Codartis.NsDepCop.Config
         { }
 
         /// <summary>
-        /// Returns the string represenation of a namespace dependency.
+        /// Returns the string representation of a namespace dependency.
         /// </summary>
-        /// <returns>The string represenation of a namespace dependency.</returns>
+        /// <returns>The string representation of a namespace dependency.</returns>
         public override string ToString()
         {
             var builder = new StringBuilder();

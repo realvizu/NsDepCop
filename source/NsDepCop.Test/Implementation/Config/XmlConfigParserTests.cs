@@ -186,7 +186,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         private XDocument LoadXml(string filename)
         {
             var path = GetFilePathInTestClassFolder(filename);
-            return XDocument.Load(path);
+            return XDocument.Load(path, LoadOptions.SetLineInfo | LoadOptions.PreserveWhitespace);
         }
     }
 }

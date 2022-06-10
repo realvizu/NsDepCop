@@ -15,16 +15,18 @@ namespace Codartis.NsDepCop.Config.Implementation
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
         public HashSet<NamespaceDependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+        public Dictionary<NamespaceDependencyRule, RuleLocation> RuleLocations { get; }
         public int MaxIssueCount { get; }
         public bool AutoLowerMaxIssueCount { get; }
 
         public AnalyzerConfig(
-            bool isEnabled, 
+            bool isEnabled,
             string[] sourcePathExclusionPatterns,
             bool childCanDependOnParentImplicitly,
-            Dictionary<NamespaceDependencyRule, TypeNameSet> allowRules, 
-            HashSet<NamespaceDependencyRule> disallowRules, 
-            Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace, 
+            Dictionary<NamespaceDependencyRule, TypeNameSet> allowRules,
+            HashSet<NamespaceDependencyRule> disallowRules,
+            Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace,
+            Dictionary<NamespaceDependencyRule, RuleLocation> ruleLocations,
             int maxIssueCount,
             bool autoLowerMaxIssueCount)
         {
@@ -35,6 +37,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             AllowRules = allowRules;
             DisallowRules = disallowRules;
             VisibleTypesByNamespace = visibleTypesByNamespace;
+            RuleLocations = ruleLocations;
             MaxIssueCount = maxIssueCount;
             AutoLowerMaxIssueCount = autoLowerMaxIssueCount;
         }
@@ -47,7 +50,13 @@ namespace Codartis.NsDepCop.Config.Implementation
             foreach (var s in AllowRules.ToStrings()) yield return s;
             foreach (var s in DisallowRules.ToStrings()) yield return s;
             foreach (var s in VisibleTypesByNamespace.ToStrings()) yield return s;
+            foreach (var s in RuleLocations.ToStrings()) yield return s;
             yield return $"MaxIssueCount={MaxIssueCount}";
+        }
+
+        public RuleLocation GetRuleLocation(NamespaceDependencyRule namespaceDependencyRule)
+        {
+            return RuleLocations.TryGetValue(namespaceDependencyRule, out var ruleLocation) ? ruleLocation : null;
         }
     }
 }

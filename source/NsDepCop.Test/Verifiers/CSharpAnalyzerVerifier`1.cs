@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -29,16 +26,10 @@ namespace Codartis.NsDepCop.Test.Verifiers
 
         /// <inheritdoc cref="AnalyzerVerifier{TAnalyzer, TTest, TVerifier}.VerifyAnalyzerAsync(string, DiagnosticResult[])"/>
         public static async Task VerifyAnalyzerAsync(string source,
+            string configFilePath = null,
             IEnumerable<DiagnosticResult> expected = null,
-            bool skipSuppressionCheck = true,
-            [CallerMemberName] string callerMethodName = null)
+            bool skipSuppressionCheck = true)
         {
-            var configFilePath = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-                "RoslynAnalyzer",
-                callerMethodName!,
-                "config.nsdepcop");
-
             var test = new Test(configFilePath)
             {
                 TestCode = source,

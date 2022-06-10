@@ -6,7 +6,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
     {
         protected static void CreateConfigFile(string path, string isEnabledString, int inheritanceDepth = 0, int? maxIssueCount = null)
         {
-            var document = XDocument.Parse($"<NsDepCopConfig InheritanceDepth='{inheritanceDepth}' IsEnabled='{isEnabledString}' {GetMaxIssueCountAttributeString(maxIssueCount)} />");
+            var document = XDocument.Parse(
+                $"<NsDepCopConfig InheritanceDepth='{inheritanceDepth}' IsEnabled='{isEnabledString}' {GetMaxIssueCountAttributeString(maxIssueCount)} />");
             document.Save(path);
         }
 
@@ -17,14 +18,15 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
 
         protected static string GetAttribute(string path, string attributeName)
         {
-            var document = XDocument.Load(path);
-            return document.Root.Attribute(attributeName)?.Value;
+            var document = LoadXDocument(path);
+            return document.Root!.Attribute(attributeName)?.Value;
         }
+
 
         protected static void SetAttribute(string path, string attributeName, string value)
         {
-            var document = XDocument.Load(path);
-            var xAttribute = document.Root.Attribute(attributeName);
+            var document = LoadXDocument(path);
+            var xAttribute = document.Root!.Attribute(attributeName);
 
             if (xAttribute == null)
                 document.Root.Add(new XAttribute(attributeName, value));
@@ -36,9 +38,14 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
 
         protected static void RemoveAttribute(string path, string attributeName)
         {
-            var document = XDocument.Load(path);
-            document.Root.Attribute(attributeName)?.Remove();
+            var document = LoadXDocument(path);
+            document.Root!.Attribute(attributeName)?.Remove();
             document.Save(path);
+        }
+
+        private static XDocument LoadXDocument(string path)
+        {
+            return XDocument.Load(path, LoadOptions.SetLineInfo | LoadOptions.PreserveWhitespace);
         }
     }
 }

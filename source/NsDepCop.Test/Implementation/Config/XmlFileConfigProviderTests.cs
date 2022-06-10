@@ -36,7 +36,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var path = GetFilePathInTestClassFolder("ExcludedFiles.nsdepcop");
             var configProvider = CreateConfigProvider(path);
-            
+
             var expectedExcludedFiles = new[]
             {
                 GetFilePathInTestClassFolder("ExcludedFile1.cs"),
@@ -202,8 +202,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
 
         private static XmlFileConfigProvider CreateConfigProvider(string path)
         {
-            return new XmlFileConfigProvider(path, traceMessageHandler: null);
+            return new XmlFileConfigProvider(path, ConfigFileScope.SingleCompilation, traceMessageHandler: null);
         }
     }
 }
-

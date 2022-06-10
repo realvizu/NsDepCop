@@ -18,11 +18,16 @@ namespace Codartis.NsDepCop.Config.Implementation
         private ConfigLoadResult _lastConfigLoadResult;
 
         protected string ConfigFilePath { get; }
+        protected ConfigFileScope ConfigFileScope { get; }
 
-        protected FileConfigProviderBase(string configFilePath, MessageHandler traceMessageHandler)
+        protected FileConfigProviderBase(
+            string configFilePath, 
+            ConfigFileScope configFileScope, 
+            MessageHandler traceMessageHandler)
             : base(traceMessageHandler)
         {
             ConfigFilePath = configFilePath;
+            ConfigFileScope = configFileScope;
         }
 
         public override string ConfigLocation => ConfigFilePath;
@@ -32,7 +37,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         public bool HasConfigFileChanged()
         {
             return ConfigFileCreatedOrDeleted()
-                || ConfigFileModifiedSinceLastLoad();
+                   || ConfigFileModifiedSinceLastLoad();
         }
 
         protected override ConfigLoadResult LoadConfigCore()
@@ -61,7 +66,7 @@ namespace Codartis.NsDepCop.Config.Implementation
                 _configLastLoadUtc = DateTime.UtcNow;
 
                 var configBuilder = CreateConfigBuilderFromFile(ConfigFilePath)
-                     .MakePathsRooted(Path.GetDirectoryName(ConfigFilePath));
+                    .MakePathsRooted(Path.GetDirectoryName(ConfigFilePath));
 
                 return ConfigLoadResult.CreateWithConfig(configBuilder);
             }
@@ -82,7 +87,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         private bool ConfigFileModifiedSinceLastLoad()
         {
             return File.Exists(ConfigFilePath)
-                && _configLastLoadUtc < File.GetLastWriteTimeUtc(ConfigFilePath);
+                   && _configLastLoadUtc < File.GetLastWriteTimeUtc(ConfigFilePath);
         }
 
         private void LogTraceMessage(string message) => TraceMessageHandler?.Invoke(message);

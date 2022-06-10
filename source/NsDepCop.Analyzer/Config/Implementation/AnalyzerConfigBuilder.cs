@@ -11,6 +11,9 @@ namespace Codartis.NsDepCop.Config.Implementation
     /// </summary>
     public class AnalyzerConfigBuilder
     {
+        private readonly string _configFilePath;
+        private readonly ConfigFileScope? _configFileScope;
+
         public int? InheritanceDepth { get; private set; }
         public bool? IsEnabled { get; private set; }
         public List<string> SourcePathExclusionPatterns { get; private set; }
@@ -18,15 +21,21 @@ namespace Codartis.NsDepCop.Config.Implementation
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
         public HashSet<NamespaceDependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+        public Dictionary<NamespaceDependencyRule, RuleLocation> RuleLocations { get; }
         public int? MaxIssueCount { get; private set; }
         public bool? AutoLowerMaxIssueCount { get; private set; }
 
-        public AnalyzerConfigBuilder()
+        public AnalyzerConfigBuilder(
+            string configFilePath = null,
+            ConfigFileScope? configFileScope = null)
         {
+            _configFilePath = configFilePath;
+            _configFileScope = configFileScope;
             SourcePathExclusionPatterns = new List<string>();
             AllowRules = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
             DisallowRules = new HashSet<NamespaceDependencyRule>();
             VisibleTypesByNamespace = new Dictionary<Namespace, TypeNameSet>();
+            RuleLocations = new Dictionary<NamespaceDependencyRule, RuleLocation>();
         }
 
         public IAnalyzerConfig ToAnalyzerConfig()
@@ -38,6 +47,7 @@ namespace Codartis.NsDepCop.Config.Implementation
                 AllowRules,
                 DisallowRules,
                 VisibleTypesByNamespace,
+                RuleLocations,
                 MaxIssueCount ?? ConfigDefaults.MaxIssueCount,
                 AutoLowerMaxIssueCount ?? ConfigDefaults.AutoLowerMaxIssueCount
             );
@@ -54,6 +64,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             AddAllowRules(analyzerConfigBuilder.AllowRules);
             AddDisallowRules(analyzerConfigBuilder.DisallowRules);
             AddVisibleTypesByNamespace(analyzerConfigBuilder.VisibleTypesByNamespace);
+            AddRuleLocations(analyzerConfigBuilder.RuleLocations);
             SetMaxIssueCount(analyzerConfigBuilder.MaxIssueCount);
             SetAutoLowerMaxIssueCount(analyzerConfigBuilder.AutoLowerMaxIssueCount);
 
@@ -99,10 +110,31 @@ namespace Codartis.NsDepCop.Config.Implementation
             return this;
         }
 
-        public AnalyzerConfigBuilder AddAllowRule(NamespaceDependencyRule namespaceDependencyRule, TypeNameSet typeNameSet = null)
+        public AnalyzerConfigBuilder AddAllowRule(
+            NamespaceDependencyRule namespaceDependencyRule,
+            TypeNameSet typeNameSet = null,
+            int? lineNumber = null,
+            int? linePosition = null)
         {
             AllowRules.AddOrUnion<NamespaceDependencyRule, TypeNameSet, string>(namespaceDependencyRule, typeNameSet);
+
+            var ruleLocation = GetRuleLocation(lineNumber, linePosition);
+            if (ruleLocation != null) AddRuleLocation(namespaceDependencyRule, ruleLocation);
+
             return this;
+        }
+
+        private void AddRuleLocation(NamespaceDependencyRule namespaceDependencyRule, RuleLocation ruleLocation)
+        {
+            if (!RuleLocations.ContainsKey(namespaceDependencyRule))
+                RuleLocations.Add(namespaceDependencyRule, ruleLocation);
+        }
+
+        private RuleLocation GetRuleLocation(int? lineNumber, int? linePosition)
+        {
+            return _configFilePath != null && _configFileScope != null && lineNumber != null && linePosition != null
+                ? new RuleLocation(_configFilePath, _configFileScope.Value, lineNumber.Value, linePosition.Value)
+                : null;
         }
 
         private AnalyzerConfigBuilder AddAllowRules(IEnumerable<KeyValuePair<NamespaceDependencyRule, TypeNameSet>> allowRules)
@@ -135,6 +167,13 @@ namespace Codartis.NsDepCop.Config.Implementation
         {
             foreach (var keyValuePair in visibleTypesByNamespace)
                 AddVisibleTypesByNamespace(keyValuePair.Key, keyValuePair.Value);
+            return this;
+        }
+
+        private AnalyzerConfigBuilder AddRuleLocations(IEnumerable<KeyValuePair<NamespaceDependencyRule, RuleLocation>> ruleLocations)
+        {
+            foreach (var keyValuePair in ruleLocations)
+                AddRuleLocation(keyValuePair.Key, keyValuePair.Value);
             return this;
         }
 

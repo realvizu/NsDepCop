@@ -27,5 +27,12 @@ namespace Codartis.NsDepCop.Config.Implementation
             foreach (var visibleTypesByNamespace in visibleTypesByNamespaces)
                 yield return $"  {visibleTypesByNamespace.Key}, {visibleTypesByNamespace.Value?.ToString() ?? "{}"}";
         }
+
+        public static IEnumerable<string> ToStrings(this IDictionary<NamespaceDependencyRule, RuleLocation> ruleLocations)
+        {
+            yield return $"RuleLocations={ruleLocations.Count}";
+            foreach (var ruleLocation in ruleLocations)
+                yield return $"  [{ruleLocation.Key}]={ruleLocation.Value}";
+        }
     }
 }

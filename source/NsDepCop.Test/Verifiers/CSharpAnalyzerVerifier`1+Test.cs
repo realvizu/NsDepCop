@@ -20,8 +20,7 @@ namespace Codartis.NsDepCop.Test.Verifiers
                     compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
                         compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
 
-
-                    if (File.Exists(configFilePath))
+                    if (configFilePath != null && File.Exists(configFilePath))
                     {
                         var fileName = Path.GetFileName(configFilePath);
                         var text = File.ReadAllText(configFilePath);

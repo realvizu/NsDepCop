@@ -13,8 +13,8 @@ namespace Codartis.NsDepCop.Config.Implementation
     {
         private XDocument _configXDocument;
 
-        public XmlFileConfigProvider(string configFilePath, MessageHandler traceMessageHandler)
-            : base(configFilePath, traceMessageHandler)
+        public XmlFileConfigProvider(string configFilePath, ConfigFileScope configFileScope, MessageHandler traceMessageHandler)
+            : base(configFilePath, configFileScope, traceMessageHandler)
         {
         }
 
@@ -22,8 +22,8 @@ namespace Codartis.NsDepCop.Config.Implementation
 
         protected override AnalyzerConfigBuilder CreateConfigBuilderFromFile(string configFilePath)
         {
-            _configXDocument = XDocument.Load(configFilePath, LoadOptions.SetLineInfo);
-            return XmlConfigParser.Parse(_configXDocument);
+            _configXDocument = XDocument.Load(configFilePath, LoadOptions.PreserveWhitespace | LoadOptions.SetLineInfo);
+            return XmlConfigParser.Parse(_configXDocument, configFilePath, ConfigFileScope);
         }
 
         protected override ConfigLoadResult UpdateMaxIssueCountCore(int newValue)

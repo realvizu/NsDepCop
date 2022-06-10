@@ -80,6 +80,11 @@ public sealed class DependencyAnalyzer : IDependencyAnalyzer
         return _typeDependencyValidator?.GetUnusedAllowRules() ?? Array.Empty<NamespaceDependencyRule>();
     }
 
+    public RuleLocation? GetRuleLocation(NamespaceDependencyRule namespaceDependencyRule)
+    {
+        return _config?.GetRuleLocation(namespaceDependencyRule);
+    }
+
     public IEnumerable<AnalyzerMessageBase> AnalyzeProject(
         IEnumerable<string> sourceFilePaths,
         IEnumerable<string> referencedAssemblyPaths)

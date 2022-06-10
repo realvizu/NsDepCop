@@ -25,6 +25,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules => _allowedDependencies;
         public HashSet<NamespaceDependencyRule> DisallowRules => _disallowedDependencies;
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace => _visibleTypesByTargetNamespace;
+        public RuleLocation GetRuleLocation(NamespaceDependencyRule namespaceDependencyRule) => null;
 
         public DependencyRulesBuilder SetChildCanDependOnParentImplicitly(bool value)
         {
