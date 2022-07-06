@@ -14,6 +14,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
         private readonly HashSet<NamespaceDependencyRule> _disallowRules;
         private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesPerNamespaces;
         private readonly bool _childCanDependOnParentImplicitly;
+        private readonly bool _parentCanDependOnChildImplicitly;
 
         public TypeDependencyValidator(IDependencyRules dependencyRules)
         {
@@ -21,6 +22,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             _disallowRules = dependencyRules.DisallowRules;
             _visibleTypesPerNamespaces = dependencyRules.VisibleTypesByNamespace;
             _childCanDependOnParentImplicitly = dependencyRules.ChildCanDependOnParentImplicitly;
+            _parentCanDependOnChildImplicitly = dependencyRules.ParentCanDependOnChildImplicitly;
         }
 
         /// <summary>
@@ -44,6 +46,9 @@ namespace Codartis.NsDepCop.Analysis.Implementation
 
             if (IsAllowedBecauseChildCanDependOnParent(fromNamespace, toNamespace))
                 return true;
+            
+            if (IsAllowedBecauseParentCanDependOnChild(fromNamespace, toNamespace))
+                return true;
 
             var allowRule = GetMostSpecificAllowRule(fromNamespace, toNamespace);
             if (allowRule == null)
@@ -59,6 +64,11 @@ namespace Codartis.NsDepCop.Analysis.Implementation
         private bool IsAllowedBecauseChildCanDependOnParent(Namespace fromNamespace, Namespace toNamespace)
         {
             return _childCanDependOnParentImplicitly && fromNamespace.IsSubnamespaceOf(toNamespace);
+        }
+        
+        private bool IsAllowedBecauseParentCanDependOnChild(Namespace fromNamespace, Namespace toNamespace)
+        {
+            return _parentCanDependOnChildImplicitly && toNamespace.IsSubnamespaceOf(fromNamespace);
         }
 
         private NamespaceDependencyRule GetMostSpecificAllowRule(Namespace from, Namespace to)

@@ -41,6 +41,9 @@
     <Compile Remove="AnalyzerFeature_ChildCanDependOnParentImplicitly\AnalyzerFeature_ChildCanDependOnParentImplicitly.cs">
 
     </Compile>
+    <Compile Remove="AnalyzerFeature_ParentCanDependOnChildImplicitly\AnalyzerFeature_ParentCanDependOnChildImplicitly.cs">
+
+    </Compile>
     <Compile Remove="AnalyzerFeature_VisibleMembersOfNamespace\AnalyzerFeature_VisibleMembersOfNamespace.cs">
 
     </Compile>
@@ -156,6 +159,9 @@
 
   <ItemGroup>
     <None Include="AnalyzerFeature_AllowedDependency\AnalyzerFeature_AllowedDependency.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AnalyzerFeature_ParentCanDependOnChildImplicitly\AnalyzerFeature_ParentCanDependOnChildImplicitly.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="AnalyzerFeature_SameNamespaceAlwaysAllowed\AnalyzerFeature_SameNamespaceAlwaysAllowed.cs">
@@ -276,6 +282,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Cs6_AliasQualifiedName\Cs6_AliasQualifiedName.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AnalyzerFeature_ParentCanDependOnChildImplicitly\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
