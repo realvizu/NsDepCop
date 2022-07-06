@@ -10,5 +10,6 @@ namespace Codartis.NsDepCop.Config
         public const int MaxIssueCount = 100;
         public const bool AutoLowerMaxIssueCount = false;
         public const bool ChildCanDependOnParentImplicitly = false;
+        public const bool ParentCanDependOnChildImplicitly = false;
     }
 }

@@ -15,6 +15,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         public bool? IsEnabled { get; private set; }
         public List<string> SourcePathExclusionPatterns { get; private set; }
         public bool? ChildCanDependOnParentImplicitly { get; private set; }
+        public bool? ParentCanDependOnChildImplicitly { get; private set; }
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
         public HashSet<NamespaceDependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
@@ -35,6 +36,7 @@ namespace Codartis.NsDepCop.Config.Implementation
                 IsEnabled ?? ConfigDefaults.IsEnabled,
                 SourcePathExclusionPatterns.ToArray(),
                 ChildCanDependOnParentImplicitly ?? ConfigDefaults.ChildCanDependOnParentImplicitly,
+                ParentCanDependOnChildImplicitly ?? ConfigDefaults.ParentCanDependOnChildImplicitly,
                 AllowRules,
                 DisallowRules,
                 VisibleTypesByNamespace,
@@ -51,6 +53,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             AddSourcePathExclusionPatterns(analyzerConfigBuilder.SourcePathExclusionPatterns);
 
             SetChildCanDependOnParentImplicitly(analyzerConfigBuilder.ChildCanDependOnParentImplicitly);
+            SetParentCanDependOnChildImplicitly(analyzerConfigBuilder.ParentCanDependOnChildImplicitly);
             AddAllowRules(analyzerConfigBuilder.AllowRules);
             AddDisallowRules(analyzerConfigBuilder.DisallowRules);
             AddVisibleTypesByNamespace(analyzerConfigBuilder.VisibleTypesByNamespace);
@@ -96,6 +99,13 @@ namespace Codartis.NsDepCop.Config.Implementation
         {
             if (childCanDependOnParentImplicitly.HasValue)
                 ChildCanDependOnParentImplicitly = childCanDependOnParentImplicitly;
+            return this;
+        }
+        
+        public AnalyzerConfigBuilder SetParentCanDependOnChildImplicitly(bool? parentCanDependOnChildImplicitly)
+        {
+            if (parentCanDependOnChildImplicitly.HasValue)
+                ParentCanDependOnChildImplicitly = parentCanDependOnChildImplicitly;
             return this;
         }
 
@@ -158,6 +168,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (IsEnabled.HasValue) yield return $"IsEnabled={IsEnabled}";
             if (SourcePathExclusionPatterns != null) yield return $"SourcePathExclusionPatterns={string.Join(";", SourcePathExclusionPatterns)}";
             if (ChildCanDependOnParentImplicitly.HasValue) yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
+            if (ParentCanDependOnChildImplicitly.HasValue) yield return $"ParentCanDependOnChildImplicitly={ParentCanDependOnChildImplicitly}";
             if (AllowRules.Any())
                 foreach (var s in AllowRules.ToStrings())
                     yield return s;

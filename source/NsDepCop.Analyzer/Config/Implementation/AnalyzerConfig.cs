@@ -12,6 +12,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         public bool IsEnabled { get; }
         public string[] SourcePathExclusionPatterns { get; }
         public bool ChildCanDependOnParentImplicitly { get; }
+        public bool ParentCanDependOnChildImplicitly { get; }
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
         public HashSet<NamespaceDependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
@@ -22,6 +23,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             bool isEnabled, 
             string[] sourcePathExclusionPatterns,
             bool childCanDependOnParentImplicitly,
+            bool parentCanDependOnChildImplicitly,
             Dictionary<NamespaceDependencyRule, TypeNameSet> allowRules, 
             HashSet<NamespaceDependencyRule> disallowRules, 
             Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace, 
@@ -32,6 +34,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             SourcePathExclusionPatterns = sourcePathExclusionPatterns;
 
             ChildCanDependOnParentImplicitly = childCanDependOnParentImplicitly;
+            ParentCanDependOnChildImplicitly = parentCanDependOnChildImplicitly;
             AllowRules = allowRules;
             DisallowRules = disallowRules;
             VisibleTypesByNamespace = visibleTypesByNamespace;

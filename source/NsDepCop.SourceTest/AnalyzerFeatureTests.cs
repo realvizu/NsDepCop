@@ -55,6 +55,12 @@ namespace Codartis.NsDepCop.SourceTest
         {
             SourceTestSpecification.Create().Execute();
         }
+        
+        [Fact]
+        public void AnalyzerFeature_ParentCanDependOnChildImplicitly()
+        {
+            SourceTestSpecification.Create().Execute();
+        }
 
         [Fact]
         public void AnalyzerFeature_VisibleMembersOfNamespace()
