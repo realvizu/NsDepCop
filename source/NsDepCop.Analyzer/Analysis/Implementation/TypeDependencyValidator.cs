@@ -17,6 +17,7 @@ public class TypeDependencyValidator : ITypeDependencyValidator
     private readonly HashSet<NamespaceDependencyRule> _disallowRules;
     private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesPerNamespaces;
     private readonly bool _childCanDependOnParentImplicitly;
+    private readonly bool _parentCanDependOnChildImplicitly;
 
     /// <summary>
     /// Contains those allow rules that were actually used since the last call to <see cref="ResetRuleUsageTracking"/>
@@ -32,6 +33,7 @@ public class TypeDependencyValidator : ITypeDependencyValidator
         _disallowRules = dependencyRules.DisallowRules;
         _visibleTypesPerNamespaces = dependencyRules.VisibleTypesByNamespace;
         _childCanDependOnParentImplicitly = dependencyRules.ChildCanDependOnParentImplicitly;
+        _parentCanDependOnChildImplicitly = dependencyRules.ParentCanDependOnChildImplicitly;
         _usedAllowRules = new ConcurrentDictionary<NamespaceDependencyRule, object?>();
     }
 
@@ -67,6 +69,9 @@ public class TypeDependencyValidator : ITypeDependencyValidator
         if (IsAllowedBecauseChildCanDependOnParent(fromNamespace, toNamespace))
             return true;
 
+        if (IsAllowedBecauseParentCanDependOnChild(fromNamespace, toNamespace))
+            return true;
+
         var allowRule = GetMostSpecificAllowRule(fromNamespace, toNamespace);
         if (allowRule == null)
             return false;
@@ -83,6 +88,11 @@ public class TypeDependencyValidator : ITypeDependencyValidator
     private bool IsAllowedBecauseChildCanDependOnParent(Namespace fromNamespace, Namespace toNamespace)
     {
         return _childCanDependOnParentImplicitly && fromNamespace.IsSubnamespaceOf(toNamespace);
+    }
+
+    private bool IsAllowedBecauseParentCanDependOnChild(Namespace fromNamespace, Namespace toNamespace)
+    {
+        return _parentCanDependOnChildImplicitly && toNamespace.IsSubnamespaceOf(fromNamespace);
     }
 
     private NamespaceDependencyRule? GetMostSpecificAllowRule(Namespace from, Namespace to)

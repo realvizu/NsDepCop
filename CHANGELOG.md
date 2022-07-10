@@ -1,5 +1,10 @@
 # NsDepCop Change Log
 
+## v2.1.0
+(07/2022)
+
+- [x] New: ParentCanDependOnChildImplicitly config attribute.
+
 ## v2.0.1
 (03/2022)
 

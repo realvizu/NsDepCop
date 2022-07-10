@@ -30,7 +30,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</PackageIconUrl>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageReleaseNotes>
-- Fix: #60 - Statically imported type dependency not detected.
+- New: ParentCanDependOnChildImplicitly config attribute.
     </PackageReleaseNotes>
   </PropertyGroup>
 

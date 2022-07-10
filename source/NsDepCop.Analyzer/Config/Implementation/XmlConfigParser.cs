@@ -19,6 +19,7 @@ public static class XmlConfigParser
     private const string MaxIssueCountAttributeName = "MaxIssueCount";
     private const string AutoLowerMaxIssueCountAttributeName = "AutoLowerMaxIssueCount";
     private const string ImplicitParentDependencyAttributeName = "ChildCanDependOnParentImplicitly";
+    private const string ImplicitChildDependencyAttributeName = "ParentCanDependOnChildImplicitly";
     private const string SourcePathExclusionPatternsAttributeName = "ExcludedFiles";
     private const string AllowedElementName = "Allowed";
     private const string DisallowedElementName = "Disallowed";
@@ -64,6 +65,7 @@ public static class XmlConfigParser
         configBuilder.SetInheritanceDepth(ParseValueType<int>(rootElement, InheritanceDepthAttributeName, int.TryParse));
         configBuilder.AddSourcePathExclusionPatterns(ParseStringList(rootElement, SourcePathExclusionPatternsAttributeName, ','));
         configBuilder.SetChildCanDependOnParentImplicitly(ParseValueType<bool>(rootElement, ImplicitParentDependencyAttributeName, bool.TryParse));
+        configBuilder.SetParentCanDependOnChildImplicitly(ParseValueType<bool>(rootElement, ImplicitChildDependencyAttributeName, bool.TryParse));
         configBuilder.SetMaxIssueCount(ParseValueType<int>(rootElement, MaxIssueCountAttributeName, int.TryParse));
         configBuilder.SetAutoLowerMaxIssueCount(ParseValueType<bool>(rootElement, AutoLowerMaxIssueCountAttributeName, bool.TryParse));
     }

@@ -8,20 +8,23 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
     /// </summary>
     internal class DependencyRulesBuilder : IDependencyRules
     {
-        private bool _childCanDependOnParentImplicitly;
         private readonly Dictionary<NamespaceDependencyRule, TypeNameSet> _allowedDependencies;
         private readonly HashSet<NamespaceDependencyRule> _disallowedDependencies;
         private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesByTargetNamespace;
 
         public DependencyRulesBuilder()
         {
-            _childCanDependOnParentImplicitly = ConfigDefaults.ChildCanDependOnParentImplicitly;
+            ChildCanDependOnParentImplicitly = ConfigDefaults.ChildCanDependOnParentImplicitly;
+            ParentCanDependOnChildImplicitly = ConfigDefaults.ParentCanDependOnChildImplicitly;
             _allowedDependencies = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
             _disallowedDependencies = new HashSet<NamespaceDependencyRule>();
             _visibleTypesByTargetNamespace = new Dictionary<Namespace, TypeNameSet>();
         }
 
-        public bool ChildCanDependOnParentImplicitly => _childCanDependOnParentImplicitly;
+        public bool ChildCanDependOnParentImplicitly { get; private set; }
+
+        public bool ParentCanDependOnChildImplicitly { get; }
+
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules => _allowedDependencies;
         public HashSet<NamespaceDependencyRule> DisallowRules => _disallowedDependencies;
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace => _visibleTypesByTargetNamespace;
@@ -29,7 +32,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
 
         public DependencyRulesBuilder SetChildCanDependOnParentImplicitly(bool value)
         {
-            _childCanDependOnParentImplicitly = value;
+            ChildCanDependOnParentImplicitly = value;
             return this;
         }
 

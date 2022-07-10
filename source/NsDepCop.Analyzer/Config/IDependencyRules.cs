@@ -14,6 +14,7 @@ namespace Codartis.NsDepCop.Config
         /// False is the default for backward compatibility.
         /// </summary>
         bool ChildCanDependOnParentImplicitly { get; }
+        bool ParentCanDependOnChildImplicitly { get; }
 
         /// <summary>
         /// Dictionary of allowed dependency rules. The key is a namespace dependency rule, 
