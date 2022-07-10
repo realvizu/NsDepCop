@@ -43,6 +43,7 @@ Attribute | Values | Description
 --- | --- | ---
 **IsEnabled** | **true**, false | If set to false then analysis is not performed for the project.
 **ChildCanDependOnParentImplicitly** | true, **false** | If set to true then all child namespaces can depend on any of their parents without an explicit allowing rule. The recommended value is **true**. (False is default for backward compatibility.)
+**ParentCanDependOnChildImplicitly** | true, **false** | If set to true then all parent namespaces can depend on any of their children without an explicit allowing rule. The recommended value is **false**.
 **MaxIssueCount** | int (>0), default: **100** | Analysis stops when reaching this number of dependency issues.
 **AutoLowerMaxIssueCount** | true, **false** | If set to true then each successful build yielding fewer issues than MaxIssueCount sets MaxIssueCount to the current number of issues.
 **InheritanceDepth** | int (>=0), default: **0** | Sets the number of parent folder levels to inherit config from. 0 means no inheritance.
@@ -124,6 +125,11 @@ Example:
     <Allowed From="MyNamespace.SubNamespace" To="MyNamespace" />
 </NsDepCopConfig>
 ```
+
+### Allowing all parent namespaces to depend on their children
+You can specify the **ParentCanDependOnChildImplicitly** attribute on the NsDepCopConfig element.
+
+However, this is **not recommended**, because child namespaces are usually more concrete/specialized than their parents and the dependecies should point from the more concrete/specialized to the more abstract/generic and not the other way.
 
 ## Config inheritance
 From v1.6 NsDepCop supports config inheritance, aka multi-level config.
