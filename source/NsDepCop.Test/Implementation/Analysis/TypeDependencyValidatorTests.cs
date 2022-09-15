@@ -50,7 +50,66 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("S1", "C1", "T", "C2").Should().BeFalse();
             dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").Should().BeFalse();
         }
+        
+        [Fact]
+        public void AllowRule_WithPrefixWildcard()
+        {
+            var ruleConfig = new DependencyRulesBuilder()
+                .AddAllowed("*.S", "*.T");
 
+            var dependencyValidator = CreateTypeDependencyValidator(ruleConfig);
+            dependencyValidator.IsAllowedDependency("A.B.S", "C1", "X.Y.T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S", "C1", "T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("S.S1", "C1", "T", "C2").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("S", "C1", "T.T1", "C2").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("S1", "C1", "T", "C2").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").Should().BeFalse();
+        }
+        
+        [Fact]
+        public void AllowRule_WithSingleNamespacePrefix()
+        {
+            var ruleConfig = new DependencyRulesBuilder()
+                .AddAllowed("?.S", "?.T");
+
+            var dependencyValidator = CreateTypeDependencyValidator(ruleConfig);
+            dependencyValidator.IsAllowedDependency("A.S", "C1", "Y.T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("A.B.S", "C1", "Y.T", "C2").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("B.S", "C1", "X.Y.T", "C2").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("S", "C1", "T", "C2").Should().BeFalse();
+        }
+
+        [Fact]
+        public void AllowRule_WithWildcard()
+        {
+            var ruleConfig = new DependencyRulesBuilder()
+                .AddAllowed("A.*.S", "U.*.T");
+
+            var dependencyValidator = CreateTypeDependencyValidator(ruleConfig);
+            dependencyValidator.IsAllowedDependency("A.B.S", "C1", "U.V.W.T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("A.S", "C1", "U.V.T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("A.X.S", "C1", "U.T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("A.B.C.S", "C1", "U.V.T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("A.B.C.S", "C1", "U.V.T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("A.B.S.C", "C1", "U.V.T", "C2").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("A.B.S", "C1", "U.V.T.W", "C2").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("A1.A.B.S", "C1", "U.V.T", "C2").Should().BeFalse();
+        }
+        
+        [Fact]
+        public void AllowRule_WithMultipleWildcards()
+        {
+            var ruleConfig = new DependencyRulesBuilder()
+                .AddAllowed("A.*.?.S", "U.*.T.?");
+
+            var dependencyValidator = CreateTypeDependencyValidator(ruleConfig);
+            dependencyValidator.IsAllowedDependency("A.B.S", "C1", "U.T.T1", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("A.B.C.S", "C1", "U.V.T.T1", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("A.B.S", "C1", "U.T.T1", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("A.S", "C1", "U.T.T1", "C2").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("A.B.S", "C1", "U.T", "C2").Should().BeFalse();
+        }
+        
         [Fact]
         public void AllowRule_WithAnyNamespace()
         {
@@ -61,6 +120,30 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("S", "C1", "T", "C2").Should().BeTrue();
             dependencyValidator.IsAllowedDependency("S1", "C1", "T", "C2").Should().BeTrue();
             dependencyValidator.IsAllowedDependency("S", "C1", "T1", "C2").Should().BeTrue();
+        }
+        
+        [Fact]
+        public void AllowRule_MoreSpecificRuleWithWildcardsIsStronger()
+        {
+            var ruleConfig = new DependencyRulesBuilder()
+                .AddAllowed("A.*.S", "U.V.T", "C3")
+                .AddAllowed("A.?.?.S", "U.V.T");
+
+            var dependencyValidator = CreateTypeDependencyValidator(ruleConfig);
+            dependencyValidator.IsAllowedDependency("A.B.C.S", "C1", "U.V.T", "C2").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("A.B.C.D.S", "C1", "U.V.T", "C2").Should().BeFalse();
+        }
+        
+        [Fact]
+        public void DisallowRule_LessSpecificRuleWithWildcardsIsStronger()
+        {
+            var ruleConfig = new DependencyRulesBuilder()
+                .AddDisallowed("A.*.S", "U.V.T")
+                .AddAllowed("A.?.?.S", "U.V.T");
+
+            var dependencyValidator = CreateTypeDependencyValidator(ruleConfig);
+            dependencyValidator.IsAllowedDependency("A.B.C.S", "C1", "U.V.T", "C2").Should().BeFalse();
+            dependencyValidator.IsAllowedDependency("A.B.C.D.S", "C1", "U.V.T", "C2").Should().BeFalse();
         }
 
         [Fact]

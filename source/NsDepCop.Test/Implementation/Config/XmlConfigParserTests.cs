@@ -158,6 +158,14 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         }
 
         [Fact]
+        public void Parse_InvalidDuplicatedWildcardNamespaceString_Throws()
+        {
+            var xDocument = LoadXml("InvalidDuplicatedWildcardNamespaceString.nsdepcop");
+            Action a = () => XmlConfigParser.Parse(xDocument);
+            a.ShouldThrow<Exception>().WithMessage("*not a valid WildcardNamespace*");
+        }
+
+        [Fact]
         public void Parse_InvalidAttributeValue_Throws()
         {
             var xDocument = LoadXml("InvalidAttributeValue.nsdepcop");

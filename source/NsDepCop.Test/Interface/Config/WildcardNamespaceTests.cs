@@ -10,6 +10,11 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         [Theory]
         [InlineData("*")]
         [InlineData("A.*")]
+        [InlineData("*.A.*")]
+        [InlineData("*.A.?")]
+        [InlineData("*.A.?.B")]
+        [InlineData("A.?.?.B")]
+        [InlineData("A.*.?.?.B")]
         public void Create_Works(string wildcardNamespaceString)
         {
             new WildcardNamespace(wildcardNamespaceString).ToString().Should().Be(wildcardNamespaceString);
@@ -24,7 +29,22 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         [Theory]
         [InlineData("A")]
         [InlineData("A.B")]
-        public void Create_NotAWildcardNamespace_TopNamespace_ThrowsFormatException(string wildcardNamespaceString)
+        public void Create_NotAWildcardNamespace_ThrowsFormatException(string wildcardNamespaceString)
+        {
+            Assert.Throws<FormatException>(() => new WildcardNamespace(wildcardNamespaceString));
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(".")]
+        [InlineData("A..")]
+        [InlineData("A.B.")]
+        [InlineData("A.B?.C")]
+        [InlineData("A*.B")]
+        [InlineData("A.**.B")]
+        [InlineData("A.*.*.B")]
+        [InlineData(".*.B")]
+        public void Create_InvalidWildcardNamespace_ThrowsFormatException(string wildcardNamespaceString)
         {
             Assert.Throws<FormatException>(() => new WildcardNamespace(wildcardNamespaceString));
         }
