@@ -60,6 +60,11 @@ Notation | Meaning
 . (a single dot) | The global namespace.
  \* (a single star) | Any namespace.
  MyNamespace.\* | MyNamespace and any sub-namespaces.
+ MyNamespace.?| All direct sub-namespaces of MyNamespace
+\*.MyNamespace | Any namespace named MyNamespace
+?.MyNamespace | Any namespace named MyNamespace which has exactly one parent namespace.
+MyNamespace.*.MyOtherNamespace| Any namespace called MyOtherNamespace which has an ancestor named MyNamespace
+MyNamespace.?.MyOtherNamespace| Any namespace called MyOtherNamespace which has a grandparent named MyNamespace
 
 Examples:
 
@@ -69,6 +74,7 @@ Example | Meaning
 `<Allowed From="MyNamespace" To="System.*" />` | **MyNamespace** can depend on **System and any sub-namespace**
 `<Allowed From="MyNamespace" To="*" />` | **MyNamespace** can depend on **any namespace**
 `<Allowed From="MyNamespace" To="." />` | **MyNamespace** can depend on the **global namespace**
+`<Allowed From="MyNamespace" To="System.*.Serialization.*" />` | **MyNamespace** can depend on all **Serialization** namespaces in **System** and their sub-namespaces
 
 ### Denylisting
 * The **`<Disallowed From="N1" To="N2"/>`** config element defines that **N1** namespace **must not** depend on **N2** namespace.
@@ -87,6 +93,17 @@ Example:
 
 Meaning:
 * Every dependency is allowed but MyFrontEnd (and its sub-namespace) must not depend on MyDataAccess (and its sub-namespaces).
+
+### Behavior of the wildcards '*' and '?'
+If any `Disallowed` rule matches, no `Allowed` rule is considered.
+
+If multiple `Allowed` rules match the same namespace, the one with best matching `From` rule is selected.
+
+The best matching rule is the one with the minimal edit distance between namespace pattern and namespace name. The edit distance is calculated as the sum of all edit operations which are needed to replace the wildcards with the namespace names. The costs are as follows:
+* Replacing a `?` has a cost of 1.
+* Replacing a `*` has a cost of 1 and additionaly a cost of 1 per sub-namespace that replaces the `*`.
+
+Example: When matching the namespace `A.B.C.D` the rule `A.?.?.D` (edit distance = 2) is preferred to the rule `A.*.D` (edit distance = 3). If multiple rules have the same edit distance, the behavior is undefined.
 
 ### Namespace surface
 * The *surface* of a namespace consists of the types that are visible to some other namespace.
