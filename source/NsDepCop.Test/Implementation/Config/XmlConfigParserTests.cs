@@ -94,9 +94,9 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         }
 
         [Fact]
-        public void Parse_AllowedRuleForNamespaceTreeWithVisibleMembers_Throws()
+        public void Parse_AllowedRuleForWildcardNamespaceWithVisibleMembers_Throws()
         {
-            var xDocument = LoadXml("AllowedRuleForNamespaceTreeWithVisibleMembers.nsdepcop");
+            var xDocument = LoadXml("AllowedRuleForWildcardNamespaceWithVisibleMembers.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
             a.ShouldThrow<Exception>().WithMessage("*must be a single namespace*");
         }
@@ -155,6 +155,14 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var xDocument = LoadXml("InvalidNamespaceString.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
             a.ShouldThrow<Exception>().WithMessage("*not a valid Namespace*");
+        }
+
+        [Fact]
+        public void Parse_InvalidDuplicatedWildcardNamespaceString_Throws()
+        {
+            var xDocument = LoadXml("InvalidDuplicatedWildcardNamespaceString.nsdepcop");
+            Action a = () => XmlConfigParser.Parse(xDocument);
+            a.ShouldThrow<Exception>().WithMessage("*not a valid WildcardNamespace*");
         }
 
         [Fact]

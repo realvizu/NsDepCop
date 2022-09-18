@@ -3,7 +3,7 @@
 namespace Codartis.NsDepCop.Config
 {
     /// <summary>
-    /// Represents a namespace or a namespace tree. Immutable.
+    /// Represents a namespace or a namespace pattern. Immutable.
     /// </summary>
     [Serializable]
     public abstract class NamespaceSpecification

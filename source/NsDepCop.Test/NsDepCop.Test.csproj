@@ -169,7 +169,7 @@
     <None Include="Implementation\Config\XmlConfigParserTests\VisibleMembersOfNamespaceMissing.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Implementation\Config\XmlConfigParserTests\AllowedRuleForNamespaceTreeWithVisibleMembers.nsdepcop">
+    <None Include="Implementation\Config\XmlConfigParserTests\AllowedRuleForWildcardNamespaceWithVisibleMembers.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\XmlConfigParserTests\VisibleMembers.nsdepcop">
@@ -200,6 +200,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\XmlConfigParserTests\RootAttributes.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Implementation\Config\XmlConfigParserTests\InvalidDuplicatedWildcardNamespaceString.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

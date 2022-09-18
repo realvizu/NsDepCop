@@ -63,7 +63,7 @@ namespace Codartis.NsDepCop.Config
             if (namespaceAsString == RootNamespaceMarker)
                 return true;
 
-            if (namespaceAsString.EndsWith(NamespaceTree.AnyNamespaceMarker))
+            if (namespaceAsString.Any(c => c == WildcardNamespace.AnyNamespacesMarker[0] || c == WildcardNamespace.SingleNamespaceMarker[0] ))
                 return false;
 
             var pieces = namespaceAsString.Split(new[] { NamespacePartSeparator }, StringSplitOptions.None);

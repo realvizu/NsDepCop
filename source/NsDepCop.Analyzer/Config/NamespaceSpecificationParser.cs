@@ -15,9 +15,9 @@ namespace Codartis.NsDepCop.Config
         /// </remarks>
         public static NamespaceSpecification Parse(string namespaceSpecificationAsString)
         {
-            return namespaceSpecificationAsString.EndsWith(NamespaceTree.AnyNamespaceMarker) 
-                ? (NamespaceSpecification) new NamespaceTree(namespaceSpecificationAsString) 
-                : new Namespace(namespaceSpecificationAsString);
+            if (namespaceSpecificationAsString.Contains(WildcardNamespace.SingleNamespaceMarker) || namespaceSpecificationAsString.Contains(WildcardNamespace.AnyNamespacesMarker))
+                return new WildcardNamespace(namespaceSpecificationAsString);
+            return new Namespace(namespaceSpecificationAsString);
         }
     }
 }
