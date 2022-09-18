@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Codartis.NsDepCop.Config;
 using FluentAssertions;
 using Xunit;
@@ -50,6 +51,7 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         }
 
         [Fact]
+        [SuppressMessage("ReSharper", "EqualExpressionComparison")]
         public void Equals_Works()
         {
             (new WildcardNamespace("A.*") == new WildcardNamespace("A.*")).Should().BeTrue();
@@ -57,6 +59,7 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         }
 
         [Fact]
+        [SuppressMessage("ReSharper", "EqualExpressionComparison")]
         public void AnyNamespace_IsEqualToOtherInstanceOfAnyNamespace()
         {
             (new WildcardNamespace("*") == new WildcardNamespace("*")).Should().BeTrue();

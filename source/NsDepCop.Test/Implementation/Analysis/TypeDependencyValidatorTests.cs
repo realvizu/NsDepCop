@@ -90,7 +90,6 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("A.S", "C1", "U.V.T", "C2").Should().BeTrue();
             dependencyValidator.IsAllowedDependency("A.X.S", "C1", "U.T", "C2").Should().BeTrue();
             dependencyValidator.IsAllowedDependency("A.B.C.S", "C1", "U.V.T", "C2").Should().BeTrue();
-            dependencyValidator.IsAllowedDependency("A.B.C.S", "C1", "U.V.T", "C2").Should().BeTrue();
             dependencyValidator.IsAllowedDependency("A.B.S.C", "C1", "U.V.T", "C2").Should().BeFalse();
             dependencyValidator.IsAllowedDependency("A.B.S", "C1", "U.V.T.W", "C2").Should().BeFalse();
             dependencyValidator.IsAllowedDependency("A1.A.B.S", "C1", "U.V.T", "C2").Should().BeFalse();

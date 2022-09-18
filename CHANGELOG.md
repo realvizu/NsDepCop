@@ -1,5 +1,10 @@
 # NsDepCop Change Log
 
+## v2.2.0
+(09/2022)
+
+- [x] New: Wildcard patterns for namespaces.
+
 ## v2.1.0
 (07/2022)
 
