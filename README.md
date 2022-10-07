@@ -6,13 +6,15 @@ NsDepCop is a static code analysis tool that helps you to enforce namespace depe
 * Runs as part of the build process and reports dependency problems.
 * No more unplanned or unnoticed dependencies in your system.
 
-What is this [**dependency control**](doc/DependencyControl.md) anyway?
+What is this [**dependency control**](doc/DependencyControl.md) anyway? And [**why automate it**](https://www.plainionist.net/Dependency-Governance-DotNet/)?
 
 ## Getting Started
 
 1. Add the **NsDepCop NuGet package** to your C# projects: [![NuGet Package](https://img.shields.io/nuget/v/NsDepCop.svg)](https://nuget.org/packages/NsDepCop)
 1. Add a file called **config.nsdepcop**. Edit it and describe [**dependency rules**](doc/Help.md#dependency-rules). 
 1. Dependency violations will be underlined in the code editor and also reported at build time just like compiler errors/warnings.
+
+Or check out this step-by-step [**tutorial video**](https://www.youtube.com/watch?v=rkU7Hx20Dc0) by [plainionist](https://github.com/plainionist).
 
 See the [**Help**](doc/Help.md) for details.
 
