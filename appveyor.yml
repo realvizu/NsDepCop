@@ -24,8 +24,6 @@ dotnet_csproj:
   package_version: '$(informationalversion)'
 
 before_build:
-# vsixmanifest file must be specified with full path.
-- ps: Set-VsixVersion $env:APPVEYOR_BUILD_FOLDER\source\NsDepCop.ConfigSchema\source.extension.vsixmanifest $env:shortversion -ErrorAction Stop
 - cmd: nuget restore -Verbosity quiet source\NsDepCop.sln
 
 build:
@@ -36,5 +34,4 @@ test:
   assemblies: '**\*Test*.dll'
 
 artifacts:
-#- path: 'source\NsDepCop.ConfigSchema\bin\$(configuration)\NsDepCop*.vsix'
 - path: 'source\NsDepCop.NuGet\bin\$(configuration)\NsDepCop*.nupkg'
