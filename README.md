@@ -24,12 +24,12 @@ See the [**Help**](doc/Help.md) for details.
 ## Changes in v2.0
 
 The big change in v2.0 is that the implementation changed from MSBuild task + Visual Studio Extension to a standard Roslyn analyzer.
-- **Supports .NET Core / .NET 5** projects too.
+- **Supports .NET Core / .NET 5+** projects too.
 - **No need for the NsDepCop Visual Studio Extension** any more.
   - The NuGet package works both at build time and inside Visual Studio editor.
   - If the NuGet package is added to a project then it appears in Solution Explorer: project / Dependencies / Analyzers / NsDepCop.Analyzer
   - [Issue severities can be configured using Visual Studio light bulb menu or .editorconfig files](https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers?view=vs-2019).
-- **Requires Visual Studio 2019 (16.10.0 or later).**
+- **Requires Visual Studio 2019/2022 (16.10.0 or later).**
   - Dropped support for VS 2015/2017. For those, use NsDepCop v1.11.0.
 - No need for the out-of-process service host any more.
   - No more "Unable to communicate with NsDepCop service".
