@@ -219,11 +219,9 @@ See the XSD schema of config.nsdepcop [here](../source/NsDepCop.ConfigSchema/NsD
 ## Config XML schema support in Visual Studio
 Add NsDepCop config XML schema to the Visual Studio schema cache to get validation and IntelliSense when editing NsDepCop config files.
 
-* For Visual Studio 2017/2019 install this extension: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop%20Config%20XML%20Schema%20Support-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCopConfigXMLSchemaSupport)
-* For Visual Studio 2015:
-  * Copy the following files into the VS2015 schema cache folder (vs2015installdir/Xml/Schemas):
-    * [NsDepCopCatalog.xml](../source/NsDepCop.ConfigSchema/NsDepCopCatalog.xml)
-    * [NsDepCopConfig.xsd](../source/NsDepCop.ConfigSchema/NsDepCopConfig.xsd)
+* Copy the following files into the Visual Studio schema cache folder, located at &lt;VsInstallDir&gt;/Xml/Schemas (eg. C:\Program Files\Microsoft Visual Studio\2022\Community\Xml\Schemas):
+  * [NsDepCopCatalog.xml](../source/NsDepCop.ConfigSchema/NsDepCopCatalog.xml)
+  * [NsDepCopConfig.xsd](../source/NsDepCop.ConfigSchema/NsDepCopConfig.xsd)
 
 ## v1.x only topics
 The following topics apply only to v1.x versions.

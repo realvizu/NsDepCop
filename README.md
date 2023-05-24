@@ -16,13 +16,10 @@ What is this [**dependency control**](doc/DependencyControl.md) anyway? And [**w
 
 Or check out this step-by-step [**tutorial video**](https://www.youtube.com/watch?v=rkU7Hx20Dc0) by [plainionist](https://github.com/plainionist).
 
+To get validation and IntelliSense while editing the config.nsdepcop files, add the config XML schema to the Visual Studio XML schema cache.
+See details [here](doc/Help.md#config-xml-schema-support-in-visual-studio).
+
 See the [**Help**](doc/Help.md) for details.
-
-## Optional Stuff
-
-* Install the **NsDepCop Config XML Schema Support** for Visual Studio to get validation and IntelliSense while editing the config.nsdepcop files.
-  * For Visual Studio 2017/2019: [![Visual Studio extension](https://img.shields.io/badge/Visual%20Studio%20Marketplace-NsDepCop%20Config%20XML%20Schema%20Support-green.svg)](https://marketplace.visualstudio.com/items?itemName=FerencVizkeleti.NsDepCopConfigXMLSchemaSupport)
-  * For Visual Studio 2015: see the instructions in [Help](doc/Help.md#config-xml-schema-support-in-visual-studio).
 
 ## Changes in v2.0
 
