@@ -81,6 +81,13 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="ParentCanDependOnChildImplicitly" type="xs:boolean" use="optional">
+                <xs:annotation>
+                    <xs:documentation>
+                        Set to true to enable all parent namespaces to depend on any of their children namespaces. Default is false.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="InfoImportance" type="MessageImportance" use="optional">
                 <xs:annotation>
                     <xs:documentation>
