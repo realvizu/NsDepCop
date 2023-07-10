@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
     public class CachingTypeDependencyValidator : TypeDependencyValidator, ICacheStatisticsProvider
     {
         private readonly MessageHandler _traceMessageHandler;
-        private readonly ConcurrentDictionary<TypeDependency, bool> _dependencyValidationCache;
+        private readonly ConcurrentDictionary<TypeDependency, DependencyStatus> _dependencyValidationCache;
 
         public int HitCount { get; private set; }
         public int MissCount { get; private set; }
@@ -19,15 +19,15 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             : base(dependencyRules)
         {
             _traceMessageHandler = traceMessageHandler;
-            _dependencyValidationCache = new ConcurrentDictionary<TypeDependency, bool>();
+            _dependencyValidationCache = new ConcurrentDictionary<TypeDependency, DependencyStatus>();
         }
 
         public double EfficiencyPercent => MathHelper.CalculatePercent(HitCount, HitCount + MissCount);
-
-        public override bool IsAllowedDependency(TypeDependency typeDependency)
+        
+        public override DependencyStatus IsAllowedDependency(TypeDependency typeDependency)
         {
             if (typeDependency.FromNamespaceName == typeDependency.ToNamespaceName)
-                return true;
+                return DependencyStatus.Allowed;
 
             var isAllowedDependency = _dependencyValidationCache.GetOrAdd(typeDependency, base.IsAllowedDependency, out var added);
 

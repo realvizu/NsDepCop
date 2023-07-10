@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="typeDependency">A dependency of two types.</param>
         /// <returns>True if the dependency is allowed, false otherwise.</returns>
-        bool IsAllowedDependency(TypeDependency typeDependency);
+        DependencyStatus IsAllowedDependency(TypeDependency typeDependency);
     }
 }

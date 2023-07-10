@@ -1,4 +1,6 @@
-﻿namespace Codartis.NsDepCop.Analysis.Messages
+﻿using System;
+
+namespace Codartis.NsDepCop.Analysis.Messages
 {
     /// <summary>
     /// A message containing an illegal type dependency.
@@ -7,9 +9,17 @@
     {
         public TypeDependency IllegalDependency { get; }
 
-        public IllegalDependencyMessage(TypeDependency illegalDependency)
+        public string[] AllowedTypeNames { get; } = Array.Empty<string>();
+
+        public IllegalDependencyMessage(TypeDependency illegalDependency, string[] allowedTypeNames)
         {
             IllegalDependency = illegalDependency;
         }
+
+        // public IllegalDependencyMessage(TypeDependency illegalDependency, string[] allowedTypeNames)
+        // {
+        //     IllegalDependency = illegalDependency;
+        //     AllowedTypeNames = allowedTypeNames;
+        // }
     }
 }

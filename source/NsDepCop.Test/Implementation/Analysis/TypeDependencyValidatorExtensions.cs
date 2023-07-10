@@ -11,7 +11,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             string fromNamespace, string fromType, string toNamespace, string toType)
         {
             var typeDependency = new TypeDependency(fromNamespace, fromType, toNamespace, toType, DummySourceSegment);
-            return typeDependencyValidator.IsAllowedDependency(typeDependency);
+            return typeDependencyValidator.IsAllowedDependency(typeDependency).IsAllowed;
         }
     }
 }
