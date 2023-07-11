@@ -171,8 +171,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
                     yield return new IllegalTypeDependency(illegalDependency.dep, illegalDependency.Item2.AllowedTypeNames);
                     
                 }
-
-                //yield return new IllegalDependencyMessage(illegalDependency.dep, Array.Empty<string>());
+                yield return new IllegalTypeDependency(illegalDependency.dep, Array.Empty<string>());
             }
 
             _traceMessageHandler?.Invoke(GetCacheStatisticsMessage(_typeDependencyValidator));

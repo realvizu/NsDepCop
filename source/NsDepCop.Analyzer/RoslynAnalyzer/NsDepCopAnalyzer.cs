@@ -125,13 +125,21 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
                     break;
                 }
 
+                string allowedMemberNames = string.Empty;
+
+                if (analyzerMessage.AllowedMemberNames.Length > 0)
+                {
+                    allowedMemberNames = $" Allowed types are: {string.Join(", ", analyzerMessage.AllowedMemberNames)}";
+                }
+
                 ReportForSyntaxNode(
                     syntaxNodeAnalysisContext,
                     DiagnosticDefinitions.IllegalDependency,
                     analyzerMessage.IllegalDependency.FromNamespaceName,
                     analyzerMessage.IllegalDependency.ToNamespaceName,
                     analyzerMessage.IllegalDependency.FromTypeName,
-                    analyzerMessage.IllegalDependency.ToTypeName
+                    analyzerMessage.IllegalDependency.ToTypeName,
+                    allowedMemberNames
                 );
             }
         }

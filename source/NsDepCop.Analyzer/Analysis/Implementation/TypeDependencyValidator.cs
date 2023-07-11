@@ -58,9 +58,9 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             if (visibleMembers == null || visibleMembers.Count == 0)
                 return DependencyStatus.Allowed;
 
-            bool isAllowedDependency = visibleMembers.Contains(typeDependency.ToTypeName);
+            bool isUsingVisibleMember = visibleMembers.Contains(typeDependency.ToTypeName);
             
-            return isAllowedDependency
+            return isUsingVisibleMember
                 ? DependencyStatus.Allowed
                 : DependencyStatus.DisallowedWithinSpecifiedConstraints(visibleMembers.ToArray());
         }

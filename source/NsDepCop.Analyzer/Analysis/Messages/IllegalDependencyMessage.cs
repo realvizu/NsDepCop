@@ -9,17 +9,12 @@ namespace Codartis.NsDepCop.Analysis.Messages
     {
         public TypeDependency IllegalDependency { get; }
 
-        public string[] AllowedTypeNames { get; } = Array.Empty<string>();
+        public string[] AllowedMemberNames { get; } = Array.Empty<string>();
 
-        public IllegalDependencyMessage(TypeDependency illegalDependency, string[] allowedTypeNames)
+        public IllegalDependencyMessage(TypeDependency illegalDependency, string[] allowedMemberNames)
         {
             IllegalDependency = illegalDependency;
+            AllowedMemberNames = allowedMemberNames;
         }
-
-        // public IllegalDependencyMessage(TypeDependency illegalDependency, string[] allowedTypeNames)
-        // {
-        //     IllegalDependency = illegalDependency;
-        //     AllowedTypeNames = allowedTypeNames;
-        // }
     }
 }
