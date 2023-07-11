@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Codartis.NsDepCop.Analysis.Implementation;
+namespace Codartis.NsDepCop.Analysis.Implementation
 {
     public class DependencyStatus
     {
