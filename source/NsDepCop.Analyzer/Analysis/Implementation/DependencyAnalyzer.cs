@@ -152,26 +152,20 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             //    ConfigProvider.UpdateMaxIssueCount(finalIssueCount);
         }
 
+        private record struct DependencyAndStatus(TypeDependency Depedency, DependencyStatus Status);
+
         private IEnumerable<IllegalTypeDependency> GetIllegalTypeDependencies(Func<IEnumerable<TypeDependency>> typeDependencyEnumerator)
         {
-            var allDeps = typeDependencyEnumerator().Select(dep => (dep, _typeDependencyValidator.IsAllowedDependency(dep)));
+            var allDependencies = typeDependencyEnumerator()
+                .Select(dep => new DependencyAndStatus(dep, _typeDependencyValidator.IsAllowedDependency(dep)));
             
-            var excessIllegalDeps = allDeps
-                .Where(i => !i.Item2.IsAllowed)
+            var excessIllegalDependencies = allDependencies
+                .Where(i => !i.Status.IsAllowed)
                 .Take(_config.MaxIssueCount + 1);
             
-            // var illegalDependencies = typeDependencyEnumerator()
-            //     .Where(i => !_typeDependencyValidator.IsAllowedDependency(i).IsAllowed)
-            //     .Take(_config.MaxIssueCount + 1);
-
-            foreach (var illegalDependency in excessIllegalDeps)
+            foreach (var illegalDependency in excessIllegalDependencies)
             {
-                if (illegalDependency.Item2.AllowedTypeNames != Array.Empty<string>())
-                {
-                    yield return new IllegalTypeDependency(illegalDependency.dep, illegalDependency.Item2.AllowedTypeNames);
-                    
-                }
-                yield return new IllegalTypeDependency(illegalDependency.dep, Array.Empty<string>());
+                yield return new IllegalTypeDependency(illegalDependency.Depedency, illegalDependency.Status.AllowedTypeNames);
             }
 
             _traceMessageHandler?.Invoke(GetCacheStatisticsMessage(_typeDependencyValidator));

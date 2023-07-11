@@ -21,6 +21,7 @@ namespace Codartis.NsDepCop.SourceTest
         private readonly string _name;
         private readonly ITypeDependencyEnumerator _typeDependencyEnumerator;
         private readonly List<SourceLineSegment> _invalidLineSegments = new();
+        private readonly List<string[]> _allowedMemberNames = new();
 
         private SourceTestSpecification(string name, ITypeDependencyEnumerator typeDependencyEnumerator)
         {
@@ -34,6 +35,13 @@ namespace Codartis.NsDepCop.SourceTest
         public SourceTestSpecification ExpectInvalidSegment(int line, int startColumn, int endColumn)
         {
             _invalidLineSegments.Add(new SourceLineSegment(line, startColumn, endColumn));
+            return this;
+        }
+
+        public SourceTestSpecification ExpectInvalidSegment(int line, int startColumn, int endColumn, string[] expectedAllowedMemberNames)
+        {
+            _invalidLineSegments.Add(new SourceLineSegment(line, startColumn, endColumn));
+            _allowedMemberNames.Add(expectedAllowedMemberNames);
             return this;
         }
 
@@ -65,18 +73,30 @@ namespace Codartis.NsDepCop.SourceTest
             var baseFolder = GetBinFilePath(_name);
             var illegalDependencies = GetIllegalDependencies(baseFolder, sourceFiles, referencedAssemblies).ToList();
 
-            illegalDependencies.Select(i => i.SourceSegment)
+            illegalDependencies.Select(i => i.IllegalDependency.SourceSegment)
                 .Should().Equal(_invalidLineSegments,
                     (typeDependency, sourceLineSegment) => sourceLineSegment.Equals(typeDependency));
+
+            List<string[]> membersFromGenerator = illegalDependencies
+                .Select(i => i.AllowedMemberNames)
+                .Where(amn => amn.Any())
+                .ToList();
+
+            membersFromGenerator.Count.Should().Be(_allowedMemberNames.Count);
+
+            for (int i = 0; i < membersFromGenerator.Count; i++)
+            {
+                membersFromGenerator[i].Should().BeEquivalentTo(_allowedMemberNames[i]);
+            }
         }
 
-        private IEnumerable<TypeDependency> GetIllegalDependencies(string baseFolder,
+        private IEnumerable<IllegalDependencyMessage> GetIllegalDependencies(string baseFolder,
             IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
         {
             var dependencyAnalyzerFactory = new DependencyAnalyzerFactory(DebugMessageHandler);
             var configProvider = new ConfigProviderFactory(DebugMessageHandler).CreateFromMultiLevelXmlConfigFile(baseFolder);
             var dependencyAnalyzer = dependencyAnalyzerFactory.Create(configProvider, _typeDependencyEnumerator);
-            return dependencyAnalyzer.AnalyzeProject(sourceFiles, referencedAssemblies).OfType<IllegalDependencyMessage>().Select(i => i.IllegalDependency);
+            return dependencyAnalyzer.AnalyzeProject(sourceFiles, referencedAssemblies).OfType<IllegalDependencyMessage>();
         }
 
         private static string GetTestFileFullPath(string testName)
