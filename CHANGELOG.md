@@ -1,5 +1,10 @@
 # NsDepCop Change Log
 
+## v2.3.0
+(07/2023)
+
+- [x] Changed: Added the allowed type names to the diagnostic message (if VisibleMembers are specified).
+
 ## v2.2.0
 (09/2022)
 
