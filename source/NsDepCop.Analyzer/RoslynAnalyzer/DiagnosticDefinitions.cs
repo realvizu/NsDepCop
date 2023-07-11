@@ -16,7 +16,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         public static readonly DiagnosticDescriptor IllegalDependency = CreateDiagnosticDescriptor(
             "NSDEPCOP01",
             "Illegal namespace reference.",
-            "Illegal namespace reference: {0}->{1} (Type: {2}->{3})",
+            "Illegal namespace reference: {0}->{1} (Type: {2}->{3}){4}",
             DiagnosticSeverity.Warning,
             "This type cannot reference the other type because their namespaces cannot depend on each other according to the current rules." +
             " Change the dependency rules in the 'config.nsdepcop' file or change your design to avoid this namespace dependency."

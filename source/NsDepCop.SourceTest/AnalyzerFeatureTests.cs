@@ -65,17 +65,19 @@ namespace Codartis.NsDepCop.SourceTest
         [Fact]
         public void AnalyzerFeature_VisibleMembersOfNamespace()
         {
+            string[] members = new[] { "VisibleType", "OnlyGenericIsVisibleType`1" };
+
             SourceTestSpecification.Create()
                 
                 // A -> C
-                .ExpectInvalidSegment(6, 19, 32)
-                .ExpectInvalidSegment(8, 19, 43)
-                .ExpectInvalidSegment(9, 19, 47)
+                .ExpectInvalidSegment(6, 19, 32, members)
+                .ExpectInvalidSegment(8, 19, 43, members)
+                .ExpectInvalidSegment(9, 19, 47, members)
 
                 // B -> C
-                .ExpectInvalidSegment(20, 19, 32)
-                .ExpectInvalidSegment(22, 19, 43)
-                .ExpectInvalidSegment(23, 19, 47)
+                .ExpectInvalidSegment(20, 19, 32, members)
+                .ExpectInvalidSegment(22, 19, 43, members)
+                .ExpectInvalidSegment(23, 19, 47, members)
                 
                 .Execute();
         }
@@ -83,12 +85,14 @@ namespace Codartis.NsDepCop.SourceTest
         [Fact]
         public void AnalyzerFeature_VisibleMembersOfAllowedRule()
         {
+            string[] members = new[] { "VisibleType", "OnlyGenericIsVisibleType`1" };
+            
             SourceTestSpecification.Create()
 
                 // A -> C
-                .ExpectInvalidSegment(6, 19, 32)
-                .ExpectInvalidSegment(8, 19, 43)
-                .ExpectInvalidSegment(9, 19, 47)
+                .ExpectInvalidSegment(6, 19, 32, members)
+                .ExpectInvalidSegment(8, 19, 43, members)
+                .ExpectInvalidSegment(9, 19, 47, members)
 
                 .Execute();
         }

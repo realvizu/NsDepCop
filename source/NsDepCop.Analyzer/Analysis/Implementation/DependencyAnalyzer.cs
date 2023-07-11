@@ -129,7 +129,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
                 : null;
         }
 
-        private IEnumerable<AnalyzerMessageBase> AnalyzeCore(Func<IEnumerable<TypeDependency>> illegalTypeDependencyEnumerator)
+        private IEnumerable<AnalyzerMessageBase> AnalyzeCore(Func<IEnumerable<IllegalTypeDependency>> illegalTypeDependencyEnumerator)
         {
             return _configProvider.ConfigState switch
             {
@@ -141,9 +141,9 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             };
         }
 
-        private static IEnumerable<AnalyzerMessageBase> PerformAnalysis(Func<IEnumerable<TypeDependency>> illegalTypeDependencyEnumerator)
+        private static IEnumerable<AnalyzerMessageBase> PerformAnalysis(Func<IEnumerable<IllegalTypeDependency>> illegalTypeDependencyEnumerator)
         {
-            return illegalTypeDependencyEnumerator().Select(i => new IllegalDependencyMessage(i));
+            return illegalTypeDependencyEnumerator().Select(i => new IllegalDependencyMessage(i.TypeDependency, i.AllowedMembers));
 
             // TODO: AutoLowerMaxIssueCount logic should be moved to NsDepCopAnalyzer to act at the end of a compilation.
             // This method is called multiple times during a compilation so we don't know the final issue count here
@@ -152,19 +152,37 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             //    ConfigProvider.UpdateMaxIssueCount(finalIssueCount);
         }
 
-        private IEnumerable<TypeDependency> GetIllegalTypeDependencies(Func<IEnumerable<TypeDependency>> typeDependencyEnumerator)
+        private IEnumerable<IllegalTypeDependency> GetIllegalTypeDependencies(Func<IEnumerable<TypeDependency>> typeDependencyEnumerator)
         {
-            var illegalDependencies = typeDependencyEnumerator()
-                .Where(i => !_typeDependencyValidator.IsAllowedDependency(i))
+            var allDependencies = typeDependencyEnumerator()
+                .Select(dep => (Dependency: dep, Status: _typeDependencyValidator.IsAllowedDependency(dep)));
+            
+            var excessIllegalDependencies = allDependencies
+                .Where(i => !i.Status.IsAllowed)
                 .Take(_config.MaxIssueCount + 1);
-
-            foreach (var illegalDependency in illegalDependencies)
-                yield return illegalDependency;
+            
+            foreach (var illegalDependency in excessIllegalDependencies)
+            {
+                yield return new IllegalTypeDependency(illegalDependency.Dependency, illegalDependency.Status.AllowedTypeNames);
+            }
 
             _traceMessageHandler?.Invoke(GetCacheStatisticsMessage(_typeDependencyValidator));
         }
 
         private static string GetCacheStatisticsMessage(ICacheStatisticsProvider i) =>
             $"Cache hits: {i.HitCount}, misses: {i.MissCount}, efficiency (hits/all): {i.EfficiencyPercent:P}";
+    }
+
+    public class IllegalTypeDependency
+    {
+        public TypeDependency TypeDependency { get; }
+        
+        public string[] AllowedMembers { get; }
+    
+        public IllegalTypeDependency(TypeDependency typeDependency, string[] allowedMembers)
+        {
+            TypeDependency = typeDependency;
+            AllowedMembers = allowedMembers;
+        }
     }
 }

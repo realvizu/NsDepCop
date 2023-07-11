@@ -30,11 +30,11 @@ namespace Codartis.NsDepCop.Analysis.Implementation
         /// </summary>
         /// <param name="typeDependency">A dependency of two types.</param>
         /// <returns>True if the dependency is allowed, false otherwise.</returns>
-        public virtual bool IsAllowedDependency(TypeDependency typeDependency)
+        public virtual DependencyStatus IsAllowedDependency(TypeDependency typeDependency)
         {
             // Inside a namespace all dependencies are allowed.
             if (typeDependency.FromNamespaceName == typeDependency.ToNamespaceName)
-                return true;
+                return DependencyStatus.Allowed;
 
             // These namespace names are coming from a compiler so we don't have to validate them.
             var fromNamespace = new Namespace(typeDependency.FromNamespaceName, validate: false);
@@ -42,23 +42,27 @@ namespace Codartis.NsDepCop.Analysis.Implementation
 
             var disallowRule = GetDisallowRule(fromNamespace, toNamespace);
             if (disallowRule != null)
-                return false;
+                return DependencyStatus.Disallowed;
 
             if (IsAllowedBecauseChildCanDependOnParent(fromNamespace, toNamespace))
-                return true;
+                return DependencyStatus.Allowed;
             
             if (IsAllowedBecauseParentCanDependOnChild(fromNamespace, toNamespace))
-                return true;
+                return DependencyStatus.Allowed;
 
             var allowRule = GetMostSpecificAllowRule(fromNamespace, toNamespace);
             if (allowRule == null)
-                return false;
+                return DependencyStatus.Disallowed;
 
-            var visibleMembers = GetVisibleMembers(allowRule, toNamespace);
+            TypeNameSet visibleMembers = GetVisibleMembers(allowRule, toNamespace);
             if (visibleMembers == null || visibleMembers.Count == 0)
-                return true;
+                return DependencyStatus.Allowed;
 
-            return visibleMembers.Contains(typeDependency.ToTypeName);
+            bool isUsingVisibleMember = visibleMembers.Contains(typeDependency.ToTypeName);
+            
+            return isUsingVisibleMember
+                ? DependencyStatus.Allowed
+                : DependencyStatus.DisallowedUseOfMember(visibleMembers.ToArray());
         }
 
         private bool IsAllowedBecauseChildCanDependOnParent(Namespace fromNamespace, Namespace toNamespace)
