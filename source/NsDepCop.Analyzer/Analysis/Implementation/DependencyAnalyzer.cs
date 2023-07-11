@@ -152,12 +152,10 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             //    ConfigProvider.UpdateMaxIssueCount(finalIssueCount);
         }
 
-        private record struct DependencyAndStatus(TypeDependency Depedency, DependencyStatus Status);
-
         private IEnumerable<IllegalTypeDependency> GetIllegalTypeDependencies(Func<IEnumerable<TypeDependency>> typeDependencyEnumerator)
         {
             var allDependencies = typeDependencyEnumerator()
-                .Select(dep => new DependencyAndStatus(dep, _typeDependencyValidator.IsAllowedDependency(dep)));
+                .Select(dep => (Dependency: dep, Status: _typeDependencyValidator.IsAllowedDependency(dep)));
             
             var excessIllegalDependencies = allDependencies
                 .Where(i => !i.Status.IsAllowed)
@@ -165,7 +163,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             
             foreach (var illegalDependency in excessIllegalDependencies)
             {
-                yield return new IllegalTypeDependency(illegalDependency.Depedency, illegalDependency.Status.AllowedTypeNames);
+                yield return new IllegalTypeDependency(illegalDependency.Dependency, illegalDependency.Status.AllowedTypeNames);
             }
 
             _traceMessageHandler?.Invoke(GetCacheStatisticsMessage(_typeDependencyValidator));
