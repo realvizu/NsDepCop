@@ -62,7 +62,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             
             return isUsingVisibleMember
                 ? DependencyStatus.Allowed
-                : DependencyStatus.DisallowedWithinSpecifiedConstraints(visibleMembers.ToArray());
+                : DependencyStatus.DisallowedUseOfMember(visibleMembers.ToArray());
         }
 
         private bool IsAllowedBecauseChildCanDependOnParent(Namespace fromNamespace, Namespace toNamespace)

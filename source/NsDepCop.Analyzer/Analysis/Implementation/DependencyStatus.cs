@@ -16,7 +16,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
 
         public static readonly DependencyStatus Disallowed = new() { IsAllowed = false };
 
-        public static DependencyStatus DisallowedWithinSpecifiedConstraints(string[] allowedTypeNames) =>
+        public static DependencyStatus DisallowedUseOfMember(string[] allowedTypeNames) =>
             new() { IsAllowed = false, AllowedTypeNames = allowedTypeNames };
     }
 }
