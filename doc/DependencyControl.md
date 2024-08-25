@@ -1,27 +1,29 @@
 # Dependency Control
 
-## Why care about code dependencies?
-"Poor dependency management leads to code that is hard to change, fragile, and non-reusable," [said Uncle Bob](http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod).
+## Why Care About Code Dependencies?
+The number one enemy of a developer is complexity.
 
-Dependency control tools help you to enforce an organizing scheme so your code base doesn't degrade with time into a tangled mess.
+Among the many sources of complexity, lets focus now on the structure of the codebase and its dependencies.
+* To reduce complexity, the primary strategy is to decompose the code into smaller units (e.g., modules) and limit dependencies between them. 
+* A codebase with well-defined modules and clear dependency rules is easier to understand, modify, and reuse. 
+* However, without a dependency control tool acting as a safeguard, even a well-structured codebase can eventually degrade into a tangled mess.
 
-If you want to learn more about dependency management I highly recommend Uncle Bob's [articles](https://docs.google.com/file/d/0BxR1naE0JfyzV2JVbkYwRE5odGM), [books](https://www.amazon.com/Agile-Principles-Patterns-Practices-C/dp/0131857258) and [training videos](https://cleancoders.com/videos/clean-code/solid-principles).
+## How to Control Code Dependencies?
+Dependency control tools allow you to define rules for permitted and prohibited dependencies and alert you to any violations.
 
-## How to control code dependencies?
-Dependency control tools let you describe your intentions about allowed and disallowed dependencies and warn you about dependency violations.
+These tools can operate at various levels and on different input formats:
+* Physical level: Projects, libraries, assemblies.
+* Logical level: Namespaces, types.
+* Input formats: Source code, compiled forms (binary or intermediary).
 
-They can work at different levels and on different input formats:
-* at the physical level (projects, libraries, assemblies), or the logical level (namespaces and types),
-* on the source code, or on the compiled (binary or intermediary) form.
-
-**This tool checks dependencies at the namespace level, in the source code.**
+**This tool checks dependencies at the namespace level within the source code.**
 
 It also supports some fine-tuning at the type level (see details below).
 
-## So what is a namespace dependency?
-Namespace **A** depends on namespace **B** if any type declared in namespace **A** uses any type declared in namespace **B**.
+## What Is a Namespace Dependency?
+Namespace **A** depends on Namespace **B** if any type declared in Namespace **A** uses any type declared in Namespace **B**.
 
-In the example below **A->B** because type A1 uses types B1, B2, B3, B4, B5.
+In the example below **Namespace A depends on Namespace B** because type A1 uses types B1, B2, B3, B4 and B5.
 ```csharp
 namespace A
 {
@@ -44,25 +46,25 @@ namespace B
 }
 ```
 
-It is worth noting that the statement "using B" *does not automatically imply* an A->B dependency because it could be that despite the using no member of namespace B actually appear in class A1.
+Note that a "using B" directive *does not automatically imply* a dependency from A to B. If no members of Namespace B are actually used in class A1, then no real dependency exists. Modern code editors can warn about unnecessary using directives. This tool only considers actual code dependencies.
 
-## What is the recommended approach?
-* **Define** the high level structure of your system as a hierarchy of logical modules/packages.
-  * Better upfront to avoid a lot of refactoring later.
-  * NsDepCop won't help you with this. Use a modeling tool or just pen and paper.
-* **Implement** the logical modules/packages with C# namespaces.
-  * Maintain a 1-to-1 correspondence between logical units and namespaces.
-* [**Describe**](Help.md#dependency-rules) the allowed namespace dependencies in **config.nsdepcop** files.
-  * One config file per C# project.
-  * You can put the common settings/rules into a "master" config file.
-* **Fix** illegal dependencies reported by NsDepCop.
-  * Sometimes it will require some rethinking/redesign in the architecture.
-  * Beware of **circular dependencies** as those mean that none of the constituents can be safely changed without potentially affecting all the others.
+## Recommended approach
+* **Define** the high-level structure of your system as a hierarchy of logical modules or packages. 
+  * It's better to do this upfront to avoid extensive refactoring later. 
+  * This tool won't assist with the initial design; use a modeling tool or even pen and paper for this step.
+* **Implement** these logical modules/packages using C# namespaces.
+  * Ensure a one-to-one correspondence between logical units and namespaces.
+* [**Describe**](Help.md#dependency-rules) allowed namespace dependencies in config.nsdepcop files.
+  * Use one config file per C# project. 
+  * Common dependency rules can be placed in a ["master" config file](Help.md#config-inheritance).
+* **Fix** illegal dependencies reported by the tool. 
+  * This may require rethinking or redesigning parts of your architecture.
+  * Avoid circular dependencies.
 
-## Why namespace dependencies instead of type dependencies?
-In my experience enforcing dependency rules at the type level results in a verbose and brittle dependency description.
-Namespaces are a better target for the dependency rules because they give you a level of abstraction above types and also a hierarchical organization that can simplify dependency rules by allowing dependencies to be specified not only between logical packages but also between trees/subtrees of packages.
+## Why Namespace Dependencies Instead of Type Dependencies?
+Enforcing dependency rules at the type level can lead to verbose and fragile dependency descriptions.
 
-## Why does this tool support some type level dependency control?
-There's a scenario when you as the designer of a system's structure use some third party or legacy stuff whose structure you don't control but still want to limit your system's dependency on it. 
-So when depending on a namespace you can define a subset of its types as the *visible part* or the *"surface"* of that namespace. All other types in that namespace will be illegal to depend upon.
+Namespaces provide a useful level of abstraction above types and offer a hierarchical structure that simplifies dependency rules. This allows dependencies to be specified not just between individual logical packages but also between groups or subgroups of packages.
+
+## Why Does This Tool Support Some Type-Level Dependency Control?
+In cases where you are working with third-party or legacy code whose structure you cannot control, but still want to limit dependencies, this tool allows you to specify a subset of types within a namespace as the visible "surface" of that namespace. All other types in that namespace are then illegal to depend upon.
