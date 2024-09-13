@@ -45,24 +45,24 @@ namespace Codartis.NsDepCop.SourceTest
             return this;
         }
 
-        public void Execute()
+        public void Execute(OutputKind? outputKind = null)
         {
             var sourceFilePaths = new[] {_name}.Select(GetTestFileFullPath).ToList();
             var referencedAssemblyPaths = GetReferencedAssemblyPaths().ToList();
 
-            ValidateCompilation(sourceFilePaths, referencedAssemblyPaths);
+            ValidateCompilation(sourceFilePaths, referencedAssemblyPaths, outputKind ?? OutputKind.DynamicallyLinkedLibrary);
             AssertIllegalDependencies(sourceFilePaths, referencedAssemblyPaths);
         }
 
         private static void DebugMessageHandler(string message) => Debug.WriteLine(message);
 
-        private void ValidateCompilation(IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies)
+        private void ValidateCompilation(IEnumerable<string> sourceFiles, IEnumerable<string> referencedAssemblies, OutputKind outputKind = OutputKind.DynamicallyLinkedLibrary)
         {
             var compilation = CSharpCompilation.Create(
                 "NsDepCopProject",
                 sourceFiles.Select(i => CSharpSyntaxTree.ParseText(LoadFile(i), CSharpParseOptions)),
                 referencedAssemblies.Select(i => MetadataReference.CreateFromFile(i)),
-                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, allowUnsafe: true));
+                new CSharpCompilationOptions(outputKind, allowUnsafe: true));
 
             var errors = compilation.GetDiagnostics().Where(i => i.Severity == DiagnosticSeverity.Error).ToList();
             errors.Should().HaveCount(0);

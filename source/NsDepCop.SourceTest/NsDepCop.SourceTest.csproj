@@ -47,6 +47,7 @@
     <Compile Remove="AnalyzerFeature_VisibleMembersOfNamespace\AnalyzerFeature_VisibleMembersOfNamespace.cs">
 
     </Compile>
+    <Compile Remove="AnalyzerFeature_WithTopLevelStatement\AnalyzerFeature_WithTopLevelStatement.cs" />
     <Compile Remove="Cs7_IsExpressionWithPattern\Cs7_IsExpressionWithPattern.cs">
 
     </Compile>
@@ -174,6 +175,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="AnalyzerFeature_VisibleMembersOfNamespace\AnalyzerFeature_VisibleMembersOfNamespace.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="AnalyzerFeature_WithTopLevelStatement\AnalyzerFeature_WithTopLevelStatement.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Cs7_IsExpressionWithPattern\Cs7_IsExpressionWithPattern.cs">
@@ -315,6 +319,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="AnalyzerFeature_VisibleMembersOfNamespace\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AnalyzerFeature_WithTopLevelStatement\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Cs6_AliasQualifiedName\config.nsdepcop">
