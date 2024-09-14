@@ -96,5 +96,15 @@ namespace Codartis.NsDepCop.SourceTest
 
                 .Execute();
         }
+
+        [Fact]
+        public void AnalyzerFeature_WithTopLevelStatement()
+        {
+            SourceTestSpecification.Create()
+
+                .ExpectInvalidSegment(1, 8, 12)
+
+                .Execute(Microsoft.CodeAnalysis.OutputKind.ConsoleApplication);
+        }
     }
 }
