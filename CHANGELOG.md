@@ -1,5 +1,10 @@
 # NsDepCop Change Log
 
+## v2.4.0
+(09/2024)
+
+- [x] New: Analyzing top level statements.
+
 ## v2.3.0
 (07/2023)
 

@@ -17,7 +17,7 @@
 
   <PropertyGroup>
     <PackageId>NsDepCop</PackageId>
-    <PackageVersion>2.3.0-local</PackageVersion>
+    <PackageVersion>2.4.0-local</PackageVersion>
     <Title>NsDepCop - Namespace Dependency Checker Tool for C#</Title>
     <Description>Static code analysis tool for enforcing namespace-based type dependency rules in C# projects.</Description>
     <PackageTags>static code analysis analyzer tool C# csharp namespace type dependency dependencies</PackageTags>
@@ -30,8 +30,8 @@
     <PackageIconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</PackageIconUrl>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageReleaseNotes>
-- #67: Added the allowed type names to the diagnostic message (if VisibleMembers are specified).
-    </PackageReleaseNotes>
+- New: Analyzing top level statements.
+	</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
