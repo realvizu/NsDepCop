@@ -21,8 +21,11 @@
 * The rule config file must be named **config.nsdepcop** and its build action must be set to **C# analyzer additional file** (the NsDepCop NuGet package set it automatically).
 * The default (and recommended) approach is [**allowlisting**](#allowlisting), that is, if a dependency is not explicitly allowed then it is disallowed. (See also: [denylisting](#denylisting)).
 * The config file can inherit other config files from parent folders, see [**config inheritance**](#config-inheritance)
+* Whe have two types of dependency checks: namespace and assembly dependency check
+* The dependency check is disabled by default and needs to be enabled with **CheckAssemblyDependencies** attribute on the root element.
 
-### Example
+
+### Example One
 ```xml
 <NsDepCopConfig IsEnabled="true" ChildCanDependOnParentImplicitly="true">
     <Allowed From="*" To="System.*" />
@@ -36,6 +39,18 @@ Meaning:
 * The **NsDepCop** namespace and all of its sub-namespaces can reference the **Microsoft.CodeAnalysis** namespace and any of its sub-namespaces.
 * The **NsDepCop.ParserAdapter.Roslyn** namespace can reference the **NsDepCop.Analysis** namespace (but not its sub-namespaces).
 
+### Example Two
+```xml
+<NsDepCopConfig IsEnabled="true" CheckAssemblyDependencies="true">
+    <AllowedAssembly From="*" To="*" />
+    <DisallowedAssembly From="*.Repository" To="*.Service" />
+</NsDepCopConfig>
+```
+
+Meaning:
+* **Any** assembly can reference each other with one exception.
+* The **Repository** layer cannot reference the **Service** layer.
+
 ### Config attributes
 You can set the following attributes on the root element. (Bold marks the the **default** value.)
 
@@ -48,6 +63,7 @@ Attribute | Values | Description
 **AutoLowerMaxIssueCount** | true, **false** | If set to true then each successful build yielding fewer issues than MaxIssueCount sets MaxIssueCount to the current number of issues.
 **InheritanceDepth** | int (>=0), default: **0** | Sets the number of parent folder levels to inherit config from. 0 means no inheritance.
 **ExcludedFiles** | Comma separated list of [file patterns](https://github.com/dazinator/DotNet.Glob) | Defines which source files should be excluded from the analysis. Paths are relative to the config file's folder. E.g.: `**/*.g.cs,TestFiles/*.cs`
+**CheckAssemblyDependencies** | true, **false** | We adopt the 'disallowed-by-default' approach for assembly dependencies check, similar to how we handle namespace dependencies (where everything is disallowed unless explicitly permitted). To ensure the backward compatibility, this configuration attribute has been introduced to explicitly enable the assembly dependency checking. By default this attribute is false.
 
 ### Allowlisting
 * The **`<Allowed From="N1" To="N2"/>`** config element defines that **N1** namespace can depend on **N2** namespace.

@@ -21,10 +21,11 @@ namespace Codartis.NsDepCop.Config.Implementation
         private const string ImplicitParentDependencyAttributeName = "ChildCanDependOnParentImplicitly";
         private const string ImplicitChildDependencyAttributeName = "ParentCanDependOnChildImplicitly";
         private const string SourcePathExclusionPatternsAttributeName = "ExcludedFiles";
+        private const string CheckAssemblyDependenciesAttributeName = "CheckAssemblyDependencies";
         private const string AllowedElementName = "Allowed";
         private const string DisallowedElementName = "Disallowed";
-        private const string AllowedAssemblyElementName = "AllowedAssemblyDependency";
-        private const string DisallowedAssemblyElementName = "DisallowedAssemblyDependency";
+        private const string AllowedAssemblyElementName = "AllowedAssembly";
+        private const string DisallowedAssemblyElementName = "DisallowedAssembly";
         private const string VisibleMembersElementName = "VisibleMembers";
         private const string TypeElementName = "Type";
         private const string OfNamespaceAttributeName = "OfNamespace";
@@ -63,6 +64,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             configBuilder.SetIsEnabled(ParseValueType<bool>(rootElement, IsEnabledAttributeName, bool.TryParse));
             configBuilder.SetInheritanceDepth(ParseValueType<int>(rootElement, InheritanceDepthAttributeName, int.TryParse));
             configBuilder.AddSourcePathExclusionPatterns(ParseStringList(rootElement, SourcePathExclusionPatternsAttributeName, ','));
+            configBuilder.SetCheckAssemblyDependencies(ParseValueType<bool>(rootElement, CheckAssemblyDependenciesAttributeName, bool.TryParse));
             configBuilder.SetChildCanDependOnParentImplicitly(ParseValueType<bool>(rootElement, ImplicitParentDependencyAttributeName, bool.TryParse));
             configBuilder.SetParentCanDependOnChildImplicitly(ParseValueType<bool>(rootElement, ImplicitChildDependencyAttributeName, bool.TryParse));
             configBuilder.SetMaxIssueCount(ParseValueType<int>(rootElement, MaxIssueCountAttributeName, int.TryParse));

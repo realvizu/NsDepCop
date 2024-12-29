@@ -11,6 +11,7 @@ namespace Codartis.NsDepCop.Config.Implementation
     {
         public bool IsEnabled { get; }
         public string[] SourcePathExclusionPatterns { get; }
+        public bool CheckAssemblyDependencies { get; }
         public bool ChildCanDependOnParentImplicitly { get; }
         public bool ParentCanDependOnChildImplicitly { get; }
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
@@ -24,6 +25,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         public AnalyzerConfig(
             bool isEnabled, 
             string[] sourcePathExclusionPatterns,
+            bool checkAssemblyDependencies,
             bool childCanDependOnParentImplicitly,
             bool parentCanDependOnChildImplicitly,
             Dictionary<NamespaceDependencyRule, TypeNameSet> allowRules, 
@@ -36,6 +38,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         {
             IsEnabled = isEnabled;
             SourcePathExclusionPatterns = sourcePathExclusionPatterns;
+            CheckAssemblyDependencies = checkAssemblyDependencies;
 
             ChildCanDependOnParentImplicitly = childCanDependOnParentImplicitly;
             ParentCanDependOnChildImplicitly = parentCanDependOnChildImplicitly;

@@ -14,6 +14,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         public int? InheritanceDepth { get; private set; }
         public bool? IsEnabled { get; private set; }
         public List<string> SourcePathExclusionPatterns { get; private set; }
+        public bool? CheckAssemblyDependencies { get; private set; }
         public bool? ChildCanDependOnParentImplicitly { get; private set; }
         public bool? ParentCanDependOnChildImplicitly { get; private set; }
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
@@ -39,6 +40,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             return new AnalyzerConfig(
                 IsEnabled ?? ConfigDefaults.IsEnabled,
                 SourcePathExclusionPatterns.ToArray(),
+                CheckAssemblyDependencies ?? ConfigDefaults.CheckAssemblyDependencies,
                 ChildCanDependOnParentImplicitly ?? ConfigDefaults.ChildCanDependOnParentImplicitly,
                 ParentCanDependOnChildImplicitly ?? ConfigDefaults.ParentCanDependOnChildImplicitly,
                 AllowRules,
@@ -57,7 +59,7 @@ namespace Codartis.NsDepCop.Config.Implementation
 
             SetIsEnabled(analyzerConfigBuilder.IsEnabled);
             AddSourcePathExclusionPatterns(analyzerConfigBuilder.SourcePathExclusionPatterns);
-
+            SetCheckAssemblyDependencies(analyzerConfigBuilder.CheckAssemblyDependencies);
             SetChildCanDependOnParentImplicitly(analyzerConfigBuilder.ChildCanDependOnParentImplicitly);
             SetParentCanDependOnChildImplicitly(analyzerConfigBuilder.ParentCanDependOnChildImplicitly);
             AddAllowRules(analyzerConfigBuilder.AllowRules);
@@ -90,6 +92,13 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (sourcePathExclusionPatterns != null)
                 SourcePathExclusionPatterns.AddRange(sourcePathExclusionPatterns);
 
+            return this;
+        }
+
+        public AnalyzerConfigBuilder SetCheckAssemblyDependencies(bool? checkAssemblyDependencies)
+        {
+            if (checkAssemblyDependencies.HasValue)
+                CheckAssemblyDependencies = checkAssemblyDependencies;
             return this;
         }
 
@@ -201,6 +210,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (InheritanceDepth.HasValue) yield return $"InheritanceDepth={InheritanceDepth}";
             if (IsEnabled.HasValue) yield return $"IsEnabled={IsEnabled}";
             if (SourcePathExclusionPatterns != null) yield return $"SourcePathExclusionPatterns={string.Join(";", SourcePathExclusionPatterns)}";
+            if (CheckAssemblyDependencies.HasValue) yield return $"CheckAssemblyDependencies={CheckAssemblyDependencies}";
             if (ChildCanDependOnParentImplicitly.HasValue) yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
             if (ParentCanDependOnChildImplicitly.HasValue) yield return $"ParentCanDependOnChildImplicitly={ParentCanDependOnChildImplicitly}";
             if (AllowRules.Any())

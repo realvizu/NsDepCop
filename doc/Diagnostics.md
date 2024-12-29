@@ -47,3 +47,11 @@ Title|Analysis is disabled with environment variable.
 Default Severity|Info
 Explanation|If the 'DisableNsDepCop' environment variable is set to 'True' or '1' then all analysis is skipped.
 To Do|None, this is just an informational message.
+
+### NSDEPCOP07
+
+Title|Illegal assembly reference.
+:-|:-
+Default Severity|Warning
+Explanation|The designated assembly cannot reference the other assembly because their dependency is prohibit according to the current rules.
+To Do|Change the dependency rules in the 'config.nsdepcop' file or change your design to avoid this namespace dependency.

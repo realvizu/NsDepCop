@@ -119,7 +119,9 @@ namespace Codartis.NsDepCop.Analysis.Implementation
                 AnalyzerConfigState.NoConfig => new NoConfigFileMessage().ToEnumerable<AnalyzerMessageBase>(),
                 AnalyzerConfigState.Disabled => new ConfigDisabledMessage().ToEnumerable<AnalyzerMessageBase>(),
                 AnalyzerConfigState.ConfigError => new ConfigErrorMessage(_configProvider.ConfigException).ToEnumerable<AnalyzerMessageBase>(),
-                AnalyzerConfigState.Enabled => PerformAnalysis(illegalTypeDependencyEnumerable),
+                AnalyzerConfigState.Enabled => _configProvider.Config.CheckAssemblyDependencies
+                    ? PerformAnalysis(illegalTypeDependencyEnumerable)
+                    : new ConfigDisabledMessage().ToEnumerable<AnalyzerMessageBase>(),
                 _ => throw new Exception($"Unexpected ConfigState: {_configProvider.ConfigState}")
             };
         }
