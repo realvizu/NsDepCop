@@ -161,7 +161,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configProvider.ConfigState.Should().Be(AnalyzerConfigState.Disabled);
 
             Action a = () => configProvider.UpdateMaxIssueCount(142);
-            a.ShouldThrow<InvalidOperationException>().Where(i => i.Message.Contains(AnalyzerConfigState.Disabled.ToString()));
+            a.Should().Throw<InvalidOperationException>().Where(i => i.Message.Contains(AnalyzerConfigState.Disabled.ToString()));
 
             Delete(path);
         }

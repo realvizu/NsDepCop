@@ -29,7 +29,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var configBuilder = XmlConfigParser.Parse(xDocument);
             configBuilder.IsEnabled.Should().BeTrue();
             configBuilder.InheritanceDepth.Should().Be(9);
-            configBuilder.MaxIssueCount.ShouldBeEquivalentTo(42);
+            configBuilder.MaxIssueCount.Should().Be(42);
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeTrue();
             configBuilder.AutoLowerMaxIssueCount.Should().BeTrue();
             configBuilder.SourcePathExclusionPatterns.Should().BeEquivalentTo(@"**/*.g.cs", @"TestData\**\*.cs");
@@ -98,7 +98,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("AllowedRuleForWildcardNamespaceWithVisibleMembers.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.ShouldThrow<Exception>().WithMessage("*must be a single namespace*");
+            a.Should().Throw<Exception>().WithMessage("*must be a single namespace*");
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("AllowedRuleForNamespaceWithVisibleMembersWithOfNamespaceAttribute.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.ShouldThrow<Exception>().WithMessage("*'OfNamespace' attribute must not be defined*");
+            a.Should().Throw<Exception>().WithMessage("*'OfNamespace' attribute must not be defined*");
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("VisibleMembersOfNamespaceMissing.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.ShouldThrow<Exception>().WithMessage("*'OfNamespace' attribute missing*");
+            a.Should().Throw<Exception>().WithMessage("*'OfNamespace' attribute missing*");
         }
 
         [Fact]
@@ -122,7 +122,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("AllowedRuleFromAttributeMissing.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.ShouldThrow<Exception>().WithMessage("*'From' attribute missing*");
+            a.Should().Throw<Exception>().WithMessage("*'From' attribute missing*");
         }
 
         [Fact]
@@ -130,7 +130,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("AllowedRuleToAttributeMissing.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.ShouldThrow<Exception>().WithMessage("*'To' attribute missing*");
+            a.Should().Throw<Exception>().WithMessage("*'To' attribute missing*");
         }
 
         [Fact]
@@ -138,7 +138,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("VisibleMembersTypeNameAttributeMissing.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.ShouldThrow<Exception>().WithMessage("*'Name' attribute missing*");
+            a.Should().Throw<Exception>().WithMessage("*'Name' attribute missing*");
         }
 
         [Fact]
@@ -146,7 +146,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("NsDepCopConfigElementNotFound.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.ShouldThrow<Exception>().WithMessage("*root element not found*");
+            a.Should().Throw<Exception>().WithMessage("*root element not found*");
         }
 
         [Fact]
@@ -154,7 +154,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("InvalidNamespaceString.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.ShouldThrow<Exception>().WithMessage("*not a valid Namespace*");
+            a.Should().Throw<Exception>().WithMessage("*not a valid Namespace*");
         }
 
         [Fact]
@@ -162,7 +162,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("InvalidDuplicatedWildcardNamespaceString.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.ShouldThrow<Exception>().WithMessage("*not a valid WildcardNamespace*");
+            a.Should().Throw<Exception>().WithMessage("*not a valid WildcardNamespace*");
         }
 
         [Fact]
@@ -170,7 +170,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("InvalidAttributeValue.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.ShouldThrow<Exception>().WithMessage("*Error parsing 'IsEnabled' value*");
+            a.Should().Throw<Exception>().WithMessage("*Error parsing 'IsEnabled' value*");
         }
 
         [Fact]

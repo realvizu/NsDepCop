@@ -90,7 +90,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 .AddAllowRule(new NamespaceDependencyRule("N3", "N4"), new TypeNameSet {"T2", "T3"})
                 .AddAllowRule(new NamespaceDependencyRule("N5", "N6"), new TypeNameSet {"T4"});
 
-            configBuilder.AllowRules.ShouldBeEquivalentTo(
+            configBuilder.AllowRules.Should().BeEquivalentTo(
                 new Dictionary<NamespaceDependencyRule, TypeNameSet>
                 {
                     {new NamespaceDependencyRule("N1", "N2"), null},
@@ -110,7 +110,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 .AddDisallowRule(new NamespaceDependencyRule("N3", "N4"))
                 .AddDisallowRule(new NamespaceDependencyRule("N5", "N6"));
 
-            configBuilder.DisallowRules.ShouldBeEquivalentTo(
+            configBuilder.DisallowRules.Should().BeEquivalentTo(
                 new HashSet<NamespaceDependencyRule>
                 {
                     new NamespaceDependencyRule("N1", "N2"),
@@ -130,7 +130,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 .AddVisibleTypesByNamespace(new Namespace("N2"), new TypeNameSet {"T2", "T3"})
                 .AddVisibleTypesByNamespace(new Namespace("N3"), new TypeNameSet {"T4"});
 
-            configBuilder.VisibleTypesByNamespace.ShouldBeEquivalentTo(
+            configBuilder.VisibleTypesByNamespace.Should().BeEquivalentTo(
                 new Dictionary<Namespace, TypeNameSet>
                 {
                     {new Namespace("N1"), null},
