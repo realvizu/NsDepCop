@@ -31,7 +31,8 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
                 DiagnosticDefinitions.NoConfigFile,
                 DiagnosticDefinitions.ConfigDisabled,
                 DiagnosticDefinitions.ConfigException,
-                DiagnosticDefinitions.ToolDisabled
+                DiagnosticDefinitions.ToolDisabled,
+                DiagnosticDefinitions.IllegalAssemblyDependency
             );
 
         private static readonly ImmutableArray<SyntaxKind> SyntaxKindsToRegister =
@@ -47,6 +48,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         {
             _analyzerProvider = new AnalyzerProvider(
                 new DependencyAnalyzerFactory(LogTraceMessage),
+                new AssemblyDependencyAnalyzerFactory(LogTraceMessage),
                 new ConfigProviderFactory(LogTraceMessage),
                 new TypeDependencyEnumerator(new SyntaxNodeAnalyzer(), LogTraceMessage)
             );
@@ -58,10 +60,12 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         {
             analysisContext.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             analysisContext.EnableConcurrentExecution();
-            analysisContext.RegisterCompilationStartAction(StartAnalysisForCompilation);
+
+            analysisContext.RegisterCompilationStartAction(OnCompilationStart);
+            analysisContext.RegisterCompilationAction(OnCompilation);
         }
 
-        private void StartAnalysisForCompilation(CompilationStartAnalysisContext compilationStartContext)
+        private void OnCompilationStart(CompilationStartAnalysisContext compilationStartContext)
         {
             if (GlobalSettings.IsToolDisabled())
             {
@@ -77,9 +81,6 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
             }
 
             var dependencyAnalyzer = _analyzerProvider.GetDependencyAnalyzer(configFilePath);
-            if (dependencyAnalyzer == null)
-                throw new Exception($"Could not acquire DependencyAnalyzer for path: '{configFilePath}'");
-
             if (dependencyAnalyzer.ConfigState == AnalyzerConfigState.ConfigError)
             {
                 var exceptionMessage = dependencyAnalyzer.ConfigException.Message;
@@ -100,7 +101,6 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
                 i => AnalyzeSyntaxNodeAndReportDiagnostics(i, dependencyAnalyzer, ref issueCount),
                 SyntaxKindsToRegister);
         }
-
 
         private static void AnalyzeSyntaxNodeAndReportDiagnostics(
             SyntaxNodeAnalysisContext syntaxNodeAnalysisContext,
@@ -149,6 +149,51 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         /// </remarks>
         private static int GetInterlocked(ref int issueCount) => Interlocked.CompareExchange(ref issueCount, 0, 0);
 
+        private void OnCompilation(CompilationAnalysisContext compilationAnalysisContext)
+        {
+            if (GlobalSettings.IsToolDisabled())
+            {
+                ReportForCompilationAnalysisContext(compilationAnalysisContext, DiagnosticDefinitions.ToolDisabled);
+                return;
+            }
+
+            var configFilePath = GetConfigFilePath(compilationAnalysisContext.Options.AdditionalFiles);
+            if (configFilePath == null || !File.Exists(configFilePath))
+            {
+                ReportForCompilationAnalysisContext(compilationAnalysisContext, DiagnosticDefinitions.NoConfigFile);
+                return;
+            }
+
+            var assemblyDependencyAnalyzer = _analyzerProvider.GetAssemblyDependencyAnalyzer(configFilePath);
+            if (assemblyDependencyAnalyzer.ConfigState == AnalyzerConfigState.ConfigError)
+            {
+                var exceptionMessage = assemblyDependencyAnalyzer.ConfigException.Message;
+                ReportForCompilationAnalysisContext(compilationAnalysisContext, DiagnosticDefinitions.ConfigException, exceptionMessage);
+                return;
+            }
+
+            if (assemblyDependencyAnalyzer.ConfigState == AnalyzerConfigState.Disabled)
+            {
+                ReportForCompilationAnalysisContext(compilationAnalysisContext, DiagnosticDefinitions.ConfigDisabled);
+                return;
+            }
+
+            AssemblyIdentity sourceAssembly = compilationAnalysisContext.Compilation.Assembly.Identity;
+            ImmutableArray<AssemblyIdentity> referencedAssemblies
+                = compilationAnalysisContext.Compilation.ReferencedAssemblyNames.ToImmutableArray();
+            var analyzerMessages = assemblyDependencyAnalyzer.AnalyzeProject(sourceAssembly, referencedAssemblies);
+
+            foreach (var illegalAssemblyDependencyMessage in analyzerMessages.OfType<IllegalAssemblyDependencyMessage>())
+            {
+                ReportForCompilationAnalysisContext(
+                    compilationAnalysisContext,
+                    DiagnosticDefinitions.IllegalAssemblyDependency,
+                    illegalAssemblyDependencyMessage.IllegalAssemblyDependency.FromAssembly.Name,
+                    illegalAssemblyDependencyMessage.IllegalAssemblyDependency.ToAssembly.Name
+                );
+            }
+        }
+
         private static void ReportForSyntaxTree(
             SyntaxTreeAnalysisContext syntaxTreeAnalysisContext,
             DiagnosticDescriptor diagnosticDescriptor,
@@ -168,6 +213,15 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
             var location = Location.Create(node.SyntaxTree, node.Span);
             var diagnostic = CreateDiagnostic(diagnosticDescriptor, location, messageArgs);
             syntaxNodeAnalysisContext.ReportDiagnostic(diagnostic);
+        }
+
+        private static void ReportForCompilationAnalysisContext(
+            CompilationAnalysisContext compilationAnalysisContext,
+            DiagnosticDescriptor diagnosticDescriptor,
+            params object[] messageArguments)
+        {
+            var diagnostic = CreateDiagnostic(diagnosticDescriptor, null, messageArguments);
+            compilationAnalysisContext.ReportDiagnostic(diagnostic);
         }
 
         private static Diagnostic CreateDiagnostic(DiagnosticDescriptor diagnosticDescriptor, Location location, params object[] messageArgs)

@@ -32,5 +32,9 @@ namespace Codartis.NsDepCop.Config
         /// the value is a set of type names defined in the namespace and visible outside of the namespace.
         /// </summary>
         Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+
+        HashSet<NamespaceDependencyRule> AllowAssemblyRules { get; }
+
+        HashSet<NamespaceDependencyRule> DisallowAssemblyRules { get; }
     }
 }

@@ -16,6 +16,8 @@ namespace Codartis.NsDepCop.Config.Implementation
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
         public HashSet<NamespaceDependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+        public HashSet<NamespaceDependencyRule> AllowAssemblyRules { get; }
+        public HashSet<NamespaceDependencyRule> DisallowAssemblyRules { get; }
         public int MaxIssueCount { get; }
         public bool AutoLowerMaxIssueCount { get; }
 
@@ -25,8 +27,10 @@ namespace Codartis.NsDepCop.Config.Implementation
             bool childCanDependOnParentImplicitly,
             bool parentCanDependOnChildImplicitly,
             Dictionary<NamespaceDependencyRule, TypeNameSet> allowRules, 
-            HashSet<NamespaceDependencyRule> disallowRules, 
-            Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace, 
+            HashSet<NamespaceDependencyRule> disallowRules,
+            Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace,
+            HashSet<NamespaceDependencyRule> allowAssemblyRules,
+            HashSet<NamespaceDependencyRule> disallowAssemblyRules,
             int maxIssueCount,
             bool autoLowerMaxIssueCount)
         {
@@ -38,6 +42,8 @@ namespace Codartis.NsDepCop.Config.Implementation
             AllowRules = allowRules;
             DisallowRules = disallowRules;
             VisibleTypesByNamespace = visibleTypesByNamespace;
+            AllowAssemblyRules = allowAssemblyRules;
+            DisallowAssemblyRules = disallowAssemblyRules;
             MaxIssueCount = maxIssueCount;
             AutoLowerMaxIssueCount = autoLowerMaxIssueCount;
         }
@@ -49,6 +55,8 @@ namespace Codartis.NsDepCop.Config.Implementation
             yield return $"ChildCanDependOnParentImplicitly={ChildCanDependOnParentImplicitly}";
             foreach (var s in AllowRules.ToStrings()) yield return s;
             foreach (var s in DisallowRules.ToStrings()) yield return s;
+            foreach (var s in AllowAssemblyRules.ToStrings()) yield return s;
+            foreach (var s in DisallowAssemblyRules.ToStrings()) yield return s;
             foreach (var s in VisibleTypesByNamespace.ToStrings()) yield return s;
             yield return $"MaxIssueCount={MaxIssueCount}";
         }

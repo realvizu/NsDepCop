@@ -23,6 +23,8 @@ namespace Codartis.NsDepCop.Config.Implementation
         private const string SourcePathExclusionPatternsAttributeName = "ExcludedFiles";
         private const string AllowedElementName = "Allowed";
         private const string DisallowedElementName = "Disallowed";
+        private const string AllowedAssemblyElementName = "AllowedAssemblyDependency";
+        private const string DisallowedAssemblyElementName = "DisallowedAssemblyDependency";
         private const string VisibleMembersElementName = "VisibleMembers";
         private const string TypeElementName = "Type";
         private const string OfNamespaceAttributeName = "OfNamespace";
@@ -91,6 +93,12 @@ namespace Codartis.NsDepCop.Config.Implementation
                     case DisallowedElementName:
                         ParseDisallowedElement(xElement, configBuilder);
                         break;
+                    case AllowedAssemblyElementName:
+                        ParseAllowedAssemblyElement(xElement, configBuilder);
+                        break;
+                    case DisallowedAssemblyElementName:
+                        ParseDisallowedAssemblyElement(xElement, configBuilder);
+                        break;
                     case VisibleMembersElementName:
                         ParseVisibleMembersElement(xElement, configBuilder);
                         break;
@@ -117,6 +125,20 @@ namespace Codartis.NsDepCop.Config.Implementation
             var disallowedDependencyRule = ParseDependencyRule(element);
 
             configBuilder.AddDisallowRule(disallowedDependencyRule);
+        }
+
+        private static void ParseAllowedAssemblyElement(XElement element, AnalyzerConfigBuilder configBuilder)
+        {
+            var allowedAssemblyDependencyRule = ParseAssemblyDependencyRule(element);
+
+            configBuilder.AddAllowAssemblyRule(allowedAssemblyDependencyRule);
+        }
+
+        private static void ParseDisallowedAssemblyElement(XElement element, AnalyzerConfigBuilder configBuilder)
+        {
+            var disallowedAssemblyDependencyRule = ParseAssemblyDependencyRule(element);
+
+            configBuilder.AddDisallowAssemblyRule(disallowedAssemblyDependencyRule);
         }
 
         private static TypeNameSet ParseVisibleMembersInsideAllowedRule(XElement element, NamespaceDependencyRule allowedRule)
@@ -151,6 +173,22 @@ namespace Codartis.NsDepCop.Config.Implementation
         }
 
         private static NamespaceDependencyRule ParseDependencyRule(XElement element)
+        {
+            var fromValue = GetAttributeValue(element, FromAttributeName);
+            if (fromValue == null)
+                throw new Exception($"{GetLineInfo(element)}'{FromAttributeName}' attribute missing.");
+
+            var toValue = GetAttributeValue(element, ToAttributeName);
+            if (toValue == null)
+                throw new Exception($"{GetLineInfo(element)}'{ToAttributeName}' attribute missing.");
+
+            var fromNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(fromValue.Trim()));
+            var toNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(toValue.Trim()));
+
+            return new NamespaceDependencyRule(fromNamespaceSpecification, toNamespaceSpecification);
+        }
+
+        private static NamespaceDependencyRule ParseAssemblyDependencyRule(XElement element)
         {
             var fromValue = GetAttributeValue(element, FromAttributeName);
             if (fromValue == null)

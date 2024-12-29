@@ -9,12 +9,14 @@ namespace Codartis.NsDepCop.Test.RoslynAnalyzer
     public class AnalyzerProviderTests
     {
         private readonly Mock<IDependencyAnalyzerFactory> _dependencyAnalyzerFactoryMock;
+        private readonly Mock<IAssemblyDependencyAnalyzerFactory> _assemblyDependencyAnalyzerFactoryMock;
         private readonly Mock<IConfigProviderFactory> _configProviderFactoryMock;
         private readonly Mock<ITypeDependencyEnumerator> _typeDependencyEnumeratorMock;
 
         public AnalyzerProviderTests()
         {
             _dependencyAnalyzerFactoryMock = new Mock<IDependencyAnalyzerFactory>();
+            _assemblyDependencyAnalyzerFactoryMock = new Mock<IAssemblyDependencyAnalyzerFactory>();
             _configProviderFactoryMock = new Mock<IConfigProviderFactory>();
             _typeDependencyEnumeratorMock = new Mock<ITypeDependencyEnumerator>();
         }
@@ -67,6 +69,7 @@ namespace Codartis.NsDepCop.Test.RoslynAnalyzer
         {
             return new AnalyzerProvider(
                 _dependencyAnalyzerFactoryMock.Object,
+                _assemblyDependencyAnalyzerFactoryMock.Object,
                 _configProviderFactoryMock.Object,
                 _typeDependencyEnumeratorMock.Object
             );

@@ -19,6 +19,8 @@ namespace Codartis.NsDepCop.Config.Implementation
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
         public HashSet<NamespaceDependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+        public HashSet<NamespaceDependencyRule> AllowAssemblyRules { get; }
+        public HashSet<NamespaceDependencyRule> DisallowAssemblyRules { get; }
         public int? MaxIssueCount { get; private set; }
         public bool? AutoLowerMaxIssueCount { get; private set; }
 
@@ -28,6 +30,8 @@ namespace Codartis.NsDepCop.Config.Implementation
             AllowRules = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
             DisallowRules = new HashSet<NamespaceDependencyRule>();
             VisibleTypesByNamespace = new Dictionary<Namespace, TypeNameSet>();
+            AllowAssemblyRules = new HashSet<NamespaceDependencyRule>();
+            DisallowAssemblyRules = new HashSet<NamespaceDependencyRule>();
         }
 
         public IAnalyzerConfig ToAnalyzerConfig()
@@ -40,6 +44,8 @@ namespace Codartis.NsDepCop.Config.Implementation
                 AllowRules,
                 DisallowRules,
                 VisibleTypesByNamespace,
+                AllowAssemblyRules,
+                DisallowAssemblyRules,
                 MaxIssueCount ?? ConfigDefaults.MaxIssueCount,
                 AutoLowerMaxIssueCount ?? ConfigDefaults.AutoLowerMaxIssueCount
             );
@@ -57,6 +63,8 @@ namespace Codartis.NsDepCop.Config.Implementation
             AddAllowRules(analyzerConfigBuilder.AllowRules);
             AddDisallowRules(analyzerConfigBuilder.DisallowRules);
             AddVisibleTypesByNamespace(analyzerConfigBuilder.VisibleTypesByNamespace);
+            AddAllowAssemblyRules(analyzerConfigBuilder.AllowAssemblyRules);
+            AddDisallowAssemblyRules(analyzerConfigBuilder.DisallowAssemblyRules);
             SetMaxIssueCount(analyzerConfigBuilder.MaxIssueCount);
             SetAutoLowerMaxIssueCount(analyzerConfigBuilder.AutoLowerMaxIssueCount);
 
@@ -135,6 +143,32 @@ namespace Codartis.NsDepCop.Config.Implementation
             return this;
         }
 
+        public AnalyzerConfigBuilder AddAllowAssemblyRule(NamespaceDependencyRule assemblyDependencyRule)
+        {
+            AllowAssemblyRules.Add(assemblyDependencyRule);
+            return this;
+        }
+
+        private AnalyzerConfigBuilder AddAllowAssemblyRules(IEnumerable<NamespaceDependencyRule> assemblyDependencyRules)
+        {
+            foreach (var assemblyDependencyRule in assemblyDependencyRules)
+                AddAllowAssemblyRule(assemblyDependencyRule);
+            return this;
+        }
+
+        public AnalyzerConfigBuilder AddDisallowAssemblyRule(NamespaceDependencyRule assemblyDependencyRule)
+        {
+            DisallowAssemblyRules.Add(assemblyDependencyRule);
+            return this;
+        }
+
+        private AnalyzerConfigBuilder AddDisallowAssemblyRules(IEnumerable<NamespaceDependencyRule> assemblyDependencyRules)
+        {
+            foreach (var assemblyDependencyRule in assemblyDependencyRules)
+                AddDisallowAssemblyRule(assemblyDependencyRule);
+            return this;
+        }
+
         public AnalyzerConfigBuilder AddVisibleTypesByNamespace(Namespace ns, TypeNameSet typeNameSet)
         {
             VisibleTypesByNamespace.AddOrUnion<Namespace, TypeNameSet, string>(ns, typeNameSet);
@@ -174,6 +208,12 @@ namespace Codartis.NsDepCop.Config.Implementation
                     yield return s;
             if (DisallowRules.Any())
                 foreach (var s in DisallowRules.ToStrings())
+                    yield return s;
+            if (AllowAssemblyRules.Any())
+                foreach (var s in AllowAssemblyRules.ToStrings())
+                    yield return s;
+            if (DisallowAssemblyRules.Any())
+                foreach (var s in DisallowAssemblyRules.ToStrings())
                     yield return s;
             if (VisibleTypesByNamespace.Any())
                 foreach (var s in VisibleTypesByNamespace.ToStrings())

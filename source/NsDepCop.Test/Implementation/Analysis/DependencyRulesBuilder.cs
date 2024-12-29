@@ -11,6 +11,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
         private readonly Dictionary<NamespaceDependencyRule, TypeNameSet> _allowedDependencies;
         private readonly HashSet<NamespaceDependencyRule> _disallowedDependencies;
         private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesByTargetNamespace;
+        private readonly HashSet<NamespaceDependencyRule> _allowedAssemblyDependencies;
+        private readonly HashSet<NamespaceDependencyRule> _disallowedAssemblyDependencies;
 
         public DependencyRulesBuilder()
         {
@@ -19,6 +21,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             _allowedDependencies = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
             _disallowedDependencies = new HashSet<NamespaceDependencyRule>();
             _visibleTypesByTargetNamespace = new Dictionary<Namespace, TypeNameSet>();
+            _allowedAssemblyDependencies = new HashSet<NamespaceDependencyRule>();
+            _disallowedAssemblyDependencies = new HashSet<NamespaceDependencyRule>();
         }
 
         public bool ChildCanDependOnParentImplicitly { get; private set; }
@@ -28,6 +32,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules => _allowedDependencies;
         public HashSet<NamespaceDependencyRule> DisallowRules => _disallowedDependencies;
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace => _visibleTypesByTargetNamespace;
+        public HashSet<NamespaceDependencyRule> AllowAssemblyRules => _allowedAssemblyDependencies;
+        public HashSet<NamespaceDependencyRule> DisallowAssemblyRules => _disallowedAssemblyDependencies;
 
         public DependencyRulesBuilder SetChildCanDependOnParentImplicitly(bool value)
         {
@@ -44,6 +50,18 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
         public DependencyRulesBuilder AddDisallowed(string from, string to)
         {
             _disallowedDependencies.Add(new NamespaceDependencyRule(from, to));
+            return this;
+        }
+
+        public DependencyRulesBuilder AddAllowedAssemblyDependency(string from, string to)
+        {
+            _allowedAssemblyDependencies.Add(new NamespaceDependencyRule(from, to));
+            return this;
+        }
+
+        public DependencyRulesBuilder AddDisallowedAssemblyDependency(string from, string to)
+        {
+            _disallowedAssemblyDependencies.Add(new NamespaceDependencyRule(from, to));
             return this;
         }
 

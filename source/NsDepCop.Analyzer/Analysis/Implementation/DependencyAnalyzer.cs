@@ -172,17 +172,4 @@ namespace Codartis.NsDepCop.Analysis.Implementation
         private static string GetCacheStatisticsMessage(ICacheStatisticsProvider i) =>
             $"Cache hits: {i.HitCount}, misses: {i.MissCount}, efficiency (hits/all): {i.EfficiencyPercent:P}";
     }
-
-    public class IllegalTypeDependency
-    {
-        public TypeDependency TypeDependency { get; }
-        
-        public string[] AllowedMembers { get; }
-    
-        public IllegalTypeDependency(TypeDependency typeDependency, string[] allowedMembers)
-        {
-            TypeDependency = typeDependency;
-            AllowedMembers = allowedMembers;
-        }
-    }
 }
