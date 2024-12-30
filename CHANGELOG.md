@@ -1,7 +1,7 @@
 # NsDepCop Change Log
 
 ## v2.5.0
-(09/2024)
+(12/2024)
 
 - [x] New: Implement a new code analysis rule to check illegal assembly references.
 
