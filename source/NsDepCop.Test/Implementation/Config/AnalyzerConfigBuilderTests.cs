@@ -173,7 +173,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 .AddAllowedAssemblyRule(new NamespaceDependencyRule("N3", "N4"))
                 .AddAllowedAssemblyRule(new NamespaceDependencyRule("N5", "N6"));
 
-            configBuilder.AllowedAssemblyRules.ShouldBeEquivalentTo(
+            configBuilder.AllowedAssemblyRules.Should().BeEquivalentTo(
                 new HashSet<NamespaceDependencyRule>()
                 {
                     new NamespaceDependencyRule("N1", "N2"),
@@ -194,7 +194,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A3", "A4"))
                 .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A5", "A6"));
 
-            configBuilder.DisallowedAssemblyRules.ShouldBeEquivalentTo(
+            configBuilder.DisallowedAssemblyRules.Should().BeEquivalentTo(
                 new HashSet<NamespaceDependencyRule>()
                 {
                     new NamespaceDependencyRule("A1", "A2"),
