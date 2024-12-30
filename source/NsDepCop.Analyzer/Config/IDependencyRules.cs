@@ -33,8 +33,8 @@ namespace Codartis.NsDepCop.Config
         /// </summary>
         Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
 
-        HashSet<NamespaceDependencyRule> AllowAssemblyRules { get; }
+        HashSet<NamespaceDependencyRule> AllowedAssemblyRules { get; }
 
-        HashSet<NamespaceDependencyRule> DisallowAssemblyRules { get; }
+        HashSet<NamespaceDependencyRule> DisallowedAssemblyRules { get; }
     }
 }

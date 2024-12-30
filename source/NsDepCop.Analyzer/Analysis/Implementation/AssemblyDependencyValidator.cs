@@ -15,8 +15,8 @@ namespace Codartis.NsDepCop.Analysis.Implementation
         {
             if (dependencyRules is null) throw new ArgumentNullException(nameof(dependencyRules));
 
-            _allowRules = dependencyRules.AllowAssemblyRules;
-            _disallowRules = dependencyRules.DisallowAssemblyRules;
+            _allowRules = dependencyRules.AllowedAssemblyRules;
+            _disallowRules = dependencyRules.DisallowedAssemblyRules;
         }
 
         public DependencyStatus IsDependencyAllowed(AssemblyDependency assemblyDependency)

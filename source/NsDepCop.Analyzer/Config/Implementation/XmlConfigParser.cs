@@ -133,14 +133,14 @@ namespace Codartis.NsDepCop.Config.Implementation
         {
             var allowedAssemblyDependencyRule = ParseAssemblyDependencyRule(element);
 
-            configBuilder.AddAllowAssemblyRule(allowedAssemblyDependencyRule);
+            configBuilder.AddAllowedAssemblyRule(allowedAssemblyDependencyRule);
         }
 
         private static void ParseDisallowedAssemblyElement(XElement element, AnalyzerConfigBuilder configBuilder)
         {
             var disallowedAssemblyDependencyRule = ParseAssemblyDependencyRule(element);
 
-            configBuilder.AddDisallowAssemblyRule(disallowedAssemblyDependencyRule);
+            configBuilder.AddDisallowedAssemblyRule(disallowedAssemblyDependencyRule);
         }
 
         private static TypeNameSet ParseVisibleMembersInsideAllowedRule(XElement element, NamespaceDependencyRule allowedRule)

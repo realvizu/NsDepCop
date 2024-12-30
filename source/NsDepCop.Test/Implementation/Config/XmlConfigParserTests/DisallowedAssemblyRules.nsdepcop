@@ -1,0 +1,4 @@
+﻿<NsDepCopConfig>
+    <DisallowedAssembly From="A1" To="A2"/>
+    <DisallowedAssembly From="A3" To="A4"/>
+</NsDepCopConfig>

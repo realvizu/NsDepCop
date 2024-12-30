@@ -8,5 +8,6 @@
     MaxIssueCountSeverity="Error"
     AutoLowerMaxIssueCount="true" 
     AnalyzerServiceCallRetryTimeSpans="100, 1000"
-    ExcludedFiles="**/*.g.cs ,  TestData\**\*.cs">
+    ExcludedFiles="**/*.g.cs ,  TestData\**\*.cs"
+    CheckAssemblyDependencies="true">
 </NsDepCopConfig>

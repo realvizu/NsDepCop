@@ -50,11 +50,13 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 .SetInheritanceDepth(9)
                 .SetIsEnabled(true)
                 .SetChildCanDependOnParentImplicitly(true)
+                .SetCheckAssemblyDependencies(true)
                 .SetMaxIssueCount(42);
 
             configBuilder.InheritanceDepth.Should().Be(9);
             configBuilder.IsEnabled.Should().Be(true);
             configBuilder.ChildCanDependOnParentImplicitly.Should().Be(true);
+            configBuilder.CheckAssemblyDependencies.Should().Be(true);
             configBuilder.MaxIssueCount.Should().Be(42);
         }
 
@@ -65,17 +67,20 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 .SetInheritanceDepth(9)
                 .SetIsEnabled(true)
                 .SetChildCanDependOnParentImplicitly(true)
+                .SetCheckAssemblyDependencies(true)
                 .SetMaxIssueCount(42);
 
             configBuilder
                 .SetInheritanceDepth(null)
                 .SetIsEnabled(null)
                 .SetChildCanDependOnParentImplicitly(null)
+                .SetCheckAssemblyDependencies(null)
                 .SetMaxIssueCount(null);
 
             configBuilder.InheritanceDepth.Should().Be(9);
             configBuilder.IsEnabled.Should().Be(true);
             configBuilder.ChildCanDependOnParentImplicitly.Should().Be(true);
+            configBuilder.CheckAssemblyDependencies.Should().Be(true);
             configBuilder.MaxIssueCount.Should().Be(42);
         }
 
@@ -84,11 +89,11 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var configBuilder = new AnalyzerConfigBuilder()
                 .AddAllowRule(new NamespaceDependencyRule("N1", "N2"))
-                .AddAllowRule(new NamespaceDependencyRule("N3", "N4"), new TypeNameSet {"T1", "T2"});
+                .AddAllowRule(new NamespaceDependencyRule("N3", "N4"), new TypeNameSet { "T1", "T2" });
 
             configBuilder
-                .AddAllowRule(new NamespaceDependencyRule("N3", "N4"), new TypeNameSet {"T2", "T3"})
-                .AddAllowRule(new NamespaceDependencyRule("N5", "N6"), new TypeNameSet {"T4"});
+                .AddAllowRule(new NamespaceDependencyRule("N3", "N4"), new TypeNameSet { "T2", "T3" })
+                .AddAllowRule(new NamespaceDependencyRule("N5", "N6"), new TypeNameSet { "T4" });
 
             configBuilder.AllowRules.Should().BeEquivalentTo(
                 new Dictionary<NamespaceDependencyRule, TypeNameSet>
@@ -124,11 +129,11 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var configBuilder = new AnalyzerConfigBuilder()
                 .AddVisibleTypesByNamespace(new Namespace("N1"), null)
-                .AddVisibleTypesByNamespace(new Namespace("N2"), new TypeNameSet {"T1", "T2"});
+                .AddVisibleTypesByNamespace(new Namespace("N2"), new TypeNameSet { "T1", "T2" });
 
             configBuilder
-                .AddVisibleTypesByNamespace(new Namespace("N2"), new TypeNameSet {"T2", "T3"})
-                .AddVisibleTypesByNamespace(new Namespace("N3"), new TypeNameSet {"T4"});
+                .AddVisibleTypesByNamespace(new Namespace("N2"), new TypeNameSet { "T2", "T3" })
+                .AddVisibleTypesByNamespace(new Namespace("N3"), new TypeNameSet { "T4" });
 
             configBuilder.VisibleTypesByNamespace.Should().BeEquivalentTo(
                 new Dictionary<Namespace, TypeNameSet>
@@ -152,7 +157,51 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder1.AllowRules.Should().HaveCount(0);
             configBuilder1.DisallowRules.Should().HaveCount(0);
             configBuilder1.VisibleTypesByNamespace.Should().HaveCount(0);
+            configBuilder1.AllowedAssemblyRules.Should().HaveCount(0);
+            configBuilder1.DisallowedAssemblyRules.Should().HaveCount(0);
             configBuilder1.MaxIssueCount.Should().BeNull();
+        }
+
+        [Fact]
+        public void AddAllowedAssemblyRule_Works()
+        {
+            var configBuilder = new AnalyzerConfigBuilder()
+                .AddAllowedAssemblyRule(new NamespaceDependencyRule("N1", "N2"))
+                .AddAllowedAssemblyRule(new NamespaceDependencyRule("N3", "N4"));
+
+            configBuilder
+                .AddAllowedAssemblyRule(new NamespaceDependencyRule("N3", "N4"))
+                .AddAllowedAssemblyRule(new NamespaceDependencyRule("N5", "N6"));
+
+            configBuilder.AllowedAssemblyRules.ShouldBeEquivalentTo(
+                new HashSet<NamespaceDependencyRule>()
+                {
+                    new NamespaceDependencyRule("N1", "N2"),
+                    new NamespaceDependencyRule("N3", "N4"),
+                    new NamespaceDependencyRule("N5", "N6"),
+                }
+            );
+        }
+
+        [Fact]
+        public void AddDisallowedAssemblyRule_Works()
+        {
+            var configBuilder = new AnalyzerConfigBuilder()
+                .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A1", "A2"))
+                .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A3", "A4"));
+
+            configBuilder
+                .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A3", "A4"))
+                .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A5", "A6"));
+
+            configBuilder.DisallowedAssemblyRules.ShouldBeEquivalentTo(
+                new HashSet<NamespaceDependencyRule>()
+                {
+                    new NamespaceDependencyRule("A1", "A2"),
+                    new NamespaceDependencyRule("A3", "A4"),
+                    new NamespaceDependencyRule("A5", "A6"),
+                }
+            );
         }
 
         [Fact]
@@ -161,9 +210,13 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var configBuilder1 = new AnalyzerConfigBuilder()
                 .SetIsEnabled(true)
                 .SetChildCanDependOnParentImplicitly(true)
-                .AddAllowRule(new NamespaceDependencyRule("N1", "N2"), new TypeNameSet {"T1"})
+                .AddAllowRule(new NamespaceDependencyRule("N1", "N2"), new TypeNameSet { "T1" })
                 .AddDisallowRule(new NamespaceDependencyRule("N3", "N4"))
-                .AddVisibleTypesByNamespace(new Namespace("N5"), new TypeNameSet {"T2"})
+                .AddVisibleTypesByNamespace(new Namespace("N5"), new TypeNameSet { "T2" })
+                .AddAllowedAssemblyRule(new NamespaceDependencyRule("A1", "A2"))
+                .AddAllowedAssemblyRule(new NamespaceDependencyRule("A3", "A4"))
+                .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A5", "A6"))
+                .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A7", "A8"))
                 .SetMaxIssueCount(42);
 
             var configBuilder2 = new AnalyzerConfigBuilder();
@@ -175,6 +228,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder1.AllowRules.Should().HaveCount(1);
             configBuilder1.DisallowRules.Should().HaveCount(1);
             configBuilder1.VisibleTypesByNamespace.Should().HaveCount(1);
+            configBuilder1.AllowedAssemblyRules.Should().HaveCount(2);
+            configBuilder1.DisallowedAssemblyRules.Should().HaveCount(2);
             configBuilder1.MaxIssueCount.Should().Be(42);
         }
 
@@ -186,9 +241,13 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var configBuilder2 = new AnalyzerConfigBuilder()
                 .SetIsEnabled(true)
                 .SetChildCanDependOnParentImplicitly(true)
-                .AddAllowRule(new NamespaceDependencyRule("N1", "N2"), new TypeNameSet {"T1"})
+                .AddAllowRule(new NamespaceDependencyRule("N1", "N2"), new TypeNameSet { "T1" })
                 .AddDisallowRule(new NamespaceDependencyRule("N3", "N4"))
-                .AddVisibleTypesByNamespace(new Namespace("N5"), new TypeNameSet {"T2"})
+                .AddVisibleTypesByNamespace(new Namespace("N5"), new TypeNameSet { "T2" })
+                .AddAllowedAssemblyRule(new NamespaceDependencyRule("A1", "A2"))
+                .AddAllowedAssemblyRule(new NamespaceDependencyRule("A3", "A4"))
+                .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A5", "A6"))
+                .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A7", "A8"))
                 .SetMaxIssueCount(42);
 
             configBuilder1.Combine(configBuilder2);
@@ -198,6 +257,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder1.AllowRules.Should().HaveCount(1);
             configBuilder1.DisallowRules.Should().HaveCount(1);
             configBuilder1.VisibleTypesByNamespace.Should().HaveCount(1);
+            configBuilder1.AllowedAssemblyRules.Should().HaveCount(2);
+            configBuilder1.DisallowedAssemblyRules.Should().HaveCount(2);
             configBuilder1.MaxIssueCount.Should().Be(42);
         }
 
@@ -207,17 +268,23 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var configBuilder1 = new AnalyzerConfigBuilder()
                 .SetIsEnabled(false)
                 .SetChildCanDependOnParentImplicitly(false)
-                .AddAllowRule(new NamespaceDependencyRule("N1", "N2"), new TypeNameSet {"T1"})
+                .AddAllowRule(new NamespaceDependencyRule("N1", "N2"), new TypeNameSet { "T1" })
                 .AddDisallowRule(new NamespaceDependencyRule("N3", "N4"))
-                .AddVisibleTypesByNamespace(new Namespace("N5"), new TypeNameSet {"T2"})
+                .AddVisibleTypesByNamespace(new Namespace("N5"), new TypeNameSet { "T2" })
+                .AddAllowedAssemblyRule(new NamespaceDependencyRule("A1", "A2"))
+                .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A3", "A4"))
                 .SetMaxIssueCount(43);
 
             var configBuilder2 = new AnalyzerConfigBuilder()
                 .SetIsEnabled(true)
                 .SetChildCanDependOnParentImplicitly(true)
-                .AddAllowRule(new NamespaceDependencyRule("N6", "N7"), new TypeNameSet {"T3"})
+                .AddAllowRule(new NamespaceDependencyRule("N6", "N7"), new TypeNameSet { "T3" })
                 .AddDisallowRule(new NamespaceDependencyRule("N8", "N9"))
-                .AddVisibleTypesByNamespace(new Namespace("N10"), new TypeNameSet {"T4"})
+                .AddVisibleTypesByNamespace(new Namespace("N10"), new TypeNameSet { "T4" })
+                .AddAllowedAssemblyRule(new NamespaceDependencyRule("A6", "A7"))
+                .AddAllowedAssemblyRule(new NamespaceDependencyRule("A8", "A9"))
+                .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A9", "A9"))
+                .AddDisallowedAssemblyRule(new NamespaceDependencyRule("A10", "A10"))
                 .SetMaxIssueCount(42);
 
             configBuilder1.Combine(configBuilder2);
@@ -227,6 +294,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder1.AllowRules.Should().HaveCount(2);
             configBuilder1.DisallowRules.Should().HaveCount(2);
             configBuilder1.VisibleTypesByNamespace.Should().HaveCount(2);
+            configBuilder1.AllowedAssemblyRules.Should().HaveCount(3);
+            configBuilder1.DisallowedAssemblyRules.Should().HaveCount(3);
             configBuilder1.MaxIssueCount.Should().Be(42);
         }
     }

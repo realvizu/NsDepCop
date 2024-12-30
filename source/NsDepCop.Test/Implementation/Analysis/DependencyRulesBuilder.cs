@@ -32,8 +32,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules => _allowedDependencies;
         public HashSet<NamespaceDependencyRule> DisallowRules => _disallowedDependencies;
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace => _visibleTypesByTargetNamespace;
-        public HashSet<NamespaceDependencyRule> AllowAssemblyRules => _allowedAssemblyDependencies;
-        public HashSet<NamespaceDependencyRule> DisallowAssemblyRules => _disallowedAssemblyDependencies;
+        public HashSet<NamespaceDependencyRule> AllowedAssemblyRules => _allowedAssemblyDependencies;
+        public HashSet<NamespaceDependencyRule> DisallowedAssemblyRules => _disallowedAssemblyDependencies;
 
         public DependencyRulesBuilder SetChildCanDependOnParentImplicitly(bool value)
         {

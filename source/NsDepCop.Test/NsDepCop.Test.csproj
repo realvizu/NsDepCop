@@ -141,6 +141,9 @@
     <None Include="Implementation\Config\MultiLevelXmlFileConfigProviderTests\Rules_Merged\Level2\Level1\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Implementation\Config\XmlConfigParserTests\AllowedAssemblyRules.nsdepcop">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Implementation\Config\XmlConfigParserTests\AllowedRuleForNamespaceWithVisibleMembersWithOfNamespaceAttribute.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -152,6 +155,9 @@
     </None>
     <None Include="Implementation\Config\XmlConfigParserTests\AllowedRuleToAttributeMissing.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Implementation\Config\XmlConfigParserTests\DisallowedAssemblyRules.nsdepcop">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Implementation\Config\XmlConfigParserTests\AllowedRuleFromAttributeMissing.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

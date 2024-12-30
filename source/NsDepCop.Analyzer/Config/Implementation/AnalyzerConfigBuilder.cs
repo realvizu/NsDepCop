@@ -20,8 +20,8 @@ namespace Codartis.NsDepCop.Config.Implementation
         public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
         public HashSet<NamespaceDependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
-        public HashSet<NamespaceDependencyRule> AllowAssemblyRules { get; }
-        public HashSet<NamespaceDependencyRule> DisallowAssemblyRules { get; }
+        public HashSet<NamespaceDependencyRule> AllowedAssemblyRules { get; }
+        public HashSet<NamespaceDependencyRule> DisallowedAssemblyRules { get; }
         public int? MaxIssueCount { get; private set; }
         public bool? AutoLowerMaxIssueCount { get; private set; }
 
@@ -31,8 +31,8 @@ namespace Codartis.NsDepCop.Config.Implementation
             AllowRules = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
             DisallowRules = new HashSet<NamespaceDependencyRule>();
             VisibleTypesByNamespace = new Dictionary<Namespace, TypeNameSet>();
-            AllowAssemblyRules = new HashSet<NamespaceDependencyRule>();
-            DisallowAssemblyRules = new HashSet<NamespaceDependencyRule>();
+            AllowedAssemblyRules = new HashSet<NamespaceDependencyRule>();
+            DisallowedAssemblyRules = new HashSet<NamespaceDependencyRule>();
         }
 
         public IAnalyzerConfig ToAnalyzerConfig()
@@ -46,8 +46,8 @@ namespace Codartis.NsDepCop.Config.Implementation
                 AllowRules,
                 DisallowRules,
                 VisibleTypesByNamespace,
-                AllowAssemblyRules,
-                DisallowAssemblyRules,
+                AllowedAssemblyRules,
+                DisallowedAssemblyRules,
                 MaxIssueCount ?? ConfigDefaults.MaxIssueCount,
                 AutoLowerMaxIssueCount ?? ConfigDefaults.AutoLowerMaxIssueCount
             );
@@ -65,8 +65,8 @@ namespace Codartis.NsDepCop.Config.Implementation
             AddAllowRules(analyzerConfigBuilder.AllowRules);
             AddDisallowRules(analyzerConfigBuilder.DisallowRules);
             AddVisibleTypesByNamespace(analyzerConfigBuilder.VisibleTypesByNamespace);
-            AddAllowAssemblyRules(analyzerConfigBuilder.AllowAssemblyRules);
-            AddDisallowAssemblyRules(analyzerConfigBuilder.DisallowAssemblyRules);
+            AddAllowedAssemblyRules(analyzerConfigBuilder.AllowedAssemblyRules);
+            AddDisallowedAssemblyRules(analyzerConfigBuilder.DisallowedAssemblyRules);
             SetMaxIssueCount(analyzerConfigBuilder.MaxIssueCount);
             SetAutoLowerMaxIssueCount(analyzerConfigBuilder.AutoLowerMaxIssueCount);
 
@@ -118,7 +118,7 @@ namespace Codartis.NsDepCop.Config.Implementation
                 ChildCanDependOnParentImplicitly = childCanDependOnParentImplicitly;
             return this;
         }
-        
+
         public AnalyzerConfigBuilder SetParentCanDependOnChildImplicitly(bool? parentCanDependOnChildImplicitly)
         {
             if (parentCanDependOnChildImplicitly.HasValue)
@@ -152,29 +152,29 @@ namespace Codartis.NsDepCop.Config.Implementation
             return this;
         }
 
-        public AnalyzerConfigBuilder AddAllowAssemblyRule(NamespaceDependencyRule assemblyDependencyRule)
+        public AnalyzerConfigBuilder AddAllowedAssemblyRule(NamespaceDependencyRule assemblyDependencyRule)
         {
-            AllowAssemblyRules.Add(assemblyDependencyRule);
+            AllowedAssemblyRules.Add(assemblyDependencyRule);
             return this;
         }
 
-        private AnalyzerConfigBuilder AddAllowAssemblyRules(IEnumerable<NamespaceDependencyRule> assemblyDependencyRules)
+        private AnalyzerConfigBuilder AddAllowedAssemblyRules(IEnumerable<NamespaceDependencyRule> assemblyDependencyRules)
         {
             foreach (var assemblyDependencyRule in assemblyDependencyRules)
-                AddAllowAssemblyRule(assemblyDependencyRule);
+                AddAllowedAssemblyRule(assemblyDependencyRule);
             return this;
         }
 
-        public AnalyzerConfigBuilder AddDisallowAssemblyRule(NamespaceDependencyRule assemblyDependencyRule)
+        public AnalyzerConfigBuilder AddDisallowedAssemblyRule(NamespaceDependencyRule assemblyDependencyRule)
         {
-            DisallowAssemblyRules.Add(assemblyDependencyRule);
+            DisallowedAssemblyRules.Add(assemblyDependencyRule);
             return this;
         }
 
-        private AnalyzerConfigBuilder AddDisallowAssemblyRules(IEnumerable<NamespaceDependencyRule> assemblyDependencyRules)
+        private AnalyzerConfigBuilder AddDisallowedAssemblyRules(IEnumerable<NamespaceDependencyRule> assemblyDependencyRules)
         {
             foreach (var assemblyDependencyRule in assemblyDependencyRules)
-                AddDisallowAssemblyRule(assemblyDependencyRule);
+                AddDisallowedAssemblyRule(assemblyDependencyRule);
             return this;
         }
 
@@ -219,11 +219,11 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (DisallowRules.Any())
                 foreach (var s in DisallowRules.ToStrings())
                     yield return s;
-            if (AllowAssemblyRules.Any())
-                foreach (var s in AllowAssemblyRules.ToStrings())
+            if (AllowedAssemblyRules.Any())
+                foreach (var s in AllowedAssemblyRules.ToStrings())
                     yield return s;
-            if (DisallowAssemblyRules.Any())
-                foreach (var s in DisallowAssemblyRules.ToStrings())
+            if (DisallowedAssemblyRules.Any())
+                foreach (var s in DisallowedAssemblyRules.ToStrings())
                     yield return s;
             if (VisibleTypesByNamespace.Any())
                 foreach (var s in VisibleTypesByNamespace.ToStrings())

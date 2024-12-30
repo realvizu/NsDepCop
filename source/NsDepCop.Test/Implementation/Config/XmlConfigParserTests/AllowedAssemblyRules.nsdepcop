@@ -1,0 +1,4 @@
+﻿<NsDepCopConfig>
+    <AllowedAssembly From="A1" To="A2" />
+    <AllowedAssembly From="A3" To="A4" />
+</NsDepCopConfig>

@@ -20,6 +20,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeNull();
             configBuilder.AutoLowerMaxIssueCount.Should().BeNull();
             configBuilder.SourcePathExclusionPatterns.Should().BeEmpty();
+            configBuilder.CheckAssemblyDependencies.Should().BeNull();
         }
 
         [Fact]
@@ -33,6 +34,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeTrue();
             configBuilder.AutoLowerMaxIssueCount.Should().BeTrue();
             configBuilder.SourcePathExclusionPatterns.Should().BeEquivalentTo(@"**/*.g.cs", @"TestData\**\*.cs");
+            configBuilder.CheckAssemblyDependencies.Should().BeTrue();
         }
 
         [Fact]
@@ -91,6 +93,32 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 types.Should().HaveCount(1);
                 types.Should().Contain("T3");
             }
+        }
+
+        [Fact]
+        public void Parse_AllowedAssemblyRules()
+        {
+            var xDocument = LoadXml("AllowedAssemblyRules.nsdepcop");
+            var config = XmlConfigParser.Parse(xDocument);
+
+            var allowedAssemblyRules = config.AllowedAssemblyRules;
+            allowedAssemblyRules.Should().HaveCount(2);
+
+            allowedAssemblyRules.Should().Contain(new NamespaceDependencyRule("A1", "A2"));
+            allowedAssemblyRules.Should().Contain(new NamespaceDependencyRule("A3", "A4"));
+        }
+
+        [Fact]
+        public void Parse_DisallowedAssemblyRules()
+        {
+            var xDocument = LoadXml("DisallowedAssemblyRules.nsdepcop");
+            var config = XmlConfigParser.Parse(xDocument);
+
+            var disallowedAssemblyRules = config.DisallowedAssemblyRules;
+            disallowedAssemblyRules.Should().HaveCount(2);
+
+            disallowedAssemblyRules.Should().Contain(new NamespaceDependencyRule("A1", "A2"));
+            disallowedAssemblyRules.Should().Contain(new NamespaceDependencyRule("A3", "A4"));
         }
 
         [Fact]
