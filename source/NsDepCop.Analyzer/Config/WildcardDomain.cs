@@ -32,9 +32,9 @@ namespace Codartis.NsDepCop.Config
         }
 
         /// <inheritdoc />
-        public override int GetMatchRelevance(Domain ns)
+        public override int GetMatchRelevance(Domain domain)
         {
-            var actualList = ns.ToString().Split(DomainPartSeparator);
+            var actualList = domain.ToString().Split(DomainPartSeparator);
 
             var distance = CalcDistance(actualList, _domainComponents, 0);
 

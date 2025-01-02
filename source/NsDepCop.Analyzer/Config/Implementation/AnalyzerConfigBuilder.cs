@@ -178,9 +178,9 @@ namespace Codartis.NsDepCop.Config.Implementation
             return this;
         }
 
-        public AnalyzerConfigBuilder AddVisibleTypesByNamespace(Domain ns, TypeNameSet typeNameSet)
+        public AnalyzerConfigBuilder AddVisibleTypesByNamespace(Domain domain, TypeNameSet typeNameSet)
         {
-            VisibleTypesByNamespace.AddOrUnion<Domain, TypeNameSet, string>(ns, typeNameSet);
+            VisibleTypesByNamespace.AddOrUnion<Domain, TypeNameSet, string>(domain, typeNameSet);
             return this;
         }
 

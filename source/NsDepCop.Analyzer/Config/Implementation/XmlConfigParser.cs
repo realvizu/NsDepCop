@@ -80,7 +80,7 @@ namespace Codartis.NsDepCop.Config.Implementation
 
         private static IEnumerable<string> Split(string s, char separatorChar)
         {
-            return s?.Split(new[] {separatorChar}, StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim());
+            return s?.Split(new[] { separatorChar }, StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim());
         }
 
         private static void ParseChildElements(XElement rootElement, AnalyzerConfigBuilder configBuilder)
@@ -184,10 +184,10 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (toValue == null)
                 throw new Exception($"{GetLineInfo(element)}'{ToAttributeName}' attribute missing.");
 
-            var fromNamespaceSpecification = TryAndReportError(element, () => DomainSpecificationParser.Parse(fromValue.Trim()));
-            var toNamespaceSpecification = TryAndReportError(element, () => DomainSpecificationParser.Parse(toValue.Trim()));
+            var from = TryAndReportError(element, () => DomainSpecificationParser.Parse(fromValue.Trim()));
+            var to = TryAndReportError(element, () => DomainSpecificationParser.Parse(toValue.Trim()));
 
-            return new DependencyRule(fromNamespaceSpecification, toNamespaceSpecification);
+            return new DependencyRule(from, to);
         }
 
         private static DependencyRule ParseAssemblyDependencyRule(XElement element)
@@ -200,10 +200,10 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (toValue == null)
                 throw new Exception($"{GetLineInfo(element)}'{ToAttributeName}' attribute missing.");
 
-            var fromNamespaceSpecification = TryAndReportError(element, () => DomainSpecificationParser.Parse(fromValue.Trim()));
-            var toNamespaceSpecification = TryAndReportError(element, () => DomainSpecificationParser.Parse(toValue.Trim()));
+            var from = TryAndReportError(element, () => DomainSpecificationParser.Parse(fromValue.Trim()));
+            var to = TryAndReportError(element, () => DomainSpecificationParser.Parse(toValue.Trim()));
 
-            return new DependencyRule(fromNamespaceSpecification, toNamespaceSpecification);
+            return new DependencyRule(from, to);
         }
 
         private static T TryAndReportError<T>(XObject xObject, Func<T> parserDelegate)

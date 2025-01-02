@@ -29,9 +29,9 @@ namespace Codartis.NsDepCop.Config
         {
         }
 
-        public override int GetMatchRelevance(Domain ns)
+        public override int GetMatchRelevance(Domain domain)
         {
-            return this == ns
+            return this == domain
                 ? int.MaxValue
                 : 0;
         }
@@ -49,8 +49,8 @@ namespace Codartis.NsDepCop.Config
             if (parentCandidate == GlobalDomain)
                 return true;
 
-            var parentPrefix = parentCandidate.DomainSpecificationAsString + DomainPartSeparator;
-            return DomainSpecificationAsString.StartsWith(parentPrefix);
+            var parentPrefix = parentCandidate.Value + DomainPartSeparator;
+            return Value.StartsWith(parentPrefix);
         }
 
         /// <summary>
