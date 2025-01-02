@@ -70,7 +70,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
             "Illegal assembly reference.",
             "Illegal assembly reference: {0}->{1}",
             DiagnosticSeverity.Warning,
-            "The assembly cannot reference the other assembly because their dependency is prohibit according to the current rules." +
+            "The assembly cannot reference the other assembly because their dependency is prohibited according to the current rules." +
             " Change the dependency rules in the 'config.nsdepcop' file or change your design to avoid this assembly dependency."
         );
 

@@ -4,22 +4,22 @@ using System.Text;
 namespace Codartis.NsDepCop.Config
 {
     /// <summary>
-    /// Represents a dependency rule between 2 namespace specifications. Immutable.
+    /// Represents a dependency rule between two domain specifications. Immutable.
     /// </summary>
     /// <remarks>
-    /// The 'From' namespace specification depends on the 'To' namespace specification.
-    /// A namespace specification can represent more than just a single namespace (eg. a subtree of namespaces).
+    /// The 'From' domain specification depends on the 'To' domain specification.
+    /// A domain specification can represent more than just a single domain (eg. a subtree of namespaces).
     /// </remarks>
     [Serializable]
     public class NamespaceDependencyRule
     {
         /// <summary>
-        /// The dependency points from this namespace to the other.
+        /// The dependency points from this domain to the other.
         /// </summary>
         public NamespaceSpecification From { get; }
 
         /// <summary>
-        /// The dependency points into this namespace.
+        /// The dependency points into this domain.
         /// </summary>
         public NamespaceSpecification To { get; }
 
@@ -35,7 +35,7 @@ namespace Codartis.NsDepCop.Config
         }
 
         /// <summary>
-        /// Initilaizes a new instance by converting the string parameters to NamespaceSpecification objects.
+        /// Initializes a new instance by converting the string parameters to NamespaceSpecification objects.
         /// </summary>
         /// <param name="from">A namespace specification in string format. The source of the dependency.</param>
         /// <param name="to">A namespace specification in string format. The target of the dependency.</param>
@@ -44,9 +44,9 @@ namespace Codartis.NsDepCop.Config
         { }
 
         /// <summary>
-        /// Returns the string represenation of a namespace dependency.
+        /// Returns the string representation of a namespace dependency.
         /// </summary>
-        /// <returns>The string represenation of a namespace dependency.</returns>
+        /// <returns>The string representation of a namespace dependency.</returns>
         public override string ToString()
         {
             var builder = new StringBuilder();

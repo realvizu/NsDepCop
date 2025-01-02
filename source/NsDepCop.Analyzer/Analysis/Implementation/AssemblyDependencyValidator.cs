@@ -26,10 +26,6 @@ namespace Codartis.NsDepCop.Analysis.Implementation
                 throw new ArgumentException("The parameter is empty.", nameof(assemblyDependency));
             }
 
-            // Inside a assembly all dependencies are allowed.
-            if (assemblyDependency.FromAssembly == assemblyDependency.ToAssembly)
-                return DependencyStatus.Allowed;
-
             // These assembly names are coming from a compiler so we don't have to validate them.
             var fromAssembly = new Namespace(assemblyDependency.FromAssembly.Name, validate: false);
             var toAssembly = new Namespace(assemblyDependency.ToAssembly.Name, validate: false);

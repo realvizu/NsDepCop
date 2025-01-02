@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 namespace Codartis.NsDepCop.Analysis
 {
     /// <summary>
-    /// Performs project dependency analysis on a project or a syntax node.
+    /// Performs assembly dependency analysis on a project.
     /// </summary>
     public interface IAssemblyDependencyAnalyzer
     {

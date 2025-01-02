@@ -11,18 +11,15 @@ namespace Codartis.NsDepCop.Analysis.Implementation
     public sealed class AssemblyDependencyAnalyzer : IAssemblyDependencyAnalyzer
     {
         private readonly IUpdateableConfigProvider _configProvider;
-        private readonly MessageHandler _traceMessageHandler;
         private readonly object _configRefreshLock = new();
 
         private IAssemblyDependencyValidator _assemblyDependencyValidator;
         private IAnalyzerConfig _config;
 
         public AssemblyDependencyAnalyzer(
-            IUpdateableConfigProvider configProvider,
-            MessageHandler traceMessageHandler)
+            IUpdateableConfigProvider configProvider)
         {
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
-            _traceMessageHandler = traceMessageHandler;
             UpdateConfig();
         }
 

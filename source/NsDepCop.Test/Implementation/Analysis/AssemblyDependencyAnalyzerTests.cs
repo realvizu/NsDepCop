@@ -143,7 +143,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
 
         private IAssemblyDependencyAnalyzer CreateDependencyAnalyzer()
         {
-            return new AssemblyDependencyAnalyzer(_configProviderMock.Object, traceMessageHandler: null);
+            return new AssemblyDependencyAnalyzer(_configProviderMock.Object);
         }
     }
 }

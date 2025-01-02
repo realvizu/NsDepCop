@@ -48,7 +48,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         {
             _analyzerProvider = new AnalyzerProvider(
                 new DependencyAnalyzerFactory(LogTraceMessage),
-                new AssemblyDependencyAnalyzerFactory(LogTraceMessage),
+                new AssemblyDependencyAnalyzerFactory(),
                 new ConfigProviderFactory(LogTraceMessage),
                 new TypeDependencyEnumerator(new SyntaxNodeAnalyzer(), LogTraceMessage)
             );

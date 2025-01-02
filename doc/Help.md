@@ -21,7 +21,7 @@
 * The rule config file must be named **config.nsdepcop** and its build action must be set to **C# analyzer additional file** (the NsDepCop NuGet package set it automatically).
 * The default (and recommended) approach is [**allowlisting**](#allowlisting), that is, if a dependency is not explicitly allowed then it is disallowed. (See also: [denylisting](#denylisting)).
 * The config file can inherit other config files from parent folders, see [**config inheritance**](#config-inheritance)
-* Whe have two types of dependency checks: namespace and assembly dependency check
+* We have two types of dependency checks: namespace and assembly dependency check
 * The dependency check is disabled by default and needs to be enabled with **CheckAssemblyDependencies** attribute on the root element.
 
 
