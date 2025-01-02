@@ -17,22 +17,22 @@ namespace Codartis.NsDepCop.Config.Implementation
         public bool? CheckAssemblyDependencies { get; private set; }
         public bool? ChildCanDependOnParentImplicitly { get; private set; }
         public bool? ParentCanDependOnChildImplicitly { get; private set; }
-        public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
-        public HashSet<NamespaceDependencyRule> DisallowRules { get; }
+        public Dictionary<DependencyRule, TypeNameSet> AllowRules { get; }
+        public HashSet<DependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
-        public HashSet<NamespaceDependencyRule> AllowedAssemblyRules { get; }
-        public HashSet<NamespaceDependencyRule> DisallowedAssemblyRules { get; }
+        public HashSet<DependencyRule> AllowedAssemblyRules { get; }
+        public HashSet<DependencyRule> DisallowedAssemblyRules { get; }
         public int? MaxIssueCount { get; private set; }
         public bool? AutoLowerMaxIssueCount { get; private set; }
 
         public AnalyzerConfigBuilder()
         {
             SourcePathExclusionPatterns = new List<string>();
-            AllowRules = new Dictionary<NamespaceDependencyRule, TypeNameSet>();
-            DisallowRules = new HashSet<NamespaceDependencyRule>();
+            AllowRules = new Dictionary<DependencyRule, TypeNameSet>();
+            DisallowRules = new HashSet<DependencyRule>();
             VisibleTypesByNamespace = new Dictionary<Namespace, TypeNameSet>();
-            AllowedAssemblyRules = new HashSet<NamespaceDependencyRule>();
-            DisallowedAssemblyRules = new HashSet<NamespaceDependencyRule>();
+            AllowedAssemblyRules = new HashSet<DependencyRule>();
+            DisallowedAssemblyRules = new HashSet<DependencyRule>();
         }
 
         public IAnalyzerConfig ToAnalyzerConfig()
@@ -126,52 +126,52 @@ namespace Codartis.NsDepCop.Config.Implementation
             return this;
         }
 
-        public AnalyzerConfigBuilder AddAllowRule(NamespaceDependencyRule namespaceDependencyRule, TypeNameSet typeNameSet = null)
+        public AnalyzerConfigBuilder AddAllowRule(DependencyRule dependencyRule, TypeNameSet typeNameSet = null)
         {
-            AllowRules.AddOrUnion<NamespaceDependencyRule, TypeNameSet, string>(namespaceDependencyRule, typeNameSet);
+            AllowRules.AddOrUnion<DependencyRule, TypeNameSet, string>(dependencyRule, typeNameSet);
             return this;
         }
 
-        private AnalyzerConfigBuilder AddAllowRules(IEnumerable<KeyValuePair<NamespaceDependencyRule, TypeNameSet>> allowRules)
+        private AnalyzerConfigBuilder AddAllowRules(IEnumerable<KeyValuePair<DependencyRule, TypeNameSet>> allowRules)
         {
             foreach (var keyValuePair in allowRules)
                 AddAllowRule(keyValuePair.Key, keyValuePair.Value);
             return this;
         }
 
-        public AnalyzerConfigBuilder AddDisallowRule(NamespaceDependencyRule namespaceDependencyRule)
+        public AnalyzerConfigBuilder AddDisallowRule(DependencyRule dependencyRule)
         {
-            DisallowRules.Add(namespaceDependencyRule);
+            DisallowRules.Add(dependencyRule);
             return this;
         }
 
-        private AnalyzerConfigBuilder AddDisallowRules(IEnumerable<NamespaceDependencyRule> disallowRules)
+        private AnalyzerConfigBuilder AddDisallowRules(IEnumerable<DependencyRule> disallowRules)
         {
-            foreach (var namespaceDependencyRule in disallowRules)
-                AddDisallowRule(namespaceDependencyRule);
+            foreach (var dependencyRule in disallowRules)
+                AddDisallowRule(dependencyRule);
             return this;
         }
 
-        public AnalyzerConfigBuilder AddAllowedAssemblyRule(NamespaceDependencyRule assemblyDependencyRule)
+        public AnalyzerConfigBuilder AddAllowedAssemblyRule(DependencyRule assemblyDependencyRule)
         {
             AllowedAssemblyRules.Add(assemblyDependencyRule);
             return this;
         }
 
-        private AnalyzerConfigBuilder AddAllowedAssemblyRules(IEnumerable<NamespaceDependencyRule> assemblyDependencyRules)
+        private AnalyzerConfigBuilder AddAllowedAssemblyRules(IEnumerable<DependencyRule> assemblyDependencyRules)
         {
             foreach (var assemblyDependencyRule in assemblyDependencyRules)
                 AddAllowedAssemblyRule(assemblyDependencyRule);
             return this;
         }
 
-        public AnalyzerConfigBuilder AddDisallowedAssemblyRule(NamespaceDependencyRule assemblyDependencyRule)
+        public AnalyzerConfigBuilder AddDisallowedAssemblyRule(DependencyRule assemblyDependencyRule)
         {
             DisallowedAssemblyRules.Add(assemblyDependencyRule);
             return this;
         }
 
-        private AnalyzerConfigBuilder AddDisallowedAssemblyRules(IEnumerable<NamespaceDependencyRule> assemblyDependencyRules)
+        private AnalyzerConfigBuilder AddDisallowedAssemblyRules(IEnumerable<DependencyRule> assemblyDependencyRules)
         {
             foreach (var assemblyDependencyRule in assemblyDependencyRules)
                 AddDisallowedAssemblyRule(assemblyDependencyRule);

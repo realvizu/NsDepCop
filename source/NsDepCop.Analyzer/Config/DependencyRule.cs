@@ -11,7 +11,7 @@ namespace Codartis.NsDepCop.Config
     /// A domain specification can represent more than just a single domain (eg. a subtree of namespaces).
     /// </remarks>
     [Serializable]
-    public class NamespaceDependencyRule
+    public class DependencyRule
     {
         /// <summary>
         /// The dependency points from this domain to the other.
@@ -28,7 +28,7 @@ namespace Codartis.NsDepCop.Config
         /// </summary>
         /// <param name="from">The source of the dependency.</param>
         /// <param name="to">The target of the dependency.</param>
-        public NamespaceDependencyRule(NamespaceSpecification from, NamespaceSpecification to)
+        public DependencyRule(NamespaceSpecification from, NamespaceSpecification to)
         {
             From = from ?? throw new ArgumentNullException(nameof(from));
             To = to ?? throw new ArgumentNullException(nameof(to));
@@ -39,7 +39,7 @@ namespace Codartis.NsDepCop.Config
         /// </summary>
         /// <param name="from">A namespace specification in string format. The source of the dependency.</param>
         /// <param name="to">A namespace specification in string format. The target of the dependency.</param>
-        public NamespaceDependencyRule(string from, string to)
+        public DependencyRule(string from, string to)
             : this(NamespaceSpecificationParser.Parse(from), NamespaceSpecificationParser.Parse(to))
         { }
 
@@ -56,7 +56,7 @@ namespace Codartis.NsDepCop.Config
             return builder.ToString();
         }
 
-        public bool Equals(NamespaceDependencyRule other)
+        public bool Equals(DependencyRule other)
         {
             return Equals(From, other.From) && Equals(To, other.To);
         }
@@ -66,7 +66,7 @@ namespace Codartis.NsDepCop.Config
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((NamespaceDependencyRule)obj);
+            return Equals((DependencyRule)obj);
         }
 
         public override int GetHashCode()

@@ -8,8 +8,8 @@ namespace Codartis.NsDepCop.Analysis.Implementation
 {
     public sealed class AssemblyDependencyValidator : IAssemblyDependencyValidator
     {
-        private readonly HashSet<NamespaceDependencyRule> _allowRules;
-        private readonly HashSet<NamespaceDependencyRule> _disallowRules;
+        private readonly HashSet<DependencyRule> _allowRules;
+        private readonly HashSet<DependencyRule> _disallowRules;
 
         public AssemblyDependencyValidator(IDependencyRules dependencyRules)
         {
@@ -41,14 +41,14 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             return DependencyStatus.Allowed;
         }
 
-        private NamespaceDependencyRule GetMostSpecificAllowRule(Namespace from, Namespace to)
+        private DependencyRule GetMostSpecificAllowRule(Namespace from, Namespace to)
         {
             return _allowRules
                 .Where(element => element.From.Matches(from) && element.To.Matches(to))
                 .MaxByOrDefault(element => element.From.GetMatchRelevance(from));
         }
 
-        private NamespaceDependencyRule GetDisallowRule(Namespace from, Namespace to)
+        private DependencyRule GetDisallowRule(Namespace from, Namespace to)
         {
             return _disallowRules.FirstOrDefault(element => element.From.Matches(from) && element.To.Matches(to));
         }

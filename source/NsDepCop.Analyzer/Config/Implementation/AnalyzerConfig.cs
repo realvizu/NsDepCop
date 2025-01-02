@@ -14,11 +14,11 @@ namespace Codartis.NsDepCop.Config.Implementation
         public bool CheckAssemblyDependencies { get; }
         public bool ChildCanDependOnParentImplicitly { get; }
         public bool ParentCanDependOnChildImplicitly { get; }
-        public Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
-        public HashSet<NamespaceDependencyRule> DisallowRules { get; }
+        public Dictionary<DependencyRule, TypeNameSet> AllowRules { get; }
+        public HashSet<DependencyRule> DisallowRules { get; }
         public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
-        public HashSet<NamespaceDependencyRule> AllowedAssemblyRules { get; }
-        public HashSet<NamespaceDependencyRule> DisallowedAssemblyRules { get; }
+        public HashSet<DependencyRule> AllowedAssemblyRules { get; }
+        public HashSet<DependencyRule> DisallowedAssemblyRules { get; }
         public int MaxIssueCount { get; }
         public bool AutoLowerMaxIssueCount { get; }
 
@@ -28,11 +28,11 @@ namespace Codartis.NsDepCop.Config.Implementation
             bool checkAssemblyDependencies,
             bool childCanDependOnParentImplicitly,
             bool parentCanDependOnChildImplicitly,
-            Dictionary<NamespaceDependencyRule, TypeNameSet> allowRules,
-            HashSet<NamespaceDependencyRule> disallowRules,
+            Dictionary<DependencyRule, TypeNameSet> allowRules,
+            HashSet<DependencyRule> disallowRules,
             Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace,
-            HashSet<NamespaceDependencyRule> allowedAssemblyRules,
-            HashSet<NamespaceDependencyRule> disallowedAssemblyRules,
+            HashSet<DependencyRule> allowedAssemblyRules,
+            HashSet<DependencyRule> disallowedAssemblyRules,
             int maxIssueCount,
             bool autoLowerMaxIssueCount)
         {

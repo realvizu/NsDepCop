@@ -10,8 +10,8 @@ namespace Codartis.NsDepCop.Analysis.Implementation
     /// </summary>
     public class TypeDependencyValidator : ITypeDependencyValidator
     {
-        private readonly Dictionary<NamespaceDependencyRule, TypeNameSet> _allowRules;
-        private readonly HashSet<NamespaceDependencyRule> _disallowRules;
+        private readonly Dictionary<DependencyRule, TypeNameSet> _allowRules;
+        private readonly HashSet<DependencyRule> _disallowRules;
         private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesPerNamespaces;
         private readonly bool _childCanDependOnParentImplicitly;
         private readonly bool _parentCanDependOnChildImplicitly;
@@ -75,20 +75,20 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             return _parentCanDependOnChildImplicitly && toNamespace.IsSubnamespaceOf(fromNamespace);
         }
 
-        private NamespaceDependencyRule GetMostSpecificAllowRule(Namespace from, Namespace to)
+        private DependencyRule GetMostSpecificAllowRule(Namespace from, Namespace to)
         {
             return _allowRules.Keys
                 .Where(i => i.From.Matches(from) && i.To.Matches(to))
                 .MaxByOrDefault(i => i.From.GetMatchRelevance(from));
         }
 
-        private NamespaceDependencyRule GetDisallowRule(Namespace from, Namespace to)
+        private DependencyRule GetDisallowRule(Namespace from, Namespace to)
         {
             return _disallowRules
                 .FirstOrDefault(i => i.From.Matches(from) && i.To.Matches(to));
         }
 
-        private TypeNameSet GetVisibleMembers(NamespaceDependencyRule allowRule, Namespace targetNamespace)
+        private TypeNameSet GetVisibleMembers(DependencyRule allowRule, Namespace targetNamespace)
         {
             TypeNameSet allowedTypeNameSet;
 

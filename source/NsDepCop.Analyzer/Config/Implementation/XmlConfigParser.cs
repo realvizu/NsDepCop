@@ -143,7 +143,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             configBuilder.AddDisallowedAssemblyRule(disallowedAssemblyDependencyRule);
         }
 
-        private static TypeNameSet ParseVisibleMembersInsideAllowedRule(XElement element, NamespaceDependencyRule allowedRule)
+        private static TypeNameSet ParseVisibleMembersInsideAllowedRule(XElement element, DependencyRule allowedRule)
         {
             var visibleMembersChild = element.Element(VisibleMembersElementName);
             if (visibleMembersChild == null)
@@ -174,7 +174,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             configBuilder.AddVisibleTypesByNamespace(targetNamespace, visibleTypeNames);
         }
 
-        private static NamespaceDependencyRule ParseDependencyRule(XElement element)
+        private static DependencyRule ParseDependencyRule(XElement element)
         {
             var fromValue = GetAttributeValue(element, FromAttributeName);
             if (fromValue == null)
@@ -187,10 +187,10 @@ namespace Codartis.NsDepCop.Config.Implementation
             var fromNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(fromValue.Trim()));
             var toNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(toValue.Trim()));
 
-            return new NamespaceDependencyRule(fromNamespaceSpecification, toNamespaceSpecification);
+            return new DependencyRule(fromNamespaceSpecification, toNamespaceSpecification);
         }
 
-        private static NamespaceDependencyRule ParseAssemblyDependencyRule(XElement element)
+        private static DependencyRule ParseAssemblyDependencyRule(XElement element)
         {
             var fromValue = GetAttributeValue(element, FromAttributeName);
             if (fromValue == null)
@@ -203,7 +203,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             var fromNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(fromValue.Trim()));
             var toNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(toValue.Trim()));
 
-            return new NamespaceDependencyRule(fromNamespaceSpecification, toNamespaceSpecification);
+            return new DependencyRule(fromNamespaceSpecification, toNamespaceSpecification);
         }
 
         private static T TryAndReportError<T>(XObject xObject, Func<T> parserDelegate)

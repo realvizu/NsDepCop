@@ -46,17 +46,17 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var allowedRules = config.AllowRules;
             allowedRules.Should().HaveCount(3);
             {
-                var types = allowedRules[new NamespaceDependencyRule("N1", "N2")];
+                var types = allowedRules[new DependencyRule("N1", "N2")];
                 types.Should().BeNull();
             }
             {
-                var types = allowedRules[new NamespaceDependencyRule("N3", "N4")];
+                var types = allowedRules[new DependencyRule("N3", "N4")];
                 types.Should().HaveCount(2);
                 types.Should().Contain("T1");
                 types.Should().Contain("T2");
             }
             {
-                var types = allowedRules[new NamespaceDependencyRule("N5", "N6")];
+                var types = allowedRules[new DependencyRule("N5", "N6")];
                 types.Should().BeNull();
             }
         }
@@ -70,8 +70,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var disallowedRules = config.DisallowRules;
             disallowedRules.Should().HaveCount(2);
 
-            disallowedRules.Should().Contain(new NamespaceDependencyRule("N1", "N2"));
-            disallowedRules.Should().Contain(new NamespaceDependencyRule("N3", "N4"));
+            disallowedRules.Should().Contain(new DependencyRule("N1", "N2"));
+            disallowedRules.Should().Contain(new DependencyRule("N3", "N4"));
         }
 
         [Fact]
@@ -104,8 +104,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var allowedAssemblyRules = config.AllowedAssemblyRules;
             allowedAssemblyRules.Should().HaveCount(2);
 
-            allowedAssemblyRules.Should().Contain(new NamespaceDependencyRule("A1", "A2"));
-            allowedAssemblyRules.Should().Contain(new NamespaceDependencyRule("A3", "A4"));
+            allowedAssemblyRules.Should().Contain(new DependencyRule("A1", "A2"));
+            allowedAssemblyRules.Should().Contain(new DependencyRule("A3", "A4"));
         }
 
         [Fact]
@@ -117,8 +117,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var disallowedAssemblyRules = config.DisallowedAssemblyRules;
             disallowedAssemblyRules.Should().HaveCount(2);
 
-            disallowedAssemblyRules.Should().Contain(new NamespaceDependencyRule("A1", "A2"));
-            disallowedAssemblyRules.Should().Contain(new NamespaceDependencyRule("A3", "A4"));
+            disallowedAssemblyRules.Should().Contain(new DependencyRule("A1", "A2"));
+            disallowedAssemblyRules.Should().Contain(new DependencyRule("A3", "A4"));
         }
 
         [Fact]

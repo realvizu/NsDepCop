@@ -81,11 +81,11 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             // Arrange
             SetUpEnabledConfig();
             _configMock.Setup(i => i.AllowedAssemblyRules).Returns([
-                new NamespaceDependencyRule(
+                new DependencyRule(
                     from: NamespaceSpecificationParser.Parse(SourceAssembly.Name),
                     to: NamespaceSpecificationParser.Parse(ReferencedAssemblyOne.Name)
                 ),
-                new NamespaceDependencyRule(
+                new DependencyRule(
                     from: NamespaceSpecificationParser.Parse(SourceAssembly.Name),
                     to: NamespaceSpecificationParser.Parse(ReferencedAssemblyTwo.Name)
                 )
@@ -104,13 +104,13 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             // Arrange
             SetUpEnabledConfig();
             _configMock.Setup(i => i.AllowedAssemblyRules).Returns([
-                new NamespaceDependencyRule(
+                new DependencyRule(
                     from: NamespaceSpecificationParser.Parse("*"),
                     to: NamespaceSpecificationParser.Parse("*")
                 )
             ]);
             _configMock.Setup(i => i.DisallowedAssemblyRules).Returns([
-                new NamespaceDependencyRule(
+                new DependencyRule(
                     from: NamespaceSpecificationParser.Parse(SourceAssembly.Name),
                     to: NamespaceSpecificationParser.Parse(ReferencedAssemblyTwo.Name)
                 )
@@ -125,8 +125,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
 
         private void SetUpEnabledConfig(bool checkAssemblyDependencies = true)
         {
-            _configMock.Setup(i => i.AllowedAssemblyRules).Returns(new HashSet<NamespaceDependencyRule>());
-            _configMock.Setup(i => i.DisallowedAssemblyRules).Returns(new HashSet<NamespaceDependencyRule>());
+            _configMock.Setup(i => i.AllowedAssemblyRules).Returns(new HashSet<DependencyRule>());
+            _configMock.Setup(i => i.DisallowedAssemblyRules).Returns(new HashSet<DependencyRule>());
             _configMock.Setup(i => i.CheckAssemblyDependencies).Returns(checkAssemblyDependencies);
 
             _configProviderMock.Setup(i => i.ConfigState).Returns(AnalyzerConfigState.Enabled);

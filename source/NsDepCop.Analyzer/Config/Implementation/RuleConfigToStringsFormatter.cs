@@ -7,14 +7,14 @@ namespace Codartis.NsDepCop.Config.Implementation
     /// </summary>
     public static class RuleConfigToStringsFormatter
     {
-        public static IEnumerable<string> ToStrings(this IDictionary<NamespaceDependencyRule, TypeNameSet> allowRules)
+        public static IEnumerable<string> ToStrings(this IDictionary<DependencyRule, TypeNameSet> allowRules)
         {
             yield return $"AllowRules={allowRules.Count}";
             foreach (var allowRule in allowRules)
                 yield return $"  {allowRule.Key}, {allowRule.Value?.ToString() ?? "{}"}";
         }
 
-        public static IEnumerable<string> ToStrings(this ISet<NamespaceDependencyRule> disallowRules)
+        public static IEnumerable<string> ToStrings(this ISet<DependencyRule> disallowRules)
         {
             yield return $"DisallowRules={disallowRules.Count}";
             foreach (var disallowRule in disallowRules)

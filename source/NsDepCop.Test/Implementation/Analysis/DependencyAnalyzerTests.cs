@@ -124,8 +124,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
 
         private void SetUpEnabledConfig(int maxIssueCount = 100, bool autoLowerMaxIssueCount = false)
         {
-            _configMock.Setup(i => i.AllowRules).Returns(new Dictionary<NamespaceDependencyRule, TypeNameSet>());
-            _configMock.Setup(i => i.DisallowRules).Returns(new HashSet<NamespaceDependencyRule>());
+            _configMock.Setup(i => i.AllowRules).Returns(new Dictionary<DependencyRule, TypeNameSet>());
+            _configMock.Setup(i => i.DisallowRules).Returns(new HashSet<DependencyRule>());
             _configMock.Setup(i => i.VisibleTypesByNamespace).Returns(new Dictionary<Namespace, TypeNameSet>());
             _configMock.Setup(i => i.MaxIssueCount).Returns(maxIssueCount);
             _configMock.Setup(i => i.AutoLowerMaxIssueCount).Returns(autoLowerMaxIssueCount);
