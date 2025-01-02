@@ -13,7 +13,7 @@ namespace Codartis.NsDepCop.Config
         /// <remarks>
         /// Throws an exception if the string cannot be parsed.
         /// </remarks>
-        public static NamespaceSpecification Parse(string namespaceSpecificationAsString)
+        public static DomainSpecification Parse(string namespaceSpecificationAsString)
         {
             if (namespaceSpecificationAsString.Contains(WildcardNamespace.SingleNamespaceMarker) || namespaceSpecificationAsString.Contains(WildcardNamespace.AnyNamespacesMarker))
                 return new WildcardNamespace(namespaceSpecificationAsString);

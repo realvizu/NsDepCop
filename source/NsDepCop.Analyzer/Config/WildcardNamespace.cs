@@ -14,7 +14,7 @@ namespace Codartis.NsDepCop.Config
     /// The 'any namespace' (represented by a star '*') is also a namespace that contains every namespace.
     /// </remarks>
     [Serializable]
-    public sealed class WildcardNamespace : NamespaceSpecification
+    public sealed class WildcardNamespace : DomainSpecification
     {
         private readonly string[] _namespaceComponents;
         public const string SingleNamespaceMarker = "?";
@@ -28,13 +28,13 @@ namespace Codartis.NsDepCop.Config
         public WildcardNamespace(string wildcardNamespaceAsString, bool validate = true)
             : base(wildcardNamespaceAsString, validate, IsValid)
         {
-           _namespaceComponents = wildcardNamespaceAsString.Split(NamespacePartSeparator);
+           _namespaceComponents = wildcardNamespaceAsString.Split(DomainPartSeparator);
         }
 
         /// <inheritdoc />
         public override int GetMatchRelevance(Namespace ns)
         {
-           var actualList = ns.ToString().Split(NamespacePartSeparator);
+           var actualList = ns.ToString().Split(DomainPartSeparator);
 
            var distance = CalcDistance(actualList, _namespaceComponents, 0);
 
@@ -48,7 +48,7 @@ namespace Codartis.NsDepCop.Config
         /// <returns>True, if and only if the <paramref name="namespaceAsString"/> is valid.</returns>
         public static bool IsValid(string namespaceAsString)
         {
-            var parts = namespaceAsString.Split(NamespacePartSeparator);
+            var parts = namespaceAsString.Split(DomainPartSeparator);
 
             bool validChars = parts.All(s =>
                 !string.IsNullOrWhiteSpace(s)

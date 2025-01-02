@@ -1,11 +1,10 @@
-﻿using System.Linq;
-using Codartis.NsDepCop.Config;
+﻿using Codartis.NsDepCop.Config;
 using FluentAssertions;
 using Xunit;
 
 namespace Codartis.NsDepCop.Test.Interface.Config
 {
-    public class NamespaceSpecificationTests
+    public class DomainSpecificationTests
     {
         [Fact]
         public void GetMatchRelevance()
@@ -23,7 +22,7 @@ namespace Codartis.NsDepCop.Test.Interface.Config
             MatchRelevance("A.B.*", ns).Should().BeGreaterThan(MatchRelevance("A.*", ns));
             MatchRelevance("A.B", ns).Should().BeGreaterThan(MatchRelevance("A.B.*", ns));
         }
-        
+
         [Theory]
         [InlineData("A.C.D", "A.C.D", 0)]
         [InlineData("A.C.D", "A.?.D", 1)]
@@ -49,10 +48,10 @@ namespace Codartis.NsDepCop.Test.Interface.Config
             MatchRelevance(pattern, ns).Should().Be(int.MaxValue - distance);
         }
 
-        private static int MatchRelevance(string namespaceSpecificationAsString, string namespaceAsString)
+        private static int MatchRelevance(string domainSpecificationAsString, string domainAsString)
         {
-            var ns = new Namespace(namespaceAsString);
-            return NamespaceSpecificationParser.Parse(namespaceSpecificationAsString).GetMatchRelevance(ns);
+            var ns = new Namespace(domainAsString);
+            return NamespaceSpecificationParser.Parse(domainSpecificationAsString).GetMatchRelevance(ns);
         }
     }
 }

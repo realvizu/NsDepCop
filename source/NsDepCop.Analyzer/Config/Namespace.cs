@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.Config
     /// The global namespace is also a namespace and it's represented by '.' (a dot)
     /// </remarks>
     [Serializable]
-    public sealed class Namespace : NamespaceSpecification
+    public sealed class Namespace : DomainSpecification
     {
         public const string RootNamespaceMarker = ".";
 
@@ -49,8 +49,8 @@ namespace Codartis.NsDepCop.Config
             if (parentCandidate == GlobalNamespace)
                 return true;
 
-            var parentPrefix = parentCandidate.NamespaceSpecificationAsString + NamespacePartSeparator;
-            return NamespaceSpecificationAsString.StartsWith(parentPrefix);
+            var parentPrefix = parentCandidate.DomainSpecificationAsString + DomainPartSeparator;
+            return DomainSpecificationAsString.StartsWith(parentPrefix);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Codartis.NsDepCop.Config
             if (namespaceAsString.Any(c => c == WildcardNamespace.AnyNamespacesMarker[0] || c == WildcardNamespace.SingleNamespaceMarker[0] ))
                 return false;
 
-            var pieces = namespaceAsString.Split(new[] { NamespacePartSeparator }, StringSplitOptions.None);
+            var pieces = namespaceAsString.Split(new[] { DomainPartSeparator }, StringSplitOptions.None);
 
             return pieces.All(i => !string.IsNullOrWhiteSpace(i));
         }

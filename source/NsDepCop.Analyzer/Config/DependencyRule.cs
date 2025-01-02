@@ -16,19 +16,19 @@ namespace Codartis.NsDepCop.Config
         /// <summary>
         /// The dependency points from this domain to the other.
         /// </summary>
-        public NamespaceSpecification From { get; }
+        public DomainSpecification From { get; }
 
         /// <summary>
         /// The dependency points into this domain.
         /// </summary>
-        public NamespaceSpecification To { get; }
+        public DomainSpecification To { get; }
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
         /// <param name="from">The source of the dependency.</param>
         /// <param name="to">The target of the dependency.</param>
-        public DependencyRule(NamespaceSpecification from, NamespaceSpecification to)
+        public DependencyRule(DomainSpecification from, DomainSpecification to)
         {
             From = from ?? throw new ArgumentNullException(nameof(from));
             To = to ?? throw new ArgumentNullException(nameof(to));
