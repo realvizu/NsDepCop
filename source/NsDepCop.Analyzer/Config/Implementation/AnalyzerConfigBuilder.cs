@@ -19,7 +19,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         public bool? ParentCanDependOnChildImplicitly { get; private set; }
         public Dictionary<DependencyRule, TypeNameSet> AllowRules { get; }
         public HashSet<DependencyRule> DisallowRules { get; }
-        public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+        public Dictionary<Domain, TypeNameSet> VisibleTypesByNamespace { get; }
         public HashSet<DependencyRule> AllowedAssemblyRules { get; }
         public HashSet<DependencyRule> DisallowedAssemblyRules { get; }
         public int? MaxIssueCount { get; private set; }
@@ -30,7 +30,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             SourcePathExclusionPatterns = new List<string>();
             AllowRules = new Dictionary<DependencyRule, TypeNameSet>();
             DisallowRules = new HashSet<DependencyRule>();
-            VisibleTypesByNamespace = new Dictionary<Namespace, TypeNameSet>();
+            VisibleTypesByNamespace = new Dictionary<Domain, TypeNameSet>();
             AllowedAssemblyRules = new HashSet<DependencyRule>();
             DisallowedAssemblyRules = new HashSet<DependencyRule>();
         }
@@ -178,13 +178,13 @@ namespace Codartis.NsDepCop.Config.Implementation
             return this;
         }
 
-        public AnalyzerConfigBuilder AddVisibleTypesByNamespace(Namespace ns, TypeNameSet typeNameSet)
+        public AnalyzerConfigBuilder AddVisibleTypesByNamespace(Domain ns, TypeNameSet typeNameSet)
         {
-            VisibleTypesByNamespace.AddOrUnion<Namespace, TypeNameSet, string>(ns, typeNameSet);
+            VisibleTypesByNamespace.AddOrUnion<Domain, TypeNameSet, string>(ns, typeNameSet);
             return this;
         }
 
-        private AnalyzerConfigBuilder AddVisibleTypesByNamespace(IEnumerable<KeyValuePair<Namespace, TypeNameSet>> visibleTypesByNamespace)
+        private AnalyzerConfigBuilder AddVisibleTypesByNamespace(IEnumerable<KeyValuePair<Domain, TypeNameSet>> visibleTypesByNamespace)
         {
             foreach (var keyValuePair in visibleTypesByNamespace)
                 AddVisibleTypesByNamespace(keyValuePair.Key, keyValuePair.Value);

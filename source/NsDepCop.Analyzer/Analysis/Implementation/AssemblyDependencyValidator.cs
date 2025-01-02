@@ -27,8 +27,8 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             }
 
             // These assembly names are coming from a compiler so we don't have to validate them.
-            var fromAssembly = new Namespace(assemblyDependency.FromAssembly.Name, validate: false);
-            var toAssembly = new Namespace(assemblyDependency.ToAssembly.Name, validate: false);
+            var fromAssembly = new Domain(assemblyDependency.FromAssembly.Name, validate: false);
+            var toAssembly = new Domain(assemblyDependency.ToAssembly.Name, validate: false);
 
             var disallowRule = GetDisallowRule(fromAssembly, toAssembly);
             if (disallowRule is not null)
@@ -41,14 +41,14 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             return DependencyStatus.Allowed;
         }
 
-        private DependencyRule GetMostSpecificAllowRule(Namespace from, Namespace to)
+        private DependencyRule GetMostSpecificAllowRule(Domain from, Domain to)
         {
             return _allowRules
                 .Where(element => element.From.Matches(from) && element.To.Matches(to))
                 .MaxByOrDefault(element => element.From.GetMatchRelevance(from));
         }
 
-        private DependencyRule GetDisallowRule(Namespace from, Namespace to)
+        private DependencyRule GetDisallowRule(Domain from, Domain to)
         {
             return _disallowRules.FirstOrDefault(element => element.From.Matches(from) && element.To.Matches(to));
         }

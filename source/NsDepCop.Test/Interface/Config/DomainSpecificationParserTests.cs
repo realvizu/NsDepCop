@@ -12,7 +12,7 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         [InlineData("A.B")]
         public void Parse_DomainSpecification(string domainString)
         {
-            DomainSpecificationParser.Parse(domainString).Should().Be(new Namespace(domainString));
+            DomainSpecificationParser.Parse(domainString).Should().Be(new Domain(domainString));
         }
 
         [Theory]

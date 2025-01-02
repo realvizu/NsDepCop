@@ -10,7 +10,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
     {
         private readonly Dictionary<DependencyRule, TypeNameSet> _allowedDependencies;
         private readonly HashSet<DependencyRule> _disallowedDependencies;
-        private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesByTargetNamespace;
+        private readonly Dictionary<Domain, TypeNameSet> _visibleTypesByTargetNamespace;
         private readonly HashSet<DependencyRule> _allowedAssemblyDependencies;
         private readonly HashSet<DependencyRule> _disallowedAssemblyDependencies;
 
@@ -20,7 +20,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             ParentCanDependOnChildImplicitly = ConfigDefaults.ParentCanDependOnChildImplicitly;
             _allowedDependencies = new Dictionary<DependencyRule, TypeNameSet>();
             _disallowedDependencies = new HashSet<DependencyRule>();
-            _visibleTypesByTargetNamespace = new Dictionary<Namespace, TypeNameSet>();
+            _visibleTypesByTargetNamespace = new Dictionary<Domain, TypeNameSet>();
             _allowedAssemblyDependencies = new HashSet<DependencyRule>();
             _disallowedAssemblyDependencies = new HashSet<DependencyRule>();
         }
@@ -31,7 +31,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
 
         public Dictionary<DependencyRule, TypeNameSet> AllowRules => _allowedDependencies;
         public HashSet<DependencyRule> DisallowRules => _disallowedDependencies;
-        public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace => _visibleTypesByTargetNamespace;
+        public Dictionary<Domain, TypeNameSet> VisibleTypesByNamespace => _visibleTypesByTargetNamespace;
         public HashSet<DependencyRule> AllowedAssemblyRules => _allowedAssemblyDependencies;
         public HashSet<DependencyRule> DisallowedAssemblyRules => _disallowedAssemblyDependencies;
 
@@ -67,7 +67,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
 
         public DependencyRulesBuilder AddVisibleMembers(string targetNamespace, params string[] typeNames)
         {
-            _visibleTypesByTargetNamespace.Add(new Namespace(targetNamespace), new TypeNameSet(typeNames));
+            _visibleTypesByTargetNamespace.Add(new Domain(targetNamespace), new TypeNameSet(typeNames));
             return this;
         }
     }

@@ -149,7 +149,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (visibleMembersChild == null)
                 return null;
 
-            if (allowedRule.To is not Namespace)
+            if (allowedRule.To is not Domain)
                 throw new Exception($"{GetLineInfo(element)}The target namespace '{allowedRule.To}' must be a single namespace.");
 
             if (visibleMembersChild.Attribute(OfNamespaceAttributeName) != null)
@@ -165,7 +165,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (targetNamespaceName == null)
                 throw new Exception($"{GetLineInfo(element)}'{OfNamespaceAttributeName}' attribute missing.");
 
-            var targetNamespace = TryAndReportError(element, () => new Namespace(targetNamespaceName.Trim()));
+            var targetNamespace = TryAndReportError(element, () => new Domain(targetNamespaceName.Trim()));
 
             var visibleTypeNames = ParseTypeNameSet(element, TypeElementName);
             if (!visibleTypeNames.Any())

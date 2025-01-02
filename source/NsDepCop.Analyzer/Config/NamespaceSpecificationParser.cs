@@ -17,7 +17,7 @@ namespace Codartis.NsDepCop.Config
         {
             if (domainSpecificationAsString.Contains(WildcardDomain.SingleDomainMarker) || domainSpecificationAsString.Contains(WildcardDomain.AnyDomainMarker))
                 return new WildcardDomain(domainSpecificationAsString);
-            return new Namespace(domainSpecificationAsString);
+            return new Domain(domainSpecificationAsString);
         }
     }
 }

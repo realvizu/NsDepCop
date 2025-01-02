@@ -32,7 +32,7 @@ namespace Codartis.NsDepCop.Config
         }
 
         /// <inheritdoc />
-        public override int GetMatchRelevance(Namespace ns)
+        public override int GetMatchRelevance(Domain ns)
         {
             var actualList = ns.ToString().Split(DomainPartSeparator);
 

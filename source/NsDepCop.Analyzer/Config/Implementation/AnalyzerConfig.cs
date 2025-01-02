@@ -16,7 +16,7 @@ namespace Codartis.NsDepCop.Config.Implementation
         public bool ParentCanDependOnChildImplicitly { get; }
         public Dictionary<DependencyRule, TypeNameSet> AllowRules { get; }
         public HashSet<DependencyRule> DisallowRules { get; }
-        public Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+        public Dictionary<Domain, TypeNameSet> VisibleTypesByNamespace { get; }
         public HashSet<DependencyRule> AllowedAssemblyRules { get; }
         public HashSet<DependencyRule> DisallowedAssemblyRules { get; }
         public int MaxIssueCount { get; }
@@ -30,7 +30,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             bool parentCanDependOnChildImplicitly,
             Dictionary<DependencyRule, TypeNameSet> allowRules,
             HashSet<DependencyRule> disallowRules,
-            Dictionary<Namespace, TypeNameSet> visibleTypesByNamespace,
+            Dictionary<Domain, TypeNameSet> visibleTypesByNamespace,
             HashSet<DependencyRule> allowedAssemblyRules,
             HashSet<DependencyRule> disallowedAssemblyRules,
             int maxIssueCount,

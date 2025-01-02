@@ -126,7 +126,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
         {
             _configMock.Setup(i => i.AllowRules).Returns(new Dictionary<DependencyRule, TypeNameSet>());
             _configMock.Setup(i => i.DisallowRules).Returns(new HashSet<DependencyRule>());
-            _configMock.Setup(i => i.VisibleTypesByNamespace).Returns(new Dictionary<Namespace, TypeNameSet>());
+            _configMock.Setup(i => i.VisibleTypesByNamespace).Returns(new Dictionary<Domain, TypeNameSet>());
             _configMock.Setup(i => i.MaxIssueCount).Returns(maxIssueCount);
             _configMock.Setup(i => i.AutoLowerMaxIssueCount).Returns(autoLowerMaxIssueCount);
 

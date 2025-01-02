@@ -12,7 +12,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
     {
         private readonly Dictionary<DependencyRule, TypeNameSet> _allowRules;
         private readonly HashSet<DependencyRule> _disallowRules;
-        private readonly Dictionary<Namespace, TypeNameSet> _visibleTypesPerNamespaces;
+        private readonly Dictionary<Domain, TypeNameSet> _visibleTypesPerNamespaces;
         private readonly bool _childCanDependOnParentImplicitly;
         private readonly bool _parentCanDependOnChildImplicitly;
 
@@ -37,8 +37,8 @@ namespace Codartis.NsDepCop.Analysis.Implementation
                 return DependencyStatus.Allowed;
 
             // These namespace names are coming from a compiler so we don't have to validate them.
-            var fromNamespace = new Namespace(typeDependency.FromNamespaceName, validate: false);
-            var toNamespace = new Namespace(typeDependency.ToNamespaceName, validate: false);
+            var fromNamespace = new Domain(typeDependency.FromNamespaceName, validate: false);
+            var toNamespace = new Domain(typeDependency.ToNamespaceName, validate: false);
 
             var disallowRule = GetDisallowRule(fromNamespace, toNamespace);
             if (disallowRule != null)
@@ -65,30 +65,30 @@ namespace Codartis.NsDepCop.Analysis.Implementation
                 : DependencyStatus.DisallowedUseOfMember(visibleMembers.ToArray());
         }
 
-        private bool IsAllowedBecauseChildCanDependOnParent(Namespace fromNamespace, Namespace toNamespace)
+        private bool IsAllowedBecauseChildCanDependOnParent(Domain fromNamespace, Domain toNamespace)
         {
-            return _childCanDependOnParentImplicitly && fromNamespace.IsSubnamespaceOf(toNamespace);
+            return _childCanDependOnParentImplicitly && fromNamespace.IsSubDomain(toNamespace);
         }
         
-        private bool IsAllowedBecauseParentCanDependOnChild(Namespace fromNamespace, Namespace toNamespace)
+        private bool IsAllowedBecauseParentCanDependOnChild(Domain fromNamespace, Domain toNamespace)
         {
-            return _parentCanDependOnChildImplicitly && toNamespace.IsSubnamespaceOf(fromNamespace);
+            return _parentCanDependOnChildImplicitly && toNamespace.IsSubDomain(fromNamespace);
         }
 
-        private DependencyRule GetMostSpecificAllowRule(Namespace from, Namespace to)
+        private DependencyRule GetMostSpecificAllowRule(Domain from, Domain to)
         {
             return _allowRules.Keys
                 .Where(i => i.From.Matches(from) && i.To.Matches(to))
                 .MaxByOrDefault(i => i.From.GetMatchRelevance(from));
         }
 
-        private DependencyRule GetDisallowRule(Namespace from, Namespace to)
+        private DependencyRule GetDisallowRule(Domain from, Domain to)
         {
             return _disallowRules
                 .FirstOrDefault(i => i.From.Matches(from) && i.To.Matches(to));
         }
 
-        private TypeNameSet GetVisibleMembers(DependencyRule allowRule, Namespace targetNamespace)
+        private TypeNameSet GetVisibleMembers(DependencyRule allowRule, Domain targetNamespace)
         {
             TypeNameSet allowedTypeNameSet;
 

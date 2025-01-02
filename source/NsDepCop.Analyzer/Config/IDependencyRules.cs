@@ -31,7 +31,7 @@ namespace Codartis.NsDepCop.Config
         /// Dictionary of visible types by target namespace. The key is the name of a namespace, 
         /// the value is a set of type names defined in the namespace and visible outside of the namespace.
         /// </summary>
-        Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+        Dictionary<Domain, TypeNameSet> VisibleTypesByNamespace { get; }
 
         HashSet<DependencyRule> AllowedAssemblyRules { get; }
 

@@ -83,13 +83,13 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var visibleTypesByNamespace = config.VisibleTypesByNamespace;
             visibleTypesByNamespace.Should().HaveCount(2);
             {
-                var types = visibleTypesByNamespace[new Namespace("N1")];
+                var types = visibleTypesByNamespace[new Domain("N1")];
                 types.Should().HaveCount(2);
                 types.Should().Contain("T1");
                 types.Should().Contain("T2");
             }
             {
-                var types = visibleTypesByNamespace[new Namespace("N2")];
+                var types = visibleTypesByNamespace[new Domain("N2")];
                 types.Should().HaveCount(1);
                 types.Should().Contain("T3");
             }
@@ -182,7 +182,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("InvalidNamespaceString.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.Should().Throw<Exception>().WithMessage("*not a valid Namespace*");
+            a.Should().Throw<Exception>().WithMessage("*not a valid Domain*");
         }
 
         [Fact]

@@ -50,7 +50,7 @@ namespace Codartis.NsDepCop.Test.Interface.Config
 
         private static int MatchRelevance(string domainSpecificationAsString, string domainAsString)
         {
-            var ns = new Namespace(domainAsString);
+            var ns = new Domain(domainAsString);
             return DomainSpecificationParser.Parse(domainSpecificationAsString).GetMatchRelevance(ns);
         }
     }

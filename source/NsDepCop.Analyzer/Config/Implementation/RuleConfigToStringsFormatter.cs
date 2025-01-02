@@ -21,7 +21,7 @@ namespace Codartis.NsDepCop.Config.Implementation
                 yield return $"  {disallowRule}";
         }
 
-        public static IEnumerable<string> ToStrings(this IDictionary<Namespace, TypeNameSet> visibleTypesByNamespaces)
+        public static IEnumerable<string> ToStrings(this IDictionary<Domain, TypeNameSet> visibleTypesByNamespaces)
         {
             yield return $"VisibleTypesByNamespace={visibleTypesByNamespaces.Count}";
             foreach (var visibleTypesByNamespace in visibleTypesByNamespaces)

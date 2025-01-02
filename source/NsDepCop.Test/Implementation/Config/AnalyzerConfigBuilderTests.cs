@@ -128,19 +128,19 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         public void AddVisibleTypesByNamespace_Works()
         {
             var configBuilder = new AnalyzerConfigBuilder()
-                .AddVisibleTypesByNamespace(new Namespace("N1"), null)
-                .AddVisibleTypesByNamespace(new Namespace("N2"), new TypeNameSet { "T1", "T2" });
+                .AddVisibleTypesByNamespace(new Domain("N1"), null)
+                .AddVisibleTypesByNamespace(new Domain("N2"), new TypeNameSet { "T1", "T2" });
 
             configBuilder
-                .AddVisibleTypesByNamespace(new Namespace("N2"), new TypeNameSet { "T2", "T3" })
-                .AddVisibleTypesByNamespace(new Namespace("N3"), new TypeNameSet { "T4" });
+                .AddVisibleTypesByNamespace(new Domain("N2"), new TypeNameSet { "T2", "T3" })
+                .AddVisibleTypesByNamespace(new Domain("N3"), new TypeNameSet { "T4" });
 
             configBuilder.VisibleTypesByNamespace.Should().BeEquivalentTo(
-                new Dictionary<Namespace, TypeNameSet>
+                new Dictionary<Domain, TypeNameSet>
                 {
-                    {new Namespace("N1"), null},
-                    {new Namespace("N2"), new TypeNameSet {"T1", "T2", "T3"}},
-                    {new Namespace("N3"), new TypeNameSet {"T4"}},
+                    {new Domain("N1"), null},
+                    {new Domain("N2"), new TypeNameSet {"T1", "T2", "T3"}},
+                    {new Domain("N3"), new TypeNameSet {"T4"}},
                 });
         }
 
@@ -212,7 +212,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 .SetChildCanDependOnParentImplicitly(true)
                 .AddAllowRule(new DependencyRule("N1", "N2"), new TypeNameSet { "T1" })
                 .AddDisallowRule(new DependencyRule("N3", "N4"))
-                .AddVisibleTypesByNamespace(new Namespace("N5"), new TypeNameSet { "T2" })
+                .AddVisibleTypesByNamespace(new Domain("N5"), new TypeNameSet { "T2" })
                 .AddAllowedAssemblyRule(new DependencyRule("A1", "A2"))
                 .AddAllowedAssemblyRule(new DependencyRule("A3", "A4"))
                 .AddDisallowedAssemblyRule(new DependencyRule("A5", "A6"))
@@ -243,7 +243,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 .SetChildCanDependOnParentImplicitly(true)
                 .AddAllowRule(new DependencyRule("N1", "N2"), new TypeNameSet { "T1" })
                 .AddDisallowRule(new DependencyRule("N3", "N4"))
-                .AddVisibleTypesByNamespace(new Namespace("N5"), new TypeNameSet { "T2" })
+                .AddVisibleTypesByNamespace(new Domain("N5"), new TypeNameSet { "T2" })
                 .AddAllowedAssemblyRule(new DependencyRule("A1", "A2"))
                 .AddAllowedAssemblyRule(new DependencyRule("A3", "A4"))
                 .AddDisallowedAssemblyRule(new DependencyRule("A5", "A6"))
@@ -270,7 +270,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 .SetChildCanDependOnParentImplicitly(false)
                 .AddAllowRule(new DependencyRule("N1", "N2"), new TypeNameSet { "T1" })
                 .AddDisallowRule(new DependencyRule("N3", "N4"))
-                .AddVisibleTypesByNamespace(new Namespace("N5"), new TypeNameSet { "T2" })
+                .AddVisibleTypesByNamespace(new Domain("N5"), new TypeNameSet { "T2" })
                 .AddAllowedAssemblyRule(new DependencyRule("A1", "A2"))
                 .AddDisallowedAssemblyRule(new DependencyRule("A3", "A4"))
                 .SetMaxIssueCount(43);
@@ -280,7 +280,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
                 .SetChildCanDependOnParentImplicitly(true)
                 .AddAllowRule(new DependencyRule("N6", "N7"), new TypeNameSet { "T3" })
                 .AddDisallowRule(new DependencyRule("N8", "N9"))
-                .AddVisibleTypesByNamespace(new Namespace("N10"), new TypeNameSet { "T4" })
+                .AddVisibleTypesByNamespace(new Domain("N10"), new TypeNameSet { "T4" })
                 .AddAllowedAssemblyRule(new DependencyRule("A6", "A7"))
                 .AddAllowedAssemblyRule(new DependencyRule("A8", "A9"))
                 .AddDisallowedAssemblyRule(new DependencyRule("A9", "A9"))

@@ -39,14 +39,14 @@ namespace Codartis.NsDepCop.Config
         /// </summary>
         /// <param name="domain">A domain.</param>
         /// <returns>Zero means no match. Higher value means more relevant match.</returns>
-        public abstract int GetMatchRelevance(Namespace domain);
+        public abstract int GetMatchRelevance(Domain domain);
 
         /// <summary>
         /// Returns a value indicating whether this domain specification matches a given domain.
         /// </summary>
         /// <param name="domain">A domain.</param>
         /// <returns>True if this domain specification matches the given domain.</returns>
-        public bool Matches(Namespace domain) => GetMatchRelevance(domain) > 0;
+        public bool Matches(Domain domain) => GetMatchRelevance(domain) > 0;
 
         public override string ToString() => DomainSpecificationAsString;
 
