@@ -82,12 +82,12 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             SetUpEnabledConfig();
             _configMock.Setup(i => i.AllowedAssemblyRules).Returns([
                 new DependencyRule(
-                    from: NamespaceSpecificationParser.Parse(SourceAssembly.Name),
-                    to: NamespaceSpecificationParser.Parse(ReferencedAssemblyOne.Name)
+                    from: DomainSpecificationParser.Parse(SourceAssembly.Name),
+                    to: DomainSpecificationParser.Parse(ReferencedAssemblyOne.Name)
                 ),
                 new DependencyRule(
-                    from: NamespaceSpecificationParser.Parse(SourceAssembly.Name),
-                    to: NamespaceSpecificationParser.Parse(ReferencedAssemblyTwo.Name)
+                    from: DomainSpecificationParser.Parse(SourceAssembly.Name),
+                    to: DomainSpecificationParser.Parse(ReferencedAssemblyTwo.Name)
                 )
             ]);
 
@@ -105,14 +105,14 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             SetUpEnabledConfig();
             _configMock.Setup(i => i.AllowedAssemblyRules).Returns([
                 new DependencyRule(
-                    from: NamespaceSpecificationParser.Parse("*"),
-                    to: NamespaceSpecificationParser.Parse("*")
+                    from: DomainSpecificationParser.Parse("*"),
+                    to: DomainSpecificationParser.Parse("*")
                 )
             ]);
             _configMock.Setup(i => i.DisallowedAssemblyRules).Returns([
                 new DependencyRule(
-                    from: NamespaceSpecificationParser.Parse(SourceAssembly.Name),
-                    to: NamespaceSpecificationParser.Parse(ReferencedAssemblyTwo.Name)
+                    from: DomainSpecificationParser.Parse(SourceAssembly.Name),
+                    to: DomainSpecificationParser.Parse(ReferencedAssemblyTwo.Name)
                 )
             ]);
 

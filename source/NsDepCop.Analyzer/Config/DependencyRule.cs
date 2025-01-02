@@ -40,7 +40,7 @@ namespace Codartis.NsDepCop.Config
         /// <param name="from">A namespace specification in string format. The source of the dependency.</param>
         /// <param name="to">A namespace specification in string format. The target of the dependency.</param>
         public DependencyRule(string from, string to)
-            : this(NamespaceSpecificationParser.Parse(from), NamespaceSpecificationParser.Parse(to))
+            : this(DomainSpecificationParser.Parse(from), DomainSpecificationParser.Parse(to))
         { }
 
         /// <summary>

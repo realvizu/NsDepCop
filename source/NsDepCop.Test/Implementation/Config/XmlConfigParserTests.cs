@@ -190,7 +190,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("InvalidDuplicatedWildcardNamespaceString.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.Should().Throw<Exception>().WithMessage("*not a valid WildcardNamespace*");
+            a.Should().Throw<Exception>().WithMessage("*not a valid WildcardDomain*");
         }
 
         [Fact]

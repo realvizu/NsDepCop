@@ -184,8 +184,8 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (toValue == null)
                 throw new Exception($"{GetLineInfo(element)}'{ToAttributeName}' attribute missing.");
 
-            var fromNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(fromValue.Trim()));
-            var toNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(toValue.Trim()));
+            var fromNamespaceSpecification = TryAndReportError(element, () => DomainSpecificationParser.Parse(fromValue.Trim()));
+            var toNamespaceSpecification = TryAndReportError(element, () => DomainSpecificationParser.Parse(toValue.Trim()));
 
             return new DependencyRule(fromNamespaceSpecification, toNamespaceSpecification);
         }
@@ -200,8 +200,8 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (toValue == null)
                 throw new Exception($"{GetLineInfo(element)}'{ToAttributeName}' attribute missing.");
 
-            var fromNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(fromValue.Trim()));
-            var toNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(toValue.Trim()));
+            var fromNamespaceSpecification = TryAndReportError(element, () => DomainSpecificationParser.Parse(fromValue.Trim()));
+            var toNamespaceSpecification = TryAndReportError(element, () => DomainSpecificationParser.Parse(toValue.Trim()));
 
             return new DependencyRule(fromNamespaceSpecification, toNamespaceSpecification);
         }
