@@ -7,6 +7,7 @@ namespace Codartis.NsDepCop.Config
     {
         public const int InheritanceDepth = 0;
         public const bool IsEnabled = true;
+        public const bool CheckAssemblyDependencies = false;
         public const int MaxIssueCount = 100;
         public const bool AutoLowerMaxIssueCount = false;
         public const bool ChildCanDependOnParentImplicitly = false;

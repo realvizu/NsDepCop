@@ -21,8 +21,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
 
             var allowedRules = configProvider.Config.AllowRules;
             allowedRules.Should().HaveCount(2);
-            allowedRules.Keys.Should().Contain(new NamespaceDependencyRule("N1", "N2"));
-            allowedRules.Keys.Should().Contain(new NamespaceDependencyRule("N3", "N4"));
+            allowedRules.Keys.Should().Contain(new DependencyRule("N1", "N2"));
+            allowedRules.Keys.Should().Contain(new DependencyRule("N3", "N4"));
         }
 
         [Fact]

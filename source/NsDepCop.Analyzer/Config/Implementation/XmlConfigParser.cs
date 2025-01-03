@@ -21,8 +21,11 @@ namespace Codartis.NsDepCop.Config.Implementation
         private const string ImplicitParentDependencyAttributeName = "ChildCanDependOnParentImplicitly";
         private const string ImplicitChildDependencyAttributeName = "ParentCanDependOnChildImplicitly";
         private const string SourcePathExclusionPatternsAttributeName = "ExcludedFiles";
+        private const string CheckAssemblyDependenciesAttributeName = "CheckAssemblyDependencies";
         private const string AllowedElementName = "Allowed";
         private const string DisallowedElementName = "Disallowed";
+        private const string AllowedAssemblyElementName = "AllowedAssembly";
+        private const string DisallowedAssemblyElementName = "DisallowedAssembly";
         private const string VisibleMembersElementName = "VisibleMembers";
         private const string TypeElementName = "Type";
         private const string OfNamespaceAttributeName = "OfNamespace";
@@ -61,6 +64,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             configBuilder.SetIsEnabled(ParseValueType<bool>(rootElement, IsEnabledAttributeName, bool.TryParse));
             configBuilder.SetInheritanceDepth(ParseValueType<int>(rootElement, InheritanceDepthAttributeName, int.TryParse));
             configBuilder.AddSourcePathExclusionPatterns(ParseStringList(rootElement, SourcePathExclusionPatternsAttributeName, ','));
+            configBuilder.SetCheckAssemblyDependencies(ParseValueType<bool>(rootElement, CheckAssemblyDependenciesAttributeName, bool.TryParse));
             configBuilder.SetChildCanDependOnParentImplicitly(ParseValueType<bool>(rootElement, ImplicitParentDependencyAttributeName, bool.TryParse));
             configBuilder.SetParentCanDependOnChildImplicitly(ParseValueType<bool>(rootElement, ImplicitChildDependencyAttributeName, bool.TryParse));
             configBuilder.SetMaxIssueCount(ParseValueType<int>(rootElement, MaxIssueCountAttributeName, int.TryParse));
@@ -76,7 +80,7 @@ namespace Codartis.NsDepCop.Config.Implementation
 
         private static IEnumerable<string> Split(string s, char separatorChar)
         {
-            return s?.Split(new[] {separatorChar}, StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim());
+            return s?.Split(new[] { separatorChar }, StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim());
         }
 
         private static void ParseChildElements(XElement rootElement, AnalyzerConfigBuilder configBuilder)
@@ -90,6 +94,12 @@ namespace Codartis.NsDepCop.Config.Implementation
                         break;
                     case DisallowedElementName:
                         ParseDisallowedElement(xElement, configBuilder);
+                        break;
+                    case AllowedAssemblyElementName:
+                        ParseAllowedAssemblyElement(xElement, configBuilder);
+                        break;
+                    case DisallowedAssemblyElementName:
+                        ParseDisallowedAssemblyElement(xElement, configBuilder);
                         break;
                     case VisibleMembersElementName:
                         ParseVisibleMembersElement(xElement, configBuilder);
@@ -119,13 +129,27 @@ namespace Codartis.NsDepCop.Config.Implementation
             configBuilder.AddDisallowRule(disallowedDependencyRule);
         }
 
-        private static TypeNameSet ParseVisibleMembersInsideAllowedRule(XElement element, NamespaceDependencyRule allowedRule)
+        private static void ParseAllowedAssemblyElement(XElement element, AnalyzerConfigBuilder configBuilder)
+        {
+            var allowedAssemblyDependencyRule = ParseAssemblyDependencyRule(element);
+
+            configBuilder.AddAllowedAssemblyRule(allowedAssemblyDependencyRule);
+        }
+
+        private static void ParseDisallowedAssemblyElement(XElement element, AnalyzerConfigBuilder configBuilder)
+        {
+            var disallowedAssemblyDependencyRule = ParseAssemblyDependencyRule(element);
+
+            configBuilder.AddDisallowedAssemblyRule(disallowedAssemblyDependencyRule);
+        }
+
+        private static TypeNameSet ParseVisibleMembersInsideAllowedRule(XElement element, DependencyRule allowedRule)
         {
             var visibleMembersChild = element.Element(VisibleMembersElementName);
             if (visibleMembersChild == null)
                 return null;
 
-            if (allowedRule.To is not Namespace)
+            if (allowedRule.To is not Domain)
                 throw new Exception($"{GetLineInfo(element)}The target namespace '{allowedRule.To}' must be a single namespace.");
 
             if (visibleMembersChild.Attribute(OfNamespaceAttributeName) != null)
@@ -141,7 +165,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (targetNamespaceName == null)
                 throw new Exception($"{GetLineInfo(element)}'{OfNamespaceAttributeName}' attribute missing.");
 
-            var targetNamespace = TryAndReportError(element, () => new Namespace(targetNamespaceName.Trim()));
+            var targetNamespace = TryAndReportError(element, () => new Domain(targetNamespaceName.Trim()));
 
             var visibleTypeNames = ParseTypeNameSet(element, TypeElementName);
             if (!visibleTypeNames.Any())
@@ -150,7 +174,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             configBuilder.AddVisibleTypesByNamespace(targetNamespace, visibleTypeNames);
         }
 
-        private static NamespaceDependencyRule ParseDependencyRule(XElement element)
+        private static DependencyRule ParseDependencyRule(XElement element)
         {
             var fromValue = GetAttributeValue(element, FromAttributeName);
             if (fromValue == null)
@@ -160,10 +184,26 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (toValue == null)
                 throw new Exception($"{GetLineInfo(element)}'{ToAttributeName}' attribute missing.");
 
-            var fromNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(fromValue.Trim()));
-            var toNamespaceSpecification = TryAndReportError(element, () => NamespaceSpecificationParser.Parse(toValue.Trim()));
+            var from = TryAndReportError(element, () => DomainSpecificationParser.Parse(fromValue.Trim()));
+            var to = TryAndReportError(element, () => DomainSpecificationParser.Parse(toValue.Trim()));
 
-            return new NamespaceDependencyRule(fromNamespaceSpecification, toNamespaceSpecification);
+            return new DependencyRule(from, to);
+        }
+
+        private static DependencyRule ParseAssemblyDependencyRule(XElement element)
+        {
+            var fromValue = GetAttributeValue(element, FromAttributeName);
+            if (fromValue == null)
+                throw new Exception($"{GetLineInfo(element)}'{FromAttributeName}' attribute missing.");
+
+            var toValue = GetAttributeValue(element, ToAttributeName);
+            if (toValue == null)
+                throw new Exception($"{GetLineInfo(element)}'{ToAttributeName}' attribute missing.");
+
+            var from = TryAndReportError(element, () => DomainSpecificationParser.Parse(fromValue.Trim()));
+            var to = TryAndReportError(element, () => DomainSpecificationParser.Parse(toValue.Trim()));
+
+            return new DependencyRule(from, to);
         }
 
         private static T TryAndReportError<T>(XObject xObject, Func<T> parserDelegate)

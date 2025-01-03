@@ -5,14 +5,14 @@ using Xunit;
 
 namespace Codartis.NsDepCop.Test.Interface.Config
 {
-    public class NamespaceSpecificationParserTests
+    public class DomainSpecificationParserTests
     {
         [Theory]
         [InlineData(".")]
         [InlineData("A.B")]
-        public void Parse_Namespace(string namespaceString)
+        public void Parse_DomainSpecification(string domainString)
         {
-            NamespaceSpecificationParser.Parse(namespaceString).Should().Be(new Namespace(namespaceString));
+            DomainSpecificationParser.Parse(domainString).Should().Be(new Domain(domainString));
         }
 
         [Theory]
@@ -24,9 +24,9 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         [InlineData("?.B")]
         [InlineData("A.B.?")]
         [InlineData("A.B.*")]
-        public void Parse_WildcardNamespace(string wildcardNamespaceString)
+        public void Parse_WildcardDomainSpecification(string wildcardDomainString)
         {
-            NamespaceSpecificationParser.Parse(wildcardNamespaceString).Should().Be(new WildcardNamespace(wildcardNamespaceString));
+            DomainSpecificationParser.Parse(wildcardDomainString).Should().Be(new WildcardDomain(wildcardDomainString));
         }
 
         [Theory]
@@ -36,7 +36,7 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         [InlineData("*.*")]
         public void Parse_Invalid(string invalidString)
         {
-            Assert.Throws<FormatException>(() => NamespaceSpecificationParser.Parse(invalidString));
+            Assert.Throws<FormatException>(() => DomainSpecificationParser.Parse(invalidString));
         }
     }
 }

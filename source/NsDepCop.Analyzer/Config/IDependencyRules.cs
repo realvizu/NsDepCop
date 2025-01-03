@@ -20,17 +20,21 @@ namespace Codartis.NsDepCop.Config
         /// Dictionary of allowed dependency rules. The key is a namespace dependency rule, 
         /// the value is a set of type names defined in the target namespace and visible for the source namespace(s).
         /// </summary>
-        Dictionary<NamespaceDependencyRule, TypeNameSet> AllowRules { get; }
+        Dictionary<DependencyRule, TypeNameSet> AllowRules { get; }
 
         /// <summary>
         /// The set of disallowed dependency rules.
         /// </summary>
-        HashSet<NamespaceDependencyRule> DisallowRules { get; }
+        HashSet<DependencyRule> DisallowRules { get; }
 
         /// <summary>
         /// Dictionary of visible types by target namespace. The key is the name of a namespace, 
         /// the value is a set of type names defined in the namespace and visible outside of the namespace.
         /// </summary>
-        Dictionary<Namespace, TypeNameSet> VisibleTypesByNamespace { get; }
+        Dictionary<Domain, TypeNameSet> VisibleTypesByNamespace { get; }
+
+        HashSet<DependencyRule> AllowedAssemblyRules { get; }
+
+        HashSet<DependencyRule> DisallowedAssemblyRules { get; }
     }
 }

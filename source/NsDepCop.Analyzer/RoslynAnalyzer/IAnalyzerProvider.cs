@@ -13,5 +13,7 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
         /// <param name="csprojFilePath">The full path of a C# project file.</param>
         /// <returns>A dependency analyzer, or null if cannot be retrieved.</returns>
         IDependencyAnalyzer GetDependencyAnalyzer(string csprojFilePath);
+
+        IAssemblyDependencyAnalyzer GetAssemblyDependencyAnalyzer(string csprojFilePath);
     }
 }

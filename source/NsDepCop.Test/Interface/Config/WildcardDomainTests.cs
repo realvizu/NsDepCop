@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Codartis.NsDepCop.Test.Interface.Config
 {
-    public class WildcardNamespaceTests
+    public class WildcardDomainTests
     {
         [Theory]
         [InlineData("*")]
@@ -16,23 +16,23 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         [InlineData("*.A.?.B")]
         [InlineData("A.?.?.B")]
         [InlineData("A.*.?.?.B")]
-        public void Create_Works(string wildcardNamespaceString)
+        public void Create_Works(string wildcardDomainString)
         {
-            new WildcardNamespace(wildcardNamespaceString).ToString().Should().Be(wildcardNamespaceString);
+            new WildcardDomain(wildcardDomainString).ToString().Should().Be(wildcardDomainString);
         }
 
         [Fact]
         public void Create_WithNull_ThrowsArgumentNullExceptionn()
         {
-            Assert.Throws<ArgumentNullException>(() => new WildcardNamespace(null));
+            Assert.Throws<ArgumentNullException>(() => new WildcardDomain(null));
         }
 
         [Theory]
         [InlineData("A")]
         [InlineData("A.B")]
-        public void Create_NotAWildcardNamespace_ThrowsFormatException(string wildcardNamespaceString)
+        public void Create_NotAWildcardDomain_ThrowsFormatException(string wildcardDomainString)
         {
-            Assert.Throws<FormatException>(() => new WildcardNamespace(wildcardNamespaceString));
+            Assert.Throws<FormatException>(() => new WildcardDomain(wildcardDomainString));
         }
 
         [Theory]
@@ -45,24 +45,24 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         [InlineData("A.**.B")]
         [InlineData("A.*.*.B")]
         [InlineData(".*.B")]
-        public void Create_InvalidWildcardNamespace_ThrowsFormatException(string wildcardNamespaceString)
+        public void Create_InvalidWildcardDomain_ThrowsFormatException(string wildcardDomainString)
         {
-            Assert.Throws<FormatException>(() => new WildcardNamespace(wildcardNamespaceString));
+            Assert.Throws<FormatException>(() => new WildcardDomain(wildcardDomainString));
         }
 
         [Fact]
         [SuppressMessage("ReSharper", "EqualExpressionComparison")]
         public void Equals_Works()
         {
-            (new WildcardNamespace("A.*") == new WildcardNamespace("A.*")).Should().BeTrue();
-            (new WildcardNamespace("A.*") == new WildcardNamespace("B.*")).Should().BeFalse();
+            (new WildcardDomain("A.*") == new WildcardDomain("A.*")).Should().BeTrue();
+            (new WildcardDomain("A.*") == new WildcardDomain("B.*")).Should().BeFalse();
         }
 
         [Fact]
         [SuppressMessage("ReSharper", "EqualExpressionComparison")]
-        public void AnyNamespace_IsEqualToOtherInstanceOfAnyNamespace()
+        public void AnyDomain_IsEqualToOtherInstanceOfAnyDomain()
         {
-            (new WildcardNamespace("*") == new WildcardNamespace("*")).Should().BeTrue();
+            (new WildcardDomain("*") == new WildcardDomain("*")).Should().BeTrue();
         }
     }
 }

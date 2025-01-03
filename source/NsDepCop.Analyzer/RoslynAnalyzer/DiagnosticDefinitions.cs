@@ -65,6 +65,15 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
             $"If the '{ProductConstants.DisableToolEnvironmentVariableName}' environment variable is set to 'True' or '1' then all analysis is skipped."
         );
 
+        public static readonly DiagnosticDescriptor IllegalAssemblyDependency = CreateDiagnosticDescriptor(
+            "NSDEPCOP07",
+            "Illegal assembly reference.",
+            "Illegal assembly reference: {0}->{1}",
+            DiagnosticSeverity.Warning,
+            "The assembly cannot reference the other assembly because their dependency is prohibited according to the current rules." +
+            " Change the dependency rules in the 'config.nsdepcop' file or change your design to avoid this assembly dependency."
+        );
+
         private static DiagnosticDescriptor CreateDiagnosticDescriptor(
             string id,
             string title,

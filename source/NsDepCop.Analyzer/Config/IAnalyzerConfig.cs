@@ -29,5 +29,10 @@ namespace Codartis.NsDepCop.Config
         /// Uses https://github.com/dazinator/DotNet.Glob patterns.
         /// </remarks>
         string[] SourcePathExclusionPatterns { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the assembly dependencies check should be performed.
+        /// </summary>
+        bool CheckAssemblyDependencies { get; }
     }
 }

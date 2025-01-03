@@ -20,6 +20,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeNull();
             configBuilder.AutoLowerMaxIssueCount.Should().BeNull();
             configBuilder.SourcePathExclusionPatterns.Should().BeEmpty();
+            configBuilder.CheckAssemblyDependencies.Should().BeNull();
         }
 
         [Fact]
@@ -33,6 +34,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeTrue();
             configBuilder.AutoLowerMaxIssueCount.Should().BeTrue();
             configBuilder.SourcePathExclusionPatterns.Should().BeEquivalentTo(@"**/*.g.cs", @"TestData\**\*.cs");
+            configBuilder.CheckAssemblyDependencies.Should().BeTrue();
         }
 
         [Fact]
@@ -44,17 +46,17 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var allowedRules = config.AllowRules;
             allowedRules.Should().HaveCount(3);
             {
-                var types = allowedRules[new NamespaceDependencyRule("N1", "N2")];
+                var types = allowedRules[new DependencyRule("N1", "N2")];
                 types.Should().BeNull();
             }
             {
-                var types = allowedRules[new NamespaceDependencyRule("N3", "N4")];
+                var types = allowedRules[new DependencyRule("N3", "N4")];
                 types.Should().HaveCount(2);
                 types.Should().Contain("T1");
                 types.Should().Contain("T2");
             }
             {
-                var types = allowedRules[new NamespaceDependencyRule("N5", "N6")];
+                var types = allowedRules[new DependencyRule("N5", "N6")];
                 types.Should().BeNull();
             }
         }
@@ -68,8 +70,8 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var disallowedRules = config.DisallowRules;
             disallowedRules.Should().HaveCount(2);
 
-            disallowedRules.Should().Contain(new NamespaceDependencyRule("N1", "N2"));
-            disallowedRules.Should().Contain(new NamespaceDependencyRule("N3", "N4"));
+            disallowedRules.Should().Contain(new DependencyRule("N1", "N2"));
+            disallowedRules.Should().Contain(new DependencyRule("N3", "N4"));
         }
 
         [Fact]
@@ -81,16 +83,42 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             var visibleTypesByNamespace = config.VisibleTypesByNamespace;
             visibleTypesByNamespace.Should().HaveCount(2);
             {
-                var types = visibleTypesByNamespace[new Namespace("N1")];
+                var types = visibleTypesByNamespace[new Domain("N1")];
                 types.Should().HaveCount(2);
                 types.Should().Contain("T1");
                 types.Should().Contain("T2");
             }
             {
-                var types = visibleTypesByNamespace[new Namespace("N2")];
+                var types = visibleTypesByNamespace[new Domain("N2")];
                 types.Should().HaveCount(1);
                 types.Should().Contain("T3");
             }
+        }
+
+        [Fact]
+        public void Parse_AllowedAssemblyRules()
+        {
+            var xDocument = LoadXml("AllowedAssemblyRules.nsdepcop");
+            var config = XmlConfigParser.Parse(xDocument);
+
+            var allowedAssemblyRules = config.AllowedAssemblyRules;
+            allowedAssemblyRules.Should().HaveCount(2);
+
+            allowedAssemblyRules.Should().Contain(new DependencyRule("A1", "A2"));
+            allowedAssemblyRules.Should().Contain(new DependencyRule("A3", "A4"));
+        }
+
+        [Fact]
+        public void Parse_DisallowedAssemblyRules()
+        {
+            var xDocument = LoadXml("DisallowedAssemblyRules.nsdepcop");
+            var config = XmlConfigParser.Parse(xDocument);
+
+            var disallowedAssemblyRules = config.DisallowedAssemblyRules;
+            disallowedAssemblyRules.Should().HaveCount(2);
+
+            disallowedAssemblyRules.Should().Contain(new DependencyRule("A1", "A2"));
+            disallowedAssemblyRules.Should().Contain(new DependencyRule("A3", "A4"));
         }
 
         [Fact]
@@ -154,7 +182,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("InvalidNamespaceString.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.Should().Throw<Exception>().WithMessage("*not a valid Namespace*");
+            a.Should().Throw<Exception>().WithMessage("*not a valid Domain*");
         }
 
         [Fact]
@@ -162,7 +190,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("InvalidDuplicatedWildcardNamespaceString.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.Should().Throw<Exception>().WithMessage("*not a valid WildcardNamespace*");
+            a.Should().Throw<Exception>().WithMessage("*not a valid WildcardDomain*");
         }
 
         [Fact]

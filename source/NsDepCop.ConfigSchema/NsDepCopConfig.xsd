@@ -31,6 +31,20 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:element>
+                <xs:element name="AllowedAssembly" type="NamespaceDependecySpecification">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Defines an allowed assembly dependency.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="DisallowedAssembly" type="NamespaceDependecySpecification">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Defines a disallowed assembly dependency.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:choice>
             <xs:attribute name="InheritanceDepth" type="xs:int" use="optional">
                 <xs:annotation>
@@ -106,6 +120,13 @@
                 <xs:annotation>
                     <xs:documentation>
                         File patterns that define which source files should be excluded from the analysis. Comma separated list of https://github.com/dazinator/DotNet.Glob patterns. Paths are relative to the config file's folder. E.g.: **/*.g.cs,TestFiles/*.cs
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="CheckAssemblyDependencies" type="xs:boolean" use="optional">
+                <xs:annotation>
+                    <xs:documentation>
+                        We adopt the 'disallowed-by-default' approach for assembly dependencies check, similar to how we handle namespace dependencies (where everything is disallowed unless explicitly permitted). To ensure the backward compatibility, this configuration attribute has been introduced to explicitly enable the assembly dependency checking. By default this attribute is false.
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
