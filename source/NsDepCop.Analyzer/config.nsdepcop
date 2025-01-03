@@ -18,4 +18,6 @@
   <Allowed From="Codartis.NsDepCop.RoslynAnalyzer" To="Codartis.NsDepCop.Analysis.Factory"/>
   <Allowed From="Codartis.NsDepCop.RoslynAnalyzer" To="Codartis.NsDepCop.ParserAdapter.Roslyn"/>
 
+  <AllowedAssembly From="*" To="DotNet.Glob" />
+  <AllowedAssembly From="*" To="Microsoft.*" />
 </NsDepCopConfig>

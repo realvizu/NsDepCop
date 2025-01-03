@@ -1,3 +1,7 @@
-﻿<NsDepCopConfig ChildCanDependOnParentImplicitly="true">
+﻿<NsDepCopConfig ChildCanDependOnParentImplicitly="true" CheckAssemblyDependencies="true">
     <Allowed From="*" To="System.*" />
+
+	<AllowedAssembly From="*" To="mscorlib" />
+	<AllowedAssembly From="*" To="netstandard" />
+    <AllowedAssembly From="*" To="System.*" />
 </NsDepCopConfig>
