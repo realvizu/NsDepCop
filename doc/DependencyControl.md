@@ -12,11 +12,13 @@ Among the many sources of complexity, lets focus now on the structure of the cod
 Dependency control tools allow you to define rules for permitted and prohibited dependencies and alert you to any violations.
 
 These tools can operate at various levels and on different input formats:
-* Physical level: Projects, libraries, assemblies.
-* Logical level: Namespaces, types.
-* Input formats: Source code, compiled forms (binary or intermediary).
+* Physical Level: Projects, libraries, and assemblies.
+* Logical Level: Namespaces and types.
+* Input Formats: Source code, compiled binaries, or intermediary representations.
 
-**This tool checks dependencies at the namespace level within the source code.**
+**This tool performs the following dependency checks:**
+* Namespace dependencies in the C# source code.
+* Assembly dependencies in the C# projects.
 
 It also supports some fine-tuning at the type level (see details below).
 

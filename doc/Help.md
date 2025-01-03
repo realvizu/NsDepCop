@@ -17,12 +17,11 @@
 
 ## Dependency rules
 
-* Allowed and disallowed dependencies are described with dependency rules in config files. 
+* Allowed and disallowed namespace and assembly dependencies are described with dependency rules in config files. 
 * The rule config file must be named **config.nsdepcop** and its build action must be set to **C# analyzer additional file** (the NsDepCop NuGet package set it automatically).
 * The default (and recommended) approach is [**allowlisting**](#allowlisting), that is, if a dependency is not explicitly allowed then it is disallowed. (See also: [denylisting](#denylisting)).
 * The config file can inherit other config files from parent folders, see [**config inheritance**](#config-inheritance)
-* We have two types of dependency checks: namespace and assembly dependency check
-* The dependency check is disabled by default and needs to be enabled with **CheckAssemblyDependencies** attribute on the root element.
+* Assembly dependency checking is disabled by default (for backward compatibility reason) and needs to be enabled with **CheckAssemblyDependencies** attribute on the root element.
 
 
 ### Example One
@@ -48,8 +47,18 @@ Meaning:
 ```
 
 Meaning:
-* **Any** assembly can reference each other with one exception.
+* **Any** assembly can reference each other with the following exception.
 * The **Repository** layer cannot reference the **Service** layer.
+
+Tip: When using the allowlisting approach for assemblies, don't forget the include the following rules:
+
+```xml
+<NsDepCopConfig IsEnabled="true" CheckAssemblyDependencies="true">
+    <AllowedAssembly From="*" To="mscorlib" />
+    <AllowedAssembly From="*" To="netstandard" />
+    <AllowedAssembly From="*" To="System.*" />
+</NsDepCopConfig>
+```
 
 ### Config attributes
 You can set the following attributes on the root element. (Bold marks the the **default** value.)

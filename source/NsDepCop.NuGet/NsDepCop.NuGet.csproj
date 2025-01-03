@@ -17,11 +17,11 @@
 
   <PropertyGroup>
     <PackageId>NsDepCop</PackageId>
-    <PackageVersion>2.4.0-local</PackageVersion>
-    <Title>NsDepCop - Namespace Dependency Checker Tool for C#</Title>
-    <Description>Static code analysis tool for enforcing namespace-based type dependency rules in C# projects.</Description>
-    <PackageTags>static code analysis analyzer tool C# csharp namespace type dependency dependencies</PackageTags>
-    <Copyright>Copyright 2013-2021 Ferenc Vizkeleti</Copyright>
+    <PackageVersion>2.5.0-local</PackageVersion>
+    <Title>NsDepCop - Namespace and Assembly Dependency Checker Tool for C#</Title>
+    <Description>NsDepCop is a static code analysis tool that enforces namespace and assembly dependency rules in C# projects.</Description>
+    <PackageTags>static code analysis analyzer tool C# csharp namespace type assembly dependency dependencies</PackageTags>
+    <Copyright>Copyright 2013-2025 Ferenc Vizkeleti</Copyright>
     <Authors>Ferenc Vizkeleti</Authors>
     <PackageLicenseExpression>GPL-2.0-only</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -30,7 +30,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</PackageIconUrl>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageReleaseNotes>
-- New: Analyzing top level statements.
+- New: Added assembly dependency checking.
 	</PackageReleaseNotes>
   </PropertyGroup>
 
