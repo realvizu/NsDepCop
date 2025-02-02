@@ -13,11 +13,13 @@ public sealed class RegexDomain : DomainSpecification
     }
 
     public override int GetMatchRelevance(Domain domain)
-    {
-        return Regex.IsMatch(domain.ToString(), Normalize(this.Value))
-            ? int.MaxValue
+        => Regex.IsMatch(
+            domain.ToString(),
+            Normalize(this.Value),
+            RegexOptions.Compiled | RegexOptions.Singleline,
+            TimeSpan.FromMilliseconds(100))
+            ? 1
             : 0;
-    }
 
     private static bool IsValid(string domainAsString)
     {
@@ -37,7 +39,5 @@ public sealed class RegexDomain : DomainSpecification
     }
 
     private static string Normalize(string domainAsString)
-    {
-        return domainAsString.Trim(Delimiter.ToCharArray());
-    }
+        => domainAsString.Trim(Delimiter.ToCharArray());
 }
