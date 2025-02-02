@@ -23,6 +23,12 @@ public sealed class RegexDomain : DomainSpecification
 
     private static bool IsValid(string domainAsString)
     {
+        if (!domainAsString.StartsWith(Delimiter, StringComparison.Ordinal)
+            || !domainAsString.EndsWith(Delimiter, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
         var normalizedDomainAsString = Normalize(domainAsString);
         if (string.IsNullOrWhiteSpace(normalizedDomainAsString))
             return false;
