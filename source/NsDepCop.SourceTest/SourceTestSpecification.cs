@@ -101,7 +101,8 @@ namespace Codartis.NsDepCop.SourceTest
 
         private static string GetTestFileFullPath(string testName)
         {
-            return Path.Combine(GetBinFilePath($@"{testName}\{testName}.cs"));
+            var relativeTestFilePath = Path.Combine(testName, testName + ".cs");
+            return Path.Combine(GetBinFilePath(relativeTestFilePath));
         }
 
         private static IEnumerable<string> GetReferencedAssemblyPaths()

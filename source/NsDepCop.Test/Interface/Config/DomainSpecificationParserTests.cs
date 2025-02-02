@@ -30,10 +30,19 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         }
 
         [Theory]
+        [InlineData("/Unit\\.Test/")]
+        [InlineData("/^Unit\\.Test$/")]
+        public void Parse_RegexDomainSpecification(string regexDomainString)
+        {
+            DomainSpecificationParser.Parse(regexDomainString).Should().Be(new RegexDomain(regexDomainString));
+        }
+
+        [Theory]
         [InlineData("..")]
         [InlineData(".A")]
         [InlineData("A.")]
         [InlineData("*.*")]
+        [InlineData("/foo{2,1}/")]
         public void Parse_Invalid(string invalidString)
         {
             Assert.Throws<FormatException>(() => DomainSpecificationParser.Parse(invalidString));

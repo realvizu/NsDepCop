@@ -28,14 +28,6 @@ namespace Codartis.NsDepCop.SourceTest
             return Path.Combine(GetExecutingAssemblyDirectory(), filename);
         }
 
-        protected string GetFilePathInTestClassFolder(string filename)
-        {
-            var namespacePrefix = $"Codartis.{this.GetType().Assembly.GetName().Name}";
-            var namespacePostfix = GetType().FullName.Remove(0, namespacePrefix.Length + 1).Replace('.', '\\');
-
-            return GetBinFilePath(Path.Combine(namespacePostfix, filename));
-        }
-
         protected string LoadFile(string fullPath)
         {
             using (var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Codartis.NsDepCop.Config;
 using Codartis.NsDepCop.Config.Implementation;
 using FluentAssertions;
@@ -18,29 +20,24 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             config.MaxIssueCount.Should().Be(ConfigDefaults.MaxIssueCount);
         }
 
-        [Fact]
-        public void ToAnalyzerConfig_ConvertsPathsToRooted()
+        [Theory]
+        [InlineData("/root", "*.cs", "/root/*.cs")]
+        [InlineData(@"C:\folder with space", "*.cs", "C:/folder with space/*.cs")]
+        [InlineData(@"C:\folder with space", @"**\*.cs", "C:/folder with space/**/*.cs")]
+        [InlineData(@"C:\folder with space", @"D:\*.cs", "D:/*.cs")]
+        [InlineData(@"C:\folder with space", "//a folder/b.cs", "//a folder/b.cs")]
+        [InlineData(@"C:\folder with space", "/*.cs", "/*.cs")]
+        public void ToAnalyzerConfig_ConvertsPathsToRooted(string pathRoot, string pathExclusionPattern, string expectedFullPath)
         {
             var configBuilder = new AnalyzerConfigBuilder()
-                .AddSourcePathExclusionPatterns(new[]
-                {
-                    @"*.cs",
-                    @"**\*.cs",
-                    @"D:\*.cs",
-                    @"\\a folder\b.cs",
-                    @"\*.cs"
-                })
-                .MakePathsRooted(@"C:\folder with space");
+                .AddSourcePathExclusionPatterns([pathExclusionPattern])
+                .MakePathsRooted(pathRoot);
 
             var config = configBuilder.ToAnalyzerConfig();
 
-            config.SourcePathExclusionPatterns.Should().BeEquivalentTo(
-                @"C:\folder with space\*.cs",
-                @"C:\folder with space\**\*.cs",
-                @"D:\*.cs",
-                @"\\a folder\b.cs",
-                @"\*.cs"
-            );
+            // Note that Path.GetFullPath normalizes the path according to the current OS so we can assert equivalence with the expected path.
+            config.SourcePathExclusionPatterns.Select(Path.GetFullPath)
+                .Should().BeEquivalentTo(Path.GetFullPath(expectedFullPath));
         }
 
         [Fact]

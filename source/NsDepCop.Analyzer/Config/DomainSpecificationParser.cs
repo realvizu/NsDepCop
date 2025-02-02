@@ -15,6 +15,8 @@ namespace Codartis.NsDepCop.Config
         /// </remarks>
         public static DomainSpecification Parse(string domainSpecificationAsString)
         {
+            if (domainSpecificationAsString.StartsWith(RegexDomain.Delimiter) && domainSpecificationAsString.EndsWith(RegexDomain.Delimiter))
+                return new RegexDomain(domainSpecificationAsString);
             if (domainSpecificationAsString.Contains(WildcardDomain.SingleDomainMarker) || domainSpecificationAsString.Contains(WildcardDomain.AnyDomainMarker))
                 return new WildcardDomain(domainSpecificationAsString);
             return new Domain(domainSpecificationAsString);
