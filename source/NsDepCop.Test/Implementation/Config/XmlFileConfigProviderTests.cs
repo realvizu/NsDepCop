@@ -36,7 +36,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var path = GetFilePathInTestClassFolder("ExcludedFiles.nsdepcop");
             var configProvider = CreateConfigProvider(path);
-            
+
             var expectedExcludedFiles = new[]
             {
                 GetFilePathInTestClassFolder("ExcludedFile1.cs"),
@@ -44,7 +44,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             };
 
             var exclusionPatterns = configProvider.Config.SourcePathExclusionPatterns;
-            exclusionPatterns.Should().BeEquivalentTo(expectedExcludedFiles);
+            exclusionPatterns.Select(Path.GetFullPath).Should().BeEquivalentTo(expectedExcludedFiles.Select(Path.GetFullPath));
             exclusionPatterns.All(File.Exists).Should().BeTrue();
         }
 

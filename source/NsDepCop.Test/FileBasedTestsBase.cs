@@ -31,7 +31,7 @@ namespace Codartis.NsDepCop.Test
         protected string GetFilePathInTestClassFolder(string filename)
         {
             var namespacePrefix = $"Codartis.{this.GetType().Assembly.GetName().Name}";
-            var namespacePostfix = GetType().FullName.Remove(0, namespacePrefix.Length + 1).Replace('.', '\\');
+            var namespacePostfix = GetType().FullName.Remove(0, namespacePrefix.Length + 1).Replace('.', '/');
 
             return GetBinFilePath(Path.Combine(namespacePostfix, filename));
         }
