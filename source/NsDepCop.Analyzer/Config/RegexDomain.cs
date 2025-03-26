@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Codartis.NsDepCop.Config;
 
+[Serializable]
 public sealed class RegexDomain : DomainSpecification
 {
     public const string Delimiter = "/";

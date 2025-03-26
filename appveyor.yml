@@ -1,8 +1,8 @@
 image: Visual Studio 2022
 
 environment:
-  shortversion: '2.5.0'
-  informationalversion: '2.5.0'
+  shortversion: '2.6.0'
+  informationalversion: '2.6.0'
 
 version: '$(shortversion).{build}'
 
