@@ -3,6 +3,15 @@ using System.Text.RegularExpressions;
 
 namespace Codartis.NsDepCop.Config;
 
+/// <summary>
+/// Represents a domain specification with a regular expression pattern.
+/// The given pattern must follow the dotnet regex specification found at:
+/// https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference
+/// </summary>
+/// <remarks>
+/// This class provides functionality to define a domain using a regular expression
+/// and supports validation and matching of other domains against the specified pattern.
+/// </remarks>
 [Serializable]
 public sealed class RegexDomain : DomainSpecification
 {
