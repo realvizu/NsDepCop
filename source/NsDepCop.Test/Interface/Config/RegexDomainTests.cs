@@ -17,7 +17,7 @@ public sealed class RegexDomainTests
     }
 
     [Fact]
-    public void Create_WithNull_ThrowsArgumentNullExceptionn()
+    public void Create_WithNull_ThrowsArgumentNullException()
     {
         var act = () => new RegexDomain(null);
         act.Should().Throw<ArgumentNullException>();
@@ -42,5 +42,14 @@ public sealed class RegexDomainTests
     {
         (new RegexDomain("/Unit\\.Test/") == new RegexDomain("/Unit\\.Test/")).Should().BeTrue();
         (new RegexDomain("/Unit\\.Test/") == new RegexDomain("/^Unit\\.Test$/")).Should().BeFalse();
+    }
+
+    [Fact]
+    public void GetMatchRelevance_WhenTimeoutOccurs_ShouldReturnNoMatch_WithoutThrowingException()
+    {
+        var rule = new RegexDomain("/(a|aa)+$/", regexTimeout: TimeSpan.FromTicks(1));
+        var domain = new Domain(new string('a', 10));
+        var action = () => rule.GetMatchRelevance(domain);
+        action.Should().NotThrow();
     }
 }

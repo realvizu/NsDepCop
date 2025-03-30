@@ -17,19 +17,44 @@ public sealed class RegexDomain : DomainSpecification
 {
     public const string Delimiter = "/";
 
-    public RegexDomain(string value, bool validate = true)
+    private static readonly TimeSpan DefaultRegexTimeout = TimeSpan.FromMilliseconds(100);
+
+    private readonly Regex _regex;
+    private readonly RegexOptions _regexOptions;
+    private readonly TimeSpan _regexTimeout;
+
+    public RegexDomain(
+        string value,
+        bool validate = true,
+        RegexUsageMode regexUsageMode = RegexUsageMode.Instance,
+        RegexCompilationMode regexCompilationMode = RegexCompilationMode.Interpreted,
+        TimeSpan? regexTimeout = null)
         : base(value, validate, IsValid)
     {
+        _regexTimeout = regexTimeout ?? DefaultRegexTimeout;
+        _regexOptions = RegexOptions.Singleline;
+
+        if (regexCompilationMode == RegexCompilationMode.Compiled)
+            _regexOptions |= RegexOptions.Compiled;
+
+        if (regexUsageMode == RegexUsageMode.Instance)
+            _regex = new Regex(Normalize(Value), _regexOptions, _regexTimeout);
     }
 
     public override int GetMatchRelevance(Domain domain)
-        => Regex.IsMatch(
-            domain.ToString(),
-            Normalize(this.Value),
-            RegexOptions.Compiled | RegexOptions.Singleline,
-            TimeSpan.FromMilliseconds(100))
-            ? 1
-            : 0;
+    {
+        try
+        {
+            if (_regex != null)
+                return _regex.IsMatch(domain.ToString()) ? 1 : 0;
+
+            return Regex.IsMatch(domain.ToString(), Normalize(Value), _regexOptions, _regexTimeout) ? 1 : 0;
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            return 0;
+        }
+    }
 
     private static bool IsValid(string domainAsString)
     {
