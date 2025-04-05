@@ -1,23 +1,21 @@
 ﻿<NsDepCopConfig InheritanceDepth="1">
-  <Allowed From="Codartis.NsDepCop.*" To="DotNet.Globbing" />
-  <Allowed From="Codartis.NsDepCop.*" To="Microsoft.CodeAnalysis.*"/>
-  <Allowed From="Codartis.NsDepCop.*" To="Codartis.NsDepCop.Util.*"/>
+	<Allowed From="Codartis.NsDepCop.*" To="DotNet.Globbing" />
+	<Allowed From="Codartis.NsDepCop.*" To="Codartis.NsDepCop.Util.*" />
 
-  <Allowed From="Codartis.NsDepCop.Config.Factory" To="Codartis.NsDepCop.Config.Implementation"/>
+	<Allowed From="Codartis.NsDepCop.Config.Factory" To="Codartis.NsDepCop.Config.Implementation" />
 
-  <Allowed From="Codartis.NsDepCop.Analysis.*" To="Codartis.NsDepCop.Config" />
-  <Allowed From="Codartis.NsDepCop.Analysis.*" To="Codartis.NsDepCop.Analysis.Messages" />
-  <Allowed From="Codartis.NsDepCop.Analysis.Factory" To="Codartis.NsDepCop.Analysis.Implementation"/>
+	<Allowed From="Codartis.NsDepCop.Analysis.*" To="Codartis.NsDepCop.Config" />
+	<Allowed From="Codartis.NsDepCop.Analysis.*" To="Codartis.NsDepCop.Analysis.Messages" />
+	<Allowed From="Codartis.NsDepCop.Analysis.Factory" To="Codartis.NsDepCop.Analysis.Implementation" />
 
-  <Allowed From="Codartis.NsDepCop.ParserAdapter.Roslyn" To="Codartis.NsDepCop.Analysis"/>
+	<Allowed From="Codartis.NsDepCop.ParserAdapter.Roslyn" To="Codartis.NsDepCop.Analysis" />
 
-  <Allowed From="Codartis.NsDepCop.RoslynAnalyzer" To="Codartis.NsDepCop.Config"/>
-  <Allowed From="Codartis.NsDepCop.RoslynAnalyzer" To="Codartis.NsDepCop.Config.Factory"/>
-  <Allowed From="Codartis.NsDepCop.RoslynAnalyzer" To="Codartis.NsDepCop.Analysis"/>
-  <Allowed From="Codartis.NsDepCop.RoslynAnalyzer" To="Codartis.NsDepCop.Analysis.Messages"/>
-  <Allowed From="Codartis.NsDepCop.RoslynAnalyzer" To="Codartis.NsDepCop.Analysis.Factory"/>
-  <Allowed From="Codartis.NsDepCop.RoslynAnalyzer" To="Codartis.NsDepCop.ParserAdapter.Roslyn"/>
+	<Allowed From="Codartis.NsDepCop.RoslynAnalyzer" To="Codartis.NsDepCop.*" />
+	<Disallowed From="Codartis.NsDepCop.RoslynAnalyzer" To="Codartis.NsDepCop.*.Implementation" />
 
-  <AllowedAssembly From="*" To="DotNet.Glob" />
-  <AllowedAssembly From="*" To="Microsoft.*" />
+	<!-- This rule is for testing the RegexDomain -->
+	<Allowed From="/Codartis\.NsDepCop\.(ParserAdapter|Analysis|RoslynAnalyzer)/" To="Microsoft.CodeAnalysis.*" />
+
+	<AllowedAssembly From="*" To="DotNet.Glob" />
+	<AllowedAssembly From="*" To="Microsoft.*" />
 </NsDepCopConfig>
