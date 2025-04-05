@@ -30,7 +30,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</PackageIconUrl>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageReleaseNotes>
-- New: Added assembly dependency checking.
+- New: Regex patterns for assemblies and namespaces.
 	</PackageReleaseNotes>
   </PropertyGroup>
 

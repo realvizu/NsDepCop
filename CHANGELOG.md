@@ -1,7 +1,7 @@
 # NsDepCop Change Log
 
 ## v2.6.0
-(02/2025)
+(04/2025)
 
 - [x] New: Regex patterns for assemblies and namespaces.
 

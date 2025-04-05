@@ -18,11 +18,33 @@
 ## Dependency rules
 
 * Allowed and disallowed namespace and assembly dependencies are described with dependency rules in config files. 
-* The rule config file must be named **config.nsdepcop** and its build action must be set to **C# analyzer additional file** (the NsDepCop NuGet package set it automatically).
+* The rule config file must be named **config.nsdepcop** and its build action must be set to **C# analyzer additional file** (the NsDepCop NuGet package sets it automatically).
 * The default (and recommended) approach is [**allowlisting**](#allowlisting), that is, if a dependency is not explicitly allowed then it is disallowed. (See also: [denylisting](#denylisting)).
-* The config file can inherit other config files from parent folders, see [**config inheritance**](#config-inheritance)
-* Assembly dependency checking is disabled by default (for backward compatibility reason) and needs to be enabled with **CheckAssemblyDependencies** attribute on the root element.
+* The config file can inherit other config files from parent folders, see [**config inheritance**](#config-inheritance).
+* Assembly dependency checking is disabled by default (for backward compatibility reason) and needs to be enabled with **CheckAssemblyDependencies** attribute on the root element. See [Example Two](#example-two).
+* Rules can specify namespaces in the following ways. 
 
+Namespace specification type | Example
+-- | --
+Exact| System.IO
+Wildcard | System.Collections.* <br> MyProduct.?.StorageModel
+Regex | /MyProduct(\.[\w]+)*\.StorageModel[\w]/
+
+> Notice that Regex patterns must be enclosed in forward slashes ('/').
+
+### Rule notation
+
+Notation | Meaning
+-- | --
+. (a single dot) | The global namespace.
+ \* (a single star) | Any namespace.
+ MyNamespace.\* | MyNamespace and any sub-namespaces.
+ MyNamespace.?| All direct sub-namespaces of MyNamespace
+\*.MyNamespace | Any namespace named MyNamespace
+?.MyNamespace | Any namespace named MyNamespace which has exactly one parent namespace.
+MyNamespace.*.MyOtherNamespace| Any namespace called MyOtherNamespace which has an ancestor named MyNamespace
+MyNamespace.?.MyOtherNamespace| Any namespace called MyOtherNamespace which has a grandparent named MyNamespace
+/RegexPattern/| Any namespace that matches the specified regular expression (Regex) pattern. <br> The pattern must be enclosed in forward slashes ('/'). <br> Regex special characters must be escaped, e.g. '.' should be "\\.". See the [Regex reference](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference) for details.
 
 ### Example One
 ```xml
@@ -77,19 +99,6 @@ Attribute | Values | Description
 ### Allowlisting
 * The **`<Allowed From="N1" To="N2"/>`** config element defines that **N1** namespace can depend on **N2** namespace.
 * If a dependency does not match any of the allowed rules then it's considered disallowed.
-
-Special symbols:
-
-Notation | Meaning
--- | --
-. (a single dot) | The global namespace.
- \* (a single star) | Any namespace.
- MyNamespace.\* | MyNamespace and any sub-namespaces.
- MyNamespace.?| All direct sub-namespaces of MyNamespace
-\*.MyNamespace | Any namespace named MyNamespace
-?.MyNamespace | Any namespace named MyNamespace which has exactly one parent namespace.
-MyNamespace.*.MyOtherNamespace| Any namespace called MyOtherNamespace which has an ancestor named MyNamespace
-MyNamespace.?.MyOtherNamespace| Any namespace called MyOtherNamespace which has a grandparent named MyNamespace
 
 Examples:
 

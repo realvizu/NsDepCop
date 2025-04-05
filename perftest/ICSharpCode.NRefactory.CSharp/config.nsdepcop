@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<NsDepCopConfig IsEnabled="True" CodeIssueKind="Warning">
-    <Allowed From="*" To="System.*" />
-    <Allowed From="*" To="." />
-    <Allowed From="ICSharpCode.NRefactory.*" To="ICSharpCode.NRefactory.*" />
-    <Allowed From="ICSharpCode.NRefactory.*" To="Mono.CSharp.*" />
-    <Allowed From="Mono.CSharp.*" To="ICSharpCode.NRefactory.*" />
-    <Allowed From="Mono.*" To="Mono.*" />
-</NsDepCopConfig>
