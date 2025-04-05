@@ -22,7 +22,7 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         }
 
         [Fact]
-        public void Create_WithNull_ThrowsArgumentNullExceptionn()
+        public void Create_WithNull_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new WildcardDomain(null));
         }

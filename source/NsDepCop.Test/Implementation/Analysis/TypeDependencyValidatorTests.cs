@@ -132,7 +132,19 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
             dependencyValidator.IsAllowedDependency("A.B.C.S", "C1", "U.V.T", "C2").Should().BeTrue();
             dependencyValidator.IsAllowedDependency("A.B.C.D.S", "C1", "U.V.T", "C2").Should().BeFalse();
         }
-        
+
+        [Fact]
+        public void AllowRule_WildcardRuleIsStrongerThanRegexRule()
+        {
+            var ruleConfig = new DependencyRulesBuilder()
+                .AddAllowed("A.*.S", "U.V.T", "C3")
+                .AddAllowed("/A...S/", "U.V.T");
+
+            var dependencyValidator = CreateTypeDependencyValidator(ruleConfig);
+            dependencyValidator.IsAllowedDependency("A.B.S", "C1", "U.V.T", "C3").Should().BeTrue();
+            dependencyValidator.IsAllowedDependency("A.B.S", "C1", "U.V.T", "C2").Should().BeFalse();
+        }
+
         [Fact]
         public void DisallowRule_LessSpecificRuleWithWildcardsIsStronger()
         {

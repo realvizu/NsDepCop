@@ -6,7 +6,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
     /// <summary>
     /// Helper class for unit testing. Enables rule config building.
     /// </summary>
-    internal class DependencyRulesBuilder : IDependencyRules
+    public class DependencyRulesBuilder : IDependencyRules
     {
         private readonly Dictionary<DependencyRule, TypeNameSet> _allowedDependencies;
         private readonly HashSet<DependencyRule> _disallowedDependencies;
@@ -38,6 +38,12 @@ namespace Codartis.NsDepCop.Test.Implementation.Analysis
         public DependencyRulesBuilder SetChildCanDependOnParentImplicitly(bool value)
         {
             ChildCanDependOnParentImplicitly = value;
+            return this;
+        }
+
+        public DependencyRulesBuilder AddAllowed(DomainSpecification from, DomainSpecification to, params string[] typeNames)
+        {
+            _allowedDependencies.Add(new DependencyRule(from, to), new TypeNameSet(typeNames));
             return this;
         }
 

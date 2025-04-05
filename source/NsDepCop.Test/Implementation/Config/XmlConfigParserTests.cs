@@ -33,7 +33,7 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             configBuilder.MaxIssueCount.Should().Be(42);
             configBuilder.ChildCanDependOnParentImplicitly.Should().BeTrue();
             configBuilder.AutoLowerMaxIssueCount.Should().BeTrue();
-            configBuilder.SourcePathExclusionPatterns.Should().BeEquivalentTo(@"**/*.g.cs", @"TestData\**\*.cs");
+            configBuilder.SourcePathExclusionPatterns.Should().BeEquivalentTo("**/*.g.cs", @"TestData\**\*.cs");
             configBuilder.CheckAssemblyDependencies.Should().BeTrue();
         }
 
