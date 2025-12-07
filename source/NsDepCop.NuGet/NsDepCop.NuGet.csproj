@@ -17,7 +17,7 @@
 
   <PropertyGroup>
     <PackageId>NsDepCop</PackageId>
-    <PackageVersion>2.6.0-local</PackageVersion>
+    <PackageVersion>2.7.0-local</PackageVersion>
     <Title>NsDepCop - Namespace and Assembly Dependency Checker Tool for C#</Title>
     <Description>NsDepCop is a static code analysis tool that enforces namespace and assembly dependency rules in C# projects.</Description>
     <PackageTags>static code analysis analyzer tool C# csharp namespace type assembly dependency dependencies</PackageTags>
@@ -30,7 +30,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</PackageIconUrl>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageReleaseNotes>
-- New: Regex patterns for assemblies and namespaces.
+- Perf: Avoids unnecessary rebuilds when only a solution-level config.nsdepcop file is used (no project-level files).
 	</PackageReleaseNotes>
   </PropertyGroup>
 

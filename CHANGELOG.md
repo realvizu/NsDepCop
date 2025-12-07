@@ -1,5 +1,10 @@
 # NsDepCop Change Log
 
+## v2.7.0
+(12/2025)
+
+- [x] Perf: Avoids unnecessary rebuilds when only a solution-level config.nsdepcop file is used (no project-level files).
+
 ## v2.6.0
 (04/2025)
 

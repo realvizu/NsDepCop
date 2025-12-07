@@ -1,8 +1,8 @@
 ﻿<Project>
 
-  <!-- Adds the config.nsdepcop file as an additial analyzer file if the NsDepCop package is referenced. -->
+  <!-- Adds the config.nsdepcop file as an additial analyzer file if it exists. -->
   <ItemGroup>
-    <AdditionalFiles Include="$(ProjectDir)config.nsdepcop" Condition="Exists('$(ProjectDir)config.nsdepcop') And @(PackageReference->AnyHaveMetadataValue('Identity','NsDepCop'))=='true'" />
+    <AdditionalFiles Include="$(ProjectDir)config.nsdepcop" Condition="Exists('$(ProjectDir)config.nsdepcop')" />
   </ItemGroup>
 
 </Project>
