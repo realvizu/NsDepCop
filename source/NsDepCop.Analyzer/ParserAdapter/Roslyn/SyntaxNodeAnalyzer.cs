@@ -112,6 +112,7 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
                 case TypeKind.Unknown:
                 case TypeKind.Submission:
                 case TypeKind.TypeParameter:
+                case TypeKind.Extension:
                     yield break;
 
                 default:
@@ -141,6 +142,8 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
         /// using static A.ClassA;
         /// StaticMethodOfClassA(); // in contrast to A.ClassA.StaticMethodOfClassA();
         /// </code>
+        /// Also handles C# 14 extension members, where the method's containing type has
+        /// <see cref="TypeKind.Extension"/> and its own containing type is the static class.
         /// </summary>
         /// <param name="node">A syntax node representing a static or extension method.</param>
         /// <param name="semanticModel">The semantic model of the project.</param>
@@ -154,7 +157,15 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
                 && (methodSymbol.IsExtensionMethod
                     || (methodSymbol.IsStatic && node.Parent is not MemberAccessExpressionSyntax));
 
-            return isExtensionMethodOrCallOnStaticImport ? methodSymbol.ContainingType : null;
+            if (isExtensionMethodOrCallOnStaticImport)
+                return methodSymbol.ContainingType;
+
+            // C# 14 extension members: the method lives inside an extension block whose TypeKind is Extension.
+            // The dependency is on the enclosing static class, not the block itself.
+            if (methodSymbol?.ContainingType?.TypeKind == TypeKind.Extension)
+                return methodSymbol.ContainingType.ContainingType;
+
+            return null;
         }
 
         /// <summary>
@@ -207,7 +218,14 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
             }
 
             // Determine the type of the type declaration that contains the current syntax node.
-            return semanticModel.GetDeclaredSymbol(typeDeclarationSyntaxNode) as ITypeSymbol;
+            var declaredType = semanticModel.GetDeclaredSymbol(typeDeclarationSyntaxNode) as ITypeSymbol;
+
+            // C# 14 extension blocks are represented as a synthetic extension type.
+            // For dependency ownership, use the enclosing static class.
+            if (declaredType?.TypeKind == TypeKind.Extension)
+                return declaredType.ContainingType;
+
+            return declaredType;
         }
 
         /// <summary>
