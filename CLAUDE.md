@@ -8,7 +8,7 @@ NsDepCop is a Roslyn-based static analysis tool for C# that enforces namespace a
 
 ## Build and Test Commands
 
-Solution-level `dotnet build/test` fails due to a self-referencing NuGet cycle (`NsDepCop.Analyzer` depends on the `NsDepCop` NuGet package, which is produced by `NsDepCop.NuGet` in the same solution). CI avoids this with standalone `nuget.exe restore` + Framework `msbuild`; VS IDE handles it internally. From the command line, target individual projects:
+Solution-level `dotnet build/test` fails due to a self-referencing NuGet cycle (`NsDepCop.Analyzer` depends on the `NsDepCop` NuGet package, which is produced by `NsDepCop.NuGet` in the same solution). CI (GitHub Actions) avoids this by building/testing/packing the individual projects rather than the solution; VS IDE handles it internally. From the command line, target individual projects:
 
 ```bash
 # Build the analyzer (restores and builds dependencies automatically)
@@ -70,7 +70,7 @@ The `RoslynAnalyzer` layer is explicitly **disallowed** from depending on `*.Imp
 
 ### Self-referencing / Dogfooding
 
-The project references its own NuGet package (`NsDepCop 2.7.0`) and enforces dependency rules on its own code. `Directory.Build.targets` contains a workaround (`AvoidCycleErrorOnSelfReference`) that renames `PackageId` to `NsDepCop_temp` during build to break the cycle, restoring it before pack. This workaround is broken with current .NET SDK versions — `dotnet restore` and `msbuild /t:Restore` still detect the cycle. Only standalone `nuget.exe restore` (used by CI) and VS IDE's internal restore avoid the error. This is why command-line builds must target individual projects rather than the solution.
+The project references its own published NuGet package (`NsDepCop 3.0.0`) and enforces dependency rules on its own code. `Directory.Build.targets` contains a workaround (`AvoidCycleErrorOnSelfReference`) that renames `PackageId` to `NsDepCop_temp` during build to break the cycle, restoring it before pack. Solution-level `dotnet restore` / `msbuild /t:Restore` still detect the cycle; only building the individual projects (CI) and VS IDE's internal restore avoid the error. This is why command-line builds must target individual projects rather than the solution.
 
 ## Key Conventions
 

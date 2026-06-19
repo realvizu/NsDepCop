@@ -20,7 +20,6 @@
     <Title>NsDepCop - Namespace and Assembly Dependency Checker Tool for C#</Title>
     <Description>NsDepCop is a static code analysis tool that enforces namespace and assembly dependency rules in C# projects.</Description>
     <PackageTags>static code analysis analyzer tool C# csharp namespace type assembly dependency dependencies</PackageTags>
-    <Copyright>Copyright 2013-2025 Ferenc Vizkeleti</Copyright>
     <Authors>Ferenc Vizkeleti</Authors>
     <PackageLicenseExpression>GPL-2.0-only</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
