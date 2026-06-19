@@ -1,5 +1,11 @@
 # NsDepCop Change Log
 
+## v3.0.0
+(06/2026)
+
+- [x] New: Support for C# 14 extension members (requires VS 2026 / .NET 10 SDK).
+- [x] **Breaking:** Minimum toolchain is now VS 2022 17.0 / .NET 6 SDK; older hosts (e.g. VS 2019) no longer load the analyzer — stay on 2.7.x.
+
 ## v2.7.0
 (12/2025)
 

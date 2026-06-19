@@ -7,6 +7,22 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
+    <NoWarn>$(NoWarn);RS1036</NoWarn>
+    <!-- Bundle DotNet.Glob next to the analyzer so packaging can collect it per Roslyn variant. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <!--
+    Roslyn version selection (NsDepCopRoslynVersion is defined in Directory.Build.props, default 5.0).
+    - 4.0: VS 2022 17.0+ / .NET 6+ SDK. No C# 14 extension-member support.
+    - 5.0: VS 2026 / .NET 10. Full support; ROSLYN5_0_OR_GREATER guards the C# 14-only code.
+  -->
+  <PropertyGroup Condition="'$(NsDepCopRoslynVersion)' == '4.0'">
+    <MicrosoftCodeAnalysisCSharpVersion>4.0.1</MicrosoftCodeAnalysisCSharpVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(NsDepCopRoslynVersion)' == '5.0'">
+    <MicrosoftCodeAnalysisCSharpVersion>5.0.0</MicrosoftCodeAnalysisCSharpVersion>
+    <DefineConstants>$(DefineConstants);ROSLYN5_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +36,7 @@
 
   <ItemGroup>
     <PackageReference Include="DotNet.Glob" Version="2.1.1" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(MicrosoftCodeAnalysisCSharpVersion)" />
     <PackageReference Include="NsDepCop" Version="2.7.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

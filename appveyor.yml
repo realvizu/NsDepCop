@@ -1,8 +1,8 @@
-image: Visual Studio 2022
+image: Visual Studio 2026
 
 environment:
-  shortversion: '2.7.0'
-  informationalversion: '2.7.0'
+  shortversion: '3.0.0'
+  informationalversion: '3.0.0'
 
 version: '$(shortversion).{build}'
 
@@ -30,8 +30,12 @@ build:
   project: source\NsDepCop.sln
   verbosity: minimal
 
-test:
-  assemblies: '**\*Test*.dll'
+# Run the suites against the default (roslyn5.0) analyzer build, then re-run the source tests
+# against the roslyn4.0 build to verify no regression on the older Roslyn (C# 14 tests are gated out there).
+test_script:
+- cmd: dotnet test source\NsDepCop.Test\NsDepCop.Test.csproj -c %CONFIGURATION%
+- cmd: dotnet test source\NsDepCop.SourceTest\NsDepCop.SourceTest.csproj -c %CONFIGURATION%
+- cmd: dotnet test source\NsDepCop.SourceTest\NsDepCop.SourceTest.csproj -c %CONFIGURATION% -p:NsDepCopRoslynVersion=4.0
 
 artifacts:
 - path: 'source\NsDepCop.NuGet\bin\$(configuration)\NsDepCop*.nupkg'
