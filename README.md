@@ -16,6 +16,17 @@ See the [**Help**](doc/Help.md) for details.
 
 Or check out this step-by-step [**tutorial video**](https://www.youtube.com/watch?v=rkU7Hx20Dc0) by [plainionist](https://github.com/plainionist).
 
+## Requirements
+
+NsDepCop runs inside the C# compiler, so the **build toolchain** (Visual Studio / .NET SDK) determines compatibility, not the project's target framework:
+
+| NsDepCop | Visual Studio | .NET SDK | Roslyn |
+|---|---|---|---|
+| 3.0+ | 2022 17.0+ | 6.0+ | 4.0+ |
+| 2.7.x and earlier | 2019 16.9+ | 5.0+ | 3.9+ |
+
+> Newer C# syntax is only analyzed when the toolchain's Roslyn supports it — e.g. C# 14 extension members need Roslyn 5+ (VS 2026 / .NET 10 SDK).
+
 ## Versions
 * See the [**Change Log**](CHANGELOG.md) for version history.
 

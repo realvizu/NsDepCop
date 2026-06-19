@@ -1,0 +1,24 @@
+<Project>
+
+  <!--
+    Roslyn multi-targeting.
+    The analyzer is built once per supported Roslyn version (see NsDepCopRoslynVersion below), each build
+    referencing a different Microsoft.CodeAnalysis.CSharp version and packaged into its own
+    analyzers/dotnet/roslyn<version>/cs folder. The host compiler selects the highest build it supports.
+
+    Output and intermediate paths must be separated per NsDepCopRoslynVersion so the variants don't clobber
+    each other. These have to be set before the SDK props are imported, hence Directory.Build.props
+    rather than the csproj body.
+  -->
+  <PropertyGroup>
+    <NsDepCopRoslynVersion Condition="'$(NsDepCopRoslynVersion)' == ''">5.0</NsDepCopRoslynVersion>
+    <BaseOutputPath>bin\roslyn$(NsDepCopRoslynVersion)\</BaseOutputPath>
+    <BaseIntermediateOutputPath>obj\roslyn$(NsDepCopRoslynVersion)\</BaseIntermediateOutputPath>
+    <!--
+      Each variant excludes only its own bin/obj by default; exclude the whole trees so the
+      default compile glob never pulls generated .cs (e.g. AssemblyAttributes) from a sibling variant.
+    -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);bin\**;obj\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+</Project>

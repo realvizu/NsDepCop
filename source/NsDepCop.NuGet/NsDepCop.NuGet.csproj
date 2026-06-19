@@ -17,7 +17,7 @@
 
   <PropertyGroup>
     <PackageId>NsDepCop</PackageId>
-    <PackageVersion>2.7.0-local</PackageVersion>
+    <PackageVersion>3.0.0-local</PackageVersion>
     <Title>NsDepCop - Namespace and Assembly Dependency Checker Tool for C#</Title>
     <Description>NsDepCop is a static code analysis tool that enforces namespace and assembly dependency rules in C# projects.</Description>
     <PackageTags>static code analysis analyzer tool C# csharp namespace type assembly dependency dependencies</PackageTags>
@@ -30,7 +30,8 @@
     <PackageIconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</PackageIconUrl>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageReleaseNotes>
-- Perf: Avoids unnecessary rebuilds when only a solution-level config.nsdepcop file is used (no project-level files).
+- Added support for C# 14 extension members.
+- BREAKING: The minimum supported build toolchain is now Visual Studio 2022 17.0 / .NET 6 SDK. The analyzer ships Roslyn-version-specific builds (roslyn4.0 and roslyn5.0); hosts older than VS 2022 17.0 / .NET 6 SDK (e.g. VS 2019) no longer load the analyzer. Stay on 2.7.x for those.
 	</PackageReleaseNotes>
   </PropertyGroup>
 
@@ -42,18 +43,34 @@
     <None Update="tools\*.ps1" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <!--
+    The analyzer is built once per supported Roslyn version and each build is packaged into its own
+    analyzers/dotnet/roslyn<version>/cs folder. Hosts that support Roslyn component versioning
+    (VS 2022 17.0+ / .NET 6+ SDK) pick the highest build they can load; there is intentionally no
+    bare analyzers/dotnet/cs folder, so older hosts load nothing (see release notes for 3.0.0).
+  -->
   <ItemGroup>
-    <ProjectReference Include="..\NsDepCop.Analyzer\NsDepCop.Analyzer.csproj" />
+    <_NsDepCopRoslynVariant Include="4.0" />
+    <_NsDepCopRoslynVariant Include="5.0" />
   </ItemGroup>
 
   <PropertyGroup>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
 
-  <Target Name="_AddAnalyzersToOutput">
+  <!-- Build every Roslyn variant of the analyzer before packing. -->
+  <Target Name="_BuildAnalyzerVariants">
+    <MSBuild Projects="..\NsDepCop.Analyzer\NsDepCop.Analyzer.csproj"
+             Targets="Restore;Build"
+             Properties="NsDepCopRoslynVersion=%(_NsDepCopRoslynVariant.Identity);Configuration=$(Configuration)" />
+  </Target>
+
+  <Target Name="_AddAnalyzersToOutput" DependsOnTargets="_BuildAnalyzerVariants">
     <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)\NsDepCop.Analyzer.dll" PackagePath="analyzers/dotnet/cs" />
-      <TfmSpecificPackageFile Include="$(OutputPath)\DotNet.Glob.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="..\NsDepCop.Analyzer\bin\roslyn%(_NsDepCopRoslynVariant.Identity)\$(Configuration)\netstandard2.0\NsDepCop.Analyzer.dll"
+                              PackagePath="analyzers/dotnet/roslyn%(_NsDepCopRoslynVariant.Identity)/cs" />
+      <TfmSpecificPackageFile Include="..\NsDepCop.Analyzer\bin\roslyn%(_NsDepCopRoslynVariant.Identity)\$(Configuration)\netstandard2.0\DotNet.Glob.dll"
+                              PackagePath="analyzers/dotnet/roslyn%(_NsDepCopRoslynVariant.Identity)/cs" />
     </ItemGroup>
   </Target>
 

@@ -9,6 +9,14 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <!--
+    Matches the analyzer's NsDepCopRoslynVersion (flows in as a global property when building a specific
+    variant; empty/default means the newest). Gates the C# 14 source tests to the 5.0 build.
+  -->
+  <PropertyGroup Condition="'$(NsDepCopRoslynVersion)' != '4.0'">
+    <DefineConstants>$(DefineConstants);ROSLYN5_0_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\Include\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
     <Compile Include="..\Include\VersionInfo.cs" Link="Properties\VersionInfo.cs" />

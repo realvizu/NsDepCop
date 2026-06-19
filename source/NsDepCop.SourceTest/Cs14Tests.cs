@@ -1,3 +1,6 @@
+// C# 14 extension members only exist in Roslyn 5.0+; the source fixture won't even compile on
+// earlier compilers, so this test is built only for the matching analyzer variant.
+#if ROSLYN5_0_OR_GREATER
 using Xunit;
 
 namespace Codartis.NsDepCop.SourceTest
@@ -22,3 +25,4 @@ namespace Codartis.NsDepCop.SourceTest
         }
     }
 }
+#endif

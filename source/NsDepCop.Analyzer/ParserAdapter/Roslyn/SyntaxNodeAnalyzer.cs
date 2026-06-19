@@ -112,7 +112,9 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
                 case TypeKind.Unknown:
                 case TypeKind.Submission:
                 case TypeKind.TypeParameter:
+#if ROSLYN5_0_OR_GREATER
                 case TypeKind.Extension:
+#endif
                     yield break;
 
                 default:
@@ -160,10 +162,12 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
             if (isExtensionMethodOrCallOnStaticImport)
                 return methodSymbol.ContainingType;
 
+#if ROSLYN5_0_OR_GREATER
             // C# 14 extension members: the method lives inside an extension block whose TypeKind is Extension.
             // The dependency is on the enclosing static class, not the block itself.
             if (methodSymbol?.ContainingType?.TypeKind == TypeKind.Extension)
                 return methodSymbol.ContainingType.ContainingType;
+#endif
 
             return null;
         }
@@ -220,10 +224,12 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
             // Determine the type of the type declaration that contains the current syntax node.
             var declaredType = semanticModel.GetDeclaredSymbol(typeDeclarationSyntaxNode) as ITypeSymbol;
 
+#if ROSLYN5_0_OR_GREATER
             // C# 14 extension blocks are represented as a synthetic extension type.
             // For dependency ownership, use the enclosing static class.
             if (declaredType?.TypeKind == TypeKind.Extension)
                 return declaredType.ContainingType;
+#endif
 
             return declaredType;
         }
