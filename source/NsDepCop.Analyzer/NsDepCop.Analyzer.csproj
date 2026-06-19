@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Codartis.NsDepCop</RootNamespace>
+    <Description>Static code analysis tool for enforcing namespace-based type dependency rules in C# projects.</Description>
     <IsPackable>false</IsPackable>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
     <NoWarn>$(NoWarn);RS1036</NoWarn>
@@ -27,11 +27,6 @@
 
   <ItemGroup>
     <AdditionalFiles Include="config.nsdepcop" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="..\Include\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
-    <Compile Include="..\Include\VersionInfo.cs" Link="Properties\VersionInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>

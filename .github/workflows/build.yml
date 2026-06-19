@@ -1,0 +1,54 @@
+name: build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      # Version comes from VersionPrefix in source/Directory.Build.props.
+      # A pushed tag (v*) builds a clean release version; everything else gets a CI prerelease suffix.
+      - name: Compute version suffix
+        id: ver
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "suffix=" >> "$GITHUB_OUTPUT"
+          else
+            echo "suffix=ci.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Default (roslyn5.0) analyzer build: unit tests + source tests (incl. C# 14).
+      - name: Test (roslyn5.0)
+        run: |
+          dotnet test source/NsDepCop.Test/NsDepCop.Test.csproj -c Release
+          dotnet test source/NsDepCop.SourceTest/NsDepCop.SourceTest.csproj -c Release
+
+      # No-regression pass against the roslyn4.0 build (C# 14 tests are gated out there).
+      - name: Test (roslyn4.0 regression)
+        run: dotnet test source/NsDepCop.SourceTest/NsDepCop.SourceTest.csproj -c Release -p:NsDepCopRoslynVersion=4.0
+
+      # Builds both analyzer variants and packs them into analyzers/dotnet/roslyn4.0|5.0/cs.
+      - name: Pack
+        run: dotnet pack source/NsDepCop.NuGet/NsDepCop.NuGet.csproj -c Release -p:VersionSuffix=${{ steps.ver.outputs.suffix }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nupkg
+          path: source/NsDepCop.NuGet/bin/Release/NsDepCop*.nupkg
+          if-no-files-found: error

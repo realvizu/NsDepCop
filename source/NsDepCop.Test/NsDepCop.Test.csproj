@@ -3,16 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Codartis.NsDepCop.Test</RootNamespace>
+    <Description>Unit tests for NsDepCop.Analyzer</Description>
     <IsPackable>false</IsPackable>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="..\Include\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
-    <Compile Include="..\Include\VersionInfo.cs" Link="Properties\VersionInfo.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="7.0.0" />

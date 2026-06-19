@@ -1,5 +1,9 @@
 <Project>
 
+  <!-- Chain to the repo-wide props (shared version/metadata): a folder-level Directory.Build.props
+       otherwise stops MSBuild's upward search, so this project would miss source/Directory.Build.props. -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
   <!--
     Roslyn multi-targeting.
     The analyzer is built once per supported Roslyn version (see NsDepCopRoslynVersion below), each build

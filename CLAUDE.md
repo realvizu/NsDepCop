@@ -77,8 +77,8 @@ The project references its own NuGet package (`NsDepCop 2.7.0`) and enforces dep
 - `TreatWarningsAsErrors` is enabled on all projects
 - Root namespace is `Codartis.NsDepCop` (with project-specific suffixes like `.Test`)
 - `config.nsdepcop` is the XML configuration file format — both the product config and test fixtures
-- CI runs on AppVeyor (Visual Studio 2022 image), Release configuration
-- Version is managed in `appveyor.yml` and patched into `source/Include/VersionInfo.cs`
+- CI runs on GitHub Actions (`.github/workflows/build.yml`, `ubuntu-latest`), Release configuration, using per-project `dotnet test`/`dotnet pack` (not a solution build, to avoid the self-reference cycle)
+- Version is managed via MSBuild properties: `VersionPrefix` in `source/Directory.Build.props` is the single source of truth (with shared `Company`/`Product`/`Copyright`); CI sets a `VersionSuffix` prerelease tag for non-release builds. `AssemblyVersion` is pinned stable per major.
 
 ## Diagnostics
 
