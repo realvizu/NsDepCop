@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Codartis.NsDepCop.Config;
@@ -20,13 +21,33 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
             config.MaxIssueCount.Should().Be(ConfigDefaults.MaxIssueCount);
         }
 
+        public static IEnumerable<object[]> PathRootingTestData()
+        {
+            // A forward-slash root is rooted on every OS, so this case runs everywhere.
+            yield return ["/root", "*.cs", "/root/*.cs"];
+
+            // The remaining cases exercise OS-specific path semantics (drive letters, backslash
+            // separators). The root path must be rooted on the running OS, otherwise MakePathsRooted
+            // rejects it — so the data differs per platform.
+            if (OperatingSystem.IsWindows())
+            {
+                yield return [@"C:\folder with space", "*.cs", "C:/folder with space/*.cs"];
+                yield return [@"C:\folder with space", @"**\*.cs", "C:/folder with space/**/*.cs"];
+                yield return [@"C:\folder with space", @"D:\*.cs", "D:/*.cs"];
+                yield return [@"C:\folder with space", "//a folder/b.cs", "//a folder/b.cs"];
+                yield return [@"C:\folder with space", "/*.cs", "/*.cs"];
+            }
+            else
+            {
+                // Relative patterns get rooted under the root; an already-rooted pattern is kept as-is.
+                yield return ["/folder with space", "*.cs", "/folder with space/*.cs"];
+                yield return ["/folder with space", "sub/*.cs", "/folder with space/sub/*.cs"];
+                yield return ["/folder with space", "/abs/*.cs", "/abs/*.cs"];
+            }
+        }
+
         [Theory]
-        [InlineData("/root", "*.cs", "/root/*.cs")]
-        [InlineData(@"C:\folder with space", "*.cs", "C:/folder with space/*.cs")]
-        [InlineData(@"C:\folder with space", @"**\*.cs", "C:/folder with space/**/*.cs")]
-        [InlineData(@"C:\folder with space", @"D:\*.cs", "D:/*.cs")]
-        [InlineData(@"C:\folder with space", "//a folder/b.cs", "//a folder/b.cs")]
-        [InlineData(@"C:\folder with space", "/*.cs", "/*.cs")]
+        [MemberData(nameof(PathRootingTestData))]
         public void ToAnalyzerConfig_ConvertsPathsToRooted(string pathRoot, string pathExclusionPattern, string expectedFullPath)
         {
             var configBuilder = new AnalyzerConfigBuilder()
