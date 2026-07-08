@@ -29,6 +29,7 @@ Namespace specification type | Example
 Exact| System.IO
 Wildcard | System.Collections.* <br> MyProduct.?.StorageModel
 Regex | /MyProduct(\.[\w]+)*\.StorageModel[\w]/
+Placeholder | MyProduct.[Module].StorageModel <br> See [Placeholders](#placeholders).
 
 > Notice that Regex patterns must be enclosed in forward slashes ('/').
 
@@ -138,6 +139,61 @@ The best matching rule is the one with the minimal edit distance between namespa
 * Replacing a `*` has a cost of 1 and additionaly a cost of 1 per sub-namespace that replaces the `*`.
 
 Example: When matching the namespace `A.B.C.D` the rule `A.?.?.D` (edit distance = 2) is preferred to the rule `A.*.D` (edit distance = 3). If multiple rules have the same edit distance, the behavior is undefined.
+
+### Placeholders
+* Placeholders link the `From` and the `To` side of a rule: a placeholder **captures** namespace components on the `From` side, and the `To` side refers to the **captured value**.
+* This makes rule sets module-agnostic. Say each component's `Services` may depend only on **its own** `Domain`:
+```
+A.Services -> A.Domain
+B.Services -> B.Domain
+C.Services -> C.Domain
+```
+Instead of one rule per component (which has to be extended whenever a component is added), a single rule expresses all of them:
+```xml
+<Allowed From="[Module].Services" To="[Module].Domain" />
+```
+Wildcards cannot express this because the two sides match independently: `<Allowed From="?.Services" To="?.Domain" />` would also allow `A.Services` -> `B.Domain`. The same applies to Regex rules: the two patterns are evaluated in separate matches, so a capture on the `From` side cannot be referenced on the `To` side.
+
+Notation | Meaning
+-- | --
+[Name] | Matches and captures exactly one namespace component (like `?`).
+[Name*] | Matches and captures one or more namespace components (like `*`, but at least one).
+[!Name] | Valid only on the `To` side. Matches exactly one component that is NOT equal to the value captured for `Name` on the `From` side.
+
+* How a `From`-side pattern matches and captures:
+
+Pattern | Namespace | Match? | Captured value(s)
+-- | -- | -- | --
+[M].C | A.C | yes | M = A
+[M].C | A.B.C | no ([M] matches exactly one component) |
+[M*].C | A.B.C | yes | M = A.B
+[M*].C | C | no ([M*] matches at least one component) |
+App.[M].* | App.A.B.C | yes | M = A
+[M].[N*].D | A.B.C.D | yes | M = A, N = B.C
+
+* On the `To` side the captured value replaces the placeholder before matching. With the rule `<Allowed From="[Module].Services" To="[Module].Domain.*" />` the dependency `A.Services` -> `A.Domain.Entities` matches (the `To` side becomes `A.Domain.*`), while `A.Services` -> `B.Domain.Entities` does not.
+* Multiple placeholders can be combined. Example: allow every component to use a shared area, but only **within the same layer**:
+```xml
+<Allowed From="App.[Module].[Layer].*" To="App.Shared.[Layer].*" />
+```
+* A multi placeholder captures a whole sub-path as one value, which covers nested components: `<Allowed From="App.[Path*].Services" To="App.[Path*].Domain" />` allows `App.A.B.Services` -> `App.A.B.Domain` (captured value: `A.B`) but not -> `App.A.Domain`: the complete captured sub-path must reappear on the `To` side.
+* A negated placeholder expresses **inequality** and is typically used in `Disallowed` rules. The following rule forbids using **another** component's `Domain`, even if a broad `Allowed` rule (eg. inherited from a parent config) would otherwise permit it:
+```xml
+<Disallowed From="[Module].*" To="[!Module].Domain.*" />
+```
+* Placeholders are bound **by name, not by position**: the `To` side may reference them in any order (eg. `From="App.[P1].[P2].*" To="App.[P2].[P1].*"` swaps the two segments), repeat a name, or use only a subset of the `From` side's placeholders.
+* A placeholder that appears only on the `From` side is valid; the captured value is simply unused and the placeholder behaves like the corresponding wildcard. The reverse is not valid: see below.
+* Placeholders can be mixed with the `?` and `*` wildcards; those match as usual but do not capture.
+* Validity rules (violations are reported as a config error):
+  * Placeholder names on the `From` side must be unique.
+  * Every placeholder on the `To` side (including negated ones) must also occur on the `From` side.
+  * `[!Name]` must not refer to a multi placeholder (`[Name*]`), and `[!Name*]` is not valid.
+  * Two adjacent multi-matching tokens (`*` or `[Name*]`) are not allowed, mirroring the rule that forbids `*.*`.
+* When several capture lengths are possible (eg. `[A*].[B]` matching `X.Y.Z`), the leftmost placeholder captures as few components as possible; there is no backtracking over alternative splits against the `To` side. Place a literal component between multi-matching tokens to avoid the ambiguity altogether.
+* When selecting the best matching rule, a placeholder counts like the corresponding wildcard: `[Name]` like `?`, `[Name*]` like `*` (see the edit distance calculation above).
+* Placeholders can also be used in assembly dependency rules.
+
+> Notice that a namespace specification containing '[' is interpreted as a placeholder specification, unless it is enclosed in forward slashes ('/'), in which case it is a Regex.
 
 ### Namespace surface
 * The *surface* of a namespace consists of the types that are visible to some other namespace.
