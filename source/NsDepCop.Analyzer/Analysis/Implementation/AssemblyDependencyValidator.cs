@@ -44,13 +44,13 @@ namespace Codartis.NsDepCop.Analysis.Implementation
         private DependencyRule GetMostSpecificAllowRule(Domain from, Domain to)
         {
             return _allowRules
-                .Where(element => element.From.Matches(from) && element.To.Matches(to))
-                .MaxByOrDefault(element => element.From.GetMatchRelevance(from));
+                .Where(element => element.Matches(from, to))
+                .MaxByOrDefault(element => element.GetFromMatchRelevance(from));
         }
 
         private DependencyRule GetDisallowRule(Domain from, Domain to)
         {
-            return _disallowRules.FirstOrDefault(element => element.From.Matches(from) && element.To.Matches(to));
+            return _disallowRules.FirstOrDefault(element => element.Matches(from, to));
         }
     }
 }
