@@ -187,7 +187,9 @@ namespace Codartis.NsDepCop.Config.Implementation
             var from = TryAndReportError(element, () => DomainSpecificationParser.Parse(fromValue.Trim()));
             var to = TryAndReportError(element, () => DomainSpecificationParser.Parse(toValue.Trim()));
 
-            return new DependencyRule(from, to);
+            // Wrapped so that rule-level validation errors (eg. an unbound placeholder)
+            // are reported with line info, just like side-level parse errors.
+            return TryAndReportError(element, () => new DependencyRule(from, to));
         }
 
         private static DependencyRule ParseAssemblyDependencyRule(XElement element)
@@ -203,7 +205,7 @@ namespace Codartis.NsDepCop.Config.Implementation
             var from = TryAndReportError(element, () => DomainSpecificationParser.Parse(fromValue.Trim()));
             var to = TryAndReportError(element, () => DomainSpecificationParser.Parse(toValue.Trim()));
 
-            return new DependencyRule(from, to);
+            return TryAndReportError(element, () => new DependencyRule(from, to));
         }
 
         private static T TryAndReportError<T>(XObject xObject, Func<T> parserDelegate)
