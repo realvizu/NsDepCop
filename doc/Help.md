@@ -182,7 +182,7 @@ App.[M].* | App.A.B.C | yes | M = A
 <Disallowed From="[Module].*" To="[!Module].Domain.*" />
 ```
 * Placeholders are bound **by name, not by position**: the `To` side may reference them in any order (eg. `From="App.[P1].[P2].*" To="App.[P2].[P1].*"` swaps the two segments), repeat a name, or use only a subset of the `From` side's placeholders.
-* A placeholder that appears only on the `From` side is valid; the captured value is simply unused and the placeholder behaves like the corresponding wildcard. The reverse is not valid: see below.
+* A placeholder that appears only on the `From` side is valid; the captured value is simply unused. It still matches like the corresponding wildcard (`[Name]` like `?`, `[Name*]` like `*`), except that `[Name*]` keeps requiring **at least one** component — it never matches zero, regardless of the `To` side. The reverse is not valid: see below.
 * Placeholders can be mixed with the `?` and `*` wildcards; those match as usual but do not capture.
 * Validity rules (violations are reported as a config error):
   * Placeholder names on the `From` side must be unique.

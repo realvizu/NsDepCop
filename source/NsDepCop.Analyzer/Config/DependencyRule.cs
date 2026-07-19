@@ -70,16 +70,28 @@ namespace Codartis.NsDepCop.Config
         /// <returns>True if this rule matches the given domain pair.</returns>
         public virtual bool Matches(Domain from, Domain to)
         {
-            if (From is PlaceholderDomain fromPlaceholder && To is PlaceholderDomain toPlaceholder)
+            if (From is PlaceholderDomain fromPlaceholder)
             {
+                // Always match the 'From' side with placeholder semantics ('[Name*]' captures one or
+                // more components), never the wildcard-degraded relevance (where '*' also matches zero).
+                // This keeps a placeholder's meaning independent of what is on the 'To' side.
                 if (!fromPlaceholder.TryMatch(from, out var capturedValues))
                     return false;
 
-                // Negated placeholders ('[!Name]') have no substitution semantics,
-                // so the 'To' side is matched directly against the captured bindings.
-                return toPlaceholder.HasNegatedPlaceholders
-                    ? toPlaceholder.Matches(to, capturedValues)
-                    : GetSubstitutedToSpecification(toPlaceholder, capturedValues).Matches(to);
+                // If the 'To' side has placeholders too, link the two sides via the captured values.
+                // (A 'To'-side placeholder is only reachable when the 'From' side has one, so this
+                // is the only place the link can occur.)
+                if (To is PlaceholderDomain toPlaceholder)
+                {
+                    // Negated placeholders ('[!Name]') have no substitution semantics,
+                    // so the 'To' side is matched directly against the captured bindings.
+                    return toPlaceholder.HasNegatedPlaceholders
+                        ? toPlaceholder.Matches(to, capturedValues)
+                        : GetSubstitutedToSpecification(toPlaceholder, capturedValues).Matches(to);
+                }
+
+                // Placeholder only on the 'From' side: the captured values are unused; match 'To' independently.
+                return To.Matches(to);
             }
 
             return From.Matches(from) && To.Matches(to);

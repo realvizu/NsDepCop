@@ -62,6 +62,26 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         }
 
         [Fact]
+        public void Matches_FromOnlyMultiPlaceholder_StillRequiresAtLeastOneComponent()
+        {
+            // '[Name*]' means "one or more components" everywhere, even when the placeholder appears
+            // only on the 'From' side (the 'To' side has no placeholder to link to). It must not
+            // degrade to a plain '*' that also matches zero components.
+            var rule = new DependencyRule("MyApp.[M*].Services", "MyApp.Common");
+
+            rule.Matches(new Domain("MyApp.X.Services"), new Domain("MyApp.Common")).Should().BeTrue();
+            rule.Matches(new Domain("MyApp.X.Y.Services"), new Domain("MyApp.Common")).Should().BeTrue();
+
+            // Nothing between 'MyApp' and 'Services': '[M*]' requires at least one component.
+            rule.Matches(new Domain("MyApp.Services"), new Domain("MyApp.Common")).Should().BeFalse();
+
+            // The verdict must not depend on whether the 'To' side carries a placeholder: the linked
+            // form already rejects the zero-component case, and the from-only form must agree.
+            var linkedRule = new DependencyRule("MyApp.[M*].Services", "MyApp.[M*].Common");
+            linkedRule.Matches(new Domain("MyApp.Services"), new Domain("MyApp.Common")).Should().BeFalse();
+        }
+
+        [Fact]
         public void Matches_PlaceholdersAreBoundByName_NotByPosition()
         {
             var rule = new DependencyRule("App.[P1].[P2].*", "App.[P2].[P1].*");
