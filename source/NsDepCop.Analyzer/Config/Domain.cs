@@ -41,6 +41,14 @@ namespace Codartis.NsDepCop.Config
         public override bool ResolvesToSingleDomainPerMatch => true;
 
         /// <summary>
+        /// Splits this domain into its name components. Empty components are dropped, so the
+        /// global domain ('.') decomposes to zero components (it has no name parts) and therefore
+        /// never spuriously matches a pattern that requires at least one component.
+        /// </summary>
+        internal string[] ToComponents()
+            => ToString().Split([DomainPartSeparator], StringSplitOptions.RemoveEmptyEntries);
+
+        /// <summary>
         /// Determines whether this domain is a sub-domain of the given other one.
         /// </summary>
         /// <param name="parentCandidate">The domain to test whether it's a parent of the current domain.</param>

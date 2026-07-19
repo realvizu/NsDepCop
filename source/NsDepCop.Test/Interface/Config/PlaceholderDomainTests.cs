@@ -111,6 +111,18 @@ namespace Codartis.NsDepCop.Test.Interface.Config
             capturedValues["M"].Should().Be("P.Q");
         }
 
+        [Fact]
+        public void TryMatch_GlobalNamespace_DoesNotMatchPlaceholders()
+        {
+            // The global namespace ('.') has no name components, so a placeholder pattern
+            // (which requires at least one component) must not match or capture it.
+            new PlaceholderDomain("[M].[N]").TryMatch(Domain.GlobalDomain, out var twoPartCaptures).Should().BeFalse();
+            twoPartCaptures.Should().BeNull();
+
+            new PlaceholderDomain("[M*]").TryMatch(Domain.GlobalDomain, out var multiCaptures).Should().BeFalse();
+            multiCaptures.Should().BeNull();
+        }
+
         [Theory]
         [InlineData("MyApp.[M].Contracts", "A", "MyApp.A.Contracts")]
         [InlineData("MyApp.[M].Contracts.*", "A", "MyApp.A.Contracts.*")]

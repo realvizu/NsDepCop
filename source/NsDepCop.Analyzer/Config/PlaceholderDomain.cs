@@ -183,7 +183,7 @@ namespace Codartis.NsDepCop.Config
         /// <returns>True if the domain matches this specification.</returns>
         public bool TryMatch(Domain domain, out IReadOnlyDictionary<string, string> capturedValues)
         {
-            var actualComponents = domain.ToString().Split(DomainPartSeparator);
+            var actualComponents = domain.ToComponents();
             var captures = new Dictionary<string, string>();
 
             if (TryMatchRecursive(actualComponents, GetTokens(), captures, boundValues: null))
@@ -209,7 +209,7 @@ namespace Codartis.NsDepCop.Config
             if (boundValues == null)
                 throw new ArgumentNullException(nameof(boundValues));
 
-            var actualComponents = domain.ToString().Split(DomainPartSeparator);
+            var actualComponents = domain.ToComponents();
 
             return TryMatchRecursive(actualComponents, GetTokens(), captures: null, boundValues);
         }

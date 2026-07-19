@@ -100,6 +100,20 @@ namespace Codartis.NsDepCop.Test.Interface.Config
         }
 
         [Fact]
+        public void Matches_GlobalNamespaceOnFromSide_DoesNotMatchAndDoesNotThrow()
+        {
+            // The global namespace ('.') decomposes to zero components, so a placeholder 'From'
+            // side does not match it and nothing is captured - no substitution or parse happens.
+            // The rule simply does not match, without throwing during analysis.
+            var rule = new DependencyRule("[M].[N]", "X.[M]");
+
+            Action act = () => rule.Matches(Domain.GlobalDomain, new Domain("X.Y"));
+
+            act.Should().NotThrow();
+            rule.Matches(Domain.GlobalDomain, new Domain("X.Y")).Should().BeFalse();
+        }
+
+        [Fact]
         public void Create_UnboundPlaceholderOnToSide_ThrowsFormatException()
         {
             Assert.Throws<FormatException>(() => new DependencyRule("MyApp.[Module].Domain", "MyApp.[Other].Contracts"));
