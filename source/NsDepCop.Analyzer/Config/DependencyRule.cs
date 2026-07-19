@@ -68,7 +68,7 @@ namespace Codartis.NsDepCop.Config
         /// <param name="from">The source domain of the dependency.</param>
         /// <param name="to">The target domain of the dependency.</param>
         /// <returns>True if this rule matches the given domain pair.</returns>
-        public virtual bool Matches(Domain from, Domain to)
+        public bool Matches(Domain from, Domain to)
         {
             if (From is PlaceholderDomain fromPlaceholder)
             {
@@ -103,7 +103,7 @@ namespace Codartis.NsDepCop.Config
         /// </summary>
         /// <param name="from">The source domain of the dependency.</param>
         /// <returns>Zero means no match. Higher value means more relevant match.</returns>
-        public virtual int GetFromMatchRelevance(Domain from) => From.GetMatchRelevance(from);
+        public int GetFromMatchRelevance(Domain from) => From.GetMatchRelevance(from);
 
         private DomainSpecification GetSubstitutedToSpecification(
             PlaceholderDomain toPlaceholder,
