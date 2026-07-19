@@ -126,7 +126,31 @@ namespace Codartis.NsDepCop.Test.Implementation.Config
         {
             var xDocument = LoadXml("AllowedRuleForWildcardNamespaceWithVisibleMembers.nsdepcop");
             Action a = () => XmlConfigParser.Parse(xDocument);
-            a.Should().Throw<Exception>().WithMessage("*must be a single namespace*");
+            a.Should().Throw<Exception>().WithMessage("*must resolve to a single namespace*");
+        }
+
+        [Fact]
+        public void Parse_AllowedRuleForPlaceholderNamespaceWithVisibleMembers_Works()
+        {
+            // A placeholder 'To' side (with no '?'/'*' wildcards) resolves to a single concrete
+            // namespace per match, so it can carry an inline VisibleMembers surface.
+            var xDocument = LoadXml("AllowedRuleForPlaceholderNamespaceWithVisibleMembers.nsdepcop");
+            var config = XmlConfigParser.Parse(xDocument);
+
+            var types = config.AllowRules[new DependencyRule("MyApp.[Module].Application", "MyApp.[Module].Contracts")];
+            types.Should().HaveCount(2);
+            types.Should().Contain("T1");
+            types.Should().Contain("T2");
+        }
+
+        [Fact]
+        public void Parse_AllowedRuleForPlaceholderWithWildcardNamespaceWithVisibleMembers_Throws()
+        {
+            // The substituted 'To' side still contains a '*', so it matches more than one namespace
+            // and the VisibleMembers surface would be ambiguous.
+            var xDocument = LoadXml("AllowedRuleForPlaceholderWithWildcardNamespaceWithVisibleMembers.nsdepcop");
+            Action a = () => XmlConfigParser.Parse(xDocument);
+            a.Should().Throw<Exception>().WithMessage("*must resolve to a single namespace*");
         }
 
         [Fact]

@@ -149,8 +149,8 @@ namespace Codartis.NsDepCop.Config.Implementation
             if (visibleMembersChild == null)
                 return null;
 
-            if (allowedRule.To is not Domain)
-                throw new Exception($"{GetLineInfo(element)}The target namespace '{allowedRule.To}' must be a single namespace.");
+            if (!allowedRule.To.ResolvesToSingleDomainPerMatch)
+                throw new Exception($"{GetLineInfo(element)}The target namespace '{allowedRule.To}' must resolve to a single namespace.");
 
             if (visibleMembersChild.Attribute(OfNamespaceAttributeName) != null)
                 throw new Exception(

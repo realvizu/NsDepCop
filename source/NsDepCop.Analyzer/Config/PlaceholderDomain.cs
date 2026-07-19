@@ -166,6 +166,15 @@ namespace Codartis.NsDepCop.Config
             return GetDegradedWildcardDomain().GetMatchRelevance(domain);
         }
 
+        /// <inheritdoc />
+        /// <remarks>
+        /// Every placeholder is substituted with a fixed captured value on the 'To' side, so the
+        /// specification pins down a single concrete domain per match, unless it also contains
+        /// '?'/'*' wildcards (which can still match more than one domain).
+        /// </remarks>
+        public override bool ResolvesToSingleDomainPerMatch =>
+            GetTokens().All(token => token.Kind != TokenKind.SingleWildcard && token.Kind != TokenKind.AnyWildcard);
+
         /// <summary>
         /// Matches this specification against a concrete domain and extracts the placeholder captures.
         /// </summary>

@@ -1,0 +1,7 @@
+<NsDepCopConfig>
+    <Allowed From="MyApp.[Module].Application" To="MyApp.[Module].Contracts.*">
+        <VisibleMembers>
+            <Type Name="T1"/>
+        </VisibleMembers>
+    </Allowed>
+</NsDepCopConfig>

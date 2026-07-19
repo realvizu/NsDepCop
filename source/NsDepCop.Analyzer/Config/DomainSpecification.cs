@@ -48,6 +48,13 @@ namespace Codartis.NsDepCop.Config
         /// <returns>True if this domain specification matches the given domain.</returns>
         public bool Matches(Domain domain) => GetMatchRelevance(domain) > 0;
 
+        /// <summary>
+        /// True if this specification identifies exactly one concrete domain whenever it matches,
+        /// so an inline set of visible members can be attributed unambiguously to a single target namespace.
+        /// Patterns that can match more than one domain (eg. wildcard or regex specifications) return false.
+        /// </summary>
+        public virtual bool ResolvesToSingleDomainPerMatch => false;
+
         public override string ToString() => Value;
 
         public bool Equals(DomainSpecification other)

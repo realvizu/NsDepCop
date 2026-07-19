@@ -36,6 +36,10 @@ namespace Codartis.NsDepCop.Config
                 : 0;
         }
 
+        /// <inheritdoc />
+        /// <remarks>A concrete domain always denotes exactly one namespace.</remarks>
+        public override bool ResolvesToSingleDomainPerMatch => true;
+
         /// <summary>
         /// Determines whether this domain is a sub-domain of the given other one.
         /// </summary>
