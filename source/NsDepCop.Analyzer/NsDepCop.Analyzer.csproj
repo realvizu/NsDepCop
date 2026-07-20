@@ -32,7 +32,7 @@
   <ItemGroup>
     <PackageReference Include="DotNet.Glob" Version="2.1.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(MicrosoftCodeAnalysisCSharpVersion)" />
-    <PackageReference Include="NsDepCop" Version="3.0.0">
+    <PackageReference Include="NsDepCop" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

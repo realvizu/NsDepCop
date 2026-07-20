@@ -2,11 +2,8 @@
 	<Allowed From="Codartis.NsDepCop.*" To="DotNet.Globbing" />
 	<Allowed From="Codartis.NsDepCop.*" To="Codartis.NsDepCop.Util.*" />
 
-	<Allowed From="Codartis.NsDepCop.Config.Factory" To="Codartis.NsDepCop.Config.Implementation" />
-
 	<Allowed From="Codartis.NsDepCop.Analysis.*" To="Codartis.NsDepCop.Config" />
 	<Allowed From="Codartis.NsDepCop.Analysis.*" To="Codartis.NsDepCop.Analysis.Messages" />
-	<Allowed From="Codartis.NsDepCop.Analysis.Factory" To="Codartis.NsDepCop.Analysis.Implementation" />
 
 	<Allowed From="Codartis.NsDepCop.ParserAdapter.Roslyn" To="Codartis.NsDepCop.Analysis" />
 
@@ -15,6 +12,9 @@
 
 	<!-- This rule is for testing the RegexDomain -->
 	<Allowed From="/Codartis\.NsDepCop\.(ParserAdapter|Analysis|RoslynAnalyzer)/" To="Microsoft.CodeAnalysis.*" />
+
+	<!-- This rule is for testing the PlaceholderDomain -->
+	<Allowed From="Codartis.NsDepCop.[Module].Factory" To="Codartis.NsDepCop.[Module].Implementation" />
 
 	<AllowedAssembly From="*" To="DotNet.Glob" />
 	<AllowedAssembly From="*" To="Microsoft.*" />
