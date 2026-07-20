@@ -28,8 +28,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</PackageIconUrl>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageReleaseNotes>
-- Added support for C# 14 extension members.
-- BREAKING: The minimum supported build toolchain is now Visual Studio 2022 17.0 / .NET 6 SDK. The analyzer ships Roslyn-version-specific builds (roslyn4.0 and roslyn5.0); hosts older than VS 2022 17.0 / .NET 6 SDK (e.g. VS 2019) no longer load the analyzer. Stay on 2.7.x for those.
+- Added named placeholders in dependency rules: capture a namespace component on the From side and reference ([Name]) or negate ([!Name]) it on the To side, eg. &lt;Allowed From="[Module].Services" To="[Module].Domain" /&gt;.
 	</PackageReleaseNotes>
   </PropertyGroup>
 

@@ -1,5 +1,10 @@
 # NsDepCop Change Log
 
+## v3.1.0
+(07/2026)
+
+- [x] New: Named placeholders in dependency rules, eg. `<Allowed From="[Module].Services" To="[Module].Domain" />`. Placeholders capture on the `From` side and are referenced (`[Name]`) or negated (`[!Name]`) on the `To` side. See [Placeholders](doc/Help.md#placeholders).
+
 ## v3.0.0
 (06/2026)
 

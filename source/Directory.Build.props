@@ -11,7 +11,7 @@
     <Product>NsDepCop</Product>
     <Copyright>Copyright © 2013-$([System.DateTime]::Now.Year) Ferenc Vizkeleti</Copyright>
 
-    <VersionPrefix>3.0.0</VersionPrefix>
+    <VersionPrefix>3.1.0</VersionPrefix>
     <!-- Assembly binding identity, derived as <major>.0.0.0 from VersionPrefix so it stays stable
          across a whole major version automatically (only changes when the major changes), sparing
          consumers a rebind on every release. -->
