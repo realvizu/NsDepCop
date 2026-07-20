@@ -17,6 +17,10 @@ namespace Codartis.NsDepCop.Config
         {
             if (domainSpecificationAsString.StartsWith(RegexDomain.Delimiter) && domainSpecificationAsString.EndsWith(RegexDomain.Delimiter))
                 return new RegexDomain(domainSpecificationAsString);
+            // Must be checked before the wildcard branch because '[Name*]' also contains '*'.
+            // Must be checked after the regex branch because regex character classes also contain '['.
+            if (domainSpecificationAsString.Contains(PlaceholderDomain.PlaceholderStartMarker))
+                return new PlaceholderDomain(domainSpecificationAsString);
             if (domainSpecificationAsString.Contains(WildcardDomain.SingleDomainMarker) || domainSpecificationAsString.Contains(WildcardDomain.AnyDomainMarker))
                 return new WildcardDomain(domainSpecificationAsString);
             return new Domain(domainSpecificationAsString);

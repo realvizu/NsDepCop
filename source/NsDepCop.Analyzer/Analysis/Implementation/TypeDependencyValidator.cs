@@ -78,14 +78,14 @@ namespace Codartis.NsDepCop.Analysis.Implementation
         private DependencyRule GetMostSpecificAllowRule(Domain from, Domain to)
         {
             return _allowRules.Keys
-                .Where(i => i.From.Matches(from) && i.To.Matches(to))
-                .MaxByOrDefault(i => i.From.GetMatchRelevance(from));
+                .Where(i => i.Matches(from, to))
+                .MaxByOrDefault(i => i.GetFromMatchRelevance(from));
         }
 
         private DependencyRule GetDisallowRule(Domain from, Domain to)
         {
             return _disallowRules
-                .FirstOrDefault(i => i.From.Matches(from) && i.To.Matches(to));
+                .FirstOrDefault(i => i.Matches(from, to));
         }
 
         private TypeNameSet GetVisibleMembers(DependencyRule allowRule, Domain targetNamespace)

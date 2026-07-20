@@ -36,6 +36,18 @@ namespace Codartis.NsDepCop.Config
                 : 0;
         }
 
+        /// <inheritdoc />
+        /// <remarks>A concrete domain always denotes exactly one namespace.</remarks>
+        public override bool ResolvesToSingleDomainPerMatch => true;
+
+        /// <summary>
+        /// Splits this domain into its name components. Empty components are dropped, so the
+        /// global domain ('.') decomposes to zero components (it has no name parts) and therefore
+        /// never spuriously matches a pattern that requires at least one component.
+        /// </summary>
+        internal string[] ToComponents()
+            => ToString().Split([DomainPartSeparator], StringSplitOptions.RemoveEmptyEntries);
+
         /// <summary>
         /// Determines whether this domain is a sub-domain of the given other one.
         /// </summary>

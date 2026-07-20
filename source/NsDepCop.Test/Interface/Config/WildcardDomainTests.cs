@@ -50,6 +50,16 @@ namespace Codartis.NsDepCop.Test.Interface.Config
             Assert.Throws<FormatException>(() => new WildcardDomain(wildcardDomainString));
         }
 
+        [Theory]
+        // The global namespace ('.') decomposes to zero components (empty parts are dropped).
+        [InlineData("*", true)]     // '*' matches any number of components, including zero
+        [InlineData("A.*", false)]  // needs a leading 'A' component; the global namespace has none
+        [InlineData("?", false)]    // needs exactly one component
+        public void Matches_GlobalNamespace_TreatedAsZeroComponents(string wildcardDomainString, bool expectedMatch)
+        {
+            new WildcardDomain(wildcardDomainString).Matches(Domain.GlobalDomain).Should().Be(expectedMatch);
+        }
+
         [Fact]
         [SuppressMessage("ReSharper", "EqualExpressionComparison")]
         public void Equals_Works()
