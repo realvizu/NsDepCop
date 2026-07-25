@@ -13,7 +13,6 @@ namespace Codartis.NsDepCop.Config
     /// <remarks>
     /// The 'any domain' (represented by a star '*') is also a domain that contains every domain.
     /// </remarks>
-    [Serializable]
     public sealed class WildcardDomain : DomainSpecification
     {
         private readonly string[] _domainComponents;

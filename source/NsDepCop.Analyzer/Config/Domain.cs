@@ -9,7 +9,6 @@ namespace Codartis.NsDepCop.Config
     /// <remarks>
     /// The global domain is also a domain and it's represented by '.' (a dot)
     /// </remarks>
-    [Serializable]
     public sealed class Domain : DomainSpecification
     {
         public const string RootDomainMarker = ".";

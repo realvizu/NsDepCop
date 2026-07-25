@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace Codartis.NsDepCop.Config
 {
     /// <summary>
     /// A set of type names represented as strings (without namespace part).
     /// </summary>
-    [Serializable]
     public class TypeNameSet : HashSet<string>
     {
         public TypeNameSet()
@@ -17,11 +14,6 @@ namespace Codartis.NsDepCop.Config
 
         public TypeNameSet(IEnumerable<string> collection)
             : base(collection)
-        {
-        }
-
-        protected TypeNameSet(SerializationInfo info, StreamingContext context) 
-            : base(info, context)
         {
         }
 

@@ -1,5 +1,6 @@
 ﻿<NsDepCopConfig ChildCanDependOnParentImplicitly="true" CheckAssemblyDependencies="true">
-    <Allowed From="*" To="System.*" />
+	<Allowed From="*" To="System.*" />
+	<Disallowed From="*" To="System.Runtime.Serialization" />
 
 	<AllowedAssembly From="*" To="mscorlib" />
 	<AllowedAssembly From="*" To="netstandard" />

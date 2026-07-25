@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis;
 
 namespace Codartis.NsDepCop.Analysis
 {
-    [Serializable]
     public struct AssemblyDependency
     {
         public static AssemblyDependency Empty;

@@ -5,7 +5,6 @@ namespace Codartis.NsDepCop.Config
     /// <summary>
     /// Represents a domain or a domain pattern. Immutable.
     /// </summary>
-    [Serializable]
     public abstract class DomainSpecification
     {
         public const char DomainPartSeparator = '.';

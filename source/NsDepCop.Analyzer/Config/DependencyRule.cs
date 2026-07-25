@@ -14,15 +14,13 @@ namespace Codartis.NsDepCop.Config
     /// The 'From' domain specification depends on the 'To' domain specification.
     /// A domain specification can represent more than just a single domain (eg. a subtree of namespaces).
     /// </remarks>
-    [Serializable]
     public class DependencyRule
     {
         /// <summary>
         /// Caches the domain specifications created by substituting captured placeholder values
         /// into the 'To' side, keyed by the substituted string.
-        /// Not serialized; recreated on demand after deserialization.
         /// </summary>
-        [NonSerialized] private ConcurrentDictionary<string, DomainSpecification> _substitutedToSpecificationCache;
+        private ConcurrentDictionary<string, DomainSpecification> _substitutedToSpecificationCache;
 
         /// <summary>
         /// The dependency points from this domain to the other.

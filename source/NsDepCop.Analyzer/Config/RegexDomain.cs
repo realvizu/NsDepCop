@@ -12,7 +12,6 @@ namespace Codartis.NsDepCop.Config;
 /// This class provides functionality to define a domain using a regular expression
 /// and supports validation and matching of other domains against the specified pattern.
 /// </remarks>
-[Serializable]
 public sealed class RegexDomain : DomainSpecification
 {
     public const string Delimiter = "/";

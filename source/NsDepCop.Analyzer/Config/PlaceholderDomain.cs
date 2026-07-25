@@ -22,7 +22,6 @@ namespace Codartis.NsDepCop.Config
     /// <br/>
     /// This class is immutable.
     /// </summary>
-    [Serializable]
     public sealed class PlaceholderDomain : DomainSpecification
     {
         public const string PlaceholderStartMarker = "[";
@@ -65,16 +64,14 @@ namespace Codartis.NsDepCop.Config
 
         /// <summary>
         /// The pre-parsed pattern components.
-        /// Not serialized; recreated on demand after deserialization.
         /// </summary>
-        [NonSerialized] private Token[] _tokens;
+        private Token[] _tokens;
 
         /// <summary>
         /// Lazily created equivalent where placeholders are degraded to plain wildcards
         /// ('[Name]' -> '?', '[Name*]' -> '*'). Used for match relevance calculation.
-        /// Not serialized; recreated on demand after deserialization.
         /// </summary>
-        [NonSerialized] private WildcardDomain _degradedWildcardDomain;
+        private WildcardDomain _degradedWildcardDomain;
 
         /// <summary>
         /// Creates a new instance from a string representation.

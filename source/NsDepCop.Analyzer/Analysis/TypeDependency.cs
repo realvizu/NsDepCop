@@ -6,7 +6,6 @@ namespace Codartis.NsDepCop.Analysis
     /// Describes a dependency between two types at a source segment.
     /// Immutable.
     /// </summary>
-    [Serializable]
     public struct TypeDependency
     {
         /// <summary>
