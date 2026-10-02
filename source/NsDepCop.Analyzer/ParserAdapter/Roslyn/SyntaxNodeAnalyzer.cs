@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Codartis.NsDepCop.Analysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -15,6 +16,11 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
         /// <summary>
         /// The list of those type kinds that can occur as a declaration.
         /// </summary>
+        /// <summary>
+        /// The display strings of the namespaces met so far. The table does not keep the symbols, and so their compilations, alive.
+        /// </summary>
+        private static readonly ConditionalWeakTable<INamespaceSymbol, string> NamespaceNames = new();
+
         private static readonly List<TypeKind> DeclarationTypeKinds = new()
         {
             TypeKind.Class,
@@ -37,15 +43,26 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
             if (!IsAnalyzableDeclarationType(enclosingType))
                 yield break;
 
-            // Determine the type referenced by the symbol represented by the current syntax node.
-            var referencedType = DetermineReferencedType(node, semanticModel);
+            var (referencedType, declaringType) = DetermineReferencedTypes(node, semanticModel);
             foreach (var type in GetConstituentTypes(referencedType, node))
                 yield return CreateTypeDependency(enclosingType, type, node);
 
-            // If this is an extension method invocation then determine the type declaring the extension method.
-            var declaringType = DetermineExtensionOrStaticMethodDeclaringType(node, semanticModel);
             if (IsAnalyzableDeclarationType(declaringType))
                 yield return CreateTypeDependency(enclosingType, declaringType, node);
+        }
+
+        /// <summary>
+        /// Determines the type referenced by the symbol represented by the syntax node and, if the node is an extension method
+        /// invocation or a call on a static import, the type declaring that method.
+        /// Both need the symbol of the node, which is only computed once: for a method name the compiler builds its whole method group.
+        /// </summary>
+        private (ITypeSymbol ReferencedType, ITypeSymbol DeclaringType) DetermineReferencedTypes(SyntaxNode node, SemanticModel semanticModel)
+        {
+            SymbolInfo? symbolInfo = null;
+            var referencedType = DetermineReferencedType(node, semanticModel, ref symbolInfo);
+            symbolInfo ??= semanticModel.GetSymbolInfo(node);
+            var declaringType = DetermineExtensionOrStaticMethodDeclaringType(node, symbolInfo.Value.Symbol as IMethodSymbol);
+            return (referencedType, declaringType);
         }
 
         private static bool IsAnalyzableDeclarationType(ITypeSymbol typeSymbol)
@@ -132,9 +149,18 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
         private static TypeDependency CreateTypeDependency(ITypeSymbol fromType, ITypeSymbol toType, SyntaxNode node)
         {
             return new TypeDependency(
-                fromType.ContainingNamespace.ToDisplayString(), fromType.MetadataName,
-                toType.ContainingNamespace.ToDisplayString(), toType.MetadataName,
+                GetNamespaceName(fromType.ContainingNamespace), fromType.MetadataName,
+                GetNamespaceName(toType.ContainingNamespace), toType.MetadataName,
                 GetSourceSegment(node));
+        }
+
+        /// <summary>
+        /// Returns the display string of a namespace, formatting it only once per namespace symbol.
+        /// Every analyzed syntax node needs the namespace names of the types on both ends of its dependencies.
+        /// </summary>
+        private static string GetNamespaceName(INamespaceSymbol namespaceSymbol)
+        {
+            return NamespaceNames.GetValue(namespaceSymbol, static i => i.ToDisplayString());
         }
 
         /// <summary>
@@ -148,12 +174,10 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
         /// <see cref="TypeKind.Extension"/> and its own containing type is the static class.
         /// </summary>
         /// <param name="node">A syntax node representing a static or extension method.</param>
-        /// <param name="semanticModel">The semantic model of the project.</param>
+        /// <param name="methodSymbol">The method symbol of the syntax node, or null if it does not represent a method.</param>
         /// <returns>The type declaring the given static or extension method syntax node, or null if not found.</returns>
-        private static ITypeSymbol DetermineExtensionOrStaticMethodDeclaringType(SyntaxNode node, SemanticModel semanticModel)
+        private static ITypeSymbol DetermineExtensionOrStaticMethodDeclaringType(SyntaxNode node, IMethodSymbol methodSymbol)
         {
-            var methodSymbol = semanticModel.GetSymbolInfo(node).Symbol as IMethodSymbol;
-
             bool isExtensionMethodOrCallOnStaticImport =
                 methodSymbol != null
                 && (methodSymbol.IsExtensionMethod
@@ -177,8 +201,9 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
         /// </summary>
         /// <param name="node">A syntax node.</param>
         /// <param name="semanticModel">The semantic model of the project.</param>
+        /// <param name="symbolInfo">The symbol information of the node, set when this method had to compute it.</param>
         /// <returns>The type referenced by the given syntax node, or null if no type was referenced.</returns>
-        protected virtual ITypeSymbol DetermineReferencedType(SyntaxNode node, SemanticModel semanticModel)
+        protected virtual ITypeSymbol DetermineReferencedType(SyntaxNode node, SemanticModel semanticModel, ref SymbolInfo? symbolInfo)
         {
             var typeSymbol = semanticModel.GetTypeInfo(node).Type;
             if (typeSymbol != null && typeSymbol.TypeKind != TypeKind.Error)
@@ -187,16 +212,20 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
             // Special case: deconstructing declaration with var outside, e.g.: var (d, e) = Method2();
             if (node.Parent is DeclarationExpressionSyntax &&
                 node.Parent.ChildNodes().Any(i => i is ParenthesizedVariableDesignationSyntax))
-                return DetermineReferencedType(node.Parent, semanticModel);
+            {
+                SymbolInfo? parentSymbolInfo = null;
+                return DetermineReferencedType(node.Parent, semanticModel, ref parentSymbolInfo);
+            }
 
             // In same cases GetTypeInfo(node).Type does not return the desired type symbol but GetSymbolInfo(node).Symbol does.
             // E.g.: IdentifierNameSyntax inside an ObjectCreationExpression
-            var symbolInfo = semanticModel.GetSymbolInfo(node);
-            if (symbolInfo.Symbol is ITypeSymbol symbolInfoTypeSymbol)
+            symbolInfo = semanticModel.GetSymbolInfo(node);
+            var symbol = symbolInfo.Value.Symbol;
+            if (symbol is ITypeSymbol symbolInfoTypeSymbol)
                 return symbolInfoTypeSymbol;
 
             // Special case: for method invocations we should check the return type
-            if (symbolInfo.Symbol is IMethodSymbol methodSymbol)
+            if (symbol is IMethodSymbol methodSymbol)
                 return methodSymbol.ReturnType;
 
             // Could not determine referenced type.
