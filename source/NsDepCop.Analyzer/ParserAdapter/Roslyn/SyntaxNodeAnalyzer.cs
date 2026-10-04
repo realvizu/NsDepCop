@@ -14,13 +14,13 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
     public class SyntaxNodeAnalyzer : ISyntaxNodeAnalyzer
     {
         /// <summary>
-        /// The list of those type kinds that can occur as a declaration.
-        /// </summary>
-        /// <summary>
         /// The display strings of the namespaces met so far. The table does not keep the symbols, and so their compilations, alive.
         /// </summary>
         private static readonly ConditionalWeakTable<INamespaceSymbol, string> NamespaceNames = new();
 
+        /// <summary>
+        /// The list of those type kinds that can occur as a declaration.
+        /// </summary>
         private static readonly List<TypeKind> DeclarationTypeKinds = new()
         {
             TypeKind.Class,
