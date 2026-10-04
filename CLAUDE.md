@@ -70,7 +70,7 @@ The `RoslynAnalyzer` layer is explicitly **disallowed** from depending on `*.Imp
 
 ### Self-referencing / Dogfooding
 
-The project references its own published NuGet package (`NsDepCop 3.0.0`) and enforces dependency rules on its own code. `Directory.Build.targets` contains a workaround (`AvoidCycleErrorOnSelfReference`) that renames `PackageId` to `NsDepCop_temp` during build to break the cycle, restoring it before pack. Solution-level `dotnet restore` / `msbuild /t:Restore` still detect the cycle; only building the individual projects (CI) and VS IDE's internal restore avoid the error. This is why command-line builds must target individual projects rather than the solution.
+The project references the latest published version of its own NuGet package (the `NsDepCop` `PackageReference` in `NsDepCop.Analyzer.csproj`) and enforces dependency rules on its own code. After each release is published to NuGet, the reference is bumped to the new version in a separate "Dogfooding vX.Y.Z" commit. `Directory.Build.targets` contains a workaround (`AvoidCycleErrorOnSelfReference`) that renames `PackageId` to `NsDepCop_temp` during build to break the cycle, restoring it before pack. Solution-level `dotnet restore` / `msbuild /t:Restore` still detect the cycle; only building the individual projects (CI) and VS IDE's internal restore avoid the error. This is why command-line builds must target individual projects rather than the solution.
 
 ## Key Conventions
 
