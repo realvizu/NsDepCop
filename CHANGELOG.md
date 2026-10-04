@@ -1,5 +1,10 @@
 # NsDepCop Change Log
 
+## v3.2.0
+(10/2026)
+
+- [x] Perf: Faster analysis. (#91)
+
 ## v3.1.0
 (07/2026)
 

@@ -28,7 +28,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</PackageIconUrl>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageReleaseNotes>
-- Added named placeholders in dependency rules: capture a namespace component on the From side and reference ([Name]) or negate ([!Name]) it on the To side, eg. &lt;Allowed From="[Module].Services" To="[Module].Domain" /&gt;.
+- Performance: faster analysis.
 	</PackageReleaseNotes>
   </PropertyGroup>
 
