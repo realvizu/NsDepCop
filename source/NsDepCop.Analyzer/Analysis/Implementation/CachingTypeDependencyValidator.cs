@@ -34,7 +34,7 @@ namespace Codartis.NsDepCop.Analysis.Implementation
             if (added)
             {
                 MissCount++;
-                LogTraceMessage($"Dependency {typeDependency} added to cache as {isAllowedDependency}.");
+                _traceMessageHandler?.Invoke($"Dependency {typeDependency} added to cache as {isAllowedDependency}.");
             }
             else
             {
@@ -43,7 +43,5 @@ namespace Codartis.NsDepCop.Analysis.Implementation
 
             return isAllowedDependency;
         }
-
-        private void LogTraceMessage(string message) => _traceMessageHandler?.Invoke(message);
     }
 }

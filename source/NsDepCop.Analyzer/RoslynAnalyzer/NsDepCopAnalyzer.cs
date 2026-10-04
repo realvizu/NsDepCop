@@ -10,6 +10,7 @@ using Codartis.NsDepCop.Analysis.Messages;
 using Codartis.NsDepCop.Config;
 using Codartis.NsDepCop.Config.Factory;
 using Codartis.NsDepCop.ParserAdapter.Roslyn;
+using Codartis.NsDepCop.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -42,15 +43,23 @@ namespace Codartis.NsDepCop.RoslynAnalyzer
                 SyntaxKind.DefaultLiteralExpression
             );
 
+        // Trace messages go to Debug.WriteLine, which is compiled out of release builds. Without a handler the callers skip
+        // building the messages, some of which they would otherwise format for every analyzed syntax node.
+#if DEBUG
+        private static readonly MessageHandler TraceMessageHandler = LogTraceMessage;
+#else
+        private static readonly MessageHandler TraceMessageHandler = null;
+#endif
+
         private readonly IAnalyzerProvider _analyzerProvider;
 
         public NsDepCopAnalyzer()
         {
             _analyzerProvider = new AnalyzerProvider(
-                new DependencyAnalyzerFactory(LogTraceMessage),
+                new DependencyAnalyzerFactory(TraceMessageHandler),
                 new AssemblyDependencyAnalyzerFactory(),
-                new ConfigProviderFactory(LogTraceMessage),
-                new TypeDependencyEnumerator(new SyntaxNodeAnalyzer(), LogTraceMessage)
+                new ConfigProviderFactory(TraceMessageHandler),
+                new TypeDependencyEnumerator(new SyntaxNodeAnalyzer(), TraceMessageHandler)
             );
         }
 
