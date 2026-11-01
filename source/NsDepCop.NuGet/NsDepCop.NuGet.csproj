@@ -28,7 +28,9 @@
     <PackageIconUrl>https://raw.githubusercontent.com/realvizu/NsDepCop/master/images/icons/NsDepCop_128.png</PackageIconUrl>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageReleaseNotes>
-- Performance: faster analysis.
+- Fix: statically imported fields, constants, properties and events did not produce a dependency on their declaring type (#93).
+- Fix: a statically imported member whose type is its own declaring type was reported twice.
+- Note: dependencies that went undetected before are now reported, so existing builds can get new NSDEPCOP01 diagnostics.
 	</PackageReleaseNotes>
   </PropertyGroup>
 

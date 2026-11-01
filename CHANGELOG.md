@@ -1,5 +1,12 @@
 # NsDepCop Change Log
 
+## v3.3.0
+(11/2026)
+
+- [x] Fix: #93 - Statically imported fields, constants, properties and events did not produce a dependency on their declaring type. (#94)
+- [x] Fix: A statically imported member whose type is its own declaring type was reported twice.
+- [x] **Note:** Dependencies that went undetected before are now reported, so existing builds can get new NSDEPCOP01 diagnostics.
+
 ## v3.2.0
 (10/2026)
 
