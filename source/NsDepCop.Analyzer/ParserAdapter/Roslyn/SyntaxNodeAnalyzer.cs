@@ -43,26 +43,43 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
             if (!IsAnalyzableDeclarationType(enclosingType))
                 yield break;
 
-            var (referencedType, declaringType) = DetermineReferencedTypes(node, semanticModel);
-            foreach (var type in GetConstituentTypes(referencedType, node))
-                yield return CreateTypeDependency(enclosingType, type, node);
+            var referencedTypes = DetermineReferencedTypes(node, semanticModel, enclosingType);
+            var declaringType = referencedTypes.DeclaringType;
 
-            if (IsAnalyzableDeclarationType(declaringType))
+            foreach (var type in GetConstituentTypes(referencedTypes.SymbolType, node))
+            {
+                // The declaring type is reported at most once: if it is also a constituent type then that occurrence covers it.
+                if (declaringType != null && SymbolEqualityComparer.Default.Equals(type, declaringType))
+                    declaringType = null;
+
+                yield return CreateTypeDependency(enclosingType, type, node);
+            }
+
+            if (declaringType != null)
                 yield return CreateTypeDependency(enclosingType, declaringType, node);
         }
 
         /// <summary>
-        /// Determines the type referenced by the symbol represented by the syntax node and, if the node is an extension method
-        /// invocation or a call on a static import, the type declaring that method.
+        /// Determines the types referenced by the syntax node: the type of the symbol it represents and, if the node is an extension
+        /// member invocation or an unqualified reference to a static member (e.g. via a static import), the type declaring that member.
         /// Both need the symbol of the node, which is only computed once: for a method name the compiler builds its whole method group.
         /// </summary>
-        private (ITypeSymbol ReferencedType, ITypeSymbol DeclaringType) DetermineReferencedTypes(SyntaxNode node, SemanticModel semanticModel)
+        private ReferencedTypes DetermineReferencedTypes(SyntaxNode node, SemanticModel semanticModel, ITypeSymbol enclosingType)
         {
             SymbolInfo? symbolInfo = null;
-            var referencedType = DetermineReferencedType(node, semanticModel, ref symbolInfo);
+            var symbolType = DetermineReferencedType(node, semanticModel, ref symbolInfo);
             symbolInfo ??= semanticModel.GetSymbolInfo(node);
-            var declaringType = DetermineExtensionOrStaticMethodDeclaringType(node, symbolInfo.Value.Symbol as IMethodSymbol);
-            return (referencedType, declaringType);
+            var declaringType = DetermineExtensionOrStaticMemberDeclaringType(node, symbolInfo.Value.Symbol);
+
+            // Use the same form as GetConstituentTypes (the generic type definition) so that a duplicate can be recognized.
+            if (declaringType is INamedTypeSymbol { IsGenericType: true } genericDeclaringType)
+                declaringType = genericDeclaringType.ConstructedFrom;
+
+            // A member of the enclosing type itself is never an illegal dependency (same namespace), so don't produce one.
+            if (!IsAnalyzableDeclarationType(declaringType) || SymbolEqualityComparer.Default.Equals(declaringType, enclosingType))
+                declaringType = null;
+
+            return new ReferencedTypes(symbolType, declaringType);
         }
 
         private static bool IsAnalyzableDeclarationType(ITypeSymbol typeSymbol)
@@ -164,36 +181,57 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
         }
 
         /// <summary>
-        /// Determines the type declaring the given extension method syntax node or
-        /// the declaring type of a static method when the type is statically imported.
+        /// Determines the type declaring the member (method, field, property or event) represented by the given syntax node
+        /// when the reference does not name that type itself: an extension method invocation, or a static member referenced
+        /// without qualification, typically through a static import.
         /// e.g. <code>
         /// using static A.ClassA;
-        /// StaticMethodOfClassA(); // in contrast to A.ClassA.StaticMethodOfClassA();
+        /// StaticMethodOfClassA();      // in contrast to A.ClassA.StaticMethodOfClassA();
+        /// StaticFieldOfClassA.Length;  // in contrast to A.ClassA.StaticFieldOfClassA.Length;
         /// </code>
-        /// Also handles C# 14 extension members, where the method's containing type has
+        /// Also handles C# 14 extension members, where the member's containing type has
         /// <see cref="TypeKind.Extension"/> and its own containing type is the static class.
         /// </summary>
-        /// <param name="node">A syntax node representing a static or extension method.</param>
-        /// <param name="methodSymbol">The method symbol of the syntax node, or null if it does not represent a method.</param>
-        /// <returns>The type declaring the given static or extension method syntax node, or null if not found.</returns>
-        private static ITypeSymbol DetermineExtensionOrStaticMethodDeclaringType(SyntaxNode node, IMethodSymbol methodSymbol)
+        /// <param name="node">A syntax node.</param>
+        /// <param name="symbol">The symbol of the syntax node, or null if it has none.</param>
+        /// <returns>The type declaring the referenced member, or null if the node is not such a member reference.</returns>
+        private static ITypeSymbol DetermineExtensionOrStaticMemberDeclaringType(SyntaxNode node, ISymbol symbol)
         {
-            bool isExtensionMethodOrCallOnStaticImport =
-                methodSymbol != null
-                && (methodSymbol.IsExtensionMethod
-                    || (methodSymbol.IsStatic && node.Parent is not MemberAccessExpressionSyntax));
+            if (!IsFieldOrFunctionMember(symbol))
+                return null;
 
-            if (isExtensionMethodOrCallOnStaticImport)
-                return methodSymbol.ContainingType;
+            if (symbol is IMethodSymbol { IsExtensionMethod: true })
+                return symbol.ContainingType;
+
+            if (symbol.IsStatic && !IsQualifiedMemberName(node))
+                return symbol.ContainingType;
 
 #if ROSLYN5_0_OR_GREATER
-            // C# 14 extension members: the method lives inside an extension block whose TypeKind is Extension.
+            // C# 14 extension members: the member lives inside an extension block whose TypeKind is Extension.
             // The dependency is on the enclosing static class, not the block itself.
-            if (methodSymbol?.ContainingType?.TypeKind == TypeKind.Extension)
-                return methodSymbol.ContainingType.ContainingType;
+            if (symbol.ContainingType?.TypeKind == TypeKind.Extension)
+                return symbol.ContainingType.ContainingType;
 #endif
 
             return null;
+        }
+
+        /// <summary>
+        /// Returns true if the symbol is a field (including constants) or a function member (method, property, event, operator, etc.),
+        /// that is, a type member other than a nested type. Those are the members whose containing type is the type declaring them.
+        /// </summary>
+        private static bool IsFieldOrFunctionMember(ISymbol symbol)
+        {
+            return symbol is IMethodSymbol or IFieldSymbol or IPropertySymbol or IEventSymbol;
+        }
+
+        /// <summary>
+        /// Returns true if the given syntax node is the member name of a member access expression,
+        /// e.g. <c>Field</c> in <c>A.ClassA.Field</c>, but not <c>Field</c> in <c>Field.Length</c>.
+        /// </summary>
+        private static bool IsQualifiedMemberName(SyntaxNode node)
+        {
+            return node.Parent is MemberAccessExpressionSyntax memberAccess && memberAccess.Name == node;
         }
 
         /// <summary>
@@ -281,6 +319,25 @@ namespace Codartis.NsDepCop.ParserAdapter.Roslyn
                 syntaxNode.ToString(),
                 lineSpan.Path
             );
+        }
+
+        /// <summary>
+        /// The types that a syntax node refers to.
+        /// </summary>
+        private readonly struct ReferencedTypes(ITypeSymbol symbolType, ITypeSymbol declaringType)
+        {
+            /// <summary>
+            /// The type of the symbol represented by the syntax node, e.g. the field type for a field name
+            /// or the return type for a method name. Null if it could not be determined.
+            /// </summary>
+            public ITypeSymbol SymbolType { get; } = symbolType;
+
+            /// <summary>
+            /// The type declaring the member represented by the syntax node when the reference does not name that type itself
+            /// (an extension member invocation or an unqualified reference to a static member, e.g. via a static import).
+            /// Null if there is no such type worth reporting.
+            /// </summary>
+            public ITypeSymbol DeclaringType { get; } = declaringType;
         }
     }
 }

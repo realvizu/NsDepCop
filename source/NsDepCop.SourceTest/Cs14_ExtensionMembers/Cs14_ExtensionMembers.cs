@@ -8,6 +8,9 @@
         {
             new MyClass().MyExtensionMethod();
             new MyClass().MyGenericExtensionMethod();
+            _ = new MyClass().MyExtensionProperty;
+            _ = MyClass.MyStaticExtensionProperty;
+            MyClass.MyStaticExtensionMethod();
         }
     }
 }
@@ -21,6 +24,14 @@ namespace B
         extension(MyClass myClass)
         {
             public void MyExtensionMethod()
+            {
+            }
+
+            public int MyExtensionProperty => 1;
+
+            public static int MyStaticExtensionProperty => 2;
+
+            public static void MyStaticExtensionMethod()
             {
             }
         }

@@ -108,6 +108,12 @@
     <Compile Remove="Cs6_StaticImport\Cs6_StaticImport.cs">
 
     </Compile>
+    <Compile Remove="Cs6_StaticImportedMembers\Cs6_StaticImportedMembers.cs">
+
+    </Compile>
+    <Compile Remove="Cs6_StaticImportNoDuplicateDependency\Cs6_StaticImportNoDuplicateDependency.cs">
+
+    </Compile>
     <Compile Remove="Cs6_PointerType\Cs6_PointerType.cs">
 
     </Compile>
@@ -238,6 +244,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Cs6_StaticImport\Cs6_StaticImport.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_StaticImportedMembers\Cs6_StaticImportedMembers.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Cs6_StaticImportNoDuplicateDependency\Cs6_StaticImportNoDuplicateDependency.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Cs6_PointerType\Cs6_PointerType.cs">
@@ -382,6 +394,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Cs6_StaticImport\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_StaticImportedMembers\config.nsdepcop">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Cs6_StaticImportNoDuplicateDependency\config.nsdepcop">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Cs6_VarWithConstructedGenericType\config.nsdepcop">

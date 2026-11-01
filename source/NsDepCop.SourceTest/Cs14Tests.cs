@@ -21,6 +21,12 @@ namespace Codartis.NsDepCop.SourceTest
                 .ExpectInvalidSegment(9, 27, 44)
                 // new MyClass().MyGenericExtensionMethod()
                 .ExpectInvalidSegment(10, 27, 51)
+                // new MyClass().MyExtensionProperty
+                .ExpectInvalidSegment(11, 31, 50)
+                // MyClass.MyStaticExtensionProperty
+                .ExpectInvalidSegment(12, 25, 50)
+                // MyClass.MyStaticExtensionMethod()
+                .ExpectInvalidSegment(13, 21, 44)
                 .Execute();
         }
     }

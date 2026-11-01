@@ -294,12 +294,34 @@ namespace Codartis.NsDepCop.SourceTest
         }
 
         [Fact]
+        public void Cs6_StaticImportedMembers()
+        {
+            SourceTestSpecification.Create()
+                .ExpectInvalidSegment(9, 20, 31)  // static field
+                .ExpectInvalidSegment(14, 20, 25) // constant
+                .ExpectInvalidSegment(19, 20, 31) // member access on a static field
+                .ExpectInvalidSegment(24, 20, 24) // static property
+                .ExpectInvalidSegment(29, 13, 20) // static event
+                .ExpectInvalidSegment(34, 22, 28) // qualified access: only the type name, exactly once
+                .Execute();
+        }
+
+        [Fact]
+        public void Cs6_StaticImportNoDuplicateDependency()
+        {
+            SourceTestSpecification.Create()
+                .ExpectInvalidSegment(10, 20, 27) // field whose type is its declaring type: reported once
+                .ExpectInvalidSegment(15, 20, 26) // method whose return type is its declaring type: reported once
+                .ExpectInvalidSegment(20, 20, 34) // same, with a generic declaring type: reported once
+                .Execute();
+        }
+
+        [Fact]
         public void Cs6_StaticImport()
         {
             SourceTestSpecification.Create()
                 .ExpectInvalidSegment(9, 13, 32)
-                .ExpectInvalidSegment(10, 13, 34) // because of the return value
-                .ExpectInvalidSegment(10, 13, 34) // because of the declaring type
+                .ExpectInvalidSegment(10, 13, 34) // the return value and the declaring type are the same, reported once
                 .Execute();
         }
     }
